@@ -1,0 +1,45 @@
+#                                               -*- Autoconf -*-
+# Process this file with autoconf to produce a configure script.
+
+AC_PREREQ(2.59)
+AC_INIT(libartcat, 0.1.0, [ota@cns.s.u-tokyo.ac.jp])
+AM_INIT_AUTOMAKE([foreign])
+AC_CONFIG_SRCDIR([config.h.in])
+AC_CONFIG_HEADER([config.h])
+AC_ENABLE_STATIC(no)
+AC_PROG_LIBTOOL
+
+# Checks for programs.
+AC_PROG_CXX([g++34 g++])
+AC_PROG_CC([gcc34 gcc])
+AC_PROG_F77([g77])
+AC_PROG_RANLIB
+
+# Checks for header files.
+AC_HEADER_STDC
+AC_CHECK_HEADERS([limits.h stdlib.h string.h strings.h unistd.h])
+if test "`uname -m`" = "x86_64" ; then
+AC_SUBST(X11DIR,[/usr/lib64])
+else
+AC_SUBST(X11DIR,[/usr/X11R6/lib])
+fi
+
+ROOTLIBS="`$ROOTSYS/bin/root-config --glibs`"
+AC_SUBST(ROOTLIBS)
+
+# Checks for typedefs, structures, and compiler characteristics.
+AC_HEADER_STDBOOL
+AC_C_CONST
+AC_C_INLINE
+
+# Checks for library functions.
+AC_FUNC_MALLOC
+AC_FUNC_STAT
+AC_FUNC_VPRINTF
+AC_CHECK_FUNCS([bzero memset strpbrk strtol])
+
+AC_CONFIG_FILES([Makefile
+                 sources/Makefile
+                 sources/core/Makefile
+		 ])
+AC_OUTPUT
