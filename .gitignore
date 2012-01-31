@@ -1,0 +1,25 @@
+# ignore for git
+
+# makefile for this project
+Makefile
+
+# backup
+*~
+# archive object
+*.lo
+
+# compiled objects
+*.o
+.deps
+.libs
+*.la
+
+# configure logs
+config.status
+config.log
+
+# libtools
+libtool
+
+# timestamp
+stamp-h1
