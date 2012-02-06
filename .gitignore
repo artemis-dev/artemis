@@ -2,6 +2,8 @@
 
 # makefile for this project
 Makefile
+Makefile.in
+
 
 # backup
 *~
@@ -23,3 +25,7 @@ libtool
 
 # timestamp
 stamp-h1
+
+#
+.root_hist
+
