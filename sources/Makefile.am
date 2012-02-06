@@ -1,1 +1,2 @@
-SUBDIRS = core uhodo
+SUBDIRS = core uhodo main
+

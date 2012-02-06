@@ -57,8 +57,12 @@ am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(includedir)"
 libLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libcatcore_la_LIBADD =
-am_libcatcore_la_OBJECTS = TArtFadcRawDataObject.lo \
-	TArtDecoderV1740.lo catcore_dict.lo
+am__objects_1 = TArtFadcRawDataObject.lo TArtDecoderV1740.lo \
+	TArtDecoderSIS3610.lo TArtDecoderSIS3820.lo TArtKbhit.lo \
+	TCatObject.lo TCatHitV1190.lo TCatSortable.lo \
+	TCatDetectorArray.lo
+am__objects_2 = catcore_dict.lo
+am_libcatcore_la_OBJECTS = $(am__objects_1) $(am__objects_2)
 libcatcore_la_OBJECTS = $(am_libcatcore_la_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -95,7 +99,9 @@ CPPFLAGS = @CPPFLAGS@
 CXX = @CXX@
 CXXCPP = @CXXCPP@
 CXXDEPMODE = @CXXDEPMODE@
-CXXFLAGS = -fPIC -Iinclude $(shell root-config --cflags) -I$(TARTSYS)/include
+CXXFLAGS = -fPIC -Iinclude $(shell root-config --cflags) -I$(TARTSYS)/include \
+	-Wall
+
 CYGPATH_W = @CYGPATH_W@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
@@ -179,19 +185,29 @@ sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 SUBSRC = \
 	TArtFadcRawDataObject.cc \
-	TArtDecoderV1740.cc
+	TArtDecoderV1740.cc \
+	TArtDecoderSIS3610.cc \
+	TArtDecoderSIS3820.cc \
+	TArtKbhit.cc \
+	TCatObject.cc \
+	TCatHitV1190.cc \
+	TCatSortable.cc \
+	TCatDetectorArray.cc
 
 SUBOBJ = $(SUBSRC:.cc=.o)
-SUBHDR = $(SUBSRC:.cc=.h)
+SUBHDR = $(SUBSRC:.cc=.h) \
+	TCatDetectorArray.h
+
+DICTSRC = catcore_dict.cc
+DICTOBJ = $(DICTSRC:.cc=.o)
+DICTHDR = $(DICTSRC:.cc=.h)
+OPTHDR = 
 AUTOMAKE_OPTIONS = foreign
 INCLUDES = -Iinclude -I$(ROOTSYS)/include
-include_HEADERS = $(SUBHDR) $(SUBHDRF)
+include_HEADERS = $(SUBHDR) $(SUBHDRF) $(OPTHDR)
 lib_LTLIBRARIES = libcatcore.la
-libcatcore_la_SOURCES = \
-	TArtFadcRawDataObject.cc \
-	TArtDecoderV1740.cc catcore_dict.cc
-
-# libcatcore_la_DEPENDENCIES = $(SUBOBJ)
+libcatcore_la_SOURCES = $(SUBSRC) $(DICTSRC)
+#libcatcore_la_DEPENDENCIES = $(SUBOBJ)
 # libcatcore_la_LIBADD = $(SUBOBJ)
 libcatcore_la_LDFLAGS = $(LDFLAGS)
 all: all-am
@@ -263,8 +279,15 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TArtDecoderSIS3610.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TArtDecoderSIS3820.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TArtDecoderV1740.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TArtFadcRawDataObject.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TArtKbhit.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TCatDetectorArray.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TCatHitV1190.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TCatObject.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TCatSortable.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/catcore_dict.Plo@am__quote@
 
 .cc.obj:
@@ -479,7 +502,7 @@ uninstall-am: uninstall-includeHEADERS uninstall-info-am \
 	uninstall-libLTLIBRARIES
 
 
-catcore_dict.cc: $(SUBHDR) catcore_linkdef.h
+$(DICTSRC): $(SUBHDR) catcore_linkdef.h
 	rootcint -f $@ -c $(DEFAULT_INCLUDES) $(INCLUDES) $^
 
 .cc.o:
