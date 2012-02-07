@@ -155,7 +155,7 @@ sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
-SUBDIRS = core uhodo main
+SUBDIRS = core uhodo commands main
 all: all-recursive
 
 .SUFFIXES:

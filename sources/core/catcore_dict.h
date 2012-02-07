@@ -40,6 +40,8 @@ extern void G__set_cpp_environmentcatcore_dict();
 #include "TCatHitV1190.h"
 #include "TCatSortable.h"
 #include "TCatDetectorArray.h"
+#include "TCatHistManager.h"
+#include "TCatPadManager.h"
 #include <algorithm>
 namespace std { }
 using namespace std;
@@ -54,6 +56,7 @@ extern G__linked_taginfo G__catcore_dictLN_TObject;
 extern G__linked_taginfo G__catcore_dictLN_TNamed;
 extern G__linked_taginfo G__catcore_dictLN_vectorlEROOTcLcLTSchemaHelpercOallocatorlEROOTcLcLTSchemaHelpergRsPgR;
 extern G__linked_taginfo G__catcore_dictLN_reverse_iteratorlEvectorlEROOTcLcLTSchemaHelpercOallocatorlEROOTcLcLTSchemaHelpergRsPgRcLcLiteratorgR;
+extern G__linked_taginfo G__catcore_dictLN_TList;
 extern G__linked_taginfo G__catcore_dictLN_TClonesArray;
 extern G__linked_taginfo G__catcore_dictLN_vectorlETVirtualArraymUcOallocatorlETVirtualArraymUgRsPgR;
 extern G__linked_taginfo G__catcore_dictLN_reverse_iteratorlEvectorlETVirtualArraymUcOallocatorlETVirtualArraymUgRsPgRcLcLiteratorgR;
@@ -74,5 +77,9 @@ extern G__linked_taginfo G__catcore_dictLN_TCatHitV1190cLcLEStatus;
 extern G__linked_taginfo G__catcore_dictLN_TCatSortable;
 extern G__linked_taginfo G__catcore_dictLN_iteratorlEbidirectional_iterator_tagcOTObjectmUcOlongcOconstsPTObjectmUmUcOconstsPTObjectmUaNgR;
 extern G__linked_taginfo G__catcore_dictLN_TCatDetectorArray;
+extern G__linked_taginfo G__catcore_dictLN_TCatHistManager;
+extern G__linked_taginfo G__catcore_dictLN_TCanvas;
+extern G__linked_taginfo G__catcore_dictLN_TVirtualPad;
+extern G__linked_taginfo G__catcore_dictLN_TCatPadManager;
 
 /* STUB derived class for protected member access */

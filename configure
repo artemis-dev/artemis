@@ -21372,7 +21372,7 @@ fi
 done
 
 
-                                                  ac_config_files="$ac_config_files Makefile sources/Makefile sources/core/Makefile sources/uhodo/Makefile sources/main/Makefile"
+                                                            ac_config_files="$ac_config_files Makefile sources/Makefile sources/core/Makefile sources/commands/Makefile sources/uhodo/Makefile sources/main/Makefile"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -21947,6 +21947,7 @@ do
   "Makefile" ) CONFIG_FILES="$CONFIG_FILES Makefile" ;;
   "sources/Makefile" ) CONFIG_FILES="$CONFIG_FILES sources/Makefile" ;;
   "sources/core/Makefile" ) CONFIG_FILES="$CONFIG_FILES sources/core/Makefile" ;;
+  "sources/commands/Makefile" ) CONFIG_FILES="$CONFIG_FILES sources/commands/Makefile" ;;
   "sources/uhodo/Makefile" ) CONFIG_FILES="$CONFIG_FILES sources/uhodo/Makefile" ;;
   "sources/main/Makefile" ) CONFIG_FILES="$CONFIG_FILES sources/main/Makefile" ;;
   "depfiles" ) CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;

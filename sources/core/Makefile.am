@@ -7,10 +7,12 @@ SUBSRC = \
 	TCatObject.cc \
 	TCatHitV1190.cc \
 	TCatSortable.cc \
-	TCatDetectorArray.cc
+	TCatDetectorArray.cc \
+	TCatHistManager.cc \
+	TCatPadManager.cc
 SUBOBJ = $(SUBSRC:.cc=.o)
-SUBHDR = $(SUBSRC:.cc=.h) \
-	TCatDetectorArray.h
+SUBHDR = $(SUBSRC:.cc=.h) 
+
 
 DICTSRC = catcore_dict.cc
 DICTOBJ = $(DICTSRC:.cc=.o)

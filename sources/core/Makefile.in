@@ -60,7 +60,7 @@ libcatcore_la_LIBADD =
 am__objects_1 = TArtFadcRawDataObject.lo TArtDecoderV1740.lo \
 	TArtDecoderSIS3610.lo TArtDecoderSIS3820.lo TArtKbhit.lo \
 	TCatObject.lo TCatHitV1190.lo TCatSortable.lo \
-	TCatDetectorArray.lo
+	TCatDetectorArray.lo TCatHistManager.lo TCatPadManager.lo
 am__objects_2 = catcore_dict.lo
 am_libcatcore_la_OBJECTS = $(am__objects_1) $(am__objects_2)
 libcatcore_la_OBJECTS = $(am_libcatcore_la_OBJECTS)
@@ -192,12 +192,12 @@ SUBSRC = \
 	TCatObject.cc \
 	TCatHitV1190.cc \
 	TCatSortable.cc \
-	TCatDetectorArray.cc
+	TCatDetectorArray.cc \
+	TCatHistManager.cc \
+	TCatPadManager.cc
 
 SUBOBJ = $(SUBSRC:.cc=.o)
-SUBHDR = $(SUBSRC:.cc=.h) \
-	TCatDetectorArray.h
-
+SUBHDR = $(SUBSRC:.cc=.h) 
 DICTSRC = catcore_dict.cc
 DICTOBJ = $(DICTSRC:.cc=.o)
 DICTHDR = $(DICTSRC:.cc=.h)
@@ -285,8 +285,10 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TArtFadcRawDataObject.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TArtKbhit.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TCatDetectorArray.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TCatHistManager.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TCatHitV1190.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TCatObject.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TCatPadManager.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TCatSortable.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/catcore_dict.Plo@am__quote@
 

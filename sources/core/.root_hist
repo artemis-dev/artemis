@@ -2,3 +2,8 @@
 new TBrowser
 .q
 .q
+TString a("hoge")
+a.Tokenize()
+a.Tokenize(" ")
+a.Tokenize(" ")->GetEntries()
+.q
