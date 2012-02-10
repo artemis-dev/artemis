@@ -2,7 +2,7 @@
 /**
  * @file   TCatCmd.cc
  * @date   Created : Feb 06, 2012 10:06:48 JST
- *   Last Modified : Feb 08, 2012 00:18:48 JST
+ *   Last Modified : Feb 10, 2012 20:22:15 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -55,5 +55,11 @@ void TCatCmd::GetRange(TString &arg, Int_t &id1, Int_t &id2, TString delim)
 
 void TCatCmd::Help() 
 {
+   printf(" Help is under construction.\n");
 }
 
+Int_t TCatCmd::Compare(const TObject *obj) const 
+{
+   if (!obj) return 1;
+   return TString(GetName()).CompareTo(obj->GetName());
+}

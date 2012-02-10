@@ -33,6 +33,7 @@ extern void G__set_cpp_environmentcatcmd_dict();
 #include "TMemberInspector.h"
 #include "TCatCmdFactory.h"
 #include "TCatCmd.h"
+#include "TCatCmdHelp.h"
 #include "TCatCmdHt.h"
 #include "TCatCmdHtp.h"
 #include "TCatCmdHb.h"
@@ -70,6 +71,7 @@ extern G__linked_taginfo G__catcmd_dictLN_TCatCmd;
 extern G__linked_taginfo G__catcmd_dictLN_vectorlETStringcOallocatorlETStringgRsPgR;
 extern G__linked_taginfo G__catcmd_dictLN_reverse_iteratorlEvectorlETStringcOallocatorlETStringgRsPgRcLcLiteratorgR;
 extern G__linked_taginfo G__catcmd_dictLN_TCatCmdFactory;
+extern G__linked_taginfo G__catcmd_dictLN_TCatCmdHelp;
 extern G__linked_taginfo G__catcmd_dictLN_TCatCmdHt;
 extern G__linked_taginfo G__catcmd_dictLN_TCatCmdHtp;
 extern G__linked_taginfo G__catcmd_dictLN_TCatCmdHb;

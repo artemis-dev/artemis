@@ -4,6 +4,7 @@
 #pragma link off all functions;
 
 #pragma link C++ class TCatCmd;
+#pragma link C++ class TCatCmdHelp;
 #pragma link C++ class TCatCmdHt;
 #pragma link C++ class TCatCmdHn;
 #pragma link C++ class TCatCmdHb;

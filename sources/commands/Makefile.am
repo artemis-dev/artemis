@@ -1,6 +1,7 @@
 SUBSRC = \
 	TCatCmdFactory.cc \
 	TCatCmd.cc \
+	TCatCmdHelp.cc \
 	TCatCmdHt.cc \
 	TCatCmdHtp.cc \
 	TCatCmdHb.cc \

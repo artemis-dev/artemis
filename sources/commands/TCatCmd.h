@@ -2,7 +2,7 @@
 /**
  * @file   TCatCmd.h
  * @date   Created : Feb 06, 2012 10:06:33 JST
- *   Last Modified : Feb 09, 2012 11:36:32 JST
+ *   Last Modified : Feb 10, 2012 20:19:56 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -27,6 +27,11 @@ public:
 
    virtual void GetRange(TString &arg, Int_t &id1, Int_t &id2, TString delim = ":");
 
+   virtual Bool_t IsSortable() const { return kTRUE; }
+
+   virtual Int_t Compare(const TObject *obj) const ;
+
    virtual void Help();
+
 };
 #endif // end of #ifdef TCATCMD_H

@@ -2,7 +2,7 @@
 /**
  * @file   TArtRint.cc
  * @date   Created : Feb 06, 2012 00:06:18 JST
- *   Last Modified : Feb 10, 2012 00:32:18 JST
+ *   Last Modified : Feb 10, 2012 20:39:33 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -11,6 +11,7 @@
 #include "TArtRint.h"
 
 #include <TCatCmdFactory.h>
+#include <TCatCmdHelp.h>
 #include <TCatCmdHt.h>
 #include <TCatCmdHn.h>
 #include <TCatCmdHb.h>
@@ -28,6 +29,7 @@ TArtRint::TArtRint(int* argc, char** argv, void* options, int numOptions, Bool_t
    : TRint(fAppName, argc, argv, options, numOptions, noLogo)
 {
    TCatCmdFactory *cf = TCatCmdFactory::Instance();
+   cf->Register(TCatCmdHelp::Instance());
    cf->Register(TCatCmdHt::Instance());
    cf->Register(TCatCmdHtp::Instance());
    cf->Register(TCatCmdHb::Instance());
