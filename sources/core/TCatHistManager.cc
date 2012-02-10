@@ -2,7 +2,7 @@
 /**
  * @file   TCatHistManager.cc
  * @date   Created : Feb 06, 2012 11:06:39 JST
- *   Last Modified : Feb 09, 2012 23:36:52 JST
+ *   Last Modified : Feb 10, 2012 20:00:46 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -78,16 +78,6 @@ void TCatHistManager::DrawPrev(const Option_t *opt)
 void TCatHistManager::ls(Option_t *opt) const
 {
    if (!fObjs) return;
-   TDirectory *saved = gDirectory;
-   if (strcmp(opt,"")) {
-      if (!cd(opt)) {
-         return;
-      }
-      // Instance() should be called to reload objects
-      TCatHistManager::Instance()->ls();
-      saved->cd();
-      return;
-   }
    Int_t n = fObjs->GetEntries();
    printf("\n");
    printf(" %s\n",gDirectory->GetName());
