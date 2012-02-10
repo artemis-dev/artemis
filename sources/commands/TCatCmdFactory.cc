@@ -2,7 +2,7 @@
 /**
  * @file   TCatCmdFactory.cc
  * @date   Created : Feb 06, 2012 10:06:33 JST
- *   Last Modified : Feb 06, 2012 19:37:18 JST
+ *   Last Modified : Feb 09, 2012 19:35:41 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -43,5 +43,6 @@ void TCatCmdFactory::Register(TCatCmd *cmd)
 {
    if (!fCmds->FindObject(cmd)) {
       fCmds->Add(cmd);
+   } else {
    }
 }

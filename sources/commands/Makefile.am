@@ -2,11 +2,23 @@ SUBSRC = \
 	TCatCmdFactory.cc \
 	TCatCmd.cc \
 	TCatCmdHt.cc \
+	TCatCmdHtp.cc \
 	TCatCmdHb.cc \
 	TCatCmdHn.cc \
-	TCatCmdZone.cc
+	TCatCmdZone.cc \
+	TCatCmdPr.cc \
+	TCatCmdPrx.cc \
+	TCatCmdPry.cc \
+	TCatCmdBn.cc \
+	TCatCmdBnx.cc \
+	TCatCmdBny.cc \
+	TCatCmdSl.cc \
+	TCatCmdSly.cc \
+	TCatCmdLs.cc \
+	TCatCmdCd.cc
 SUBOBJ = $(SUBSRC:.cc=.o)
-SUBHDR = $(SUBSRC:.cc=.h)
+SUBHDR = $(SUBSRC:.cc=.h) 
+
 
 DICTSRC = catcmd_dict.cc
 DICTOBJ = $(DICTSRC:.cc=.o)

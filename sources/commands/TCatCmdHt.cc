@@ -2,7 +2,7 @@
 /**
  * @file   TCatCmdHt.cc
  * @date   Created : Feb 06, 2012 11:06:16 JST
- *   Last Modified : Feb 06, 2012 19:44:19 JST
+ *   Last Modified : Feb 09, 2012 11:34:57 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -15,8 +15,6 @@
 #include <TCanvas.h>
 #include <TCatHistManager.h>
 #include <TCatPadManager.h>
-
-ClassImp(TCatCmdHt);
 
 TCatCmdHt::TCatCmdHt()
 {
@@ -45,15 +43,9 @@ Long_t TCatCmdHt::Cmd(vector<TString> tokens)
    }
    for (Int_t i=1; i<n; i++) {
       TString &token = tokens[i];
-      TObjArray *ids = token.Tokenize(":");
       switch (i) {
       case 1: // should be id or id1:id2
-         if (ids->GetEntries()==1) {
-            id1 = id2 = token.Atoi();
-         } else {
-            id1 = ((TObjString*)ids->At(0))->GetString().Atoi();
-            id2 = ((TObjString*)ids->At(1))->GetString().Atoi();
-         }
+         GetRange(token,id1,id2);
          break;
       case 2: // should be draw option
          opt = token;
@@ -62,7 +54,6 @@ Long_t TCatCmdHt::Cmd(vector<TString> tokens)
          // do nothing
          break;
       }
-      delete ids;
    }
    return Run(id1,id2,opt);
 }
@@ -76,6 +67,7 @@ Long_t TCatCmdHt::Run(Int_t id1, Int_t id2, TString& opt)
    }
    Int_t n = id2-id1+1;
    for (Int_t i=0; i<n; i++) {
+      if (id1+i < 0) return 1;
       if (!TCatPadManager::Instance()->Next()) {
          TArtCore::Info("TCatCmdHt","Not enough pads to draw");
          return 1;

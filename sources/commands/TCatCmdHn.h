@@ -2,7 +2,7 @@
 /**
  * @file   TCatCmdHn.h
  * @date   Created : Feb 06, 2012 20:06:18 JST
- *   Last Modified : Feb 06, 2012 23:13:20 JST
+ *   Last Modified : Feb 09, 2012 11:38:50 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -24,5 +24,6 @@ public:
    
    virtual Long_t Run(TString &opt);
 
+   ClassDef(TCatCmdHn,1);
 };
 #endif // end of #ifdef TCATCMDHN_H

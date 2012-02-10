@@ -2,7 +2,7 @@
 /**
  * @file   TCatCmd.h
  * @date   Created : Feb 06, 2012 10:06:33 JST
- *   Last Modified : Feb 06, 2012 19:42:55 JST
+ *   Last Modified : Feb 09, 2012 11:36:32 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -15,7 +15,7 @@
 #include <vector>
 using namespace std;
 
-class TCatCmd  : public TNamed {
+class TCatCmd : public TNamed{
 protected:
    TCatCmd();
 public:
@@ -24,6 +24,8 @@ public:
    virtual Long_t Exec(TString &line);
 
    virtual Long_t Cmd(vector<TString> args) = 0;
+
+   virtual void GetRange(TString &arg, Int_t &id1, Int_t &id2, TString delim = ":");
 
    virtual void Help();
 };

@@ -2,7 +2,7 @@
 /**
  * @file   TCatHistManager.cc
  * @date   Created : Feb 06, 2012 11:06:39 JST
- *   Last Modified : Feb 06, 2012 23:15:34 JST
+ *   Last Modified : Feb 09, 2012 23:36:52 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -12,6 +12,7 @@
 #include <TKey.h>
 #include <TClass.h>
 #include <TArtCore.h>
+#include <TROOT.h>
 
 ClassImp(TCatHistManager);
 
@@ -29,7 +30,7 @@ TCatHistManager* TCatHistManager::Instance()
    return &instance;
 }
 
-void TCatHistManager::Load()
+void TCatHistManager::Load() 
 {
    fObjs = gDirectory->GetList();
    fKeys = gDirectory->GetListOfKeys();
@@ -39,7 +40,9 @@ void TCatHistManager::Load()
       for (Int_t i=0; i<n; i++) {
          TKey *key = (TKey*) fKeys->At(i);
          if (fObjs->FindObject(key->GetName())) continue;
-         if (TClass::GetClass(key->GetClassName())->InheritsFrom("TH1")) {
+         if (TClass::GetClass(key->GetClassName())->InheritsFrom("TH1") |
+             TClass::GetClass(key->GetClassName())->InheritsFrom("TDirectory")
+            ) {
             key->ReadObj();
          }
       }
@@ -48,56 +51,123 @@ void TCatHistManager::Load()
 
 void TCatHistManager::DrawObject(const Int_t &id, const Option_t *opt)
 {
-   if (!fObjs) Load();
-   if (!fObjs) return;
-   if (fObjs->At(id)) {
+   if (TObject *obj = GetObject(id)) {
       fCurrentID = id;
-      fObjs->At(id)->Draw(opt);
+      obj->Draw(opt);
    }
 }
 
 void TCatHistManager::DrawCurrent(const Option_t *opt)
 {
-   if (!fObjs) Load();
-   if (!fObjs) return;
-   if (!fObjs->At(fCurrentID)) fCurrentID = 0;
+   if (!GetCurrent()) fCurrentID = 0;
    DrawObject(fCurrentID,opt);
 }
 
 void TCatHistManager::DrawNext(const Option_t *opt)
 {
-   if (!fObjs) Load();
-   if (fObjs->At(fCurrentID+1)) {
-      fCurrentID++;
-   } else {
-      TArtCore::Info("DrawNext","No more objects larger than oid = %d\n",fCurrentID);
-   }
-   DrawObject(fCurrentID,opt);
+   TObject *obj = GetNext();
+   if (obj) obj->Draw(opt);
 }
 
 void TCatHistManager::DrawPrev(const Option_t *opt)
 {
-   if (!fObjs) Load();
-   if (!fObjs) return;
-   if (fObjs->At(fCurrentID-1)) {
-      fCurrentID--;
-   } else {
-      TArtCore::Info("DrawNext","No more objects smaller than  oid = %d\n",fCurrentID);
-   }
-   DrawObject(fCurrentID,opt);
+   TObject *obj = GetPrev();
+   if (obj) obj->Draw(opt);
 }
 
-void TCatHistManager::ls(Option_t *) const 
+void TCatHistManager::ls(Option_t *opt) const
 {
    if (!fObjs) return;
+   TDirectory *saved = gDirectory;
+   if (strcmp(opt,"")) {
+      if (!cd(opt)) {
+         return;
+      }
+      // Instance() should be called to reload objects
+      TCatHistManager::Instance()->ls();
+      saved->cd();
+      return;
+   }
    Int_t n = fObjs->GetEntries();
    printf("\n");
+   printf(" %s\n",gDirectory->GetName());
    for (Int_t i=0; i<n; i++) {
       TObject *obj = fObjs->At(i);
-      printf("%5d %4s %10s %10s\n",i,
+      printf("%5d %4s %-15s %-10s\n",i,
              obj->IsA()->GetName(),
              obj->GetName(),
              obj->GetTitle());
    }
+
    printf("\n");
+}
+
+Bool_t TCatHistManager::cd(TString opt) const
+{
+   if (opt == "") {
+      return gROOT->cd();
+   } else if (opt == "..") {
+      return gDirectory->cd("..");
+   } else if (opt.IsDigit()) {
+      Int_t id = opt.Atoi();
+      return cd(id);
+   } else {
+      return gDirectory->cd(opt);
+   }
+}
+
+Bool_t TCatHistManager::cd(const Int_t& id) const
+{
+   if (!fObjs) return kFALSE;
+   if (fObjs->At(id) && 
+       fObjs->At(id)->InheritsFrom("TDirectory")) {
+      return ((TDirectory*)fObjs->At(id))->cd();
+   }
+   return kFALSE;
+}
+
+TObject* TCatHistManager::GetObject(const char* name)
+{
+   if (!fObjs) Load();
+//   printf("id = %d at %p (size = %d)\n",id,fObjs->At(id),fObjs->GetEntries());
+   return fObjs->FindObject(name);
+}
+TObject* TCatHistManager::GetObject(const Int_t &id)
+{
+   if (!fObjs) Load();
+//   printf("id = %d at %p (size = %d)\n",id,fObjs->At(id),fObjs->GetEntries());
+   return (id < 0) ? NULL : fObjs->At(id);
+}
+TObject* TCatHistManager::GetCurrent()
+{
+   return GetObject(fCurrentID);
+}
+TObject* TCatHistManager::GetNext()
+{
+   TObject *obj = NULL;
+   if ((obj = GetObject(fCurrentID+1))) {
+      fCurrentID++;
+   } else {
+      TArtCore::Info("GetNext","No more objects larger than oid = %d",fCurrentID);
+   }
+   return obj;
+}
+TObject* TCatHistManager::GetPrev()
+{
+   TObject *obj = NULL;
+   if ((obj = GetObject(fCurrentID-1))) {
+      fCurrentID--;
+   } else {
+      TArtCore::Info("GetNext","No more objects smaller than  oid = %d",fCurrentID);
+   }
+   return obj;
+}
+
+void TCatHistManager::SetId(const Int_t &id)
+{
+   if (GetObject(id)) {
+      fCurrentID = id;
+   } else {
+      TArtCore::Info("SetId","no such object at id = %d");
+   }
 }

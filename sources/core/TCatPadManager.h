@@ -2,7 +2,7 @@
 /**
  * @file   TCatPadManager.h
  * @date   Created : Feb 06, 2012 18:06:59 JST
- *   Last Modified : Feb 06, 2012 19:51:24 JST
+ *   Last Modified : Feb 07, 2012 17:28:06 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -21,6 +21,7 @@ public:
    static TCatPadManager *Instance();
    TVirtualPad *Next();
    TCanvas *GetCanvas();
+   void Closed();
    Bool_t HasChild();
    Int_t GetNumChild();
    void CreateCanvas();

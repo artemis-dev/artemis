@@ -2,7 +2,7 @@
 /**
  * @file   TCatCmdHt.h
  * @date   Created : Feb 06, 2012 11:06:49 JST
- *   Last Modified : Feb 06, 2012 20:10:07 JST
+ *   Last Modified : Feb 09, 2012 11:37:58 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -23,5 +23,7 @@ public:
    virtual Long_t Cmd(vector<TString> args);
 
    virtual Long_t Run(Int_t id1, Int_t id2, TString& opt);
+   
+   ClassDef(TCatCmdHt,1);
 };
 #endif // end of #ifdef TCATCMDHT_H

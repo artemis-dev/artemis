@@ -2,7 +2,7 @@
 /**
  * @file   TCatCmdHn.cc
  * @date   Created : Feb 06, 2012 23:06:15 JST
- *   Last Modified : Feb 06, 2012 23:16:38 JST
+ *   Last Modified : Feb 07, 2012 12:32:30 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -10,6 +10,7 @@
  */
 #include "TCatCmdHn.h"
 
+#include <TCatPadManager.h>
 #include <TCatHistManager.h>
 
 TCatCmdHn::TCatCmdHn()
@@ -36,6 +37,7 @@ Long_t TCatCmdHn::Cmd(vector<TString> tokens)
 
 Long_t TCatCmdHn::Run(TString &opt)
 {
+   TCatPadManager::Instance()->Next();
    TCatHistManager::Instance()->DrawNext(opt);
    return 1;
 }
