@@ -21,7 +21,13 @@ fi
 sed s#PPWWDD#$PWD#g setup.sh > tmp.txt
 mv tmp.txt setup.sh
 
-
+uname=`uname`
+if [ "x$uname" == "xDarwin" ]
+then
+libtool=glibtoolize
+else
+libtool=libtoolize
+fi
 srcdir=`dirname $0`
 test -z "$srcdir" && srcdir=.
 
@@ -29,7 +35,7 @@ test -z "$srcdir" && srcdir=.
 #libtoolize --force; automake -a --add-missing; autoconf)
 
 (cd $srcdir; aclocal;\
-libtoolize --force; automake -a --add-missing; autoconf)
+$libtool --force; automake -a --add-missing; autoconf)
 
 $srcdir/configure --enable-maintainer-mode "$@"
 

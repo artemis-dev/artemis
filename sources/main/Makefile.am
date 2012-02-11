@@ -10,6 +10,9 @@ DICTSRC = catmain_dict.cc
 DICTOBJ = $(DICTSRC:.cc=.o)
 DICTHDR = $(DICTSRC:.cc=.h) 
 
+LIBCATCORE = ../core/.libs/libcatcore.$(SOEXT)
+LIBCATCMD = ../commands/.libs/libcatcmd.$(SOEXT)
+
 INCLUDES = -I../core/ -I$(ROOTSYS)/include -I../commands/
 CXXFLAGS = -fPIC -Iinclude $(shell root-config --cflags) -I$(TARTSYS)/include\
 	-I../core -I../commands
@@ -19,7 +22,7 @@ LDFLAGS = $(shell root-config --glibs) -L../commands/.libs -lcatcmd\
 include_HEADERS = $(SUBHDR) $(SUBHDRF)
 bin_PROGRAMS = anaroot
 anaroot_SOURCES = $(SUBSRC) $(DICTSRC) main.cc
-anaroot_DEPENDENCIES = ../core/.libs/libcatcore.so ../commands/.libs/libcatcmd.so
+anaroot_DEPENDENCIES = $(LIBCATCORE) $(LIBCATCMD)
 anaroot_LDFLAGS = $(LDFLAGS)
 
 $(DICTSRC): $(SUBHDR) catmain_linkdef.h

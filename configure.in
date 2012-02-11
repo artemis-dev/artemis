@@ -24,6 +24,12 @@ else
 AC_SUBST(X11DIR,[/usr/X11R6/lib])
 fi
 
+if test "`uname`" = "Darwin" ; then
+AC_SUBST(SOEXT,[dylib])
+else
+AC_SUBST(SOEXT,[so])
+fi
+
 ROOTLIBS="`$ROOTSYS/bin/root-config --glibs`"
 AC_SUBST(ROOTLIBS)
 
