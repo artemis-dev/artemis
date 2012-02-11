@@ -2,7 +2,7 @@
 /**
  * @file   TCatObject.h
  * @date   Created : Jan 31, 2012 11:31:34 JST
- *   Last Modified : Feb 04, 2012 22:54:38 JST
+ *   Last Modified : Feb 11, 2012 17:29:37 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -14,10 +14,13 @@
 #include "TNamed.h"
 
 class TCatObject  : public TNamed {
-
+public:
+   typedef enum { kID } ESortType;
 public:
    TCatObject();
    ~TCatObject();
+
+   // static void SetSortType(const Int_t &type) { fSortType = type; }
 
    UInt_t GetOptLevel() const { return fOptLevel; }
    void   SetOptLevel(UInt_t level) { fOptLevel = level; }
@@ -30,7 +33,13 @@ public:
    UInt_t GetDetectorID() const { return fDetectorID; }
    void   SetDetectorID(UInt_t id) { fDetectorID = id; }
 
+   virtual Int_t Compare(const TObject *obj) const;
+   virtual Bool_t IsSortable() const { return kTRUE;}
+
+   static void SetSortType(const Int_t &type) { fSortType = type; }
+
 protected:
+   static Int_t fSortType;
    UInt_t fCategoryID;
    UInt_t fDetectorID; // id of this object
 

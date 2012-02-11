@@ -37,6 +37,7 @@ extern void G__set_cpp_environmentcatcore_dict();
 #include "TArtDecoderSIS3820.h"
 #include "TArtKbhit.h"
 #include "TCatObject.h"
+#include "TCatSimpleData.h"
 #include "TCatHitV1190.h"
 #include "TCatSortable.h"
 #include "TCatDetectorArray.h"
@@ -73,6 +74,9 @@ extern G__linked_taginfo G__catcore_dictLN_TArtDecoderSIS3820;
 extern G__linked_taginfo G__catcore_dictLN_TArtKbhit;
 extern G__linked_taginfo G__catcore_dictLN_TArtKbhitcLcLtermios;
 extern G__linked_taginfo G__catcore_dictLN_TCatObject;
+extern G__linked_taginfo G__catcore_dictLN_TCatObjectcLcLESortType;
+extern G__linked_taginfo G__catcore_dictLN_TCatSimpleData;
+extern G__linked_taginfo G__catcore_dictLN_TCatSimpleDatacLcLESimpleDataSortType;
 extern G__linked_taginfo G__catcore_dictLN_TCatHitV1190;
 extern G__linked_taginfo G__catcore_dictLN_TCatHitV1190cLcLEStatus;
 extern G__linked_taginfo G__catcore_dictLN_TCatSortable;

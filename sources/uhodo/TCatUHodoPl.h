@@ -2,7 +2,7 @@
 /**
  * @file   TCatUHodoPl.h
  * @date   Created : Feb 04, 2012 17:04:08 JST
- *   Last Modified : Feb 05, 2012 02:44:50 JST
+ *   Last Modified : Feb 11, 2012 17:31:22 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -11,25 +11,15 @@
 #ifndef TCATUHODOPL_H
 #define TCATUHODOPL_H
 
-#include <TCatObject.h>
+#include <TCatSimpleData.h>
 
-class TCatUHodoPl  : public TCatObject {
+class TCatUHodoPl  : public TCatSimpleData {
 
 public:
    TCatUHodoPl();
    ~TCatUHodoPl();
 
-   void SetTime(const Double_t &time) { fTime = time; }
-   void SetCharge(const Double_t &charge) { fCharge = charge; }
-
-   Double_t GetTime() { return fTime; }
-   Double_t GetCharge() { return fCharge; }
-
-   virtual Int_t Compare(const TObject *) const;
-   virtual Bool_t IsSortable() const { return kTRUE; }
 protected:
-   Double_t fTime;
-   Double_t fCharge;
 
    ClassDef(TCatUHodoPl,1);
 };

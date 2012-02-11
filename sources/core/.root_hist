@@ -7,3 +7,77 @@ a.Tokenize()
 a.Tokenize(" ")
 a.Tokenize(" ")->GetEntries()
 .q
+anaroot -l -b
+.q
+.q
+gSystem->Load("libcatcore.so");
+gSystem->Load("libanacore.so");
+gSystem->Load("libcatcore.so");
+gSystem->Load("/opt/local/liblibcatcore.so");
+gSystem->Load("/opt/local/lib/libcatcore.so");
+gSystem->Load("libanacore.so")
+gSystem->Load(".libs/libcatcore.so")
+.q
+.q
+gSystem->Load("libanacore.so")
+gSystem->Load(".libs/libcatcore.so")
+#include "TCatDataObject.h"
+gSystem->Load(".libs/libcatcore.so")
+.q
+gSystem->Load("libanacore.so")
+#include "TCatDataObject.h"
+gSystem->Load(".libs/libcatcore.so")
+.q
+gSystem->Load("libanacore.so")
+gSystem->Load(".libs/libcatcore.so")
+.q
+.q
+gSystem->Load("libanacore.so")
+gSystem->Load(".libs/libcatcore.so")
+.q
+.q
+.q
+.q
+gSystem->Load("libanacore.so")
+gSystem->Load(".libs/libcatcore.so")
+.q
+gSystem->Load("libanacore.so")
+gSystem->Load(".libs/libcatcore.so")
+.q
+gSystem->Load(".libs/libcatcore.so")
+gSystem->Load("libanacore.so")
+gSystem->Load(".libs/libcatcore.so")
+.q
+.q
+gSystem->Load("libanacore.so")
+gSystem->Load(".libs/libcatcore.so")
+.q
+gSystem->Load("libanacore.so")
+gSystem->Load(".libs/libcatcore.so")
+.q
+gSystem->Load("libanacore.so")
+gSystem->Load(".libs/libcatcore.so")
+make
+.q
+.q
+gSystem->Load("libanacore.so")
+gSystem->Load(".libs/libcatcore.so")
+.q
+gSystem->Load("libanacore.so")
+gSystem->Load(".libs/libcatcore.so")
+.q
+.q
+.q
+.q
+gSystem->Load("libanacore.so")
+gSystem->Load(".libs/libcatcore.so")
+.q
+gSystem->Load("libanacore.so")
+gSystem->Load(".libs/libcatcore.so")
+.q
+gSystem->Load("libanacore.so"); gSystem->Load(".lib/libcatcore.so")
+gSystem->Load("libanacore.so"); gSystem->Load(".libs/libcatcore.so")
+.q
+gSystem->Load("libanacore.so"); gSystem->Load(".libs/libcatcore.so")
+.q
+.q

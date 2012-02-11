@@ -13,9 +13,10 @@ DICTHDR = $(DICTSRC:.cc=.h)
 LIBCATCORE = ../core/.libs/libcatcore.$(SOEXT)
 LIBCATCMD = ../commands/.libs/libcatcmd.$(SOEXT)
 
+INCDIR = ../../include
+
 INCLUDES = -I../core/ -I$(ROOTSYS)/include -I../commands/
-CXXFLAGS = -fPIC -Iinclude $(shell root-config --cflags) -I$(TARTSYS)/include\
-	-I../core -I../commands
+CXXFLAGS = -fPIC -Iinclude $(shell root-config --cflags) -I$(INCDIR) -I$(TARTSYS)/include
 LDFLAGS = $(shell root-config --glibs) -L../commands/.libs -lcatcmd\
 	-L../core/.libs -lcatcore -L$(TARTSYS)/lib -lanacore
 
@@ -27,6 +28,10 @@ anaroot_LDFLAGS = $(LDFLAGS)
 
 $(DICTSRC): $(SUBHDR) catmain_linkdef.h
 	rootcint -f $@ -c $(DEFAULT_INCLUDES) $(INCLUDES) $^
+
+header: $(include_HEADERS)
+	@mkdir -p $(INCDIR)
+	cp -a $(include_HEADERS) $(INCDIR)
 
 .cc.o:
 

@@ -25,24 +25,32 @@ DICTSRC = catcmd_dict.cc
 DICTOBJ = $(DICTSRC:.cc=.o)
 DICTHDR = $(DICTSRC:.cc=.h)
 
-OPTHDR = 
-
+INCDIR = ../../include
 
 AUTOMAKE_OPTIONS = foreign
 
-INCLUDES = -Iinclude -I$(ROOTSYS)/include
-CXXFLAGS = -fPIC -Iinclude $(shell root-config --cflags) -I$(TARTSYS)/include \
-	-Wall -I../core
+#INCLUDES = -Iinclude -I$(ROOTSYS)/include
+CXXFLAGS = -fPIC  $(shell root-config --cflags) -I$(INCDIR) -I$(TARTSYS)/include -Wall 
 LDFLAGS = $(shell root-config --glibs) 
 
 include_HEADERS = $(SUBHDR) $(SUBHDRF) $(OPTHDR)
 
 lib_LTLIBRARIES = libcatcmd.la
 libcatcmd_la_SOURCES = $(SUBSRC) $(DICTSRC)
+libcatcmd_la_DEPENDENCIES = header
 libcatcmd_la_LDFLAGS = $(LDFLAGS)
 
 $(DICTSRC): $(SUBHDR) catcmd_linkdef.h
+	@echo
+	@echo Making $(DICTSRC)
+	@echo
 	rootcint -f $@ -c $(DEFAULT_INCLUDES) $(INCLUDES) $^
+
+header: $(include_HEADERS)
+	@echo Install header files to $(INCDIR)
+	@mkdir -p $(INCDIR)
+	@cp -a $(include_HEADERS) $(INCDIR)
+	@touch header
 
 .cc.o:
 

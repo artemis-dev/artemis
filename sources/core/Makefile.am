@@ -5,11 +5,13 @@ SUBSRC = \
 	TArtDecoderSIS3820.cc \
 	TArtKbhit.cc \
 	TCatObject.cc \
+	TCatSimpleData.cc \
 	TCatHitV1190.cc \
 	TCatSortable.cc \
 	TCatDetectorArray.cc \
 	TCatHistManager.cc \
-	TCatPadManager.cc
+	TCatPadManager.cc 
+
 SUBOBJ = $(SUBSRC:.cc=.o)
 SUBHDR = $(SUBSRC:.cc=.h) 
 
@@ -19,25 +21,32 @@ DICTOBJ = $(DICTSRC:.cc=.o)
 DICTHDR = $(DICTSRC:.cc=.h)
 
 OPTHDR = 
-
+INCDIR = ../../include
 
 AUTOMAKE_OPTIONS = foreign
 
-INCLUDES = -Iinclude -I$(ROOTSYS)/include
-CXXFLAGS = -fPIC -Iinclude $(shell root-config --cflags) -I$(TARTSYS)/include \
-	-Wall
+INCLUDES = -I$(INCDIR) -I$(ROOTSYS)/include
+CXXFLAGS = -fPIC  $(shell root-config --cflags) -I$(INCDIR) -I$(TARTSYS)/include -Wall
 LDFLAGS = $(shell root-config --glibs) 
 
 include_HEADERS = $(SUBHDR) $(SUBHDRF) $(OPTHDR)
 
 lib_LTLIBRARIES = libcatcore.la
 libcatcore_la_SOURCES = $(SUBSRC) $(DICTSRC)
-#libcatcore_la_DEPENDENCIES = $(SUBOBJ)
+libcatcore_la_DEPENDENCIES = header
 # libcatcore_la_LIBADD = $(SUBOBJ)
 libcatcore_la_LDFLAGS = $(LDFLAGS)
 
 $(DICTSRC): $(SUBHDR) catcore_linkdef.h
+	@echo Making $(DICTSRC) ...
 	rootcint -f $@ -c $(DEFAULT_INCLUDES) $(INCLUDES) $^
+
+header: $(include_HEADERS)
+	@echo Installing header to $(INCDIR)
+	touch header
+	@mkdir -p $(INCDIR)
+	@cp -a $(include_HEADERS) $(INCDIR)
+
 
 .cc.o:
 
