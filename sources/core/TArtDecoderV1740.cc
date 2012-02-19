@@ -2,7 +2,7 @@
 /**
  * @file   TArtDecoderV1740.cc
  * @date   Created : Dec 24, 2011 19:24:19 JST
- *   Last Modified : Jan 13, 2012 02:07:36 JST
+ *   Last Modified : Feb 18, 2012 21:20:18 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -32,17 +32,11 @@ TArtDecoder* TArtDecoderV1740::Instance()
 int TArtDecoderV1740::Decode(unsigned char* &buf, const unsigned int& size,
                              TArtRawSegmentObject* rawseg)
 {
-   unsigned int *evtdata = (unsigned int*) buf;
    unsigned int evtsize = size/sizeof(unsigned short);
-   int i, ih, igeo, adc;
-   int evtflag = 0;
-   int nw, iw, is, ich;
-   int ngr = 8;
-   int nch = 8;
-   int igr;
-   int ns;
+   int i;
+   int nw;
    unsigned int timestamp;
-   static int nSpill[6] = {0, 0, 0, 0, 0, 0};
+//   static int nSpill[6] = {0, 0, 0, 0, 0, 0};
 //   if (!((evtdata & (1<<31)) && (evtdata & (1<<28)))) 
 
 #ifndef V1740_RAW
@@ -58,7 +52,7 @@ int TArtDecoderV1740::Decode(unsigned char* &buf, const unsigned int& size,
    // printf("zero suppressed\n");
    unsigned short* bufs = (unsigned short*) buf;
    
-   for (Int_t iw=0; iw < evtsize;) {
+   for (UInt_t iw=0; iw < evtsize;) {
      unsigned int* bufi = (unsigned int*) bufs;
      if ((bufi[0]>>28) == 0xa) {
        // global header
@@ -108,6 +102,10 @@ int TArtDecoderV1740::Decode(unsigned char* &buf, const unsigned int& size,
    }
 #endif
 #else
+   int ngr = 8;
+   int nch = 8;
+   int igr,nw,igeo;
+   int ns;
    nw = ((evtdata[0]&0xfffffff)-4)>>3;
    igeo = ((evtdata[1])>>27);
    timestamp = evtdata[3];

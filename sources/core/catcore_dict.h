@@ -43,6 +43,8 @@ extern void G__set_cpp_environmentcatcore_dict();
 #include "TCatDetectorArray.h"
 #include "TCatHistManager.h"
 #include "TCatPadManager.h"
+#include "TCatRawDataCategorized.h"
+#include "TCatObjRefArray.h"
 #include <algorithm>
 namespace std { }
 using namespace std;
@@ -75,6 +77,7 @@ extern G__linked_taginfo G__catcore_dictLN_TArtKbhit;
 extern G__linked_taginfo G__catcore_dictLN_TArtKbhitcLcLtermios;
 extern G__linked_taginfo G__catcore_dictLN_TCatObject;
 extern G__linked_taginfo G__catcore_dictLN_TCatObjectcLcLESortType;
+extern G__linked_taginfo G__catcore_dictLN_TCatObjectcLcLESortOrder;
 extern G__linked_taginfo G__catcore_dictLN_TCatSimpleData;
 extern G__linked_taginfo G__catcore_dictLN_TCatSimpleDatacLcLESimpleDataSortType;
 extern G__linked_taginfo G__catcore_dictLN_TCatHitV1190;
@@ -86,5 +89,8 @@ extern G__linked_taginfo G__catcore_dictLN_TCatHistManager;
 extern G__linked_taginfo G__catcore_dictLN_TCanvas;
 extern G__linked_taginfo G__catcore_dictLN_TVirtualPad;
 extern G__linked_taginfo G__catcore_dictLN_TCatPadManager;
+extern G__linked_taginfo G__catcore_dictLN_TRefArray;
+extern G__linked_taginfo G__catcore_dictLN_TCatObjRefArray;
+extern G__linked_taginfo G__catcore_dictLN_TCatRawDataCategorized;
 
 /* STUB derived class for protected member access */

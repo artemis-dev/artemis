@@ -2,7 +2,7 @@
 /**
  * @file   TCatObject.h
  * @date   Created : Jan 31, 2012 11:31:34 JST
- *   Last Modified : Feb 11, 2012 17:29:37 JST
+ *   Last Modified : Feb 11, 2012 17:59:46 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -16,6 +16,7 @@
 class TCatObject  : public TNamed {
 public:
    typedef enum { kID } ESortType;
+   typedef enum { kASC, kDESC } ESortOrder;
 public:
    TCatObject();
    ~TCatObject();
@@ -37,9 +38,11 @@ public:
    virtual Bool_t IsSortable() const { return kTRUE;}
 
    static void SetSortType(const Int_t &type) { fSortType = type; }
+   static void SetSortOrder(const Int_t &order) { fSortOrder = order; }
 
 protected:
    static Int_t fSortType;
+   static Int_t fSortOrder;
    UInt_t fCategoryID;
    UInt_t fDetectorID; // id of this object
 

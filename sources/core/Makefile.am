@@ -10,7 +10,9 @@ SUBSRC = \
 	TCatSortable.cc \
 	TCatDetectorArray.cc \
 	TCatHistManager.cc \
-	TCatPadManager.cc 
+	TCatPadManager.cc \
+	TCatRawDataCategorized.cc \
+	TCatObjRefArray.cc
 
 SUBOBJ = $(SUBSRC:.cc=.o)
 SUBHDR = $(SUBSRC:.cc=.h) 

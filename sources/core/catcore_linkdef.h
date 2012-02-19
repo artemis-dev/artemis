@@ -10,6 +10,8 @@
 #pragma link C++ class TArtFadcRawDataObject+;
 
 #pragma link C++ class TCatObject+;
+#pragma link C++ class TCatRawDataCategorized+;
+#pragma link C++ class TCatObjRefArray+;
 #pragma link C++ class TCatSimpleData+;
 #pragma link C++ class TCatSortable+;
 #pragma link C++ class TCatHitV1190+;
