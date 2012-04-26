@@ -47,6 +47,7 @@ AC_CHECK_FUNCS([bzero memset strpbrk strtol])
 AC_CONFIG_FILES([Makefile
                  sources/Makefile
                  sources/core/Makefile
+                 sources/loop/Makefile
                  sources/commands/Makefile
                  sources/uhodo/Makefile
                  sources/main/Makefile

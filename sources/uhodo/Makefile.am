@@ -1,6 +1,7 @@
 SUBSRC = \
 	TCatUHodoPl.cc \
-	TCatUHodo.cc
+	TCatUHodo.cc \
+	TCatUHodoMappingProcessor.cc 
 SUBOBJ = $(SUBSRC:.cc=.o)
 SUBHDR = $(SUBSRC:.cc=.h) 
 
@@ -12,7 +13,7 @@ DICTHDR = $(DICTSRC:.cc=.h)
 
 INCDIR = ../../include
 
-INCLUDES = -I../core/ -I$(ROOTSYS)/include
+INCLUDES = -I../../include/ -I$(ROOTSYS)/include
 CXXFLAGS = -fPIC -Iinclude $(shell root-config --cflags) -I$(INCDIR) -I$(TARTSYS)/include
 LDFLAGS = $(shell root-config --glibs) 
 

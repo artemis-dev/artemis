@@ -2,7 +2,7 @@
 /**
  * @file   catuhodo_linkdef.h
  * @date   Created : Feb 04, 2012 17:04:39 JST
- *   Last Modified : Feb 05, 2012 01:35:16 JST
+ *   Last Modified : Feb 19, 2012 14:05:30 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -20,7 +20,7 @@
 #pragma link C++ class TCatUHodoPl+;
 #pragma link C++ class TCatUHodo+;
 
-
+#pragma link C++ class TCatUHodoMappingProcessor;
 
 #endif /* __CINT__ */
 

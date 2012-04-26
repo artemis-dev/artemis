@@ -33,6 +33,7 @@ extern void G__set_cpp_environmentcatuhodo_dict();
 #include "TMemberInspector.h"
 #include "TCatUHodoPl.h"
 #include "TCatUHodo.h"
+#include "TCatUHodoMappingProcessor.h"
 #include <algorithm>
 namespace std { }
 using namespace std;
@@ -55,5 +56,9 @@ extern G__linked_taginfo G__catuhodo_dictLN_TCatUHodoPl;
 extern G__linked_taginfo G__catuhodo_dictLN_iteratorlEbidirectional_iterator_tagcOTObjectmUcOlongcOconstsPTObjectmUmUcOconstsPTObjectmUaNgR;
 extern G__linked_taginfo G__catuhodo_dictLN_TCatDetectorArray;
 extern G__linked_taginfo G__catuhodo_dictLN_TCatUHodo;
+extern G__linked_taginfo G__catuhodo_dictLN_TTask;
+extern G__linked_taginfo G__catuhodo_dictLN_TCatProcessor;
+extern G__linked_taginfo G__catuhodo_dictLN_TCatRawDataCategorized;
+extern G__linked_taginfo G__catuhodo_dictLN_TCatUHodoMappingProcessor;
 
 /* STUB derived class for protected member access */

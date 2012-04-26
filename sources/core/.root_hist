@@ -81,3 +81,12 @@ gSystem->Load("libanacore.so"); gSystem->Load(".libs/libcatcore.so")
 gSystem->Load("libanacore.so"); gSystem->Load(".libs/libcatcore.so")
 .q
 .q
+TH1F* htest = new TH1F("htest","test",300,0,100);
+.refcount
+.g 
+.q
+new TBrowser
+new TCanvas
+.q
+new TCanvas
+.q

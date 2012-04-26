@@ -2,7 +2,7 @@
 /**
  * @file   TCatCmdHt.cc
  * @date   Created : Feb 06, 2012 11:06:16 JST
- *   Last Modified : Feb 09, 2012 11:34:57 JST
+ *   Last Modified : Apr 21, 2012 16:18:28 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -15,6 +15,9 @@
 #include <TCanvas.h>
 #include <TCatHistManager.h>
 #include <TCatPadManager.h>
+
+#include <TArtCore.h>
+
 
 TCatCmdHt::TCatCmdHt()
 {
