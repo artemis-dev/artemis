@@ -2,7 +2,7 @@
 /**
  * @file   TCatLoopManager.cc
  * @date   Created : Apr 26, 2012 23:26:40 JST
- *   Last Modified : Apr 27, 2012 00:14:08 JST
+ *   Last Modified : Apr 27, 2012 19:23:21 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -30,10 +30,11 @@ TCatLoopManager *TCatLoopManager::Instance()
    return &instance;
 }
 
-Int_t TCatLoopManager::AddLoop(const char *filename)
+TCatLoop* TCatLoopManager::Add(const char *filename)
 {
-   fLoops->Add(new TCatLoop);
-   return fLoops->GetEntries();
+   TCatLoop *loop = new TCatLoop;
+   fLoops->Add(loop);
+   return loop;
 }
 
 
@@ -44,7 +45,7 @@ TCatLoop* TCatLoopManager::GetLoop(Int_t i)
 
 Int_t TCatLoopManager::Resume(Int_t i)
 {
-   fThreadPool->PushTask(*(TCatLoop*)fLoops->At(i),start);
+   fThreadPool->PushTask(*(TCatLoop*)fLoops->At(i),kIdle);
    return kTRUE;
 }
 

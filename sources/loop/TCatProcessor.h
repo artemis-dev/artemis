@@ -2,7 +2,7 @@
 /**
  * @file   TCatProcessor.h
  * @date   Created : Feb 19, 2012 10:19:49 JST
- *   Last Modified : Feb 19, 2012 13:57:35 JST
+ *   Last Modified : Apr 27, 2012 19:01:42 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -11,12 +11,12 @@
 #ifndef TCATPROCESSOR_H
 #define TCATPROCESSOR_H
 
-#include <TTask.h>
+#include <TNamed.h>
 
-class TCatProcessor  : public TTask {
+class TCatProcessor  : public TNamed {
 
 public:
-   TCatProcessor(const char *name, const char *desc);
+   TCatProcessor();
    ~TCatProcessor();
 
    virtual void Init() { }

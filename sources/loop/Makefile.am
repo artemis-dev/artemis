@@ -2,6 +2,7 @@ SUBSRC = \
 	TCatLoop.cc \
 	TCatLoopManager.cc \
 	TCatProcessor.cc \
+	TCatSleepProcessor.cc \
 	TCatEventCollection.cc 
 
 SUBOBJ = $(SUBSRC:.cc=.o)

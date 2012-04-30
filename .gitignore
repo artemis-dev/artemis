@@ -45,3 +45,6 @@ stamp-h1
 #
 .root_hist
 
+# 
+*.loT
+*_dict.*

@@ -2,14 +2,14 @@
 /**
  * @file   TCatLoop.cc
  * @date   Created : Apr 26, 2012 20:26:47 JST
- *   Last Modified : Apr 27, 2012 00:20:39 JST
+ *   Last Modified : Apr 27, 2012 19:30:02 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
  *    Copyright (C)2012
  */
 #include "TCatLoop.h"
-
+#include <TClass.h>
 #include <fstream>
 using namespace std;
 
@@ -23,6 +23,7 @@ TCatLoop::~TCatLoop()
 {
 }
 
+
 Bool_t TCatLoop::AddInputFile(const char *inputfile)
 {
    ifstream fin;
@@ -33,6 +34,22 @@ Bool_t TCatLoop::AddInputFile(const char *inputfile)
    }
    fIsOnline = kFALSE;
    fInputs.push_back(TString(inputfile));
+   return kTRUE;
+}
+
+Bool_t TCatLoop::AddProcess(const char *name, const char *procname)
+{
+   TClass *cls = gROOT->GetClass(procname);
+   if (!cls) {
+      printf("not such processor : %s\n",procname);
+      return kFALSE;
+   }
+   TCatProcessor *proc = (TCatProcessor*) cls->New();
+   if (!proc) {
+      return kFALSE;
+   }
+   proc->SetName(name);
+   fProcessors.push_back(proc);
    return kTRUE;
 }
 
@@ -50,32 +67,62 @@ Bool_t TCatLoop::SetOutput(const char *outputfile)
 
 Bool_t TCatLoop::Resume()
 {
-   fIsSuspend = kFALSE;
-   if (!Open()) return kFALSE;
-   while (fEvtNum < 10) {
-      if (fIsSuspend) break;
-      sleep(1);
-      fEvtNum++;
-      printf("fEvtNum = %d\n",fEvtNum);
+   // do nothing if loop is terminated or running 
+   if (IsTerminated() || IsRunning()) return kFALSE;
+   if (fProcessors.size() == 0) return kFALSE;
+   // set status running 
+   SetStatus(kRunning);
+   // get loop iterator
+   list<TCatProcessor*>::iterator itr;
+   list<TCatProcessor*>::iterator itrBegin = fProcessors.begin();
+   list<TCatProcessor*>::iterator itrEnd   = fProcessors.end();
+   
+   // do while there are something to be analyzed
+   while (fIsOnline || fInputs.size()!=0) {
+      // set status to be terminated if failed to open 
+      if (!Open()) {
+         SetStatus(kTerminated);
+         return kFALSE;
+      }
+      // loop processor while new event exits
+      while (fEventCollection->GetNextEvent()) {
+         // check if the status is suspended
+         if (IsSuspended() || IsTerminated()) return kTRUE;
+         // call processors
+         for (itr = itrBegin; itr != itrEnd; itr++) {
+            (*itr)->Process();
+         }
+         fEvtNum++;
+         printf("fEvtNum = %d\n",fEvtNum);
+         sleep(1);
+      }
+      // check if the status is suspended
+      if (IsSuspended() || IsTerminated()) return kTRUE;
    }
+   // after all the data are analyzed, status is set to be idle
+   SetStatus(kIdle);
    return kTRUE;
 }
 
 Bool_t TCatLoop::Suspend()
 {
-   fIsSuspend = kTRUE;
+   // set status to be suspend only when the loop is running
+   if (IsRunning()) SetStatus(kSuspended);
    return kTRUE;
 }
 
 Bool_t TCatLoop::Terminate()
 {
-   fEvtNum = 0;
+   // status can be set to be terminated anytime
+   SetStatus(kTerminated);
    return kTRUE;
 }
 
 
 Bool_t TCatLoop::Open(Int_t shmid)
 {
+   if (IsSuspended()) return kTRUE;
+
    if (fIsOnline) {
       fEventCollection = new TCatEventCollection(shmid);
       return kTRUE;

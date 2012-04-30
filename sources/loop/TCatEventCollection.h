@@ -2,7 +2,7 @@
 /**
  * @file   TCatEventCollection.h
  * @date   Created : Apr 26, 2012 23:26:19 JST
- *   Last Modified : Apr 26, 2012 23:48:26 JST
+ *   Last Modified : Apr 27, 2012 18:08:52 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -24,5 +24,7 @@ public:
    TCatEventCollection(const char* filename);
 
    ~TCatEventCollection();
+
+   Bool_t GetNextEvent() { return kTRUE; }
 };
 #endif // end of #ifdef TCATEVENTCOLLECTION_H
