@@ -20,6 +20,10 @@
 #pragma link C++ class TCatCmdZone;
 #pragma link C++ class TCatCmdLs;
 #pragma link C++ class TCatCmdCd;
+#pragma link C++ class TCatCmdLoopAdd;
+#pragma link C++ class TCatCmdLoopSuspend;
+#pragma link C++ class TCatCmdLoopResume;
+
 #pragma link C++ class TCatCmdFactory+;
 
 #endif /* __CINT__ */

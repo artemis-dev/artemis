@@ -48,6 +48,9 @@ extern void G__set_cpp_environmentcatcmd_dict();
 #include "TCatCmdSl.h"
 #include "TCatCmdSly.h"
 #include "TCatCmdLs.h"
+#include "TCatCmdLoopAdd.h"
+#include "TCatCmdLoopSuspend.h"
+#include "TCatCmdLoopResume.h"
 #include "TCatCmdCd.h"
 #include <algorithm>
 namespace std { }
@@ -91,6 +94,9 @@ extern G__linked_taginfo G__catcmd_dictLN_TCatCmdSl;
 extern G__linked_taginfo G__catcmd_dictLN_TCatCmdSlcLcLEAxis;
 extern G__linked_taginfo G__catcmd_dictLN_TCatCmdSly;
 extern G__linked_taginfo G__catcmd_dictLN_TCatCmdLs;
+extern G__linked_taginfo G__catcmd_dictLN_TCatCmdLoopAdd;
+extern G__linked_taginfo G__catcmd_dictLN_TCatCmdLoopSuspend;
+extern G__linked_taginfo G__catcmd_dictLN_TCatCmdLoopResume;
 extern G__linked_taginfo G__catcmd_dictLN_TCatCmdCd;
 
 /* STUB derived class for protected member access */

@@ -1,2 +1,2 @@
-SUBDIRS = core loop uhodo commands main
+SUBDIRS = core loop commands main
 

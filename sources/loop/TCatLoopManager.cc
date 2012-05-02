@@ -2,7 +2,7 @@
 /**
  * @file   TCatLoopManager.cc
  * @date   Created : Apr 26, 2012 23:26:40 JST
- *   Last Modified : Apr 27, 2012 19:23:21 JST
+ *   Last Modified : May 02, 2012 17:30:22 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -34,6 +34,7 @@ TCatLoop* TCatLoopManager::Add(const char *filename)
 {
    TCatLoop *loop = new TCatLoop;
    fLoops->Add(loop);
+   printf("new loop");
    return loop;
 }
 

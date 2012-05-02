@@ -2,7 +2,7 @@
 /**
  * @file   TArtRint.cc
  * @date   Created : Feb 06, 2012 00:06:18 JST
- *   Last Modified : Feb 10, 2012 20:39:33 JST
+ *   Last Modified : May 02, 2012 16:35:41 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -24,6 +24,9 @@
 #include <TCatCmdBnx.h>
 #include <TCatCmdBny.h>
 #include <TCatCmdSly.h>
+#include <TCatCmdLoopAdd.h>
+#include <TCatCmdLoopSuspend.h>
+#include <TCatCmdLoopResume.h>
 
 TArtRint::TArtRint(int* argc, char** argv, void* options, int numOptions, Bool_t noLogo)
    : TRint(fAppName, argc, argv, options, numOptions, noLogo)
@@ -42,6 +45,9 @@ TArtRint::TArtRint(int* argc, char** argv, void* options, int numOptions, Bool_t
    cf->Register(TCatCmdBnx::Instance());
    cf->Register(TCatCmdBny::Instance());
    cf->Register(TCatCmdSly::Instance());
+   cf->Register(TCatCmdLoopAdd::Instance());
+   cf->Register(TCatCmdLoopResume::Instance());
+   cf->Register(TCatCmdLoopSuspend::Instance());
 }
 TArtRint::~TArtRint()
 {

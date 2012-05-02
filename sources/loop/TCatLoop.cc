@@ -2,13 +2,16 @@
 /**
  * @file   TCatLoop.cc
  * @date   Created : Apr 26, 2012 20:26:47 JST
- *   Last Modified : Apr 27, 2012 19:30:02 JST
+ *   Last Modified : May 02, 2012 17:38:30 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
  *    Copyright (C)2012
  */
 #include "TCatLoop.h"
+
+#include <TArtCore.h>
+
 #include <TClass.h>
 #include <fstream>
 using namespace std;
@@ -76,11 +79,14 @@ Bool_t TCatLoop::Resume()
    list<TCatProcessor*>::iterator itr;
    list<TCatProcessor*>::iterator itrBegin = fProcessors.begin();
    list<TCatProcessor*>::iterator itrEnd   = fProcessors.end();
+
+   TArtCore::Info("Resume","Starting loop");
    
    // do while there are something to be analyzed
    while (fIsOnline || fInputs.size()!=0) {
       // set status to be terminated if failed to open 
       if (!Open()) {
+         TArtCore::Info("Resume","Catnnot open any inputs");
          SetStatus(kTerminated);
          return kFALSE;
       }

@@ -2,7 +2,7 @@
 /**
  * @file   TCatLoopManager.h
  * @date   Created : Apr 21, 2012 17:21:44 JST
- *   Last Modified : Apr 27, 2012 19:21:20 JST
+ *   Last Modified : May 02, 2012 16:33:41 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -25,9 +25,9 @@ public:
    static TCatLoopManager* Instance();
    
    TCatLoop* Add(const char *filename = "");
-   Int_t Resume(Int_t i);
-   Int_t Suspend(Int_t i);
-   Int_t Terminate(Int_t i);
+   Int_t Resume(Int_t i = 0);
+   Int_t Suspend(Int_t i = 0);
+   Int_t Terminate(Int_t i = 0);
    TCatLoop* GetLoop(Int_t i);
    Int_t GetEntries() { return fLoops->GetEntries(); }
 private:

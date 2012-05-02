@@ -2,7 +2,7 @@
 /**
  * @file   TCatLoop.h
  * @date   Created : Apr 26, 2012 19:26:12 JST
- *   Last Modified : Apr 27, 2012 19:10:13 JST
+ *   Last Modified : May 02, 2012 17:20:57 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -45,7 +45,7 @@ public:
    Int_t  GetStatus() { return fProcStatus; }
 
    Bool_t AddProcess(const char *name, const char *procname);
-   Bool_t AddProcess(const char *name, TCatProcessor *proc);
+   Bool_t AddProcess(const char *name, TCatProcessor *proc) { return kTRUE; }
 
 protected:
    void SetStatus(EProc stat) { fProcStatus = stat; }
