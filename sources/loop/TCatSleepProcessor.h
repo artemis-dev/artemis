@@ -2,7 +2,7 @@
 /**
  * @file   TCatSleepProcessor.h
  * @date   Created : Apr 27, 2012 19:27:30 JST
- *   Last Modified : Apr 27, 2012 19:20:39 JST
+ *   Last Modified : May 03, 2012 11:28:58 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -12,11 +12,12 @@
 #define TCATSLEEPPROCESSOR_H
 
 #include "TCatProcessor.h"
+#include "TCatOstream.h"
 
 class TCatSleepProcessor  : public TCatProcessor {
 
 public:
-   TCatSleepProcessor();
+   TCatSleepProcessor(std::ostream *out = &std::cout);
    ~TCatSleepProcessor();
 
    virtual void Process();

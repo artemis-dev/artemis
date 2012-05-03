@@ -44,6 +44,8 @@ extern void G__set_cpp_environmentcatcore_dict();
 #include "TCatHistManager.h"
 #include "TCatPadManager.h"
 #include "TCatRawDataCategorized.h"
+#include "TCatStreamBuf.h"
+#include "TCatOstream.h"
 #include "TCatObjRefArray.h"
 #include <algorithm>
 namespace std { }
@@ -58,6 +60,10 @@ extern G__linked_taginfo G__catcore_dictLN_TMemberInspector;
 extern G__linked_taginfo G__catcore_dictLN_TObject;
 extern G__linked_taginfo G__catcore_dictLN_TNamed;
 extern G__linked_taginfo G__catcore_dictLN_TString;
+extern G__linked_taginfo G__catcore_dictLN_ios_base;
+extern G__linked_taginfo G__catcore_dictLN_basic_ioslEcharcOchar_traitslEchargRsPgR;
+extern G__linked_taginfo G__catcore_dictLN_basic_streambuflEcharcOchar_traitslEchargRsPgR;
+extern G__linked_taginfo G__catcore_dictLN_basic_ostreamlEcharcOchar_traitslEchargRsPgR;
 extern G__linked_taginfo G__catcore_dictLN_vectorlEROOTcLcLTSchemaHelpercOallocatorlEROOTcLcLTSchemaHelpergRsPgR;
 extern G__linked_taginfo G__catcore_dictLN_reverse_iteratorlEvectorlEROOTcLcLTSchemaHelpercOallocatorlEROOTcLcLTSchemaHelpergRsPgRcLcLiteratorgR;
 extern G__linked_taginfo G__catcore_dictLN_TList;
@@ -86,11 +92,12 @@ extern G__linked_taginfo G__catcore_dictLN_TCatSortable;
 extern G__linked_taginfo G__catcore_dictLN_iteratorlEbidirectional_iterator_tagcOTObjectmUcOlongcOconstsPTObjectmUmUcOconstsPTObjectmUaNgR;
 extern G__linked_taginfo G__catcore_dictLN_TCatDetectorArray;
 extern G__linked_taginfo G__catcore_dictLN_TCatHistManager;
-extern G__linked_taginfo G__catcore_dictLN_TCanvas;
-extern G__linked_taginfo G__catcore_dictLN_TVirtualPad;
-extern G__linked_taginfo G__catcore_dictLN_TCatPadManager;
 extern G__linked_taginfo G__catcore_dictLN_TRefArray;
 extern G__linked_taginfo G__catcore_dictLN_TCatObjRefArray;
 extern G__linked_taginfo G__catcore_dictLN_TCatRawDataCategorized;
+extern G__linked_taginfo G__catcore_dictLN_TCatStreamBuf;
+extern G__linked_taginfo G__catcore_dictLN_listlETStringcOallocatorlETStringgRsPgR;
+extern G__linked_taginfo G__catcore_dictLN_TCatOstream;
+extern G__linked_taginfo G__catcore_dictLN_TCatOstreamcLcLEBufType_t;
 
 /* STUB derived class for protected member access */

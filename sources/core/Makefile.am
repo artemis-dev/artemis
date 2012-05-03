@@ -12,6 +12,8 @@ SUBSRC = \
 	TCatHistManager.cc \
 	TCatPadManager.cc \
 	TCatRawDataCategorized.cc \
+	TCatStreamBuf.cc \
+	TCatOstream.cc \
 	TCatObjRefArray.cc
 
 SUBOBJ = $(SUBSRC:.cc=.o)

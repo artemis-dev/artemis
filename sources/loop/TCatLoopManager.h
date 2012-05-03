@@ -2,7 +2,7 @@
 /**
  * @file   TCatLoopManager.h
  * @date   Created : Apr 21, 2012 17:21:44 JST
- *   Last Modified : May 02, 2012 16:33:41 JST
+ *   Last Modified : May 02, 2012 17:52:47 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -17,6 +17,7 @@ class TCatLoopManager  {
 public:
    typedef TThreadPool<TCatLoop,EProc> Loop_t;
    static const Int_t kMaxLoop;
+   static const Int_t kInvalid = -1;
 protected:
    TCatLoopManager();
 public:
@@ -25,13 +26,15 @@ public:
    static TCatLoopManager* Instance();
    
    TCatLoop* Add(const char *filename = "");
-   Int_t Resume(Int_t i = 0);
-   Int_t Suspend(Int_t i = 0);
-   Int_t Terminate(Int_t i = 0);
-   TCatLoop* GetLoop(Int_t i);
+   Int_t Resume(Int_t i = kInvalid);
+   Int_t Suspend(Int_t i = kInvalid);
+   Int_t Terminate(Int_t i = kInvalid);
+   TCatLoop* GetLoop(Int_t i = kInvalid);
    Int_t GetEntries() { return fLoops->GetEntries(); }
 private:
    TList *fLoops;
    Loop_t *fThreadPool;
+
+   Int_t fCurrent;
 };
 #endif // end of #ifdef TCATLOOPMANAGER_H

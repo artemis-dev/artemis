@@ -2,7 +2,7 @@
 /**
  * @file   TCatProcessor.h
  * @date   Created : Feb 19, 2012 10:19:49 JST
- *   Last Modified : Apr 27, 2012 19:01:42 JST
+ *   Last Modified : May 03, 2012 20:04:51 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -13,10 +13,12 @@
 
 #include <TNamed.h>
 
+#include <iostream>
+
 class TCatProcessor  : public TNamed {
 
 public:
-   TCatProcessor();
+   TCatProcessor(std::ostream *out = &std::cout);
    ~TCatProcessor();
 
    virtual void Init() { }
@@ -35,7 +37,9 @@ public:
    void SetFirst(Bool_t isFirst = kTRUE) { fIsFirst = isFirst; }
 protected:
 //   TCatStringParameters fParameters;
-   Bool_t fIsFirst;
+private:
+   Bool_t   fIsFirst;
+   ostream *fOut;
 
    ClassDef(TCatProcessor,1);
 };

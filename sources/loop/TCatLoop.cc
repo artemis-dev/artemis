@@ -2,7 +2,7 @@
 /**
  * @file   TCatLoop.cc
  * @date   Created : Apr 26, 2012 20:26:47 JST
- *   Last Modified : May 02, 2012 17:38:30 JST
+ *   Last Modified : May 03, 2012 17:51:21 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -14,6 +14,9 @@
 
 #include <TClass.h>
 #include <fstream>
+
+#include <TCatOstream.h>
+
 using namespace std;
 
 TCatLoop::TCatLoop()
@@ -21,6 +24,7 @@ TCatLoop::TCatLoop()
    fEvtNum = 0;
    fIsOnline = kTRUE;
    fOutput = "temp.root";
+   fOut    = new TCatOstream;
 }
 TCatLoop::~TCatLoop()
 {
@@ -80,7 +84,7 @@ Bool_t TCatLoop::Resume()
    list<TCatProcessor*>::iterator itrBegin = fProcessors.begin();
    list<TCatProcessor*>::iterator itrEnd   = fProcessors.end();
 
-   TArtCore::Info("Resume","Starting loop");
+   *fOut << "TCatLoop::Resume " << "Starting loop" << endl;
    
    // do while there are something to be analyzed
    while (fIsOnline || fInputs.size()!=0) {
@@ -99,7 +103,7 @@ Bool_t TCatLoop::Resume()
             (*itr)->Process();
          }
          fEvtNum++;
-         printf("fEvtNum = %d\n",fEvtNum);
+         *fOut << "fEvtNum = " << fEvtNum << endl;
          sleep(1);
       }
       // check if the status is suspended
@@ -115,6 +119,12 @@ Bool_t TCatLoop::Suspend()
    // set status to be suspend only when the loop is running
    if (IsRunning()) SetStatus(kSuspended);
    return kTRUE;
+}
+
+
+void TCatLoop::ShowLog()
+{
+   fOut->Print();
 }
 
 Bool_t TCatLoop::Terminate()

@@ -2,7 +2,7 @@
 /**
  * @file   TCatLoop.h
  * @date   Created : Apr 26, 2012 19:26:12 JST
- *   Last Modified : May 02, 2012 17:20:57 JST
+ *   Last Modified : May 03, 2012 17:51:46 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -13,6 +13,8 @@
 
 #include <TCatEventCollection.h>
 #include "TCatProcessor.h"
+#include <TCatOstream.h>
+
 #include <TThreadPool.h>
 #include <TList.h>
 #include <list>
@@ -38,6 +40,8 @@ public:
    Bool_t Suspend();
    Bool_t Terminate();
 
+   void   ShowLog();
+
    Bool_t IsRunning() { return (fProcStatus == kRunning); }
    Bool_t IsSuspended() { return (fProcStatus == kSuspended); }
    Bool_t IsTerminated() { return (fProcStatus == kTerminated); }
@@ -59,5 +63,6 @@ private:
    TCatEventCollection *fEventCollection;
    Int_t   fEvtNum;
    EProc   fProcStatus;
+   TCatOstream *fOut;
 };
 #endif // end of #ifdef TCATLOOP_H

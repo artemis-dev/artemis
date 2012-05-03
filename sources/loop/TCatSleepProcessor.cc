@@ -2,7 +2,7 @@
 /**
  * @file   TCatSleepProcessor.cc
  * @date   Created : Apr 27, 2012 19:27:49 JST
- *   Last Modified : Apr 27, 2012 19:17:41 JST
+ *   Last Modified : May 03, 2012 11:29:26 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -10,7 +10,8 @@
  */
 #include "TCatSleepProcessor.h"
 
-TCatSleepProcessor::TCatSleepProcessor()
+TCatSleepProcessor::TCatSleepProcessor(std::ostream *out)
+   : TCatProcessor(out)
 {
    SetTitle("TCatSleepProcessor");
 }
