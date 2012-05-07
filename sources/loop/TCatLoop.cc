@@ -16,6 +16,7 @@
 #include <fstream>
 
 #include <TCatOstream.h>
+class TCatLoopWidget;
 
 using namespace std;
 
@@ -83,8 +84,9 @@ Bool_t TCatLoop::Resume()
    list<TCatProcessor*>::iterator itr;
    list<TCatProcessor*>::iterator itrBegin = fProcessors.begin();
    list<TCatProcessor*>::iterator itrEnd   = fProcessors.end();
-
+   
    *fOut << "TCatLoop::Resume " << "Starting loop" << endl;
+   fWidget->Info("Start loop");
    
    // do while there are something to be analyzed
    while (fIsOnline || fInputs.size()!=0) {
@@ -103,6 +105,7 @@ Bool_t TCatLoop::Resume()
             (*itr)->Process();
          }
          fEvtNum++;
+         fWidget->Info(TString::Format("fEvtNum = %d",fEvtNum));
          *fOut << "fEvtNum = " << fEvtNum << endl;
          sleep(1);
       }

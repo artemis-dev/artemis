@@ -18,6 +18,9 @@
 #include <TThreadPool.h>
 #include <TList.h>
 #include <list>
+
+#include <TCatLoopWidget.h>
+
 using namespace std;
 
 enum EProc {kIdle, kRunning, kSuspended, kTerminated };
@@ -41,6 +44,7 @@ public:
    Bool_t Terminate();
 
    void   ShowLog();
+   void   AddWidget(TCatLoopWidget *widget) { fWidget = widget; }
 
    Bool_t IsRunning() { return (fProcStatus == kRunning); }
    Bool_t IsSuspended() { return (fProcStatus == kSuspended); }
@@ -59,10 +63,11 @@ private:
    TString fOutput;
    Bool_t  fIsOnline;
    Bool_t  fIsOpen;
-   list<TCatProcessor*>   fProcessors;
+   list<TCatProcessor*> fProcessors;
    TCatEventCollection *fEventCollection;
    Int_t   fEvtNum;
    EProc   fProcStatus;
    TCatOstream *fOut;
+   TCatLoopWidget *fWidget;
 };
 #endif // end of #ifdef TCATLOOP_H

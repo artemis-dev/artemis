@@ -37,6 +37,7 @@ TCatLoop* TCatLoopManager::Add(const char *filename)
    TCatLoop *loop = new TCatLoop;
    fLoops->Add(loop);
    fCurrent = fLoops->GetEntries() - 1;
+   new TCatLoopWidget(gClient->GetRoot(),fCurrent);
    return loop;
 }
 

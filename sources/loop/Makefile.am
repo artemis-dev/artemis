@@ -1,9 +1,13 @@
 SUBSRC = \
 	TCatLoop.cc \
 	TCatLoopManager.cc \
+	TCatLoopWidget.cc \
 	TCatProcessor.cc \
 	TCatSleepProcessor.cc \
 	TCatEventCollection.cc 
+
+#	TCatEventStore.cc 
+
 
 SUBOBJ = $(SUBSRC:.cc=.o)
 SUBHDR = $(SUBSRC:.cc=.h) 
@@ -32,7 +36,7 @@ libcatloop_la_LDFLAGS = $(LDFLAGS)
 
 $(DICTSRC): $(SUBHDR) catloop_linkdef.h
 	@echo Making $(DICTSRC) ...
-	rootcint -f $@ -c $(DEFAULT_INCLUDES) $(INCLUDES) $^
+	rootcint -f $@ -c $(CXXFLAGS) $(DEFAULT_INCLUDES) $(INCLUDES) $^
 
 header: $(include_HEADERS)
 	@echo Installing header to $(INCDIR)

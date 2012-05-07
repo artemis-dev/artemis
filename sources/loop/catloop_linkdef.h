@@ -21,6 +21,8 @@
 #pragma link C++ class TCatSleepProcessor;
 #pragma link C++ class TCatLoop;
 #pragma link C++ class TCatLoopManager;
+#pragma link C++ class TCatLoopWidget;
+// #pragma link C++ class TCatEventStore;
 #pragma link C++ class TThreadPoolTaskImp<TCatLoop, EProc>;
 
 #endif /* __CINT__ */
