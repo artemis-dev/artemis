@@ -12,6 +12,8 @@
 
 #include <TArtCore.h>
 
+#include <TGTab.h>
+
 const Int_t TCatLoopManager::kMaxLoop = 10;
 
 TCatLoopManager::TCatLoopManager()
@@ -34,10 +36,24 @@ TCatLoopManager *TCatLoopManager::Instance()
 
 TCatLoop* TCatLoopManager::Add(const char *filename)
 {
+   static TGMainFrame *main = 0;
+   static TGTab *tab = 0;
    TCatLoop *loop = new TCatLoop;
    fLoops->Add(loop);
    fCurrent = fLoops->GetEntries() - 1;
-   new TCatLoopWidget(gClient->GetRoot(),fCurrent);
+   if (!main && gClient) {
+      main = new TGMainFrame(gClient->GetRoot());
+      tab = new TGTab(main,300,300);
+      main->AddFrame(tab,new TGLayoutHints(kLHintsCenterX,5,5,5,5));
+   }
+   TCatLoopWidget *widget = new TCatLoopWidget(main,fCurrent);
+   if (main) {
+      widget->CreateFrame(tab->AddTab(TString::Format("Loop%d",fCurrent)));
+      tab->Resize(tab->GetDefaultSize());
+      main->MapSubwindows();
+      main->Resize(main->GetDefaultSize());
+      main->MapWindow();
+   }
    return loop;
 }
 

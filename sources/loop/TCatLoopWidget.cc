@@ -23,12 +23,14 @@ TCatLoopWidget::TCatLoopWidget(const TGWindow *p,Int_t iLoop)
    if (!TCatLoopManager::Instance()->GetLoop(iLoop)) return;
    fLoopID = iLoop;
    TCatLoopManager::Instance()->GetLoop(iLoop)->AddWidget(this);
+}
+TCatLoopWidget::~TCatLoopWidget()
+{
+}
 
-   fMain = new TGMainFrame(p);
-   
-   fMain->SetWindowName(TString::Format("Loop %d",iLoop));
-   TGTab *tab = new TGTab(fMain,300,300);
-   TGCompositeFrame *tabFrame = tab->AddTab(TString::Format("Loop%d",iLoop));
+
+TGCompositeFrame *TCatLoopWidget::CreateFrame(TGCompositeFrame *tabFrame)
+{
    TGHorizontalFrame *hframe = new TGHorizontalFrame(tabFrame,300,40);
    TGTextButton *btresume = new TGTextButton(hframe,"&Resume");
    btresume->Connect("Clicked()","TCatLoopWidget",this,"Resume()");
@@ -38,17 +40,9 @@ TCatLoopWidget::TCatLoopWidget(const TGWindow *p,Int_t iLoop)
    hframe->AddFrame(btsuspend,new TGLayoutHints(kLHintsCenterX,2,2,3,4));
 
    fText = new TGTextEdit(tabFrame,300,250);
-   fMain->AddFrame(tab,new TGLayoutHints(kLHintsCenterX,2,2,2,2));
    tabFrame->AddFrame(fText,new TGLayoutHints(kLHintsCenterX,2,2,2,2));
    tabFrame->AddFrame(hframe,new TGLayoutHints(kLHintsCenterX,2,2,2,2));
-   fMain->MapSubwindows();
-   fMain->Resize(fMain->GetDefaultSize());
-   fMain->MapWindow();
 }
-TCatLoopWidget::~TCatLoopWidget()
-{
-}
-
 
 void TCatLoopWidget::Info(TString line)
 {

@@ -25,6 +25,7 @@ public:
    TCatLoopWidget(const TGWindow *p, Int_t iLoop);
    ~TCatLoopWidget();
 
+   virtual TGCompositeFrame* CreateFrame(TGCompositeFrame *tabFrame);
    virtual void Info(TString line);
    virtual void Resume();
    virtual void Suspend();
