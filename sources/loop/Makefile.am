@@ -4,9 +4,9 @@ SUBSRC = \
 	TCatLoopWidget.cc \
 	TCatProcessor.cc \
 	TCatSleepProcessor.cc \
-	TCatEventCollection.cc 
-
-#	TCatEventStore.cc 
+	TCatEventCountProcessor.cc \
+	TCatEventCollection.cc \
+	TCatEventStore.cc 
 
 
 SUBOBJ = $(SUBSRC:.cc=.o)
@@ -23,7 +23,7 @@ INCDIR = ../../include
 AUTOMAKE_OPTIONS = foreign
 
 INCLUDES = -I$(INCDIR) -I$(ROOTSYS)/include
-CXXFLAGS = -fPIC  $(shell root-config --cflags) -I$(INCDIR) -I$(TARTSYS)/include -Wall
+CXXFLAGS = -fPIC  $(shell root-config --cflags) -I$(INCDIR) -I$(TARTSYS)/include -Wall -I../core
 LDFLAGS = $(shell root-config --glibs) 
 
 include_HEADERS = $(SUBHDR) $(SUBHDRF) $(OPTHDR)

@@ -2,7 +2,7 @@
 /**
  * @file   TCatLoopWidget.cc
  * @date   Created : May 03, 2012 22:03:31 JST
- *   Last Modified : 
+ *   Last Modified : May 12, 2012 09:33:10 JST
  * @author ota <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -42,6 +42,7 @@ TGCompositeFrame *TCatLoopWidget::CreateFrame(TGCompositeFrame *tabFrame)
    fText = new TGTextEdit(tabFrame,300,250);
    tabFrame->AddFrame(fText,new TGLayoutHints(kLHintsCenterX,2,2,2,2));
    tabFrame->AddFrame(hframe,new TGLayoutHints(kLHintsCenterX,2,2,2,2));
+   return hframe;
 }
 
 void TCatLoopWidget::Info(TString line)

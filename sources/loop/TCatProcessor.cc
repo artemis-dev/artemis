@@ -2,7 +2,7 @@
 /**
  * @file   TCatProcessor.cc
  * @date   Created : Feb 19, 2012 12:19:11 JST
- *   Last Modified : May 03, 2012 11:28:08 JST
+ *   Last Modified : May 14, 2012 10:56:25 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -10,11 +10,30 @@
  */
 #include "TCatProcessor.h"
 
-TCatProcessor::TCatProcessor(std::ostream *out)
+TCatProcessor::TCatProcessor()
+   : fWidget(NULL), fInitialized(kFALSE)
 {
-   fOut = out;
+   
 }
 
 TCatProcessor::~TCatProcessor()
 {
+}
+
+
+void TCatProcessor::Clear(Option_t *)
+{
+   fInitialized = kFALSE;
+}
+
+void TCatProcessor::Initilized()
+{
+   fInitialized = kTRUE;
+}
+
+
+void TCatProcessor::SetName(const char *name)
+{
+   TNamed::SetTitle(ClassName());
+   TNamed::SetName(name);
 }

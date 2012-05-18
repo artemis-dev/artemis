@@ -47,6 +47,9 @@ extern void G__set_cpp_environmentcatcore_dict();
 #include "TCatStreamBuf.h"
 #include "TCatOstream.h"
 #include "TCatObjRefArray.h"
+#include "TCatParameter.h"
+#include "TCatParameterStrings.h"
+#include "TCatTypes.h"
 #include <algorithm>
 namespace std { }
 using namespace std;
@@ -99,5 +102,15 @@ extern G__linked_taginfo G__catcore_dictLN_TCatStreamBuf;
 extern G__linked_taginfo G__catcore_dictLN_listlETStringcOallocatorlETStringgRsPgR;
 extern G__linked_taginfo G__catcore_dictLN_TCatOstream;
 extern G__linked_taginfo G__catcore_dictLN_TCatOstreamcLcLEBufType_t;
+extern G__linked_taginfo G__catcore_dictLN_vectorlETStringcOallocatorlETStringgRsPgR;
+extern G__linked_taginfo G__catcore_dictLN_reverse_iteratorlEvectorlETStringcOallocatorlETStringgRsPgRcLcLiteratorgR;
+extern G__linked_taginfo G__catcore_dictLN_vectorlEintcOallocatorlEintgRsPgR;
+extern G__linked_taginfo G__catcore_dictLN_reverse_iteratorlEvectorlEintcOallocatorlEintgRsPgRcLcLiteratorgR;
+extern G__linked_taginfo G__catcore_dictLN_maplETStringcOvectorlETStringcOallocatorlETStringgRsPgRcOlesslETStringgRcOallocatorlEpairlEconstsPTStringcOvectorlETStringcOallocatorlETStringgRsPgRsPgRsPgRsPgR;
+extern G__linked_taginfo G__catcore_dictLN_TCatParameter_tlEintgR;
+extern G__linked_taginfo G__catcore_dictLN_TCatParameter_tlEfloatgR;
+extern G__linked_taginfo G__catcore_dictLN_TCatParameter_tlEvectorlEintcOallocatorlEintgRsPgRsPgR;
+extern G__linked_taginfo G__catcore_dictLN_TCatParameter_tlEvectorlEfloatcOallocatorlEfloatgRsPgRsPgR;
+extern G__linked_taginfo G__catcore_dictLN_TCatParameter_tlEvectorlETStringcOallocatorlETStringgRsPgRsPgR;
 
 /* STUB derived class for protected member access */
