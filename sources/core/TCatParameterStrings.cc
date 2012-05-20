@@ -2,7 +2,7 @@
 /**
  * @file   TCatParameterStrings.cc
  * @date   Created : May 18, 2012 14:18:07 JST
- *   Last Modified : May 18, 2012 14:40:41 JST
+ *   Last Modified : May 19, 2012 18:10:41 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -20,10 +20,16 @@ TCatParameterStrings::~TCatParameterStrings()
 void TCatParameterStrings::Add(const TString& key,
                                const std::vector<TString>& value)
 {
-   for (Int_t i = 0; i < value.size(); i++) {
+   for (UInt_t i = 0; i < value.size(); i++) {
       fParamMap[key].push_back(value[i]);
    }
 }
+
+void TCatParameterStrings::Clear(Option_t* /* opt */)
+{
+   fParamMap.clear();
+}
+
 
 void TCatParameterStrings::Erase(const TString& key)
 {
@@ -70,6 +76,18 @@ void TCatParameterStrings::GetValue(const char* name, Float_t& param)
 {
    if (fParamMap[name].size()==0) return;
    param = fParamMap[name][0].Atof();
+}
+
+void TCatParameterStrings::GetValue(const char* name, Bool_t& param)
+{
+   if (fParamMap[name].size()==0) return;
+   param = kFALSE;
+   TString str = fParamMap[name][0];
+   if (!str.CompareTo("true",TString::kIgnoreCase) || 
+       !str.CompareTo("T",TString::kIgnoreCase) ||
+       str.Atoi() == 1) {
+      param = kTRUE;
+   }
 }
 
 void TCatParameterStrings::GetValue(const char* name, TString& param)

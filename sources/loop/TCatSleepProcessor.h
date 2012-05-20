@@ -2,7 +2,7 @@
 /**
  * @file   TCatSleepProcessor.h
  * @date   Created : Apr 27, 2012 19:27:30 JST
- *   Last Modified : May 13, 2012 19:01:58 JST
+ *   Last Modified : May 19, 2012 15:59:35 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -18,9 +18,14 @@ class TCatSleepProcessor  : public TCatProcessor {
 
 public:
    TCatSleepProcessor();
-   ~TCatSleepProcessor();
+   virtual ~TCatSleepProcessor();
 
    virtual void Process();
 
+
+private:
+   Int_t fSleepTime;
+
+   ClassDef(TCatSleepProcessor,1);
 };
 #endif // end of #ifdef TCATSLEEPPROCESSOR_H

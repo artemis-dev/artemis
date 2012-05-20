@@ -2,7 +2,7 @@
 /**
  * @file   TCatParameterStrings.h
  * @date   Created : May 18, 2012 14:18:49 JST
- *   Last Modified : May 18, 2012 14:43:19 JST
+ *   Last Modified : May 19, 2012 17:52:34 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -25,6 +25,7 @@ public:
    ~TCatParameterStrings();
 
    void Add(const TString& key, const std::vector<TString>& values);
+   void Clear(Option_t*opt = "");
 
    void Erase(const TString&key);
 
@@ -34,6 +35,7 @@ public:
 
    void GetValue(const char* name, Int_t& param);
    void GetValue(const char* name, Float_t& param);
+   void GetValue(const char* name, Bool_t& param);
    void GetValue(const char* name, TString& param);
 
    Bool_t IsSet(const char* name);

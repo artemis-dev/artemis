@@ -5,6 +5,7 @@ SUBSRC = \
 	TCatProcessor.cc \
 	TCatSleepProcessor.cc \
 	TCatEventCountProcessor.cc \
+	TCatCategorizingProcessor.cc \
 	TCatEventCollection.cc \
 	TCatEventStore.cc 
 
@@ -21,10 +22,14 @@ OPTHDR =
 INCDIR = ../../include
 
 AUTOMAKE_OPTIONS = foreign
-
+HAS_YAML_CPP = 1
 INCLUDES = -I$(INCDIR) -I$(ROOTSYS)/include
 CXXFLAGS = -fPIC  $(shell root-config --cflags) -I$(INCDIR) -I$(TARTSYS)/include -Wall -I../core
 LDFLAGS = $(shell root-config --glibs) 
+
+CXXFLAGS+= -DHAS_YAML_CPP
+# LDFLAGS+= -L/opt/local/lib -lyaml-cpp
+
 
 include_HEADERS = $(SUBHDR) $(SUBHDRF) $(OPTHDR)
 

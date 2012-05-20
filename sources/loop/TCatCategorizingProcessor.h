@@ -2,7 +2,7 @@
 /**
  * @file   TCatCategorizingProcessor.h
  * @date   Created : May 13, 2012 18:13:49 JST
- *   Last Modified : May 18, 2012 14:08:00 JST
+ *   Last Modified : May 20, 2012 09:43:24 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -14,8 +14,11 @@
 #include <TCatProcessor.h>
 #include <TCatEventCollection.h>
 
-#include <TArtEventObject.h>
-#include <TArtRawDataCategorized.h>
+#include <TArtRawEventObject.h>
+#include <TCatRawDataCategorized.h>
+
+
+class TArtMapper;
 
 class TCatCategorizingProcessor  : public TCatProcessor {
 
@@ -26,7 +29,14 @@ public:
    virtual void Init(TCatEventCollection *col);
    virtual void Process();
 
+
+   TString fInputColName;
+   TString fOutputColName;
+   TString fMapFileName;
+   Bool_t  fOutputIsTransparent;
+
    TArtRawEventObject *fRawData;
-   TArtRawDataCategorized *fRawCategrized;
+   TCatRawDataCategorized *fRawCategrized;
+   TArtMapper *fMapper;
 };
 #endif // end of #ifdef TCATCATEGORIZINGPROCESSOR_H

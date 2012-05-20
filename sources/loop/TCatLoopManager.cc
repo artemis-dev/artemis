@@ -2,7 +2,7 @@
 /**
  * @file   TCatLoopManager.cc
  * @date   Created : Apr 26, 2012 23:26:40 JST
- *   Last Modified : May 17, 2012 22:11:43 JST
+ *   Last Modified : May 19, 2012 18:17:51 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  

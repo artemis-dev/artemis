@@ -2,7 +2,7 @@
 /**
  * @file   TCatProcessor.h
  * @date   Created : Feb 19, 2012 10:19:49 JST
- *   Last Modified : May 18, 2012 16:02:09 JST
+ *   Last Modified : May 19, 2012 17:51:46 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -21,12 +21,16 @@
 #include <TCatParameter.h>
 
 #include <map>
+#include <iostream>
+
+
 
 class TCatProcessor  : public TNamed {
-
+public:
+   typedef std::map<TString,TCatParameter*> CatProcPrmMap_t;
 public:
    TCatProcessor();
-   ~TCatProcessor();
+   virtual ~TCatProcessor();
 
    virtual void Init(TCatEventCollection* /* collection */) { }
    virtual void BeginOfRun() { }
@@ -35,15 +39,22 @@ public:
    virtual void Check() { }
    virtual void End() { }
 
-   virtual void SetName(const char* name);
-
-   virtual void SetWidget(TCatLoopWidget *widget) { fWidget = widget; }
    virtual void Info(const char *info) { fWidget->Info(info); }
 
-   virtual void Clear(Option_t* /* opt */);
 
-//   virtual void SetParameters(TCatStringParameters prm);
-//   virtual void UpdateParameters();
+   virtual void PrintDescriptionYAML();
+
+
+   // orverride the original function
+   virtual void SetName(const char* name);
+   // store the parameter values
+   virtual void SetParameters(TCatParameterStrings *params);
+   // set widget (should be obsoluted in the future)
+   virtual void SetWidget(TCatLoopWidget *widget) { fWidget = widget; }
+   // update the parameter values
+   virtual void UpdateParameters();
+
+   virtual void Clear(Option_t* /* opt */);
 
 protected:
    // should be called if the processor is initilized
@@ -51,24 +62,45 @@ protected:
 
    // cannot use set title directory
    virtual void SetTitle(const char* title = "") { TNamed::SetTitle(title); }
-   TCatParameterStrings fParameters;
+   TCatParameterStrings *fParameters;
 private:
-   std::map<TString,TCatParameter*> fParamMap;
+   CatProcPrmMap_t fParamMap;
       
    TCatLoopWidget *fWidget;
 
    Bool_t fInitialized;
 
-
+protected:
    // register processor parameter
    template<class T>
    void RegisterProcessorParameter(const TString& name,
                                   const TString& description,
                                   T& parameter,
                                   const T& defaultParam,
-                                  int size) {
+                                  int size = 0) {
       fParamMap[name] = new TCatParameter_t<T>(name,description,parameter,
                                                defaultParam,false,size);
+   }                                               
+   
+   template<class T>
+   void RegisterInputCollection(const TString& name,
+                                  const TString& description,
+                                  T& parameter,
+                                  const T& defaultParam,
+                                  int size = 0) {
+      RegisterProcessorParameter(name,description,parameter,
+                                  defaultParam,size);
+   }                                               
+
+         
+   template<class T>
+   void RegisterOutputCollection(const TString& name,
+                                  const TString& description,
+                                  T& parameter,
+                                  const T& defaultParam,
+                                  int size = 0) {
+      RegisterProcessorParameter(name,description,parameter,
+                                  defaultParam,size);
    }                                               
 
    template<class T>
@@ -76,7 +108,7 @@ private:
                                   const TString& description,
                                   T& parameter,
                                   const T& defaultParam,
-                                  int size) {
+                                  int size = 0) {
       fParamMap[name] = new TCatParameter_t<T>(name,description,parameter,
                                                defaultParam,true,size);
    }                                               

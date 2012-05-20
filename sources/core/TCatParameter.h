@@ -2,7 +2,7 @@
 /**
  * @file   TCatParameter.h
  * @date   Created : May 18, 2012 14:18:34 JST
- *   Last Modified : May 18, 2012 15:53:28 JST
+ *   Last Modified : May 19, 2012 17:28:17 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -19,6 +19,8 @@
 #include <TCatParameterStrings.h>
 #include <TCatTypes.h>
 
+
+
 class TCatParameter {
 
 public:
@@ -32,9 +34,12 @@ public:
 
    virtual TString GetName() { return fName; }
    virtual TString GetTitle() { return fTitle; }
-   
 
    virtual void SetValue(TCatParameterStrings *p) = 0;
+   virtual TString Type() const = 0;
+
+   virtual TString DefaultValue() = 0;
+   virtual TString Value() = 0;
 
    virtual Bool_t IsOptional() { return fIsOptional; }
 
@@ -66,19 +71,52 @@ public:
 
    virtual ~TCatParameter_t() { }
 
-   virtual const TString Type() {
+   virtual TString Type() const{
       // not implemented
       return "type";
    }
 
    void SetValue(TCatParameterStrings *param) {
       if (param->IsSet(GetName())) {
-         param->GetValue(GetName(),*fParameter);
+         param->GetValue(GetName(),fParameter);
          fIsValueSet = kTRUE;
       }
    }
+
+   TString DefaultValue() { return ToString(fDefValue,fSize); }
+   TString Value() { return ToString(fParameter,fSize); }
+
+
    T &fParameter;
    T  fDefValue;
+
+   template<class T1> 
+   static TString ToString(std::vector<T1> v, int n) {
+      TString str;
+      typename std::vector<T1>::iterator it;
+      for (it = v.begin(); it != v.end(); it++) {
+         str.Append(*it);
+      }
+      return str;
+   }
+
+   static TString ToString(Int_t prm, int n) {
+      TString str;
+      str += prm;
+      return str;
+   }
+   static TString ToString(Float_t prm, int n) {
+      TString str;
+      str += prm;
+      return str;
+   }
+   static TString ToString(TString prm, int n) {
+      TString str;
+      str += prm;
+      return str;
+   }
+
+
 //   ClassDef(TCatParameter_t,1);
 };
 
