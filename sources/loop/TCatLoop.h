@@ -43,6 +43,7 @@ public:
    Bool_t Suspend();
    Bool_t Terminate();
 
+
    void   ShowLog();
    void   AddWidget(TCatLoopWidget *widget) { fWidget = widget; }
 
