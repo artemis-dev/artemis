@@ -2,7 +2,7 @@
 /**
  * @file   TCatCategorizingProcessor.cc
  * @date   Created : May 13, 2012 19:13:45 JST
- *   Last Modified : May 20, 2012 09:56:08 JST
+ *   Last Modified : May 21, 2012 11:24:20 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -15,9 +15,12 @@
 
 TCatCategorizingProcessor::TCatCategorizingProcessor()
 {
+   StringVec_t defInput;
+   defInput.push_back("rawdata");
+   
    RegisterInputCollection("InputCollection",
                            "rawdata object returned by TArtEventStore",
-                           fInputColName,TString("rawdata"));
+                           fInputColName,defInput);
    RegisterOutputCollection("OutputCollection","categorized rawdata object",
                             fOutputColName,TString("categorized"));
    RegisterProcessorParameter("OutputTransparency",
@@ -35,7 +38,8 @@ TCatCategorizingProcessor::~TCatCategorizingProcessor()
 
 void TCatCategorizingProcessor::Init(TCatEventCollection *col)
 {
-   fRawData = dynamic_cast<TArtRawEventObject*> (col->Get(fInputColName));
+   fRawData = dynamic_cast<TArtRawEventObject*> 
+      (col->Get(fInputColName.front()));
    fRawCategrized = new TCatRawDataCategorized;
    fRawCategrized->SetName(fOutputColName);
    col->Add(fRawCategrized,fOutputIsTransparent);

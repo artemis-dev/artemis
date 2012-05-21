@@ -2,7 +2,7 @@
 /**
  * @file   TCatProcessor.h
  * @date   Created : Feb 19, 2012 10:19:49 JST
- *   Last Modified : May 19, 2012 17:51:46 JST
+ *   Last Modified : May 21, 2012 11:23:43 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -73,8 +73,8 @@ private:
 protected:
    // register processor parameter
    template<class T>
-   void RegisterProcessorParameter(const TString& name,
-                                  const TString& description,
+   void RegisterProcessorParameter(const char* name,
+                                   const char* description,
                                   T& parameter,
                                   const T& defaultParam,
                                   int size = 0) {
@@ -82,23 +82,20 @@ protected:
                                                defaultParam,false,size);
    }                                               
    
-   template<class T>
-   void RegisterInputCollection(const TString& name,
-                                  const TString& description,
-                                  T& parameter,
-                                  const T& defaultParam,
-                                  int size = 0) {
+   void RegisterInputCollection(const char* name,
+                                const char* description,
+                                StringVec_t& parameter,
+                                const StringVec_t& defaultParam,
+                                int size = 0) {
       RegisterProcessorParameter(name,description,parameter,
-                                  defaultParam,size);
+                                 defaultParam,size);
    }                                               
 
-         
-   template<class T>
-   void RegisterOutputCollection(const TString& name,
-                                  const TString& description,
-                                  T& parameter,
-                                  const T& defaultParam,
-                                  int size = 0) {
+   void RegisterOutputCollection(const char* name,
+                                 const char* description,
+                                 TString& parameter,
+                                 const TString& defaultParam,
+                                 int size = 0) {
       RegisterProcessorParameter(name,description,parameter,
                                   defaultParam,size);
    }                                               

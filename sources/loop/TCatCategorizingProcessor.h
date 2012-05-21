@@ -2,7 +2,7 @@
 /**
  * @file   TCatCategorizingProcessor.h
  * @date   Created : May 13, 2012 18:13:49 JST
- *   Last Modified : May 20, 2012 09:43:24 JST
+ *   Last Modified : May 21, 2012 11:25:01 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -30,7 +30,7 @@ public:
    virtual void Process();
 
 
-   TString fInputColName;
+   StringVec_t fInputColName;
    TString fOutputColName;
    TString fMapFileName;
    Bool_t  fOutputIsTransparent;
