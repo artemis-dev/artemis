@@ -14,10 +14,12 @@ SUBSRC = \
 	TCatRawDataCategorized.cc \
 	TCatStreamBuf.cc \
 	TCatOstream.cc \
-	TCatObjRefArray.cc
+	TCatObjRefArray.cc\
+	TCatParameter.cc \
+	TCatParameterStrings.cc
 
 SUBOBJ = $(SUBSRC:.cc=.o)
-SUBHDR = $(SUBSRC:.cc=.h) 
+SUBHDR = $(SUBSRC:.cc=.h) TCatTypes.h
 
 
 DICTSRC = catcore_dict.cc
@@ -47,7 +49,6 @@ $(DICTSRC): $(SUBHDR) catcore_linkdef.h
 
 header: $(include_HEADERS)
 	@echo Installing header to $(INCDIR)
-	touch header
 	@mkdir -p $(INCDIR)
 	@cp -a $(include_HEADERS) $(INCDIR)
 

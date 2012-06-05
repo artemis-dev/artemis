@@ -2,7 +2,7 @@
 /**
  * @file   TCatEventCollection.h
  * @date   Created : Apr 26, 2012 23:26:19 JST
- *   Last Modified : Apr 27, 2012 18:08:52 JST
+ *   Last Modified : May 18, 2012 08:58:53 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -11,20 +11,46 @@
 #ifndef TCATEVENTCOLLECTION_H
 #define TCATEVENTCOLLECTION_H
 
-#include <TROOT.h>
+#include <TTree.h>
+#include <TFile.h>
 
 class TCatEventCollection  {
 
 public:
+   static const TString kDefaultOutputName;
+
    TCatEventCollection();
 
-   // for shared memory 
-   TCatEventCollection(Int_t shmid); 
-   // for file datasource
-   TCatEventCollection(const char* filename);
+   virtual ~TCatEventCollection();
 
-   ~TCatEventCollection();
+   virtual void     Add(TNamed* obj, Bool_t isPassive = kTRUE);
+   virtual void     Add(TList* list, Bool_t isPassive = kTRUE);
+   virtual TObject* Get(const char* name);
+   virtual void     Init();
 
-   Bool_t GetNextEvent() { return kTRUE; }
+   virtual void CreateOutput(const char *name, const char* title,
+                             const char *filename = "",
+                             const char *opt = "CREATE");
+   virtual void Fill() { if (fOutputTree) fOutputTree->Fill(); }
+
+   virtual const char* GetPath() {
+      if (fOutputFile) {
+         return fOutputFile->GetPath();
+      } 
+      return 0;
+   }
+
+   virtual TDirectory* GetDir() { return fOutputFile; }
+   
+   virtual void cd() { if (fOutputFile) fOutputFile->cd(); }
+
+protected:
+   TList *fObjects;
+   TList *fOutputObjects;
+   TTree *fOutputTree;
+   TFile *fOutputFile;
+   TString fOutputFileName;
 };
+
+
 #endif // end of #ifdef TCATEVENTCOLLECTION_H

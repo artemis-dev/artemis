@@ -2,7 +2,7 @@
 /**
  * @file   TCatLoopWidget.h
  * @date   Created : May 03, 2012 22:03:11 JST
- *   Last Modified : 
+ *   Last Modified : May 11, 2012 09:32:33 JST
  * @author ota <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -23,7 +23,7 @@ class TCatLoopWidget  {
    RQ_OBJECT("TCatLoopWidget");
 public:
    TCatLoopWidget(const TGWindow *p, Int_t iLoop);
-   ~TCatLoopWidget();
+   virtual ~TCatLoopWidget();
 
    virtual TGCompositeFrame* CreateFrame(TGCompositeFrame *tabFrame);
    virtual void Info(TString line);
