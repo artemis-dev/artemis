@@ -20,7 +20,12 @@
 #pragma link C++ class TCatStreamBuf;
 #pragma link C++ class TCatOstream;
 
-
+// #pragma link C++ class TCatParameterI;
+// #pragma link C++ class TCatParameterF;
+// #pragma link C++ class TCatParameterS;
+// #pragma link C++ class TCatParameterArrayI;
+// #pragma link C++ class TCatParameterArrayF;
+// #pragma link C++ class TCatParameterArrayS;
 
 
 #endif /* __CINT__ */

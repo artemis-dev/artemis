@@ -2,7 +2,7 @@
 /**
  * @file   TCatSleepProcessor.cc
  * @date   Created : Apr 27, 2012 19:27:49 JST
- *   Last Modified : May 03, 2012 11:29:26 JST
+ *   Last Modified : May 19, 2012 17:23:25 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -10,10 +10,11 @@
  */
 #include "TCatSleepProcessor.h"
 
-TCatSleepProcessor::TCatSleepProcessor(std::ostream *out)
-   : TCatProcessor(out)
+TCatSleepProcessor::TCatSleepProcessor()
+   : fSleepTime(1)
 {
-   SetTitle("TCatSleepProcessor");
+   RegisterOptionalParameter("SleepTime","Time to sleep",fSleepTime,fSleepTime);
+   printf("%d\n",fSleepTime);
 }
 TCatSleepProcessor::~TCatSleepProcessor()
 {
@@ -21,6 +22,7 @@ TCatSleepProcessor::~TCatSleepProcessor()
 
 void TCatSleepProcessor::Process()
 {
-   sleep(1);
+   Info(TString::Format("%s processing",GetName()));
+   sleep(fSleepTime);
 }
 

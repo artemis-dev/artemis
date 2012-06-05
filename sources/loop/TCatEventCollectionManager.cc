@@ -2,7 +2,7 @@
 /**
  * @file   TCatEventCollectionManager.cc
  * @date   Created : Feb 19, 2012 11:19:24 JST
- *   Last Modified : Feb 19, 2012 15:00:58 JST
+ *   Last Modified : May 14, 2012 11:47:38 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  

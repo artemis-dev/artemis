@@ -2,7 +2,7 @@
 /**
  * @file   TCatLoop.h
  * @date   Created : Apr 26, 2012 19:26:12 JST
- *   Last Modified : May 03, 2012 17:51:46 JST
+ *   Last Modified : May 18, 2012 09:48:42 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -20,10 +20,14 @@
 #include <list>
 
 #include <TCatLoopWidget.h>
+#include <TCatEventStore.h>
+#include <TCatEventCollection.h>
+#include <TFile.h>
 
 using namespace std;
 
 enum EProc {kIdle, kRunning, kSuspended, kTerminated };
+
 
 
 class TCatLoop  : public TThreadPoolTaskImp<TCatLoop,EProc>, public TObject {
@@ -37,12 +41,12 @@ public:
    }
 
    Bool_t AddInputFile(const char *inputfile);
-   Bool_t SetOutput(const char *outputfile);
-   Bool_t Open(Int_t shmid = 0);
+   Bool_t Init();
    Bool_t Resume();
    Bool_t Suspend();
    Bool_t Terminate();
 
+   void   cd() { fEventCollection->cd(); }
 
    void   ShowLog();
    void   AddWidget(TCatLoopWidget *widget) { fWidget = widget; }
@@ -51,6 +55,8 @@ public:
    Bool_t IsSuspended() { return (fProcStatus == kSuspended); }
    Bool_t IsTerminated() { return (fProcStatus == kTerminated); }
    Bool_t IsIdle() { return (fProcStatus == kIdle); }
+
+   Bool_t IsInitialized() { return fInitialized; }
    Int_t  GetStatus() { return fProcStatus; }
 
    Bool_t AddProcess(const char *name, const char *procname);
@@ -62,12 +68,15 @@ protected:
 private:
    list<TString> fInputs;
    TString fOutput;
+   TFile  *fFile;
    Bool_t  fIsOnline;
    Bool_t  fIsOpen;
    list<TCatProcessor*> fProcessors;
+   TCatEventStore *fEventStore;
    TCatEventCollection *fEventCollection;
    Int_t   fEvtNum;
    EProc   fProcStatus;
+   Bool_t  fInitialized;
    TCatOstream *fOut;
    TCatLoopWidget *fWidget;
 };

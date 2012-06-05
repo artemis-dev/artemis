@@ -19,6 +19,7 @@ INCLUDES = -I../core/ -I$(ROOTSYS)/include -I../commands/
 CXXFLAGS = -fPIC -Iinclude $(shell root-config --cflags) -I$(INCDIR) -I$(TARTSYS)/include
 LDFLAGS = $(shell root-config --glibs) -L../commands/.libs -lcatcmd\
 	-L../core/.libs -lcatcore -L../loop/.libs -lcatloop -L$(TARTSYS)/lib -lanacore
+LDFLAGS+= -L/opt/local/lib -lyaml-cpp
 
 include_HEADERS = $(SUBHDR) $(SUBHDRF)
 bin_PROGRAMS = anaroot
