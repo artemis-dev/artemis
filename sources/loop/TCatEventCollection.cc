@@ -62,11 +62,22 @@ void TCatEventCollection::Add(TList *list, Bool_t isPassive)
 
 TObject* TCatEventCollection::Get(const char *name) 
 {
+   printf("\n*****\n");
+   printf("name : %s\n",name);
+   fObjects->Print();
+   printf("p = %p\n",fObjects->FindObject(name));
    return fObjects->FindObject(name);
 }
 
-void TCatEventCollection::CreateOutput(const char *name, const char *title,
-                                       const char *filename, const char *opt)
+void TCatEventCollection::CreateOutput(const char *name, const char *title)
+{
+   if (fOutputObjects->GetEntries()) {
+      fOutputTree = new TTree(name,title);
+      fOutputTree->Branch(fOutputObjects,32000,1);
+   }
+}
+
+void TCatEventCollection::Init(const char *filename, const char *opt)
 {
    // if output objects
    fOutputFileName = filename;
@@ -76,13 +87,4 @@ void TCatEventCollection::CreateOutput(const char *name, const char *title,
       fOutputFileName = kDefaultOutputName;
       fOutputFile = TFile::Open(fOutputFileName,"RECREATE");
    }
-   if (fOutputObjects->GetEntries()) {
-      fOutputTree = new TTree(name,title);
-      fOutputTree->Branch(fOutputObjects,32000,1);
-   }
-}
-
-void TCatEventCollection::Init()
-{
-   
 }

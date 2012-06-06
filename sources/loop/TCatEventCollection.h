@@ -26,11 +26,10 @@ public:
    virtual void     Add(TNamed* obj, Bool_t isPassive = kTRUE);
    virtual void     Add(TList* list, Bool_t isPassive = kTRUE);
    virtual TObject* Get(const char* name);
-   virtual void     Init();
+   virtual void     Init(const char *filename = "",const char *opt = "CREATE");
 
-   virtual void CreateOutput(const char *name, const char* title,
-                             const char *filename = "",
-                             const char *opt = "CREATE");
+
+   virtual void CreateOutput(const char *name, const char* title);
    virtual void Fill() { if (fOutputTree) fOutputTree->Fill(); }
 
    virtual const char* GetPath() {

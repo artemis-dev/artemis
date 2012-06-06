@@ -12,8 +12,9 @@
 #define TARTCATOBJECT_H
 
 #include "TNamed.h"
+#include "TArtRawDataObject.h"
 
-class TCatObject  : public TNamed {
+class TCatObject  : public TArtRawDataObject {
 public:
    typedef enum { kID } ESortType;
    typedef enum { kASC, kDESC } ESortOrder;
@@ -28,11 +29,11 @@ public:
 
    UInt_t Operated() { fOptLevel++; return fOptLevel; }
 
-   UInt_t GetCategoryID() const { return fCategoryID; }
-   void   SetCategoryID(UInt_t id) { fCategoryID = id; }
+   virtual Int_t GetCatID() const { return fCategoryID; }
+   virtual void   SetCatID(UInt_t id) { fCategoryID = id; }
 
-   UInt_t GetDetectorID() const { return fDetectorID; }
-   void   SetDetectorID(UInt_t id) { fDetectorID = id; }
+   virtual Int_t GetDetD() const { return fDetectorID; }
+   virtual void   SetDetID(UInt_t id) { fDetectorID = id; }
 
    virtual Int_t Compare(const TObject *obj) const;
    virtual Bool_t IsSortable() const { return kTRUE;}
@@ -43,8 +44,8 @@ public:
 protected:
    static Int_t fSortType;
    static Int_t fSortOrder;
-   UInt_t fCategoryID;
-   UInt_t fDetectorID; // id of this object
+   Int_t fCategoryID;
+   Int_t fDetectorID; // id of this object
 
    /**
     * operation level

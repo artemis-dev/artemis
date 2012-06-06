@@ -16,7 +16,7 @@ Int_t TCatObject::fSortType = TCatObject::kID;
 Int_t TCatObject::fSortOrder = TCatObject::kDESC;
 
 TCatObject::TCatObject()
-   : TNamed(), fCategoryID(-1), fDetectorID(-1), fOptLevel(0) 
+   : fCategoryID(-1), fDetectorID(-1), fOptLevel(0) 
 {
 }
 TCatObject::~TCatObject()
@@ -41,5 +41,7 @@ Int_t TCatObject::Compare(const TObject *obj) const
    case kDESC:
       return -ret;
       break;
+   default:
+      return 0;
    }
 }

@@ -71,12 +71,13 @@ Bool_t TCatLoop::Init()
    fWidget->Info("prepare output");
    if (fEventStore->IsPrepared()) {
       if (!IsInitialized()) {
+         fEventCollection->Init();
          fEventCollection->Add(fEventStore->GetListOfObjects(),kFALSE);
          fWidget->Info("event store objects added");
          for (itr = itrBegin; itr !=itrEnd; itr++) {
+            (*itr)->Print();
             (*itr)->Init(fEventCollection);
          }
-         fEventCollection->Init();
          fEventCollection->CreateOutput("test","hoge");
          fWidget->Info("output is prepared");
          fWidget->Info("processors are initialized");
