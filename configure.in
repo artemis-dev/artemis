@@ -10,8 +10,8 @@ AC_ENABLE_STATIC(no)
 AC_PROG_LIBTOOL
 
 # Checks for programs.
-AC_PROG_CXX([g++34 g++])
-AC_PROG_CC([gcc34 gcc])
+AC_PROG_CXX([clang++ g++34 g++])
+AC_PROG_CC([clang gcc34 gcc])
 AC_PROG_F77([g77])
 AC_PROG_RANLIB
 

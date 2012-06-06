@@ -6,10 +6,6 @@ SUBHDR = $(SUBSRC:.cc=.h)
 
 AUTOMAKE_OPTIONS = foreign
 
-DICTSRC = catmain_dict.cc
-DICTOBJ = $(DICTSRC:.cc=.o)
-DICTHDR = $(DICTSRC:.cc=.h) 
-
 LIBCATCORE = ../core/.libs/libcatcore.$(SOEXT)
 LIBCATCMD = ../commands/.libs/libcatcmd.$(SOEXT)
 
@@ -17,22 +13,17 @@ INCDIR = ../../include
 
 INCLUDES = -I../core/ -I$(ROOTSYS)/include -I../commands/
 CXXFLAGS = -fPIC -Iinclude $(shell root-config --cflags) -I$(INCDIR) -I$(TARTSYS)/include
-LDFLAGS = $(shell root-config --glibs) -L../commands/.libs -lcatcmd\
-	-L../core/.libs -lcatcore -L../loop/.libs -lcatloop -L$(TARTSYS)/lib -lanacore
-LDFLAGS+= -L/opt/local/lib -lyaml-cpp
+LDFLAGS = $(shell root-config --glibs) \
+	-L../loop/.libs -lcatcmd \
+	-L../loop/.libs -lcatloop \
+	-L../loop/.libs -lcatcore \
+	-L$(TARTSYS)/lib -lanacore
 
 include_HEADERS = $(SUBHDR) $(SUBHDRF)
 bin_PROGRAMS = anaroot
-anaroot_SOURCES = $(SUBSRC) $(DICTSRC) main.cc
+anaroot_SOURCES = $(SUBSRC) main.cc
 anaroot_DEPENDENCIES = $(LIBCATCORE) $(LIBCATCMD)
 anaroot_LDFLAGS = $(LDFLAGS)
-
-$(DICTSRC): $(SUBHDR) catmain_linkdef.h
-	rootcint -f $@ -c $(DEFAULT_INCLUDES) $(INCLUDES) $^
-
-header: $(include_HEADERS)
-	@mkdir -p $(INCDIR)
-	cp -a $(include_HEADERS) $(INCDIR)
 
 .cc.o:
 
