@@ -1,2 +1,2 @@
-SUBDIRS = core loop commands main
+SUBDIRS = core loop commands mc main 
 

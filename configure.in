@@ -50,6 +50,7 @@ AC_CONFIG_FILES([Makefile
                  sources/loop/Makefile
                  sources/commands/Makefile
                  sources/uhodo/Makefile
+                 sources/mc/Makefile
                  sources/main/Makefile
 		 ])
 AC_OUTPUT
