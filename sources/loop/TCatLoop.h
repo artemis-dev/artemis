@@ -1,3 +1,4 @@
+
 /* $Id:$ */
 /**
  * @file   TCatLoop.h
@@ -60,7 +61,7 @@ public:
    Int_t  GetStatus() { return fProcStatus; }
 
    Bool_t AddProcess(const char *name, const char *procname);
-   Bool_t AddProcess(const char *name, TCatProcessor *proc) { return kTRUE; }
+   Bool_t AddProcess(const char *name, TCatProcessor *proc);
 
 protected:
    void SetStatus(EProc stat) { fProcStatus = stat; }

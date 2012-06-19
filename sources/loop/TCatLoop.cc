@@ -62,6 +62,17 @@ Bool_t TCatLoop::AddProcess(const char *name, const char *procname)
    return kTRUE;
 }
 
+Bool_t TCatLoop::AddProcess(const char *name, TCatProcessor *proc)
+{
+   if (!proc) {
+      return kFALSE;
+   }
+   proc->SetName(name);
+   proc->SetWidget(fWidget);
+   fProcessors.push_back(proc);
+   return kTRUE;
+}
+
 Bool_t TCatLoop::Init()
 {
    list<TCatProcessor*>::iterator itr;
