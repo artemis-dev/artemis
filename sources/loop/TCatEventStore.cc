@@ -17,6 +17,7 @@ TCatEventStore::TCatEventStore()
    fArtEventStore = new TArtEventStore;
    fObjects = new TList;
    fIsOnline = kTRUE;
+   fStatus = kIdle;
 }
 TCatEventStore::~TCatEventStore()
 {
