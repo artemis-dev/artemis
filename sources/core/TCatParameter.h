@@ -73,7 +73,17 @@ public:
 
    virtual TString Type() const{
       // not implemented
-      return "type";
+      if (typeid(T) == typeid(Int_t)) return "Int_t";
+      if (typeid(T) == typeid(Float_t)) return "Float_t";
+      if (typeid(T) == typeid(Double_t)) return "Double_t";
+      if (typeid(T) == typeid(Bool_t)) return "Bool_t";
+      if (typeid(T) == typeid(TString)) return "TString";
+      if (typeid(T) == typeid(IntVec_t)) return "IntVec_t";
+      if (typeid(T) == typeid(FloatVec_t)) return "FloatVec_t";
+      if (typeid(T) == typeid(std::vector<Double_t>)) return "vector<Double_t>";
+      if (typeid(T) == typeid(std::vector<Bool_t>)) return "vector<Bool_t>";
+      if (typeid(T) == typeid(StringVec_t)) return "StringVec_t";
+      return "unsupported";
    }
 
    void SetValue(TCatParameterStrings *param) {
@@ -93,9 +103,13 @@ public:
    template<class T1> 
    static TString ToString(std::vector<T1> v, int n) {
       TString str;
+      printf("v.size() = %d\n",v.size());
       typename std::vector<T1>::iterator it;
       for (it = v.begin(); it != v.end(); it++) {
-         str.Append(*it);
+         str += *it;
+         if (it + 1 != v.end()) {
+            str += ", ";
+         }
       }
       return str;
    }

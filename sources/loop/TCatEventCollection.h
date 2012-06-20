@@ -13,6 +13,7 @@
 
 #include <TTree.h>
 #include <TFile.h>
+#include <TClonesArray.h>
 
 class TCatEventCollection  {
 
@@ -24,6 +25,7 @@ public:
    virtual ~TCatEventCollection();
 
    virtual void     Add(TNamed* obj, Bool_t isPassive = kTRUE);
+   virtual void     Add(TClonesArray* obj, Bool_t isPassive = kTRUE);
    virtual void     Add(TList* list, Bool_t isPassive = kTRUE);
    virtual TObject* Get(const char* name);
    virtual void     Init(const char *filename = "",const char *opt = "CREATE");

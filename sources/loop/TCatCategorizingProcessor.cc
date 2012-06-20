@@ -56,6 +56,7 @@ void TCatCategorizingProcessor::Process()
    // by TArtParserRIDF for now, here is no mapping procedure
    // implemented. Just use mapped values.
    fRawCategrized->Clear("C");
+//   fRawCategrized->Clear();
    // if mapper configuration is not loaded, do nothing
    if (!fMapper->isLoaded()) return;
 

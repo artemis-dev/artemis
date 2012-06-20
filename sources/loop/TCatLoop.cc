@@ -136,10 +136,10 @@ Bool_t TCatLoop::Resume()
             (*itr)->Process();
 //            if (!(*itr)->Cut()) break;
          }
+         fEventCollection->Fill();
          if (IsSuspended() || IsTerminated()) {
             return kTRUE;
          }
-         fEventCollection->Fill();
       }
       
       for (itr = itrBegin; itr !=itrEnd; itr++) {

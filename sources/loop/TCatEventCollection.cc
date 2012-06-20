@@ -11,6 +11,7 @@
 #include "TCatEventCollection.h"
 #include <TList.h>
 
+
 #include <TFile.h>
 #include <TROOT.h>
 
@@ -50,6 +51,19 @@ void TCatEventCollection::Add(TNamed *obj, Bool_t isPassive)
    fOutputObjects->Add(obj);
 }
 
+void TCatEventCollection::Add(TClonesArray* obj, Bool_t isPassive)
+{
+   if (Get(obj->GetName())) {
+      // object which has the same name exists
+      fOutputObjects->Remove(obj);
+      if (isPassive) return ;
+      fOutputObjects->Add(obj);
+      return;
+   }
+   fObjects->Add(obj);
+   if (isPassive) return;
+   fOutputObjects->Add(obj);
+}
 void TCatEventCollection::Add(TList *list, Bool_t isPassive)
 {
    TObjLink *lnk = list->FirstLink();
