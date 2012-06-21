@@ -63,6 +63,8 @@ public:
    Bool_t AddProcess(const char *name, const char *procname);
    Bool_t AddProcess(const char *name, TCatProcessor *proc);
 
+   void SetEventStore(TCatEventStore *store) { fEventStore = store; }
+
 protected:
    void SetStatus(EProc stat) { fProcStatus = stat; }
    

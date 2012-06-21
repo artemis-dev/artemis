@@ -39,7 +39,7 @@ public:
    virtual void Check() { }
    virtual void End() { }
 
-   virtual void Info(const char *info) { fWidget->Info(info); }
+   virtual void Info(const char *info, const char* msgfmt = 0, ...) const { fWidget->Info(info); }
 
 
    virtual void PrintDescriptionYAML();

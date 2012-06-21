@@ -103,7 +103,6 @@ public:
    template<class T1> 
    static TString ToString(std::vector<T1> v, int n) {
       TString str;
-      printf("v.size() = %d\n",v.size());
       typename std::vector<T1>::iterator it;
       for (it = v.begin(); it != v.end(); it++) {
          str += *it;

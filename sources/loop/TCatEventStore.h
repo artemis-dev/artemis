@@ -15,32 +15,20 @@
 #include <list>
 using namespace std;
 
-class TArtEventStore;
-
 class TCatEventStore  {
 public:
 
    typedef enum {kIdle, kRunning, kEOF} EStatus_t;
-
    TCatEventStore();
    virtual ~TCatEventStore();
-   virtual bool   AddInputFile(const char *filename);
-   virtual bool   IsPrepared();
-   virtual Bool_t IsBeginOfRun();
-   virtual void   Close();
-   virtual bool   Open(Int_t shmid = 0);
-   virtual bool   Open(const char* filename);
-   virtual bool   GetNextEvent();
+   virtual Bool_t IsPrepared() { return kFALSE; }
+   virtual Bool_t IsBeginOfRun() {return kTRUE; }
+   virtual Bool_t GetNextEvent() {return kFALSE;}
    virtual TList* GetListOfObjects() { return fObjects; }
-   virtual void   Clear();
+   virtual void   Clear() {;}
 protected:
-   list<TString> fInputFiles;
    EStatus_t     fStatus;
-   TString       fCurrentInput;
-   Bool_t        fIsOnline;
-   Bool_t        fIsBeginOfRun;
 
    TList   *fObjects;
-   TArtEventStore *fArtEventStore;
 };
 #endif // end of #ifdef TCATEVENTSTORE_H

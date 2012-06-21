@@ -28,7 +28,7 @@ TCatLoop::TCatLoop()
    fInitialized = kFALSE;
    fOutput = "temp.root";
    fOut    = new TCatOstream;
-   fEventStore = new TCatEventStore;
+   fEventStore = NULL;
    fEventCollection = new TCatEventCollection;
 }
 
@@ -36,13 +36,14 @@ TCatLoop::~TCatLoop()
 {
    delete fOut;
    delete fEventCollection;
-   delete fEventStore;
+//   delete fEventStore;
 }
 
 
 Bool_t TCatLoop::AddInputFile(const char *inputfile)
 {
-   return fEventStore->AddInputFile(inputfile);
+   MayNotUse("This function will be obsoluted");
+   return kFALSE;
 }
 
 Bool_t TCatLoop::AddProcess(const char *name, const char *procname)
