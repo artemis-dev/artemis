@@ -24,8 +24,6 @@ public:
 
    TCatEventStore();
    virtual ~TCatEventStore();
-
-
    virtual bool   AddInputFile(const char *filename);
    virtual bool   IsPrepared();
    virtual Bool_t IsBeginOfRun();

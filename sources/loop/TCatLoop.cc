@@ -62,6 +62,7 @@ Bool_t TCatLoop::AddProcess(const char *name, const char *procname)
    return kTRUE;
 }
 
+
 Bool_t TCatLoop::AddProcess(const char *name, TCatProcessor *proc)
 {
    if (!proc) {
@@ -119,8 +120,6 @@ Bool_t TCatLoop::Resume()
    list<TCatProcessor*>::iterator itr;
    list<TCatProcessor*>::iterator itrBegin = fProcessors.begin();
    list<TCatProcessor*>::iterator itrEnd   = fProcessors.end();
-   
-   
    // do while there are something to be analyzed
    // begin of run
    // idle loop if failed in the begin of run

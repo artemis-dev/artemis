@@ -24,7 +24,7 @@ INCDIR = ../../include
 AUTOMAKE_OPTIONS = foreign
 HAS_YAML_CPP = 1
 INCLUDES = -I$(INCDIR) -I$(ROOTSYS)/include
-CXXFLAGS = -fPIC  $(shell root-config --cflags) -I$(INCDIR) -I$(TARTSYS)/include -Wall -I../core -O2
+CXXFLAGS = -fPIC  $(shell root-config --cflags) -I$(INCDIR) -I$(TARTSYS)/include -Wall -I../core -O2 -pg
 LDFLAGS = $(shell root-config --glibs) 
 
 CXXFLAGS+= -DHAS_YAML_CPP
