@@ -14,7 +14,7 @@ INCDIR = ../../include
 INCLUDES = -I../core/ -I$(ROOTSYS)/include -I../commands/
 CXXFLAGS = -fPIC -Iinclude $(shell root-config --cflags) -I$(INCDIR) -I$(TARTSYS)/include -O2 -pg
 LDFLAGS = $(shell root-config --glibs) \
-	-L../command/.libs -lcatcmd \
+	-L../commands/.libs -lcatcmd \
 	-L../loop/.libs -lcatloop \
 	-L../core/.libs -lcatcore \
 	-L$(TARTSYS)/lib -lanacore

@@ -41,7 +41,7 @@ libcatloop_la_LDFLAGS = $(LDFLAGS)
 
 $(DICTSRC): $(SUBHDR) catloop_linkdef.h
 	@echo Making $(DICTSRC) ...
-	rootcint -f $@ -c $(CXXFLAGS) $(DEFAULT_INCLUDES) $(INCLUDES) $^
+	rootcint -f $@ -c $(INCLUDES) $(CXXFLAGS)  $^
 
 header: $(include_HEADERS)
 	@echo Installing header to $(INCDIR)
