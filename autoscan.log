@@ -1,0 +1,29 @@
+autoscan: warning: missing AC_CHECK_FUNCS([mkdir]) wanted by: 
+	sources/commands/TCatCmdSl.cc:65
+	sources/commands/TCatCmdSl.cc:78
+autoscan: warning: missing AC_CHECK_HEADERS([stddef.h]) wanted by: 
+	sources/uhodo/catuhodo_dict.h:10
+	sources/core/catcore_dict.h:10
+	sources/commands/catcmd_dict.h:10
+	sources/loop/catloop_dict.h:10
+	sources/mc/catmc_dict.h:10
+autoscan: warning: missing AC_CHECK_HEADERS([termios.h]) wanted by: 
+	sources/core/TArtKbhit.h:14
+	include/TArtKbhit.h:14
+autoscan: warning: missing AC_TYPE_SIZE_T wanted by: 
+	sources/uhodo/catuhodo_dict.cc:869
+	sources/uhodo/catuhodo_dict.cc:874
+	sources/uhodo/catuhodo_dict.cc:878
+	sources/core/catcore_dict.cc:3670
+	sources/core/catcore_dict.cc:3675
+	sources/core/catcore_dict.cc:3679
+	sources/commands/catcmd_dict.cc:5067
+	sources/commands/catcmd_dict.cc:5072
+	sources/commands/catcmd_dict.cc:5076
+	sources/commands/TCatCmdZone.cc:37
+	sources/loop/catloop_dict.cc:2394
+	sources/loop/catloop_dict.cc:2399
+	sources/loop/catloop_dict.cc:2403
+	sources/mc/catmc_dict.cc:1078
+	sources/mc/catmc_dict.cc:1083
+	sources/mc/catmc_dict.cc:1087

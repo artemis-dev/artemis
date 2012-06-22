@@ -62,16 +62,15 @@
 /* Define to 1 if you have the `vprintf' function. */
 #undef HAVE_VPRINTF
 
+/* Define to 1 if you have the yaml-cpp library */
+#undef HAVE_YAML_CPP
+
 /* Define to 1 if the system has the type `_Bool'. */
 #undef HAVE__BOOL
 
 /* Define to 1 if `lstat' dereferences a symlink specified with a trailing
    slash. */
 #undef LSTAT_FOLLOWS_SLASHED_SYMLINK
-
-/* Define to the sub-directory in which libtool stores uninstalled libraries.
-   */
-#undef LT_OBJDIR
 
 /* Name of package */
 #undef PACKAGE
@@ -96,6 +95,9 @@
 
 /* Version number of package */
 #undef VERSION
+
+/* Define to 1 if the X Window System is missing or not being used. */
+#undef X_DISPLAY_MISSING
 
 /* Define to empty if `const' does not conform to ANSI C. */
 #undef const

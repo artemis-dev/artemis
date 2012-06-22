@@ -30,6 +30,7 @@ lib
 .libs
 *.la
 anaroot
+artemis
 header
 
 # configure logs

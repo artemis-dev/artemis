@@ -23,13 +23,12 @@ OPTHDR =
 INCDIR = ../../include
 
 AUTOMAKE_OPTIONS = foreign
-HAS_YAML_CPP = 1
 INCLUDES = -I$(INCDIR) -I$(ROOTSYS)/include
 CXXFLAGS = -fPIC  $(shell root-config --cflags) -I$(INCDIR) -I$(TARTSYS)/include -Wall -I../core -O2
 LDFLAGS = $(shell root-config --glibs)
 
-CXXFLAGS+= -DHAS_YAML_CPP
-LDFLAGS+= -L$(HOME)/local/lib -lyaml-cpp
+CXXFLAGS+= @YAML_CPP_INCLUDE@
+LDFLAGS+= @YAML_CPP_LIB@
 
 
 include_HEADERS = $(SUBHDR) $(SUBHDRF) $(OPTHDR)

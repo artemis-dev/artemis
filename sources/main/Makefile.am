@@ -14,16 +14,16 @@ INCDIR = ../../include
 INCLUDES = -I../core/ -I$(ROOTSYS)/include -I../commands/
 CXXFLAGS = -fPIC -Iinclude $(shell root-config --cflags) -I$(INCDIR) -I$(TARTSYS)/include -O2 -pg
 LDFLAGS = $(shell root-config --glibs) \
-	-L../loop/.libs -lcatcmd \
+	-L../command/.libs -lcatcmd \
 	-L../loop/.libs -lcatloop \
-	-L../loop/.libs -lcatcore \
+	-L../core/.libs -lcatcore \
 	-L$(TARTSYS)/lib -lanacore
 
 include_HEADERS = $(SUBHDR) $(SUBHDRF)
-bin_PROGRAMS = anaroot
-anaroot_SOURCES = $(SUBSRC) main.cc
-anaroot_DEPENDENCIES = $(LIBCATCORE) $(LIBCATCMD)
-anaroot_LDFLAGS = $(LDFLAGS)
+bin_PROGRAMS = artemis
+artemis_SOURCES = $(SUBSRC) main.cc
+artemis_DEPENDENCIES = $(LIBCATCORE) $(LIBCATCMD)
+artemis_LDFLAGS = $(LDFLAGS)
 
 .cc.o:
 
