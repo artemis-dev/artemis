@@ -3,6 +3,8 @@ SUBSRC = \
 	TArtDecoderV1740.cc \
 	TArtDecoderSIS3610.cc \
 	TArtDecoderSIS3820.cc \
+	TCatDecoderV1190.cc \
+        TCatRawDataV1190.cc \
 	TArtKbhit.cc \
 	TCatObject.cc \
 	TCatSimpleData.cc \

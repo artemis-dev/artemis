@@ -51,6 +51,7 @@ void TCatCategorizingProcessor::Init(TCatEventCollection *col)
 
 void TCatCategorizingProcessor::Process()
 {
+   if (!fRawData) return;
 
    // Since Actual mapping process is done during parsing RIDF format
    // by TArtParserRIDF for now, here is no mapping procedure

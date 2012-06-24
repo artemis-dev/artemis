@@ -107,7 +107,10 @@ bool TCatRIDFEventStore::Open(Int_t shmid)
 
 
 bool TCatRIDFEventStore::GetNextEvent() {
-   if(fArtEventStore->GetNextEvent()) return kTRUE;
+   if(fArtEventStore->GetNextEvent()) {
+      fIsBeginOfRun = kFALSE;
+      return kTRUE;
+   }
    // no more event exists
 //   fArtEventStore->Close();
    fStatus = kEOF;
