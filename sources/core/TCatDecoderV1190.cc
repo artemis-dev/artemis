@@ -46,7 +46,7 @@ Int_t TCatDecoderV1190::Decode(unsigned char *&buf, const unsigned int& size,
          Int_t edge = (evtdata[i]&kMaskEdgeType) >> kShiftEdgeType;
          Double_t meas = (evtdata[i]&kMaskMeasure)>>kShiftMeasure;
          if (fIdx[ich] == NULL) {
-            fIdx[ich] = new ((*fV1190Hits)[fV1190Hits->GetEntries()]) TCatRawDataV1190(igeo,ich);
+            fIdx[ich] = new ((*fV1190Hits)[fV1190Hits->GetEntriesFast()]) TCatRawDataV1190(igeo,ich);
 //            fIdx[ich] = new TCatRawDataV1190(igeo,ich);
          }
          switch(edge) {

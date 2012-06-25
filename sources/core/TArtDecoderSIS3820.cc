@@ -34,7 +34,7 @@ int TArtDecoderSIS3820::Decode(unsigned char* &buf, const unsigned int& size,
 {
 
    for (Int_t i=0; i<32; i++) {
-      rawseg->PutData(new TArtRawDataObject(0,i,(((int*)buf)[i])));
+      rawseg->PutData(new ((*fHits)[fHits->GetEntriesFast()]) TArtRawDataObject(0,i,(((int*)buf)[i])));
    }
    return 0;
 }

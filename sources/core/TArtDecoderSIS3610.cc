@@ -33,6 +33,6 @@ int TArtDecoderSIS3610::Decode(unsigned char* &buf, const unsigned int& size,
                              TArtRawSegmentObject* rawseg)
 {
 
-   rawseg->PutData(new TArtRawDataObject(0,0,(int)*((short*)buf)));
+   rawseg->PutData(new ((*fHits)[fHits->GetEntriesFast()]) TArtRawDataObject(0,0,(int)*((short*)buf)));
    return 0;
 }
