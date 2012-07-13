@@ -36,12 +36,17 @@ Long_t TCatCmdHstore::Cmd(vector<TString> args)
 Long_t TCatCmdHstore::Run(const char* filename, const Option_t *opt)
 {
    TList *objects = gDirectory->GetList();
+   TDirectory *wkdir = gDirectory;
    // open file
    TFile *file = TFile::Open(filename,opt);
    // if file is not opened or writable return normal
-   if (!file) return 1;
-   if (!file->IsWritable()) return 1;
-   WriteRecursive(file,objects);
+   if (file && file->IsWritable()) {
+      WriteRecursive(file,objects);
+   } else {
+      printf(" File %s does not exist or is not writable\n",filename);
+      printf(" Please check your option : %s\n",opt);
+   }
+   wkdir->cd();     
    return 1;
 }
 
