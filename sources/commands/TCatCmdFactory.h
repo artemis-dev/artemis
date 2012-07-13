@@ -30,8 +30,12 @@ public:
 
    virtual void Help(TString cmd = "");
 
+   virtual void SetOptExactName(Bool_t flag) { fFlagExactName = flag; }
+
 private:
    TObjArray *fCmds;
+
+   Bool_t fFlagExactName;
 
    
    ClassDef(TCatCmdFactory,1);

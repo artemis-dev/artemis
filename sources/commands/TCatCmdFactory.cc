@@ -18,6 +18,7 @@ ClassImp(TCatCmdFactory);
 TCatCmdFactory::TCatCmdFactory()
 {
    fCmds = new TObjArray;
+   fFlagExactName = kFALSE;
 }
 TCatCmdFactory::~TCatCmdFactory()
 {
@@ -34,15 +35,36 @@ Long_t TCatCmdFactory::ProcessLine(TString line)
 {
    if (line == "") return 0;
    TString com = ((TObjString*)(line.Tokenize(" ")->At(0)))->GetString();
-   TCatCmd *cmd = (TCatCmd*) fCmds->FindObject(com);
-   if (!cmd) return 0;
+   // short name can be used
+   TIterator *itr = fCmds->MakeIterator();
+   TObjArray list;
+   TCatCmd *cmd;
+   while ((cmd=(TCatCmd*)itr->Next())!=NULL) {
+      if (TString(cmd->GetName()).EqualTo(com)) {
+         list.Add(cmd);
+         break;
+      } else if (!fFlagExactName && TString(cmd->GetName()).BeginsWith(com)) {
+         list.Add(cmd);
+      }
+   }
+   if (list.GetEntries()==0) return 0;
+   if (list.GetEntries()!=1) {
+      // there are some candidates
+      TIterator *itr = list.MakeIterator();
+      printf("An ambiguous command. Candidates are\n");
+      while ((cmd=(TCatCmd*)itr->Next())!=NULL) {
+         cmd->Print();
+      }
+      return 1;
+   }
+   cmd = (TCatCmd*)list[0];
    return cmd->Exec(line);
 }
 
 void TCatCmdFactory::Register(TCatCmd *cmd)
 {
    if (!fCmds->FindObject(cmd)) {
-      cmd->Print();
+//      cmd->Print();
       fCmds->Add(cmd);
    } 
    fCmds->Sort();
