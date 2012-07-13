@@ -52,6 +52,7 @@ extern void G__set_cpp_environmentcatcmd_dict();
 #include "TCatCmdLoopSuspend.h"
 #include "TCatCmdLoopResume.h"
 #include "TCatCmdCd.h"
+#include "TCatCmdHstore.h"
 #include <algorithm>
 namespace std { }
 using namespace std;
@@ -61,12 +62,14 @@ using namespace std;
 
 extern G__linked_taginfo G__catcmd_dictLN_TClass;
 extern G__linked_taginfo G__catcmd_dictLN_TBuffer;
+extern G__linked_taginfo G__catcmd_dictLN_TDirectory;
 extern G__linked_taginfo G__catcmd_dictLN_TMemberInspector;
 extern G__linked_taginfo G__catcmd_dictLN_TObject;
 extern G__linked_taginfo G__catcmd_dictLN_TNamed;
 extern G__linked_taginfo G__catcmd_dictLN_TString;
 extern G__linked_taginfo G__catcmd_dictLN_vectorlEROOTcLcLTSchemaHelpercOallocatorlEROOTcLcLTSchemaHelpergRsPgR;
 extern G__linked_taginfo G__catcmd_dictLN_reverse_iteratorlEvectorlEROOTcLcLTSchemaHelpercOallocatorlEROOTcLcLTSchemaHelpergRsPgRcLcLiteratorgR;
+extern G__linked_taginfo G__catcmd_dictLN_TList;
 extern G__linked_taginfo G__catcmd_dictLN_TObjArray;
 extern G__linked_taginfo G__catcmd_dictLN_vectorlETVirtualArraymUcOallocatorlETVirtualArraymUgRsPgR;
 extern G__linked_taginfo G__catcmd_dictLN_reverse_iteratorlEvectorlETVirtualArraymUcOallocatorlETVirtualArraymUgRsPgRcLcLiteratorgR;
@@ -98,5 +101,6 @@ extern G__linked_taginfo G__catcmd_dictLN_TCatCmdLoopAdd;
 extern G__linked_taginfo G__catcmd_dictLN_TCatCmdLoopSuspend;
 extern G__linked_taginfo G__catcmd_dictLN_TCatCmdLoopResume;
 extern G__linked_taginfo G__catcmd_dictLN_TCatCmdCd;
+extern G__linked_taginfo G__catcmd_dictLN_TCatCmdHstore;
 
 /* STUB derived class for protected member access */

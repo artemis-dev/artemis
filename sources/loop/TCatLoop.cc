@@ -42,7 +42,7 @@ TCatLoop::~TCatLoop()
 
 Bool_t TCatLoop::AddInputFile(const char *inputfile)
 {
-   MayNotUse("This function will be obsoluted");
+   Warning("AddInputFile","may not use");
    return kFALSE;
 }
 
@@ -82,6 +82,10 @@ Bool_t TCatLoop::Init()
    list<TCatProcessor*>::iterator itrEnd   = fProcessors.end();
    // initialization function
    fWidget->Info("prepare output");
+   if (!fEventStore) {
+      Warning("Init","EventStore is not set");
+      return kFALSE;
+   }
    if (fEventStore->IsPrepared()) {
       if (!IsInitialized()) {
          fEventCollection->Init();

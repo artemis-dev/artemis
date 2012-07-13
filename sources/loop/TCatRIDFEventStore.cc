@@ -24,11 +24,13 @@ TCatRIDFEventStore::~TCatRIDFEventStore()
 
 Bool_t TCatRIDFEventStore::IsPrepared()
 {
+   TArtCore::Info("IsPrepared","fStatus = %d",fStatus);
    switch (fStatus) {
    case kEOF:
       Close();
       fStatus = kIdle;
    case kIdle:
+      TArtCore::Info("IsPrepared","fInputFiles.size() = %d",fInputFiles.size());
       if (fInputFiles.size()) {
          fCurrentInput = fInputFiles.front();
          fInputFiles.pop_front();
@@ -69,7 +71,10 @@ Bool_t TCatRIDFEventStore::IsBeginOfRun()
 Bool_t TCatRIDFEventStore::AddInputFile(const char *filename)
 {
    ifstream fin(filename);
-   if (!fin) return kFALSE;
+   if (!fin) {
+      TArtCore::Info("AddInputFile","No such file %s",filename);
+      return kFALSE;
+   }
    fin.close();
    fInputFiles.push_back(filename);
    fIsOnline = kFALSE;

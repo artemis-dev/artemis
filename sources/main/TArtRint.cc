@@ -31,23 +31,7 @@
 TArtRint::TArtRint(int* argc, char** argv, void* options, int numOptions, Bool_t noLogo)
    : TRint(fAppName, argc, argv, options, numOptions, noLogo)
 {
-   TCatCmdFactory *cf = TCatCmdFactory::Instance();
-   cf->Register(TCatCmdHelp::Instance());
-   cf->Register(TCatCmdHt::Instance());
-   cf->Register(TCatCmdHtp::Instance());
-   cf->Register(TCatCmdHb::Instance());
-   cf->Register(TCatCmdHn::Instance());
-   cf->Register(TCatCmdZone::Instance());
-   cf->Register(TCatCmdLs::Instance());
-   cf->Register(TCatCmdCd::Instance());
-   cf->Register(TCatCmdPrx::Instance());
-   cf->Register(TCatCmdPry::Instance());
-   cf->Register(TCatCmdBnx::Instance());
-   cf->Register(TCatCmdBny::Instance());
-   cf->Register(TCatCmdSly::Instance());
-   cf->Register(TCatCmdLoopAdd::Instance());
-   cf->Register(TCatCmdLoopResume::Instance());
-   cf->Register(TCatCmdLoopSuspend::Instance());
+   TRint::ProcessLine(".x artemislogon.C");
 }
 TArtRint::~TArtRint()
 {
@@ -56,10 +40,6 @@ TArtRint::~TArtRint()
 Long_t TArtRint::ProcessLine(const char* line, Bool_t sync, Int_t* error)
 {
    if (TCatCmdFactory::Instance()->ProcessLine(line)) {
-      return 1;
-   }
-   if (!strncmp(line,"hoge",4)) {
-      printf("hoge\n");
       return 1;
    }
    return TRint::ProcessLine(line,sync,error);

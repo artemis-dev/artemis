@@ -5,7 +5,9 @@
  *   Last Modified : May 12, 2012 09:30:43 JST
  * @author ota <ota@cns.s.u-tokyo.ac.jp>
  *  
- *  
+ * Abstract Event Store class 
+ *
+ *
  *    Copyright (C)2012
  */
 #ifndef TCATEVENTSTORE_H
