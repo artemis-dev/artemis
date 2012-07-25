@@ -12,12 +12,13 @@ LIBCATCMD = ../commands/.libs/libcatcmd.$(SOEXT)
 INCDIR = ../../include
 
 INCLUDES = -I../core/ -I$(ROOTSYS)/include -I../commands/
-CXXFLAGS = -fPIC -Iinclude $(shell root-config --cflags) -I$(INCDIR) -I$(TARTSYS)/include -O2 -pg
+CXXFLAGS = -fPIC -Iinclude $(shell root-config --cflags) -I$(INCDIR) -I$(TARTSYS)/include -O2
 LDFLAGS = $(shell root-config --glibs) \
 	-L../commands/.libs -lcatcmd \
 	-L../loop/.libs -lcatloop \
 	-L../core/.libs -lcatcore \
-	-L$(TARTSYS)/lib -lanacore
+	-L$(TARTSYS)/lib -lanacore \
+	-L../mc/.libs -lcatmc
 
 include_HEADERS = $(SUBHDR) $(SUBHDRF)
 bin_PROGRAMS = artemis

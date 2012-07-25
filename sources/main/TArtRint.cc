@@ -10,23 +10,8 @@
  */
 #include "TArtRint.h"
 
-#include <TCatCmdFactory.h>
-#include <TCatCmdHelp.h>
-#include <TCatCmdHt.h>
-#include <TCatCmdHn.h>
-#include <TCatCmdHb.h>
-#include <TCatCmdHtp.h>
-#include <TCatCmdZone.h>
-#include <TCatCmdLs.h>
-#include <TCatCmdCd.h>
-#include <TCatCmdPrx.h>
-#include <TCatCmdPry.h>
-#include <TCatCmdBnx.h>
-#include <TCatCmdBny.h>
-#include <TCatCmdSly.h>
-#include <TCatCmdLoopAdd.h>
-#include <TCatCmdLoopSuspend.h>
-#include <TCatCmdLoopResume.h>
+// default value for CATLOGN
+const char* kARTEMISLOGON_C = "artemislogon.C";
 
 TArtRint::TArtRint(int* argc, char** argv, void* options, int numOptions, Bool_t noLogo)
    : TRint(fAppName, argc, argv, options, numOptions, noLogo)
