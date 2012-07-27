@@ -20,7 +20,8 @@ SUBSRC = \
 	TCatCmdLoopSuspend.cc \
 	TCatCmdLoopResume.cc \
 	TCatCmdCd.cc \
-	TCatCmdHstore.cc
+	TCatCmdHstore.cc \
+	TCatCmdMacro.cc
 SUBOBJ = $(SUBSRC:.cc=.o)
 SUBHDR = $(SUBSRC:.cc=.h) 
 
