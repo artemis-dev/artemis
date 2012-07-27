@@ -2,15 +2,17 @@
 /**
  * @file   TArtRint.cc
  * @date   Created : Feb 06, 2012 00:06:18 JST
- *   Last Modified : May 02, 2012 16:35:41 JST
+ *   Last Modified : Jul 26, 2012 00:31:34 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
  *    Copyright (C)2012
  */
 #include "TArtRint.h"
+
 #include "TCatCmdFactory.h"
 #include "TCatCmdMacro.h"
+
 // default value for CATLOGN
 const char* kARTEMISLOGON_C = "artemislogon.C";
 
