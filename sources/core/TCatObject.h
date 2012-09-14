@@ -32,7 +32,7 @@ public:
    virtual Int_t GetCatID() const { return fCategoryID; }
    virtual void   SetCatID(UInt_t id) { fCategoryID = id; }
 
-   virtual Int_t GetDetD() const { return fDetectorID; }
+   virtual Int_t GetDetID() const { return fDetectorID; }
    virtual void   SetDetID(UInt_t id) { fDetectorID = id; }
 
    virtual Int_t Compare(const TObject *obj) const;
