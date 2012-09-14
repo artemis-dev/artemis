@@ -1,0 +1,19 @@
+# ignore all
+/*
+/.*
+
+# add subdirs
+!/*/
+
+# ignore inside subdirs
+/*/*
+/*/.*
+
+# managed
+!*.cc
+!*.h
+!Makefile.am
+
+# additional exception
+*_dict.*
+
