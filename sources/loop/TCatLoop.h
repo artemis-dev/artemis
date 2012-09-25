@@ -63,15 +63,14 @@ public:
    Bool_t AddProcess(const char *name, const char *procname);
    Bool_t AddProcess(const char *name, TCatProcessor *proc);
 
+   Bool_t Load(const char* filename);
+
    void SetEventStore(TCatEventStore *store) { fEventStore = store; }
 
 protected:
    void SetStatus(EProc stat) { fProcStatus = stat; }
    
 private:
-   list<TString> fInputs;
-   TString fOutput;
-   TFile  *fFile;
    Bool_t  fIsOnline;
    Bool_t  fIsOpen;
    list<TCatProcessor*> fProcessors;
@@ -80,7 +79,7 @@ private:
    Int_t   fEvtNum;
    EProc   fProcStatus;
    Bool_t  fInitialized;
-   TCatOstream *fOut;
    TCatLoopWidget *fWidget;
+   TString fSteeringFile;
 };
 #endif // end of #ifdef TCATLOOP_H

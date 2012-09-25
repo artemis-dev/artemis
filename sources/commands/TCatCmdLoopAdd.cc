@@ -30,15 +30,16 @@ TCatCmdLoopAdd* TCatCmdLoopAdd::Instance()
 
 Long_t TCatCmdLoopAdd::Cmd(vector<TString> args)
 {
-   TCatLoopManager* lm = TCatLoopManager::Instance();
-
-   switch (args.size()) {
-   case 1:
-      lm->Add();
-      break;
-   default:
-      break;
+   if (args.size()!=2) {
+      Help();
+      return 1;
    }
+   TString &filename = args[1];
+
+
+   // yaml loader
+   
+   
    return 1;
 }
 

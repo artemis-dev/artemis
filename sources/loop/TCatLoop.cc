@@ -26,15 +26,12 @@ TCatLoop::TCatLoop()
    fEvtNum = 0;
    fIsOnline = kTRUE;
    fInitialized = kFALSE;
-   fOutput = "temp.root";
-   fOut    = new TCatOstream;
    fEventStore = NULL;
    fEventCollection = new TCatEventCollection;
 }
 
 TCatLoop::~TCatLoop()
 {
-   delete fOut;
    delete fEventCollection;
 //   delete fEventStore;
 }
@@ -73,6 +70,11 @@ Bool_t TCatLoop::AddProcess(const char *name, TCatProcessor *proc)
    proc->SetWidget(fWidget);
    fProcessors.push_back(proc);
    return kTRUE;
+}
+
+Bool_t TCatLoop::Load(const char* filename)
+{
+
 }
 
 Bool_t TCatLoop::Init()
@@ -174,7 +176,6 @@ Bool_t TCatLoop::Suspend()
 
 void TCatLoop::ShowLog()
 {
-   fOut->Print();
 }
 
 Bool_t TCatLoop::Terminate()

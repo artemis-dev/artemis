@@ -22,6 +22,8 @@ public:
    TCatObject();
    ~TCatObject();
 
+   TCatObject(const TCatObject& rhs);
+
    // static void SetSortType(const Int_t &type) { fSortType = type; }
 
    UInt_t GetOptLevel() const { return fOptLevel; }

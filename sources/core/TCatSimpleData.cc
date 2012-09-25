@@ -18,6 +18,12 @@ TCatSimpleData::TCatSimpleData()
 TCatSimpleData::~TCatSimpleData()
 {
 }
+TCatSimpleData::TCatSimpleData(const TCatSimpleData& rhs)
+   : TCatObject(rhs)
+{
+   fTime = rhs.fTime;
+   fCharge = rhs.fCharge;
+}
 
 Int_t TCatSimpleData::Compare(const TObject *obj) const
 {

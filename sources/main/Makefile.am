@@ -18,7 +18,7 @@ LDFLAGS = $(shell root-config --glibs) \
 	-L../loop/.libs -lcatloop \
 	-L../core/.libs -lcatcore \
 	-L$(TARTSYS)/lib -lanacore \
-	-L../mc/.libs -lcatmc
+	-L../mc/.libs -lcatmc -lyaml-cpp
 
 include_HEADERS = $(SUBHDR) $(SUBHDRF)
 bin_PROGRAMS = artemis

@@ -23,6 +23,13 @@ TCatObject::~TCatObject()
 {
 }
 
+TCatObject::TCatObject(const TCatObject& rhs)
+{
+   fCategoryID = rhs.fCategoryID;
+   fDetectorID = rhs.fDetectorID;
+   fOptLevel   = rhs.fOptLevel;
+}
+
 Int_t TCatObject::Compare(const TObject *obj) const
 {
    TCatObject *catobj = (TCatObject*) obj;

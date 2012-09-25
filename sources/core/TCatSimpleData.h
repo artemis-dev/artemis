@@ -19,6 +19,7 @@ public:
 public:
    TCatSimpleData();
    ~TCatSimpleData();
+   TCatSimpleData(const TCatSimpleData& rhs);
 
    virtual Double_t GetTime() { return fTime; }
    virtual Double_t GetCharge() { return fCharge; }
