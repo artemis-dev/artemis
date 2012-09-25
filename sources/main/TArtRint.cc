@@ -9,6 +9,8 @@
  *    Copyright (C)2012
  */
 #include "TArtRint.h"
+#include <TFolder.h>
+#include <TROOT.h>
 
 #include "TCatCmdFactory.h"
 #include "TCatCmdMacro.h"
@@ -21,6 +23,10 @@ TArtRint::TArtRint(int* argc, char** argv, void* options, int numOptions, Bool_t
 {
    TRint::ProcessLine(".x artemislogon.C");
    TCatCmdFactory::Instance()->Register(TCatCmdMacro::Instance());
+
+   // Preparation of folder for artemis
+   TFolder *top = new TFolder("artemis","artemis");
+   gROOT->GetListOfBrowsables()->Add(top);
 }
 TArtRint::~TArtRint()
 {
