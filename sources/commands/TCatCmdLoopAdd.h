@@ -25,6 +25,10 @@ public:
 
    virtual void Help();
 
+   // load yaml-format steering file
+   // this method should be moved to elsewhere
+   virtual void LoadYAML(TString filename);
+
    ClassDef(TCatCmdLoopAdd,1);
 };
 #endif // end of #ifdef TCATCMDLOOPADD_H

@@ -10,14 +10,16 @@
  */
 #include "TCatProcessor.h"
 
+#include <TROOT.h>
+#include <TFolder.h>
+
 #include <yaml-cpp/yaml.h>
 
 
 
 TCatProcessor::TCatProcessor()
-   : fWidget(NULL), fInitialized(kFALSE)
+   :  fParameters(NULL), fWidget(NULL), fInitialized(kFALSE)
 {
-   
 }
 
 TCatProcessor::~TCatProcessor()
@@ -48,7 +50,7 @@ void TCatProcessor::SetName(const char *name)
 {
    TNamed::SetTitle(IsA()->GetName());
    TNamed::SetName(name);
-   printf("ClassName() %s",IsA()->GetName());
+//   printf("ClassName() %s\n",IsA()->GetName());
 }
 
 void TCatProcessor::SetParameters(TCatParameterStrings *params)
