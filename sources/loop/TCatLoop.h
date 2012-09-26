@@ -29,9 +29,9 @@ using namespace std;
 
 enum EProc {kIdle, kRunning, kSuspended, kTerminated };
 
+#include <TTask.h>
 
-
-class TCatLoop  : public TThreadPoolTaskImp<TCatLoop,EProc>, public TObject {
+class TCatLoop  : public TThreadPoolTaskImp<TCatLoop,EProc>, public TTask {
 
 public:
    TCatLoop();

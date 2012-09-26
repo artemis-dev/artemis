@@ -11,9 +11,13 @@
 #include "TCatCmdLoopAdd.h"
 #include "TCatLoopManager.h"
 #include <TROOT.h>
+#include <TFolder.h>
 #include <yaml-cpp/yaml.h>
 
 #include <fstream>
+
+#include <TCatRIDFEventStore.h>
+
 using namespace std;
 
 
@@ -36,18 +40,44 @@ TCatCmdLoopAdd* TCatCmdLoopAdd::Instance()
 
 Long_t TCatCmdLoopAdd::Cmd(vector<TString> args)
 {
+   Bool_t retval = kFALSE;
+   
    if (args.size()!=2) {
       Help();
       return 1;
    }
    TString &filename = args[1];
+   // check if file exists
+   ifstream fin(filename);
+   if (!fin) {
+      printf("Catnnot open %s\n",filename.Data());
+      return 1;
+   }
+   fin.close();
+   
+   // preparation for loop
+   TCatLoopManager *lm = TCatLoopManager::Instance();
+   TCatLoop *l = lm->Add();
+   TFolder *top = (TFolder*) gROOT->GetListOfBrowsables()->FindObject("artemis");
+   TFolder *thisLoop = top->AddFolder("loop","loop");
+   l->SetName("loop");
+   thisLoop->Add(l);
 
    // yaml loader should be more sophystocated
    if (filename.EndsWith(".yaml")) {
-      LoadYAML(filename);
+      retval = LoadYAML(filename,thisLoop);
    } 
 
-   
+   // rollback if load is failed
+   if (!retval) {
+      top->Remove(thisLoop);
+      // not implimented yet
+      // lm->Remove(thisLoop);
+      // delete l
+   }
+
+   l->Init();
+
    return 1;
 }
 
@@ -55,79 +85,93 @@ void TCatCmdLoopAdd::Help()
 {
 }
 
+void operator >> (const YAML::Node &node, TCatParameterStrings *&str) {
+   vector <TString> prm;
+   std::string name,value;
+   for (YAML::Iterator it = node.begin(); it != node.end(); it++) {
+      prm.clear();
+      const YAML::Node &param = *it;
+      param["name"] >> name;
+      if (param["value"].Type() == YAML::NodeType::Scalar) {
+         param["value"] >> value;
+         prm.push_back(value);
+      } else if (param["value"].Type() == YAML::NodeType::Sequence) {
+         for (YAML::Iterator itv = param["value"].begin(); itv != param["value"].end(); itv++) {
+            (*itv) >> value;
+            prm.push_back(value);
+         }
+      }
+      str->Add(name.data(),prm);
+   }
+}
 
-void TCatCmdLoopAdd::LoadYAML(TString filename)
+void operator >> (const YAML::Node &node, TCatProcessor *&proc)
 {
-   // check if file exists
-   ifstream fin(filename);
-   if (!fin) {
-      printf("Catnnot open %s\n",filename.Data());
+   std::string name, type;
+   proc = NULL;
+   try {
+      node["name"] >> name;
+      node["type"] >> type;
+   } catch (YAML::KeyNotFound& e) {
+      cout << e.what() << endl;
       return;
    }
+   TClass *cls = gROOT->GetClass(type.data());
+   if (!cls) {
+      cout << "  no such processor or processor is not register in dictionary" << endl;
+      cout << "  " << type  << endl;
+      return;
+   }
+   proc = (TCatProcessor*) cls->New();
+   TCatParameterStrings *str = new TCatParameterStrings;
+   try {
+      node["parameter"] >> str;
+   } catch (YAML::KeyNotFound& e) {
+      // nothing to do with no paramter for now
+      // cout << e.what() << endl;
+   }
+   proc->SetParameters(str);
+}
+
+   
+Bool_t TCatCmdLoopAdd::LoadYAML(TString filename, TFolder *thisLoop)
+{
    // initialize parser
+
+   ifstream fin(filename);
    YAML::Parser parser(fin);
+   fin.close();
    YAML::Node doc;
    parser.GetNextDocument(doc);
    std::string name, type, value;
-
-   TCatLoopManager *lm = TCatLoopManager::Instance();
-   TCatLoop *l = lm->Add();
-
-   // try check processor
+   TCatLoop *l = (TCatLoop*) thisLoop->FindObject("loop");
    try {
       const YAML::Node &node = doc["Processor"];
       // iterate for all the processors
       for (YAML::Iterator it = node.begin(); it != node.end(); it++) {
-         const YAML::Node &prm = *it;
-         prm["name"] >> name;
-         prm["type"] >> type;
-         TClass *cls = gROOT->GetClass(type.data());
-         if (!cls) {
-            cout << "  no such processor or processor is not register in dictionary" << endl;
-            cout << "  " << type  << endl;
-            break;
-         }
-         TCatProcessor *proc = (TCatProcessor*) cls->New();
-         if (!proc) break;
-         proc->SetName(name.data());
-         TCatParameterStrings *str = new TCatParameterStrings;
-         try {
-            const YAML::Node &parameters = (*it)["parameter"];
-            vector<TString> prm;
-            Int_t nParam = parameters.size();
-            for (Int_t iParam = 0; iParam != nParam; iParam++) {
-               prm.clear();
-               const YAML::Node &param = parameters[iParam];
-               param["name"] >> name;
-               param["type"] >> type;
-               switch (param["value"].Type()) {
-               case YAML::NodeType::Scalar:
-                  param["value"] >> value;
-                  prm.push_back(value);
-                  break;
-               case YAML::NodeType::Sequence:
-                  for (Int_t ival = 0; ival != param["value"].size(); ival++) {
-                     param["value"][ival] >> value;
-                     prm.push_back(value);
-                  }
-                  break;
-               default:
-                  break;
-               }
-               str->Add(name.data(),prm);
-            }
-            proc->SetParameters(str);
-            l->AddProcess(proc->GetName(),proc);
-         } catch (YAML::KeyNotFound& e) {
-            cout << e.what() << endl;
-         }
+         TCatProcessor *proc = NULL;
+         (*it) >> proc;
+         l->AddProcess(proc->GetName(),proc);
       }
    } catch (YAML::KeyNotFound& e) {
       cout << e.what() << endl;
    }
 
-   // only YAML format is accepted
-//   YAML::Parser
+   // try check event store
+   TCatRIDFEventStore *evt = NULL;
+   try {
+      const YAML::Node &node = doc["EventStore"];
+      evt = new TCatRIDFEventStore;
+      for (YAML::Iterator it = node.begin(); it != node.end(); it++) {
+         // only ridf is accepted now
+         (*it) >> value;
+         evt->AddInputFile(value.data());
+      }
+      l->SetEventStore(evt);
+   } catch (YAML::KeyNotFound& e){
+      delete evt;
+   }
+   return kTRUE;
 }
 
 

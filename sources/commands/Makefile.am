@@ -35,7 +35,7 @@ INCDIR = ../../include
 AUTOMAKE_OPTIONS = foreign
 
 #INCLUDES = -Iinclude -I$(ROOTSYS)/include
-CXXFLAGS = -fPIC  $(shell root-config --cflags) -I$(INCDIR) -I$(TARTSYS)/include -Wall -O2
+CXXFLAGS = -fPIC  $(shell root-config --cflags) -I$(INCDIR) -I$(TARTSYS)/include $(YAML_CPP_INCLUDE) -Wall -O2
 LDFLAGS = $(shell root-config --glibs)  $(YAML_CPP_LIB)
 
 include_HEADERS = $(SUBHDR) $(SUBHDRF) $(OPTHDR)

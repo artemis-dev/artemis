@@ -7,6 +7,7 @@
 #pragma link C++ class TArtDecoderV1740-!;
 #pragma link C++ class TArtDecoderSIS3610-!;
 #pragma link C++ class TArtDecoderSIS3820-!;
+#pragma link C++ class TCatDecoderV1190-!;
 #pragma link C++ class TArtFadcRawDataObject+;
 #pragma link C++ class TCatRawDataV1190+;
 

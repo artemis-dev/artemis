@@ -13,6 +13,8 @@
 
 #include <TCatCmd.h>
 
+class TFolder;
+
 class TCatCmdLoopAdd  : public TCatCmd {
 protected:
    TCatCmdLoopAdd();
@@ -27,7 +29,7 @@ public:
 
    // load yaml-format steering file
    // this method should be moved to elsewhere
-   virtual void LoadYAML(TString filename);
+   virtual Bool_t LoadYAML(TString filename, TFolder *thisloop);
 
    ClassDef(TCatCmdLoopAdd,1);
 };
