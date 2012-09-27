@@ -23,9 +23,6 @@ TCatCategorizingProcessor::TCatCategorizingProcessor()
                            fInputColName,defInput);
    RegisterOutputCollection("OutputCollection","categorized rawdata object",
                             fOutputColName,TString("categorized"));
-   RegisterProcessorParameter("OutputTransparency",
-                              "Output is transparent if true",
-                              fOutputIsTransparent,kFALSE);
    RegisterProcessorParameter("MapConfig","configuration file to map",
                               fMapFileName,TString("mapper.conf"));
 }

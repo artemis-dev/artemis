@@ -20,6 +20,8 @@
 TCatProcessor::TCatProcessor()
    :  fParameters(NULL), fWidget(NULL), fInitialized(kFALSE)
 {
+   RegisterOptionalParameter("OutputTransparency","Output is persistent if false (default)",
+                             fOutputIsTransparent,kFALSE);
 }
 
 TCatProcessor::~TCatProcessor()

@@ -71,6 +71,8 @@ private:
    Bool_t fInitialized;
 
 protected:
+   Bool_t fOutputIsTransparent;    // output transparency
+   
    // register processor parameter
    template<class T>
    void RegisterProcessorParameter(const char* name,

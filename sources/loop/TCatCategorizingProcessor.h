@@ -33,7 +33,6 @@ public:
    StringVec_t fInputColName;
    TString fOutputColName;
    TString fMapFileName;
-   Bool_t  fOutputIsTransparent;
 
    TArtRawEventObject *fRawData;
    TCatRawDataCategorized *fRawCategrized;
