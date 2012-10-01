@@ -72,11 +72,10 @@ Long_t TCatCmdLoopAdd::Cmd(vector<TString> args)
    if (!retval) {
       top->Remove(thisLoop);
       // not implimented yet
-      // lm->Remove(thisLoop);
       // delete l
+   } else {
+      l->Init();
    }
-
-   l->Init();
 
    return 1;
 }
@@ -118,8 +117,8 @@ void operator >> (const YAML::Node &node, TCatProcessor *&proc)
    }
    TClass *cls = gROOT->GetClass(type.data());
    if (!cls) {
-      cout << "  no such processor or processor is not register in dictionary" << endl;
-      cout << "  " << type  << endl;
+      cout << "  no such processor, or processor is not register in dictionary" << endl;
+      cout << "  " << name << " " << type  << endl;
       return;
    }
    proc = (TCatProcessor*) cls->New();
@@ -140,9 +139,9 @@ Bool_t TCatCmdLoopAdd::LoadYAML(TString filename, TFolder *thisLoop)
 
    ifstream fin(filename);
    YAML::Parser parser(fin);
-   fin.close();
    YAML::Node doc;
    parser.GetNextDocument(doc);
+   fin.close();
    std::string name, type, value;
    TCatLoop *l = (TCatLoop*) thisLoop->FindObject("loop");
    try {
@@ -151,12 +150,17 @@ Bool_t TCatCmdLoopAdd::LoadYAML(TString filename, TFolder *thisLoop)
       for (YAML::Iterator it = node.begin(); it != node.end(); it++) {
          TCatProcessor *proc = NULL;
          (*it) >> proc;
+         if (!proc) return kFALSE;
          l->AddProcess(proc->GetName(),proc);
       }
    } catch (YAML::KeyNotFound& e) {
       cout << e.what() << endl;
+   } catch (YAML::Exception &e) {
+      cout << "Error Occured" << endl;
+      cout << e.what() << endl;
+      return kFALSE;
    }
-
+   
    // try check event store
    TCatRIDFEventStore *evt = NULL;
    try {

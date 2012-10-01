@@ -28,6 +28,7 @@ TCatProcessor::~TCatProcessor()
 {
    // delete parameter strings if any
    if (fParameters) delete fParameters;
+   fParameters = NULL;
 
    // delete parameters
    CatProcPrmMap_t::iterator it;

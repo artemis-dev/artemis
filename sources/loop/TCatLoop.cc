@@ -94,7 +94,6 @@ Bool_t TCatLoop::Init()
          fEventCollection->Add(fEventStore->GetListOfObjects(),kFALSE);
          fWidget->Info("event store objects added");
          for (itr = itrBegin; itr !=itrEnd; itr++) {
-            (*itr)->Print();
             (*itr)->Init(fEventCollection);
          }
          fEventCollection->CreateOutput("test","hoge");

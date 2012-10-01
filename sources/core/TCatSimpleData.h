@@ -12,8 +12,10 @@
 #define TCATSIMPLEDATA_H
 
 #include <TCatObject.h>
+#include <TCatTimingData.h>
+#include <TCatChargeData.h>
 
-class TCatSimpleData  : public TCatObject { 
+class TCatSimpleData  :   public TCatObject {
 public:
    typedef enum { kID, kCharge, kTime } ESimpleDataSortType;
 public:
@@ -21,19 +23,20 @@ public:
    ~TCatSimpleData();
    TCatSimpleData(const TCatSimpleData& rhs);
 
-   virtual Double_t GetTime() { return fTime; }
-   virtual Double_t GetCharge() { return fCharge; }
-
-   virtual void SetTime(const Double_t& val) { fTime = val; }
-   virtual void SetCharge(const Double_t& val) { fCharge = val; }
-
    virtual Int_t Compare(const TObject*) const;
 
+   virtual Double_t GetTiming() const { return fTiming; }
+   virtual void     SetTiming(const Double_t &val) { fTiming = val; }
+
+   virtual Double_t GetCharge() const { return fCharge; }
+   virtual void     SetCharge(const Double_t &val) { fCharge = val; }
+
+   virtual void Copy(TObject& dest) const;
+   
 protected:
-
-   Double_t fTime;
+   Double_t fTiming;
    Double_t fCharge;
-
+   
    ClassDef(TCatSimpleData,1);
 };
 #endif // end of #ifdef TCATDATAOBJECT_H

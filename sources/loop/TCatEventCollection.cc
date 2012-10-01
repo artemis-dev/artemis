@@ -67,7 +67,6 @@ void TCatEventCollection::Add(TClonesArray* obj, Bool_t isPassive)
 void TCatEventCollection::Add(TList *list, Bool_t isPassive)
 {
    TObjLink *lnk = list->FirstLink();
-   list->Print();
    while (lnk) {
       Add((TNamed*)lnk->GetObject(),isPassive);
       lnk = lnk->Next();
@@ -76,10 +75,10 @@ void TCatEventCollection::Add(TList *list, Bool_t isPassive)
 
 TObject* TCatEventCollection::Get(const char *name) 
 {
-   printf("\n*****\n");
-   printf("name : %s\n",name);
-   fObjects->Print();
-   printf("p = %p\n",fObjects->FindObject(name));
+//   printf("\n*****\n");
+//   printf("name : %s\n",name);
+//   fObjects->Print();
+//   printf("p = %p\n",fObjects->FindObject(name));
    return fObjects->FindObject(name);
 }
 

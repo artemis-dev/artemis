@@ -21,8 +21,16 @@ TCatSimpleData::~TCatSimpleData()
 TCatSimpleData::TCatSimpleData(const TCatSimpleData& rhs)
    : TCatObject(rhs)
 {
-   fTime = rhs.fTime;
+   fTiming = rhs.fTiming;
    fCharge = rhs.fCharge;
+}
+
+void TCatSimpleData::Copy(TObject& dest) const
+{
+   TCatObject::Copy(dest);
+   TCatSimpleData &cobj = *(TCatSimpleData*)&dest;
+   cobj.fTiming = fTiming;
+   cobj.fCharge = fCharge;
 }
 
 Int_t TCatSimpleData::Compare(const TObject *obj) const
@@ -43,9 +51,9 @@ Int_t TCatSimpleData::Compare(const TObject *obj) const
          }
          break;
       case kTime:
-         if (fTime > data->fTime) {
+         if (fTiming > data->fTiming) {
             ret = 1;
-         } else if (fTime == data->fTime) {
+         } else if (fTiming == data->fTiming) {
             ret = 0;
          } else {
             ret = -1;
@@ -62,4 +70,5 @@ Int_t TCatSimpleData::Compare(const TObject *obj) const
    case kDESC:
       return -ret;
    }
+   return 0;
 }

@@ -25,9 +25,15 @@ TCatObject::~TCatObject()
 
 TCatObject::TCatObject(const TCatObject& rhs)
 {
-   fCategoryID = rhs.fCategoryID;
-   fDetectorID = rhs.fDetectorID;
-   fOptLevel   = rhs.fOptLevel;
+   rhs.Copy(*this);
+}
+
+void TCatObject::Copy(TObject &dest) const 
+{
+   TCatObject &cobj = *(TCatObject*)&dest;
+   cobj.fCategoryID = fCategoryID;
+   cobj.fDetectorID = fDetectorID;
+   cobj.fOptLevel   = fOptLevel;
 }
 
 Int_t TCatObject::Compare(const TObject *obj) const

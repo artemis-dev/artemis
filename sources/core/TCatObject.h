@@ -43,6 +43,8 @@ public:
    static void SetSortType(const Int_t &type) { fSortType = type; }
    static void SetSortOrder(const Int_t &order) { fSortOrder = order; }
 
+   virtual void Copy(TObject &dest) const;
+
 protected:
    static Int_t fSortType;
    static Int_t fSortOrder;
