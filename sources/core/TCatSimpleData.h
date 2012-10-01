@@ -12,8 +12,6 @@
 #define TCATSIMPLEDATA_H
 
 #include <TCatObject.h>
-#include <TCatTimingData.h>
-#include <TCatChargeData.h>
 
 class TCatSimpleData  :   public TCatObject {
 public:
