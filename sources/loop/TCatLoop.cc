@@ -2,7 +2,7 @@
 /**
  * @file   TCatLoop.cc
  * @date   Created : Apr 26, 2012 20:26:47 JST
- *   Last Modified : May 18, 2012 08:57:31 JST
+ *   Last Modified : Oct 01, 2012 23:38:03 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -18,6 +18,7 @@
 #include <TFile.h>
 
 #include <TCatOstream.h>
+#include <TProcessID.h>
 
 using namespace std;
 
@@ -137,10 +138,12 @@ Bool_t TCatLoop::Resume()
       }
 
       while (fEventStore->GetNextEvent()) {
+         Int_t ObjectNumber = TProcessID::GetObjectCount();
          for (itr = itrBegin; itr != itrEnd; itr++) {
             (*itr)->Process();
 //            if (!(*itr)->Cut()) break;
          }
+         TProcessID::SetObjectCount(ObjectNumber);
          fEventCollection->Fill();
          if (IsSuspended() || IsTerminated()) {
             return kTRUE;

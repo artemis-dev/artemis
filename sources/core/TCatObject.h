@@ -2,7 +2,7 @@
 /**
  * @file   TCatObject.h
  * @date   Created : Jan 31, 2012 11:31:34 JST
- *   Last Modified : Feb 11, 2012 17:59:46 JST
+ *   Last Modified : Oct 01, 2012 21:51:36 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -46,8 +46,8 @@ public:
    virtual void Copy(TObject &dest) const;
 
 protected:
-   static Int_t fSortType;
-   static Int_t fSortOrder;
+   static Int_t fSortType; //!
+   static Int_t fSortOrder; //!
    Int_t fCategoryID;
    Int_t fDetectorID; // id of this object
 
