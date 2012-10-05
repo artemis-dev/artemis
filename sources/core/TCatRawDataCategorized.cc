@@ -2,7 +2,7 @@
 /**
  * @file   TCatRawDataCategorized.cc
  * @date   Created : Feb 18, 2012 19:18:16 JST
- *   Last Modified : Feb 18, 2012 22:00:46 JST
+ *   Last Modified : Oct 02, 2012 15:53:01 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -16,16 +16,13 @@ TClonesArray* TCatRawDataCategorized::fgTypes = 0;
 
 TCatRawDataCategorized::TCatRawDataCategorized()
 {
-   if (!fgCats) fgCats = new TClonesArray("TCatObjRefArray",100);
-   if (!fgDets) fgDets = new TClonesArray("TCatObjRefArray",1000);
-   if (!fgTypes) fgTypes = new TClonesArray("TCatObjRefArray",10000);
+   if (!fgCats) fgCats = new TClonesArray("TObjArray",100);
+   if (!fgDets) fgDets = new TClonesArray("TObjArray",1000);
+   if (!fgTypes) fgTypes = new TClonesArray("TRefArray",10000);
 
    fCats = fgCats;
    fDets = fgDets;
    fTypes = fgTypes;
-   fNumCats = 0;
-   fNumDets = 0;
-   fNumTypes = 0;
 }
 
 TCatRawDataCategorized::~TCatRawDataCategorized()
@@ -33,21 +30,21 @@ TCatRawDataCategorized::~TCatRawDataCategorized()
 }
 
 
-TCatObjRefArray* TCatRawDataCategorized::AddCat()
+TObjArray* TCatRawDataCategorized::AddCat()
 {
    TClonesArray &arr = *fCats;
-   return new (arr[fNumCats++]) TCatObjRefArray;
+   return new (arr[arr.GetEntriesFast()]) TObjArray;
 }
 
-TCatObjRefArray* TCatRawDataCategorized::AddDet()
+TObjArray* TCatRawDataCategorized::AddDet()
 {
    TClonesArray &arr = *fDets;
-   return new (arr[fNumDets++]) TCatObjRefArray;
+   return new (arr[arr.GetEntriesFast()]) TObjArray;
 }
 
-TCatObjRefArray* TCatRawDataCategorized::AddType()
+TRefArray* TCatRawDataCategorized::AddType()
 {
    TClonesArray &arr = *fTypes;
-   return new (arr[fNumTypes++]) TCatObjRefArray;
+   return new (arr[arr.GetEntriesFast()]) TRefArray;
 }
 
