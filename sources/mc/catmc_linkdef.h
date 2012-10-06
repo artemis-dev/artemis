@@ -19,7 +19,7 @@
 #pragma link C++ class TArtEventCollections+;
 #pragma link C++ class TArtParticle+;
 #pragma link C++ class TArtAtomicMassTable;
-
+#pragma link C++ global gAtomicMassTable;
 #pragma link C++ namespace TArtSystemOfUnit;
 
 #endif // end of #ifdef LINKDEFARTMC_H

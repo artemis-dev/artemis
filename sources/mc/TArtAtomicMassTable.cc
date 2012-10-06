@@ -12,14 +12,21 @@
 
 #include "TArtSystemOfUnit.h"
 using namespace TArtSystemOfUnit;
-
+#include <TEnv.h>
 #include <fstream>
 using namespace std;
 
 ClassImp(TArtAtomicMassTable);
 
+const TString TArtAtomicMassTable::kEnvName  = "Art.MassTable";
+TArtAtomicMassTable *gAtomicMassTable = new TArtAtomicMassTable;
 TArtAtomicMassTable::TArtAtomicMassTable()
 {
+   TString filepath;
+   filepath = gEnv->GetValue("Art.MassTable",filepath);
+   // assumu mass.mas03 from http://www.nndc.bnl.gov/masses/mass.mas03
+   SetMassTable(filepath,40);
+//   printf("%s\n",filepath.Data());
 }
 
 TArtAtomicMassTable::~TArtAtomicMassTable()
@@ -33,7 +40,7 @@ void TArtAtomicMassTable::SetMassTable(const char *filename, Int_t firstLine)
    Int_t ain,zin;
    Int_t    massA;
    Double_t dA;
-   Double_t mass;
+
    const Double_t amu = 931.494 * MeV;
 
    for (Int_t iz = 0; iz < kNumZ; iz++) {
@@ -41,7 +48,7 @@ void TArtAtomicMassTable::SetMassTable(const char *filename, Int_t firstLine)
          fIsEvaluated[iz][ia] = kFALSE;
       }
    }
-
+   if (TString(filename).IsNull()) return;
    fTableName = filename;
    fin.open(filename);
    if (!fin) {
@@ -64,7 +71,7 @@ void TArtAtomicMassTable::SetMassTable(const char *filename, Int_t firstLine)
       fIsEvaluated[zin][ain] = kTRUE;
       fMass[zin][ain] = (massA+dA*1.E-6)*amu;
    }
-   Info("SetMassTable","Mass table generated from %s",filename);
+//   Info("SetMassTable","Mass table generated from %s",filename);
    return;
 }
 

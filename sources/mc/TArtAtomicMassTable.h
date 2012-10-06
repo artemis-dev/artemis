@@ -36,6 +36,7 @@ public:
 
    static const Int_t kNumZ = 200;
    static const Int_t kNumA = 300;
+   static const TString kEnvName;
 private:
    TString  fTableName;
    Double_t fMass[kNumZ][kNumA];
@@ -43,4 +44,7 @@ private:
 
    ClassDef(TArtAtomicMassTable,1);
 };
+
+extern TArtAtomicMassTable *gAtomicMassTable;
+
 #endif // end of #ifdef TARTATOMICMASSTABLE_H
