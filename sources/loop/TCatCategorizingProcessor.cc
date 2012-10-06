@@ -2,7 +2,7 @@
 /**
  * @file   TCatCategorizingProcessor.cc
  * @date   Created : May 13, 2012 19:13:45 JST
- *   Last Modified : May 21, 2012 11:24:20 JST
+ *   Last Modified : Oct 02, 2012 18:43:00 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -69,24 +69,32 @@ void TCatCategorizingProcessor::Process()
          const Int_t &did = obj->GetDetectorID();
          const Int_t &tid = obj->GetDatatypeID();
          if (cid == -9999) continue;
-         TCatObjRefArray *cats = fRawCategrized->GetCategoryById(cid);
-         if (!cats) {
-            cats = fRawCategrized->AddCat();
-            cats->SetID(cid);
+         TObjArray *cat = fRawCategrized->GetCategoryById(cid);
+         if (!cat) {
+            cat = fRawCategrized->AddCat();
+            cat->SetUniqueID(cid);
          }
-         TCatObjRefArray *dets = (TCatObjRefArray*) cats->Find(did);
-         if (!dets) {
-            dets = fRawCategrized->AddDet();
-            dets->SetID(did);
-            cats->Add(dets);
+         
+         TObjArray *det = NULL;
+         const Int_t &ndet = cat->GetEntriesFast();
+         for (Int_t idet=0; idet!=ndet; idet++) {
+            if ((Int_t)cat->At(idet)->GetUniqueID() == did) {
+               det = (TObjArray*) cat->At(idet);
+               break;
+            }
          }
-         TCatObjRefArray *typs = (TCatObjRefArray*) dets->Find(tid);
-         if (!typs) {
-            typs = fRawCategrized->AddType();
-            typs->SetID(tid);
-            dets->Add(typs,tid-1);
+         if (!det) {
+            det = fRawCategrized->AddDet();
+            det->SetUniqueID(did);
+            cat->Add(det);
          }
-         typs->Add(obj);
+         TRefArray *typ = NULL;
+         if ((typ = (TRefArray*)det->At(tid-1))==NULL) {
+            typ = fRawCategrized->AddType();
+            typ->SetUniqueID(tid);
+            det->AddAtAndExpand(typ,tid-1);
+         }
+         typ->Add(obj);
       }
    }
 }

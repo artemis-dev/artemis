@@ -2,7 +2,7 @@
 /**
  * @file   TCatRawDataCategorized.h
  * @date   Created : Feb 18, 2012 18:18:06 JST
- *   Last Modified : Feb 19, 2012 14:27:22 JST
+ *   Last Modified : Oct 02, 2012 15:58:42 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -20,30 +20,29 @@ public:
    TCatRawDataCategorized();
    ~TCatRawDataCategorized();
 
-   virtual TCatObjRefArray* AddCat();
-   virtual TCatObjRefArray* AddDet();
-   virtual TCatObjRefArray* AddType();
+   virtual TObjArray* AddCat();
+   virtual TObjArray* AddDet();
+   virtual TRefArray* AddType();
 
-   virtual Int_t GetNumCats() { return fNumCats; }
-   virtual Int_t GetNumDets() { return fNumDets; }
-   virtual Int_t GetNumTypes() { return fNumTypes; }
+   virtual Int_t GetNumCats() { return fCats->GetEntriesFast(); }
+   virtual Int_t GetNumDets() { return fDets->GetEntriesFast(); }
+   virtual Int_t GetNumTypes() { return fTypes->GetEntriesFast(); }
 
-   virtual TCatObjRefArray* GetCategory(const Int_t &idx) {
-      return (TCatObjRefArray*) fCats->At(idx);
+   virtual TObjArray* GetCategory(const Int_t &idx) {
+      return (TObjArray*) fCats->At(idx);
    }
 
-   virtual TCatObjRefArray* GetCategoryById(const Int_t &id) {
-      for (Int_t i=0; i<fNumCats; i++) {
-         if (((TCatObjRefArray*)fCats->At(i))->GetID() == id) {
-            return ((TCatObjRefArray*)fCats->At(i));
+   virtual TObjArray* GetCategoryById(const Int_t &id) {
+      const Int_t &n = fCats->GetEntriesFast();
+      for (Int_t i=0; i != n; i++) {
+         if ((Int_t)fCats->At(i)->GetUniqueID() == id) {
+            return (TObjArray*)fCats->At(i);
          }
       }
       return NULL;
    }
 
-
    virtual void Clear(Option_t *opt = "") {
-      fNumCats = fNumDets = fNumTypes = 0;
       fCats->Clear(opt);
       fDets->Clear(opt);
       fTypes->Clear(opt);
@@ -58,10 +57,6 @@ private:
    static TClonesArray *fgCats; //!
    static TClonesArray *fgDets; //!
    static TClonesArray *fgTypes; //!
-
-   Int_t fNumCats;
-   Int_t fNumDets;
-   Int_t fNumTypes;
 
    ClassDef(TCatRawDataCategorized,1);
 };
