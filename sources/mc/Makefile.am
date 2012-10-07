@@ -1,7 +1,8 @@
 SUBSRC = \
 	TArtEventCollections.cc \
 	TArtParticle.cc \
-	TArtAtomicMassTable.cc
+	TArtAtomicMassTable.cc \
+	TCatTwoBodyKinematics.cc
 
 SUBOBJ = $(SUBSRC:.cc=.o)
 SUBHDR = $(SUBSRC:.cc=.h) TArtSystemOfUnit.h

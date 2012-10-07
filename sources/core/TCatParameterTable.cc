@@ -20,7 +20,8 @@ TCatParameterTable::~TCatParameterTable()
 }
 
 TCatParameterTable::TCatParameterTable(const char* filename, const char *format, Option_t *opt, Bool_t xIsFirst)
-   : TGraph(filename,format,opt), fFilename(filename), fFormat(format), fXIsFirst(xIsFirst)
+   : TGraph(filename,format,opt), fFilename(filename), fFormat(format), fXIsFirst(xIsFirst),
+     fSplineXY(NULL), fSplineYX(NULL)
 {
    if (!xIsFirst) {
       // shoud invert x and y
@@ -31,6 +32,22 @@ TCatParameterTable::TCatParameterTable(const char* filename, const char *format,
       }
    }
    
+   BuildSpline();
+}
+
+void TCatParameterTable::ScaleY(const Double_t &scale)
+{
+   fScaleY = scale;
+   for (Int_t ix = 0; ix != fNpoints; ix++) {
+      fY[ix] *= fScaleY;
+   }
+   BuildSpline();
+}
+
+void TCatParameterTable::BuildSpline()
+{
+   if (fSplineXY) delete fSplineXY;
+   if (fSplineYX) delete fSplineYX;
 
    // sorting to make spline function
    std::vector<Double_t> xsort(fNpoints);
@@ -45,15 +62,5 @@ TCatParameterTable::TCatParameterTable(const char* filename, const char *format,
    // spline interpolation creating a new spline
    fSplineXY = new TSpline3("", &xsort[0], &ysort[0], fNpoints);
    fSplineYX = new TSpline3("", &ysort[0], &xsort[0], fNpoints);
+   
 }
-
-void TCatParameterTable::ScaleY(const Double_t &scale)
-{
-   fScaleY = scale;
-
-   for (Int_t ix = 0; ix != fNpoints; ix++) {
-      fY[ix] *= fScaleY;
-   }
-}
-
-
