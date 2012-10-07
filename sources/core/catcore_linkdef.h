@@ -16,6 +16,8 @@
 #pragma link C++ class TCatObjRefArray+;
 #pragma link C++ class TCatSimpleData+;
 
+#pragma link C++ class TCatParameterTable;
+
 #pragma link C++ class TCatSortable+;
 #pragma link C++ class TCatHitV1190+;
 #pragma link C++ class TCatDetectorArray+;
