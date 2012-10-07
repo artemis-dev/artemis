@@ -18,7 +18,8 @@ SUBSRC = \
 	TCatOstream.cc \
 	TCatObjRefArray.cc\
 	TCatParameter.cc \
-	TCatParameterStrings.cc
+	TCatParameterStrings.cc \
+	TCatParameterTable.cc
 
 SUBOBJ = $(SUBSRC:.cc=.o)
 SUBHDR = $(SUBSRC:.cc=.h) TCatTypes.h
