@@ -31,7 +31,6 @@ TCatParameterTable::TCatParameterTable(const char* filename, const char *format,
          fY[i] = temp;
       }
    }
-   
    BuildSpline();
 }
 

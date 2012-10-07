@@ -22,6 +22,7 @@ public:
    virtual ~TCatParameterTable();
 
 
+
    TCatParameterTable(const char* filename, const char* format, Option_t *option = "", Bool_t xIsFirst = kTRUE);
 
    void ScaleY(const Double_t &scale);
@@ -31,7 +32,6 @@ public:
 
    // get filename
    const char* GetFilename() const { return fFilename.Data(); }
-   
 
 protected:
    virtual void SetPoint(Int_t i, Double_t x, Double_t y) { TGraph::SetPoint(i,x,y); }
