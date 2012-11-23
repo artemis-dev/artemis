@@ -39,13 +39,14 @@ public:
    void SetTwoBodyDecay(Double_t m1, Double_t m2, Bool_t isRandom = kTRUE);
    TArtParticle *GetDaughter(const Int_t &i) ;
    TArtParticle *GetDaughterAtRest(const Int_t &i) ;
-   Double_t ThetaX(void) { return Pz()?TMath::ATan(Px()/Pz()):0.; }
-   Double_t ThetaY(void) { return Pz()?TMath::ATan(Py()/Pz()):0.; }
+   Double_t ThetaX(void) const  { return Pz()?TMath::ATan(Px()/Pz()):0.; }
+   Double_t ThetaY(void) const { return Pz()?TMath::ATan(Py()/Pz()):0.; }
 
-   Double_t TKE(void) { return E()-M(); }
+   Double_t TKE(void) const { return E()-M(); }
 
    inline TArtParticle  operator+ (const TArtParticle &) const;
    inline TArtParticle& operator+=(const TArtParticle &);
+   inline TArtParticle& operator= (const TArtParticle &);
       
 
    static Double_t CalcMomentum(const Double_t &mass, const Double_t &kin) {
@@ -68,6 +69,15 @@ inline TArtParticle& TArtParticle::operator+= (const TArtParticle &q)
 {
    SetVect(Vect()+q.Vect());
    SetE(T() + q.T());
+   return *this;
+}
+
+inline TArtParticle& TArtParticle::operator= (const TArtParticle &q)
+{
+   SetVect(q.Vect());
+   SetE(q.T());
+   fBoost.SetXYZ(q.X(),q.Y(),q.Z());
+   fIsRandom = q.fIsRandom;
    return *this;
 }
 #endif // end of #ifdef TARTPARTICLE_H
