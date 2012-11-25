@@ -34,6 +34,7 @@ TCatTwoBodyKinematics::TCatTwoBodyKinematics(Int_t a1, Int_t z1, Int_t a2, Int_t
    if (a4 <= 0 || z4 < 0) return;
    Int_t a[4] = { a1, a2, a3, a4 };
    Int_t z[4] = { z1, z2, z3, z4 };
+   fIncidentEnergyPerNucleon = 0.;
    for (Int_t i=0; i!=4 ; i++) {
       fMass[i] = gAtomicMassTable->GetNucleusMass(z[i],a[i]);
       fEx[i]   = 0.;
