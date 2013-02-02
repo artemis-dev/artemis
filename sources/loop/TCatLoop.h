@@ -3,7 +3,7 @@
 /**
  * @file   TCatLoop.h
  * @date   Created : Apr 26, 2012 19:26:12 JST
- *   Last Modified : May 18, 2012 09:48:42 JST
+ *   Last Modified : Feb 02, 2013 21:35:03 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -27,7 +27,7 @@
 
 using namespace std;
 
-enum EProc {kIdle, kRunning, kSuspended, kTerminated };
+enum EProc {kIdle, kRunning, kSuspended, kTerminated, kSuspending };
 
 #include <TTask.h>
 
@@ -53,6 +53,7 @@ public:
    void   AddWidget(TCatLoopWidget *widget) { fWidget = widget; }
 
    Bool_t IsRunning() { return (fProcStatus == kRunning); }
+   Bool_t IsSuspending() { return (fProcStatus == kSuspending); }
    Bool_t IsSuspended() { return (fProcStatus == kSuspended); }
    Bool_t IsTerminated() { return (fProcStatus == kTerminated); }
    Bool_t IsIdle() { return (fProcStatus == kIdle); }

@@ -12,7 +12,7 @@ LIBCATCMD = ../commands/.libs/libcatcmd.$(SOEXT)
 INCDIR = ../../include
 
 INCLUDES = -I../core/ -I$(ROOTSYS)/include -I../commands/
-CXXFLAGS = -fPIC -Iinclude $(shell root-config --cflags) -I$(INCDIR) -I$(TARTSYS)/include -O2
+CXXFLAGS = -Iinclude $(shell root-config --cflags) -I$(INCDIR) -I$(TARTSYS)/include -O2
 LDFLAGS = $(shell root-config --glibs) \
 	-L../commands/.libs -lcatcmd \
 	-L../loop/.libs -lcatloop \
@@ -36,4 +36,4 @@ clean-local:
 	rm -f *dict*
 
 clean: clean-local
-	rm -rf $(SUBOBJ) .libs *.lo
+	rm -rf $(SUBOBJ) .libs *.lo artemis

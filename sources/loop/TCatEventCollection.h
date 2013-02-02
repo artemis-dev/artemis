@@ -2,7 +2,7 @@
 /**
  * @file   TCatEventCollection.h
  * @date   Created : Apr 26, 2012 23:26:19 JST
- *   Last Modified : May 18, 2012 08:58:53 JST
+ *   Last Modified : Feb 02, 2013 22:01:51 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -29,6 +29,12 @@ public:
    virtual void     Add(TList* list, Bool_t isPassive = kTRUE);
    virtual TObject* Get(const char* name);
    virtual void     Init(const char *filename = "",const char *opt = "CREATE");
+
+   // issue #628
+   // added to remap address to the branch after TTre::Draw() method called.
+   virtual void     RemapBranch();
+
+   virtual void     ResetBranch();
 
 
    virtual void CreateOutput(const char *name, const char* title);

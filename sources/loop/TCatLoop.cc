@@ -2,7 +2,7 @@
 /**
  * @file   TCatLoop.cc
  * @date   Created : Apr 26, 2012 20:26:47 JST
- *   Last Modified : Oct 01, 2012 23:38:03 JST
+ *   Last Modified : Feb 02, 2013 21:36:56 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -127,6 +127,8 @@ Bool_t TCatLoop::Resume()
    list<TCatProcessor*>::iterator itr;
    list<TCatProcessor*>::iterator itrBegin = fProcessors.begin();
    list<TCatProcessor*>::iterator itrEnd   = fProcessors.end();
+
+   fEventCollection->RemapBranch();
    // do while there are something to be analyzed
    // begin of run
    // idle loop if failed in the begin of run
@@ -145,7 +147,11 @@ Bool_t TCatLoop::Resume()
          }
          TProcessID::SetObjectCount(ObjectNumber);
          fEventCollection->Fill();
-         if (IsSuspended() || IsTerminated()) {
+         if (IsSuspending()) {
+            SetStatus(kSuspended);
+            return kTRUE;
+         }
+         if (IsTerminated()) {
             return kTRUE;
          }
       }
@@ -153,7 +159,11 @@ Bool_t TCatLoop::Resume()
       for (itr = itrBegin; itr !=itrEnd; itr++) {
          (*itr)->EndOfRun();
       }
-      if (IsSuspended() || IsTerminated()) {
+      if (IsSuspending()) {
+         SetStatus(kSuspended);
+         return kTRUE;
+      }
+      if (IsTerminated()) {
          return kTRUE;
       }
    }
@@ -170,8 +180,10 @@ Bool_t TCatLoop::Suspend()
    // set status to be suspend only when the loop is running
    if (IsRunning()) {
       fWidget->Info("Suspended");
-      SetStatus(kSuspended);
+      SetStatus(kSuspending);
    }
+   while (IsSuspending()) { usleep(100); };
+   fEventCollection->ResetBranch();
    return kTRUE;
 }
 

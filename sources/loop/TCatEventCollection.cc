@@ -2,7 +2,7 @@
 /**
  * @file   TCatEventCollection.cc
  * @date   Created : Apr 26, 2012 23:26:27 JST
- *   Last Modified : May 18, 2012 09:50:06 JST
+ *   Last Modified : Feb 02, 2013 22:03:01 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -99,5 +99,26 @@ void TCatEventCollection::Init(const char *filename, const char *opt)
    if (!fOutputFile) {
       fOutputFileName = kDefaultOutputName;
       fOutputFile = TFile::Open(fOutputFileName,"RECREATE");
+   }
+}
+
+void TCatEventCollection::ResetBranch()
+{
+   TIter next(fOutputObjects);
+   TObject *obj = 0;
+   while (obj=next()) {
+      TBranch *branch = fOutputTree->GetBranch(obj->GetName());
+      branch->ResetAddress();
+   }
+}
+
+
+void TCatEventCollection::RemapBranch()
+{
+   TIter next(fOutputObjects);
+   TObject *obj = 0;
+   while (obj=next()) {
+      TBranch *branch = fOutputTree->GetBranch(obj->GetName());
+      branch->SetAddress(fOutputObjects->GetObjectRef(obj));
    }
 }
