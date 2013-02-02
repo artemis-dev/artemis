@@ -2,7 +2,7 @@
 /**
  * @file   TCatTwoBodyKinematics.cc
  * @date   Created : Oct 07, 2012 13:07:55 JST
- *   Last Modified : 
+ *   Last Modified : Feb 02, 2013 16:46:02 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -10,7 +10,7 @@
  */
 #include "TCatTwoBodyKinematics.h"
 
-#include <TArtAtomicMassTAble.h>
+#include <TArtAtomicMassTable.h>
 
 TCatTwoBodyKinematics::TCatTwoBodyKinematics()
 {
