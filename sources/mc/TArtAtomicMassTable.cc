@@ -2,7 +2,7 @@
 /**
  * @file   TArtAtomicMassTable.cc
  * @date   Created : Aug 04, 2011 19:04:38 JST
- *   Last Modified : Aug 17, 2011 17:45:53 JST
+ *   Last Modified : Feb 02, 2013 19:28:09 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -21,11 +21,9 @@ ClassImp(TArtAtomicMassTable);
 const TString TArtAtomicMassTable::kEnvName  = "Art.MassTable";
 TArtAtomicMassTable *gAtomicMassTable = new TArtAtomicMassTable;
 TArtAtomicMassTable::TArtAtomicMassTable()
+   : fIsCreated(kFALSE)
 {
-   TString filepath;
-   filepath = gEnv->GetValue("Art.MassTable",filepath);
    // assumu mass.mas03 from http://www.nndc.bnl.gov/masses/mass.mas03
-   SetMassTable(filepath,40);
 //   printf("%s\n",filepath.Data());
 }
 
@@ -40,6 +38,7 @@ void TArtAtomicMassTable::SetMassTable(const char *filename, Int_t firstLine)
    Int_t ain,zin;
    Int_t    massA;
    Double_t dA;
+
 
    const Double_t amu = 931.494 * MeV;
 
@@ -71,6 +70,8 @@ void TArtAtomicMassTable::SetMassTable(const char *filename, Int_t firstLine)
       fIsEvaluated[zin][ain] = kTRUE;
       fMass[zin][ain] = (massA+dA*1.E-6)*amu;
    }
+
+   fIsCreated = kTRUE;
 //   Info("SetMassTable","Mass table generated from %s",filename);
    return;
 }

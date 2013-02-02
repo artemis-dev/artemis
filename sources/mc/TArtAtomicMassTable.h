@@ -2,7 +2,7 @@
 /**
  * @file   TArtAtomicMassTable.h
  * @date   Created : Aug 04, 2011 15:04:58 JST
- *   Last Modified : Aug 05, 2011 15:11:34 JST
+ *   Last Modified : Feb 02, 2013 19:17:21 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -41,6 +41,7 @@ private:
    TString  fTableName;
    Double_t fMass[kNumZ][kNumA];
    Bool_t   fIsEvaluated[kNumZ][kNumA];
+   Bool_t   fIsCreated;
 
    ClassDef(TArtAtomicMassTable,1);
 };
