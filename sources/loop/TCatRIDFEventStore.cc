@@ -11,6 +11,7 @@
 #include "TCatRIDFEventStore.h"
 
 TCatRIDFEventStore::TCatRIDFEventStore()
+   : fIsOnline(kTRUE)
 {
    fArtEventStore = new TArtEventStore;
    fObjects->Add(fArtEventStore->GetRawEventObject());
@@ -94,11 +95,13 @@ bool TCatRIDFEventStore::Open(const char* filename)
       fIsBeginOfRun = kTRUE;
       return kTRUE;
    }
+   fIsOnline = kTRUE;
    return kFALSE;
 }
 bool TCatRIDFEventStore::Open(Int_t shmid)
 {
    if (fArtEventStore->Open(shmid)) {
+      TArtCore::Info("Open(Int_t shmid)","Using shm = %d\n",shmid);
       TNamed *obj =  fArtEventStore->GetRawEventObject();
       fObjects->Remove(fObjects->FindObject("rawdata"));
       obj->SetName("rawdata");
@@ -118,6 +121,7 @@ bool TCatRIDFEventStore::GetNextEvent() {
    }
    // no more event exists
 //   fArtEventStore->Close();
+   fIsOnline = kTRUE;
    fStatus = kEOF;
    return kFALSE;
 }
