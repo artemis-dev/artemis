@@ -42,14 +42,16 @@ TCatCmdXval* TCatCmdXval::Instance()
 Long_t TCatCmdXval::Cmd(vector<TString> tokens)
 {
    Double_t x,y;
+
    Long_t ret = Run(x,y);
-   printf("[xval] X: %f, Y: %f\n",x,y);
-   return ret;
+   if(ret) printf("[xval] X: %f, Y: %f\n",x,y);
+
+   return 1;
 }
 
 Long_t TCatCmdXval::Run(Double_t& x, Double_t& y) 
 {
-   if(gPad==NULL) return 1;
+   if(gPad==NULL) return 0;
 
    gPad->AddExec("ex_xval","TCatCmdXval::Instance()->GetEvent()");
    gPad->WaitPrimitive();
