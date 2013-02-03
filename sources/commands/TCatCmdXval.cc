@@ -49,6 +49,8 @@ Long_t TCatCmdXval::Cmd(vector<TString> tokens)
 
 Long_t TCatCmdXval::Run(Double_t& x, Double_t& y) 
 {
+   if(gPad==NULL) return 1;
+
    gPad->AddExec("ex_xval","TCatCmdXval::Instance()->GetEvent()");
    gPad->WaitPrimitive();
    TObject *obj = gPad->GetListOfPrimitives()->Last();
