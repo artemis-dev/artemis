@@ -16,6 +16,7 @@
 #include <TArtCore.h>
 #include <TCanvas.h>
 #include <TLatex.h>
+#include <TROOT.h>
 
 #include <TCatHistManager.h>
 #include <TCatPadManager.h>
@@ -25,7 +26,7 @@
 using namespace std;
 
 TCatCmdXval::TCatCmdXval()
-{
+  :fX(0),fY(0){
    SetName("xval");
    SetTitle("get coordinate by mouse");
 }
@@ -41,30 +42,50 @@ TCatCmdXval* TCatCmdXval::Instance()
 
 Long_t TCatCmdXval::Cmd(vector<TString> tokens)
 {
-   Double_t x,y;
+  Int_t n = tokens.size()-1;
+  if ( n>3 ){
+    printf("[xval] More than 3 values are ignored.\n");
+    n = 3;
+  }
 
-   Long_t ret = Run(x,y);
-   if(ret) printf("[xval] X: %f, Y: %f\n",x,y);
+  TString token("");
 
-   return 1;
+  for (Int_t i = 0; i!=n ; ++i){
+    if(i) token += ", ";
+    token += tokens[i+1];
+  }
+
+  TString s = TString::Format("TCatCmdXval::Instance()->Run(%s);",
+			      token.Data());
+  gROOT->ProcessLineFast(s);
+
+  return 1;
 }
 
-Long_t TCatCmdXval::Run(Double_t& x, Double_t& y) 
+Long_t TCatCmdXval::Run(TPad *pad, Double_t *x, Double_t *y) 
 {
-   if(gPad==NULL) return 0;
+   if(pad==NULL) return 0;
 
-   gPad->AddExec("ex_xval","TCatCmdXval::Instance()->GetEvent()");
-   gPad->WaitPrimitive();
-   TObject *obj = gPad->GetListOfPrimitives()->Last();
+   pad->AddExec("ex_xval","TCatCmdXval::Instance()->GetEvent()");
+   pad->WaitPrimitive();
+   TObject *obj = pad->GetListOfPrimitives()->Last();
    if (obj->IsA() != TLatex::Class()) {
-      x = y = 0;
+      fX = fY = 0;
       return 0;
    }
    TLatex *latex = (TLatex*) obj;
-   gPad->GetListOfPrimitives()->RemoveLast();
-   x = latex->GetX();
-   y = latex->GetY();
+   pad->GetListOfPrimitives()->RemoveLast();
+   fX = latex->GetX();
+   fY = latex->GetY();
    delete latex;
+
+   Bool_t display = x==NULL && y==NULL;
+   if(display){
+     printf("[xval] X: %f, Y: %f\n",fX,fY);     
+   }
+
+   if(x!=NULL) *x = fX;
+   if(y!=NULL) *y = fY;
 
    return 1;
 }

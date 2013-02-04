@@ -10,18 +10,23 @@
 #ifndef TCATCMDXVAL_H
 #define TCATCMDXVAL_H
 
+#include "TPad.h"
 #include <TCatCmd.h>
 
 class TCatCmdXval  : public TCatCmd {
 protected:
    TCatCmdXval();
+   Double_t fX;
+   Double_t fY;
 public:
    ~TCatCmdXval();
 
    static TCatCmdXval* Instance();
    Long_t Cmd(vector<TString> tokens);
-   Long_t Run(Double_t& x, Double_t& y);
+   Long_t Run(TPad *pad = (TPad*) gPad, Double_t *x=NULL, Double_t *y=NULL); 
    void GetEvent();
+   Double_t GetX() const{return fX;}
+   Double_t GetY() const{return fY;}
 
    ClassDef(TCatCmdXval,1);
 };
