@@ -11,7 +11,7 @@
 #include "TCatRIDFEventStore.h"
 
 TCatRIDFEventStore::TCatRIDFEventStore()
-   : fIsOnline(kTRUE)
+   : fIsOnline(kTRUE), fIsBeginOfRun(kFALSE), fIsEndOfRun(kFALSE)
 {
    fArtEventStore = new TArtEventStore;
    fObjects->Add(fArtEventStore->GetRawEventObject());
@@ -25,11 +25,16 @@ TCatRIDFEventStore::~TCatRIDFEventStore()
 
 Bool_t TCatRIDFEventStore::IsPrepared()
 {
-   TArtCore::Info("IsPrepared","fStatus = %d",fStatus);
+   TArtCore::Info("IsPrepared","fStatus = %d, fIsOnline = %d",fStatus, fIsOnline);
    switch (fStatus) {
    case kEOF:
       Close();
       fStatus = kIdle;
+      if (!fIsOnline && !fInputFiles.size()) {
+         // end of offline mode
+         fIsOnline = kTRUE;
+         return kFALSE;
+      }
    case kIdle:
       TArtCore::Info("IsPrepared","fInputFiles.size() = %d",fInputFiles.size());
       if (fInputFiles.size()) {
@@ -69,6 +74,11 @@ Bool_t TCatRIDFEventStore::IsBeginOfRun()
    return fIsBeginOfRun;
 }
 
+Bool_t TCatRIDFEventStore::IsEndOfRun()
+{
+   return fIsEndOfRun;
+}
+
 Bool_t TCatRIDFEventStore::AddInputFile(const char *filename)
 {
    ifstream fin(filename);
@@ -93,6 +103,7 @@ bool TCatRIDFEventStore::Open(const char* filename)
       fObjects->Add(obj);
       fIsOnline = kFALSE;
       fIsBeginOfRun = kTRUE;
+      fIsEndOfRun = kFALSE;
       return kTRUE;
    }
    fIsOnline = kTRUE;
@@ -108,6 +119,7 @@ bool TCatRIDFEventStore::Open(Int_t shmid)
       fObjects->Add(obj);
       fIsOnline = kTRUE;
       fIsBeginOfRun = kTRUE;
+      fIsEndOfRun = kFALSE;
       return kTRUE;
    }
    return kFALSE;
@@ -119,11 +131,13 @@ bool TCatRIDFEventStore::GetNextEvent() {
       fIsBeginOfRun = kFALSE;
       return kTRUE;
    }
-   // no more event exists
-//   fArtEventStore->Close();
-   fIsOnline = kTRUE;
-   fStatus = kEOF;
-   return kFALSE;
+   if (fIsOnline) {
+      return kFALSE;
+   } else {
+      fIsEndOfRun = kTRUE;
+      fStatus = kEOF;
+      return kFALSE;
+   }
 }
 
 void TCatRIDFEventStore::Clear()
@@ -133,5 +147,12 @@ void TCatRIDFEventStore::Clear()
 
 void TCatRIDFEventStore::Close()
 {
+   fIsEndOfRun = kFALSE;
+   fIsBeginOfRun = kFALSE;
+}
 
+TString TCatRIDFEventStore::GetCurrentInputName()
+{
+   if (fIsOnline) return TString("Online");
+   return fCurrentInput;
 }

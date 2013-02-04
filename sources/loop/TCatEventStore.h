@@ -15,6 +15,7 @@
 
 #include <TList.h>
 #include <list>
+#include <TString.h>
 using namespace std;
 
 class TCatEventStore  {
@@ -25,9 +26,11 @@ public:
    virtual ~TCatEventStore();
    virtual Bool_t IsPrepared() { return kFALSE; }
    virtual Bool_t IsBeginOfRun() {return kTRUE; }
+   virtual Bool_t IsEndOfRun() {return kTRUE; }
    virtual Bool_t GetNextEvent() {return kFALSE;}
    virtual TList* GetListOfObjects() { return fObjects; }
    virtual void   Clear() {;}
+   virtual TString   GetCurrentInputName() {TString a = ""; return a;}
 protected:
    EStatus_t     fStatus;
 

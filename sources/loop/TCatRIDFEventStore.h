@@ -27,12 +27,15 @@ public:
    virtual void Clear();
    virtual void Close();
    virtual Bool_t IsBeginOfRun();
+   virtual Bool_t IsEndOfRun();
    virtual Bool_t AddInputFile(const char *filename);
+   virtual TString GetCurrentInputName();
 private:
    list<TString>   fInputFiles;
    TArtEventStore *fArtEventStore;
    TString fCurrentInput;
    Bool_t fIsOnline;
    Bool_t fIsBeginOfRun;
+   Bool_t fIsEndOfRun;
 };
 #endif // end of #ifdef TCATRIDFEVENTSTORE_H

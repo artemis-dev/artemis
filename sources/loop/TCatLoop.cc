@@ -19,7 +19,8 @@
 
 #include <TCatOstream.h>
 #include <TProcessID.h>
-
+#include <TApplication.h>
+#include <TRint.h>
 using namespace std;
 
 TCatLoop::TCatLoop()
@@ -133,20 +134,25 @@ Bool_t TCatLoop::Resume()
    // begin of run
    // idle loop if failed in the begin of run
    while (fEventStore->IsPrepared()) {
+      ((TRint*)gApplication)->SetPrompt(TString::Format("artemis (%s) [%s]\n# ",fEventStore->GetCurrentInputName().Data(),"%d"));
       if (fEventStore->IsBeginOfRun()) {
          for (itr = itrBegin; itr !=itrEnd; itr++) {
             (*itr)->BeginOfRun();
          }
       }
 
-      while (fEventStore->GetNextEvent()) {
-         Int_t ObjectNumber = TProcessID::GetObjectCount();
-         for (itr = itrBegin; itr != itrEnd; itr++) {
-            (*itr)->Process();
+      while (1) {
+         if (fEventStore->GetNextEvent()) {
+            Int_t ObjectNumber = TProcessID::GetObjectCount();
+            for (itr = itrBegin; itr != itrEnd; itr++) {
+               (*itr)->Process();
 //            if (!(*itr)->Cut()) break;
+            }
+            TProcessID::SetObjectCount(ObjectNumber);
+            fEventCollection->Fill();
+         } else if(fEventStore->IsEndOfRun()) {
+            break;
          }
-         TProcessID::SetObjectCount(ObjectNumber);
-         fEventCollection->Fill();
          if (IsSuspending()) {
             SetStatus(kSuspended);
             return kTRUE;
@@ -167,6 +173,8 @@ Bool_t TCatLoop::Resume()
          return kTRUE;
       }
    }
+   ((TRint*)gApplication)->SetPrompt("artemis [%d] ");
+
    fWidget->Info("End Loop");
    // analysis is finished
    SetStatus(kIdle);
