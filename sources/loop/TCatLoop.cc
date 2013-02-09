@@ -93,7 +93,7 @@ Bool_t TCatLoop::Init()
    if (fEventStore->IsPrepared()) {
       if (!IsInitialized()) {
          fEventCollection->Init();
-         fEventCollection->Add(fEventStore->GetListOfObjects(),kFALSE);
+         fEventCollection->Add(fEventStore->GetListOfObjects(),kTRUE); // output is transparent
          fWidget->Info("event store objects added");
          for (itr = itrBegin; itr !=itrEnd; itr++) {
             (*itr)->Init(fEventCollection);

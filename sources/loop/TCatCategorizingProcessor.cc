@@ -25,6 +25,8 @@ TCatCategorizingProcessor::TCatCategorizingProcessor()
                             fOutputColName,TString("categorized"));
    RegisterProcessorParameter("MapConfig","configuration file to map",
                               fMapFileName,TString("mapper.conf"));
+   // switch the default
+   fOutputIsTransparent = kTRUE;
 }
 TCatCategorizingProcessor::~TCatCategorizingProcessor()
 {
