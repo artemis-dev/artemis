@@ -3,7 +3,7 @@
 /**
  * @file   TCatLoop.h
  * @date   Created : Apr 26, 2012 19:26:12 JST
- *   Last Modified : Feb 02, 2013 21:35:03 JST
+ *   Last Modified : Mar 20, 2013 18:03:41 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -31,6 +31,8 @@ enum EProc {kIdle, kRunning, kSuspended, kTerminated, kSuspending };
 
 #include <TTask.h>
 
+
+
 class TCatLoop  : public TThreadPoolTaskImp<TCatLoop,EProc>, public TTask {
 
 public:
@@ -38,7 +40,9 @@ public:
    ~TCatLoop();
 
    bool runTask(EProc /* prm */) {
-      return Resume();
+      Bool_t res = Resume();
+      printf("end of run\n");
+      return res;
    }
 
    Bool_t AddInputFile(const char *inputfile);
@@ -82,5 +86,22 @@ private:
    Bool_t  fInitialized;
    TCatLoopWidget *fWidget;
    TString fSteeringFile;
+   TMutex  fMutex;
 };
+
+class TCatLoopResume: public TThreadPoolTaskImp<TCatLoopResume,TCatLoop*> {
+public:
+   bool runTask(TCatLoop* loop) {
+      bool res = loop->Resume();
+      return res;
+   }
+};
+class TCatLoopSuspend: public TThreadPoolTaskImp<TCatLoopSuspend,TCatLoop*> {
+public:
+   bool runTask(TCatLoop* loop) {
+      bool res = loop->Suspend();
+      return res;
+   }
+};
+
 #endif // end of #ifdef TCATLOOP_H

@@ -2,7 +2,7 @@
 /**
  * @file   TCatLoop.cc
  * @date   Created : Apr 26, 2012 20:26:47 JST
- *   Last Modified : Feb 02, 2013 21:36:56 JST
+ *   Last Modified : Mar 20, 2013 18:06:09 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -134,7 +134,10 @@ Bool_t TCatLoop::Resume()
    // begin of run
    // idle loop if failed in the begin of run
    while (fEventStore->IsPrepared()) {
-      ((TRint*)gApplication)->SetPrompt(TString::Format("artemis (%s) [%s]\n# ",fEventStore->GetCurrentInputName().Data(),"%d"));
+      // for now, Linux only
+      TString filename = 
+         ((TObjString*)fEventStore->GetCurrentInputName().Tokenize("/")->Last())->GetString();
+         ((TRint*)gApplication)->SetPrompt(TString::Format("artemis (%s) [%s]# ",filename.Data(),"%d"));
       if (fEventStore->IsBeginOfRun()) {
          for (itr = itrBegin; itr !=itrEnd; itr++) {
             (*itr)->BeginOfRun();
@@ -154,7 +157,9 @@ Bool_t TCatLoop::Resume()
             break;
          }
          if (IsSuspending()) {
+            fMutex.Lock();
             SetStatus(kSuspended);
+            fMutex.UnLock();
             return kTRUE;
          }
          if (IsTerminated()) {
@@ -189,8 +194,8 @@ Bool_t TCatLoop::Suspend()
    if (IsRunning()) {
       fWidget->Info("Suspended");
       SetStatus(kSuspending);
-   }
-   while (IsSuspending()) { usleep(100); };
+    }
+   while (IsSuspending()) { usleep(100000);};
    fEventCollection->ResetBranch();
    return kTRUE;
 }

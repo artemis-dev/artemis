@@ -2,7 +2,7 @@
 /**
  * @file   TCatLoopManager.cc
  * @date   Created : Apr 26, 2012 23:26:40 JST
- *   Last Modified : May 19, 2012 18:17:51 JST
+ *   Last Modified : Mar 20, 2013 18:02:53 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -20,6 +20,8 @@ TCatLoopManager::TCatLoopManager()
 {
    fLoops = new TList;
    fThreadPool = new Loop_t(kMaxLoop,kFALSE);
+   fThreadResume = new LoopResume_t(kMaxLoop,kFALSE);
+   fThreadSuspend = new LoopSuspend_t(kMaxLoop,kFALSE);
 }
 TCatLoopManager::~TCatLoopManager()
 {
@@ -74,7 +76,9 @@ Int_t TCatLoopManager::Resume(Int_t i)
       return kFALSE;
    }
 
-   fThreadPool->PushTask(*GetLoop(i),kIdle);
+//   fThreadPool->PushTask(*GetLoop(i),kIdle);
+   TCatLoopResume task;
+   fThreadResume->PushTask(task,GetLoop(i));
    return kTRUE;
 }
 
@@ -82,7 +86,9 @@ Int_t TCatLoopManager::Suspend(Int_t i)
 {
    TCatLoop *loop = GetLoop(i);
    if (!loop) return 0;
-   loop->Suspend();
+   TCatLoopSuspend task;
+   fThreadSuspend->PushTask(task,GetLoop(i));
+//   loop->Suspend();
    return 1;
 }
 
