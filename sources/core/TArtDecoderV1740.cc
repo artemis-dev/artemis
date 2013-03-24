@@ -2,7 +2,7 @@
 /**
  * @file   TArtDecoderV1740.cc
  * @date   Created : Dec 24, 2011 19:24:19 JST
- *   Last Modified : Feb 18, 2012 21:20:18 JST
+ *   Last Modified : Mar 06, 2013 17:37:24 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -63,7 +63,7 @@ int TArtDecoderV1740::Decode(unsigned char* &buf, const unsigned int& size,
 	  // printf("0x%08x\n",bufi[1]);
 	 // spill on tag
 	 TArtFadcRawDataObject *obj = 
-	   new TArtFadcRawDataObject(geo,-1,timestamp,bufi[0]);
+            new TArtFadcRawDataObject(geo,-1,timestamp,0,bufi[0]);
 	 //	  printf("spill tag %d at geo = %d timestamp = %u\n",nSpill[geo-1]++, geo,timestamp);
 	  rawseg->PutData(obj);
 //	 bufs += nw;
@@ -84,7 +84,7 @@ int TArtDecoderV1740::Decode(unsigned char* &buf, const unsigned int& size,
 	   int pBegin = (bufi[1]&0xffff);
 	   // printf("nSamples = %d\n",nSamples);
 	   TArtFadcRawDataObject *obj = 
-	     new TArtFadcRawDataObject(geo,ch,timestamp+pBegin*2,0);
+              new TArtFadcRawDataObject(geo,ch,timestamp,pBegin*2,0);
 	   bufs += 4;
 	   for (i = 0; i < nSamples; i++) {
 	     obj->AddSample(bufs[i]);

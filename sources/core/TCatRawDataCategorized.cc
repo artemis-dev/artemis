@@ -2,7 +2,7 @@
 /**
  * @file   TCatRawDataCategorized.cc
  * @date   Created : Feb 18, 2012 19:18:16 JST
- *   Last Modified : Oct 02, 2012 15:53:01 JST
+ *   Last Modified : Mar 15, 2013 14:08:54 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -32,19 +32,16 @@ TCatRawDataCategorized::~TCatRawDataCategorized()
 
 TObjArray* TCatRawDataCategorized::AddCat()
 {
-   TClonesArray &arr = *fCats;
-   return new (arr[arr.GetEntriesFast()]) TObjArray;
+   return (TObjArray*) fCats->ConstructedAt(fCats->GetEntriesFast());
 }
 
 TObjArray* TCatRawDataCategorized::AddDet()
 {
-   TClonesArray &arr = *fDets;
-   return new (arr[arr.GetEntriesFast()]) TObjArray;
+   return (TObjArray*) fDets->ConstructedAt(fDets->GetEntriesFast());
 }
 
 TRefArray* TCatRawDataCategorized::AddType()
 {
-   TClonesArray &arr = *fTypes;
-   return new (arr[arr.GetEntriesFast()]) TRefArray;
+   return (TRefArray*) fTypes->ConstructedAt(fTypes->GetEntriesFast());
 }
 

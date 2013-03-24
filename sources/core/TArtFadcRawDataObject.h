@@ -2,7 +2,7 @@
 /**
  * @file   TArtFadcRawDataObject.h
  * @date   Created : Dec 25, 2011 00:25:53 JST
- *   Last Modified : Dec 25, 2011 02:24:03 JST
+ *   Last Modified : Mar 06, 2013 18:09:46 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -20,8 +20,8 @@ class TArtFadcRawDataObject  : public TArtRawDataObject {
 
 public:
    TArtFadcRawDataObject();
-   TArtFadcRawDataObject(int ingeo, int inch, unsigned int timestamp, unsigned int pattern) 
-     : TArtRawDataObject(ingeo,inch,timestamp), nSample(0), fTimestamp(timestamp), fPattern(pattern)
+   TArtFadcRawDataObject(int ingeo, int inch, unsigned int timestamp, int offset,unsigned int pattern) 
+      : TArtRawDataObject(ingeo,inch,timestamp), nSample(0), fTimestamp(timestamp),fOffset(offset), fPattern(pattern)
       { ; }
    ~TArtFadcRawDataObject() {}
 
@@ -34,6 +34,7 @@ public:
    
    int GetNumSample() { return nSample; }
    unsigned int GetTimestamp() { return fTimestamp; }
+   unsigned int GetOffset() { return fOffset; }
    unsigned int GetPattern() { return fPattern; }
 
    virtual void Clear(const Option_t* = "");
@@ -43,6 +44,7 @@ protected:
    unsigned short fADC[kMaxSample]; //[nSample]
    unsigned short fClock[kMaxSample]; //[nSample]
    unsigned int fTimestamp;
+   int fOffset;
    unsigned int fPattern;
    //   vector<int> fADC;
    
