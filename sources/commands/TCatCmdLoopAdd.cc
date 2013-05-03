@@ -2,7 +2,7 @@
 /**
  * @file   TCatCmdLoopAdd.cc
  * @date   Created : May 02, 2012 16:02:35 JST
- *   Last Modified : May 02, 2012 17:28:12 JST
+ *   Last Modified : Apr 25, 2013 00:19:24 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -173,7 +173,7 @@ Bool_t TCatCmdLoopAdd::LoadYAML(TString filename, TFolder *thisLoop)
       }
       l->SetEventStore(evt);
    } catch (YAML::KeyNotFound& e){
-      delete evt;
+      if (evt) delete evt;
    }
    return kTRUE;
 }

@@ -65,7 +65,36 @@ Long_t TCatCmdXval::Cmd(vector<TString> tokens)
 Long_t TCatCmdXval::Run(TPad *pad, Double_t *x, Double_t *y) 
 {
    if(pad==NULL) return 0;
+   
+   pad->AddExec("ex_xval","TCatCmdXval::Instance()->GetEvent()");
+   pad->WaitPrimitive();
+   TObject *obj = pad->GetListOfPrimitives()->Last();
+   if (obj->IsA() != TLatex::Class()) {
+      fX = fY = 0;
+      return 0;
+   }
+   TLatex *latex = (TLatex*) obj;
+   pad->GetListOfPrimitives()->RemoveLast();
+   fX = latex->GetX();
+   fY = latex->GetY();
+   delete latex;
 
+   Bool_t display = x==NULL && y==NULL;
+   if(display){
+     printf("[xval] X: %f, Y: %f\n",fX,fY);     
+   }
+
+   if(x!=NULL) *x = fX;
+   if(y!=NULL) *y = fY;
+
+   return 1;
+}
+
+Long_t TCatCmdXval::Run(Double_t *x, Double_t *y) 
+{
+   TPad *pad = (TPad*) gPad;
+   if(pad==NULL) return 0;
+   
    pad->AddExec("ex_xval","TCatCmdXval::Instance()->GetEvent()");
    pad->WaitPrimitive();
    TObject *obj = pad->GetListOfPrimitives()->Last();

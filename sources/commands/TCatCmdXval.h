@@ -24,6 +24,7 @@ public:
    static TCatCmdXval* Instance();
    Long_t Cmd(vector<TString> tokens);
    Long_t Run(TPad *pad = (TPad*) gPad, Double_t *x=NULL, Double_t *y=NULL); 
+   Long_t Run(Double_t *x, Double_t *y); 
    void GetEvent();
    Double_t GetX() const{return fX;}
    Double_t GetY() const{return fY;}
