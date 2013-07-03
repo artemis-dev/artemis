@@ -48,6 +48,7 @@ TVirtualPad *TCatPadManager::Next()
 {
    GetCanvas();
    if (!HasChild()) {
+      fCurrentPadId = 0;
       return fCurrent->cd(0);
    } else if (fCurrentPadId + 1 <= GetNumChild()) {
       fCurrentPadId++;
@@ -55,6 +56,16 @@ TVirtualPad *TCatPadManager::Next()
    } else {
       return fCurrent->cd((fCurrentPadId=1));
    }
+}
+
+TVirtualPad *TCatPadManager::Current()
+{
+   fCurrent->GetPad(fCurrentPadId);
+}
+
+TVirtualPad* TCatPadManager::Get(Int_t idx)
+{
+   fCurrent->GetPad(idx);
 }
 
 TCanvas *TCatPadManager::GetCanvas() 

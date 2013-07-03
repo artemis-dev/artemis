@@ -23,6 +23,7 @@ SUBSRC = \
 	TCatCmdHstore.cc \
 	TCatCmdSave.cc \
 	TCatCmdMacro.cc \
+	TCatCmdLg.cc \
 	TCatCmdXval.cc
 SUBOBJ = $(SUBSRC:.cc=.o)
 SUBHDR = $(SUBSRC:.cc=.h) 

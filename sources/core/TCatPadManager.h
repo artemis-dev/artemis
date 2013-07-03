@@ -20,6 +20,8 @@ public:
    ~TCatPadManager();
    static TCatPadManager *Instance();
    TVirtualPad *Next();
+   TVirtualPad *Current();
+   TVirtualPad *Get(Int_t idx);
    TCanvas *GetCanvas();
    void Closed();
    Bool_t HasChild();
