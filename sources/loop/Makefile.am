@@ -8,7 +8,15 @@ SUBSRC = \
 	TCatCategorizingProcessor.cc \
 	TCatEventCollection.cc \
 	TCatEventStore.cc \
-	TCatRIDFEventStore.cc 
+	TCatRIDFEventStore.cc \
+	TConditionBit.cc \
+	TLoop.cc \
+	TEventObject.cc \
+	TEventCollection.cc \
+	TLoopManager.cc \
+	TLoopControl.cc \
+	TProcessor.cc
+
 
 
 SUBOBJ = $(SUBSRC:.cc=.o)

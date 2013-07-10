@@ -27,6 +27,14 @@
 #pragma link C++ class TCatEventStore;
 #pragma link C++ class TThreadPoolTaskImp<TCatLoop, EProc>;
 
+#pragma link C++ class art::TProcessor;
+#pragma link C++ class art::TLoop;
+#pragma link C++ class art::TLoopManager;
+#pragma link C++ class art::TConditionBit;
+#pragma link C++ class art::TEventObject;
+#pragma link C++ class art::TEventCollection;
+
+
 #endif /* __CINT__ */
 
 #endif // end of #ifdef CATLOOP_LINKDEF_H
