@@ -16,6 +16,8 @@ SUBSRC = \
 	TLoopManager.cc \
 	TLoopControl.cc \
 	TProcessor.cc \
+	TParameter.cc \
+	TParameterStrings.cc \
 	TTimerProcessor.cc
 
 

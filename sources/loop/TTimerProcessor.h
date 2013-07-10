@@ -1,6 +1,6 @@
 /* $Id:$ */
 /**
- * @file   TCatTimerProcessor.h
+ * @file   TTimerProcessor.h
  * @date   Created : Jun 22, 2012 21:22:45 JST
  *   Last Modified : 
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
@@ -8,20 +8,25 @@
  *  
  *    Copyright (C)2012
  */
-#ifndef TCATTIMERPROCESSOR_H
-#define TCATTIMERPROCESSOR_H
+#ifndef TTIMERPROCESSOR_H
+#define TTIMERPROCESSOR_H
 
-#include "TCatProcessor.h"
+#include "TProcessor.h"
+namespace art {
+   class TTimerProcessor;
+}
 
-class TCatTimerProcessor  : public TCatProcessor {
+class art::TTimerProcessor  : public TProcessor {
 
 public:
-   TCatTimerProcessor();
-   ~TCatTimerProcessor();
+   TTimerProcessor();
+   ~TTimerProcessor();
 
    virtual void BeginOfRun();
    virtual void EndOfRun();
 
 protected:
+
+   ClassDef(TTimerProcessor,1);
 };
-#endif // end of #ifdef TCATTIMERPROCESSOR_H
+#endif // end of #ifdef TTIMERPROCESSOR_H
