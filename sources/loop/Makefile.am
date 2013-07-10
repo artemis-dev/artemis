@@ -15,7 +15,8 @@ SUBSRC = \
 	TEventCollection.cc \
 	TLoopManager.cc \
 	TLoopControl.cc \
-	TProcessor.cc
+	TProcessor.cc \
+	TTimerProcessor.cc
 
 
 
