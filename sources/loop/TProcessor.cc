@@ -10,7 +10,9 @@
  */
 #include "TProcessor.h"
 #include <TClass.h>
+#include <TROOT.h>
 #include <yaml-cpp/yaml.h>
+#include <iostream>
 
 art::TProcessor::TProcessor()
    :  fParameters(NULL), fInitialized(kFALSE)
@@ -103,3 +105,30 @@ void art::TProcessor::PrintDescriptionYAML()
    
 }
 
+void operator >> (const YAML::Node &node, art::TProcessor *&proc)
+{
+   std::string name, type;
+   proc = NULL;
+   try {
+      node["name"] >> name;
+      node["type"] >> type;
+   } catch (YAML::KeyNotFound& e) {
+      std::cout << e.what() << std::endl;
+      return;
+   }
+   TClass *cls = gROOT->GetClass(type.data());
+   if (!cls) {
+      std::cout << "  no such processor, or processor is not register in dictionary" << std::endl;
+      std::cout << "  " << name << " " << type  << std::endl;
+      return;
+   }
+   proc = (art::TProcessor*) cls->New();
+   art::TParameterStrings *str = new art::TParameterStrings;
+   try {
+      node["parameter"] >> str;
+   } catch (YAML::KeyNotFound& e) {
+      // nothing to do with no paramter for now
+      // std::cout << e.what() << std::endl;
+   }
+   proc->SetParameters(str);
+}

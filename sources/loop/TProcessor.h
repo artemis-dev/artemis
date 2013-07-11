@@ -19,6 +19,12 @@ namespace art {
    class TProcessor;
 }
 
+namespace YAML {
+   class Node;
+}
+
+void operator >> (const YAML::Node &node, art::TProcessor *&proc);
+   
 class art::TProcessor  : public TNamed {
 
 public:

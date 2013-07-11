@@ -20,9 +20,13 @@
 namespace art {
    class TParameterStrings;
 }
+namespace YAML {
+   class Node;
+}
 
+void operator >> (const YAML::Node &node, art::TParameterStrings *&str);
 
-class art::TParameterStrings  : public TObject {
+class art::TParameterStrings : public TObject {
 
 public:
    TParameterStrings();

@@ -11,9 +11,11 @@
 #include "TLoop.h"
 
 #include <fstream>
+#include <yaml-cpp/yaml.h>
 
 #include <TProcessID.h>
 #include <TRint.h>
+
 
 ClassImp(art::TLoop);
 
@@ -59,6 +61,29 @@ Bool_t art::TLoop::AddProcess(const char *name, TCatProcessor *proc)
 #endif
 Bool_t art::TLoop::Load(const char* filename)
 {
+   std::ifstream fin(filename);
+   YAML::Parser parser(fin);
+   YAML::Node doc;
+   std::string name, type, value;
+   
+   parser.GetNextDocument(doc);
+   fin.close();
+   try {
+      const YAML::Node &node = doc["Processor"];
+      // iterate for all the processors
+      for (YAML::Iterator it = node.begin(); it != node.end(); it++) {
+         TProcessor *proc = NULL;
+         (*it) >> proc;
+         if (!proc) return kFALSE;
+         fProcessors.push_back(proc);
+      }
+   } catch (YAML::KeyNotFound& e) {
+      std::cout << e.what() << std::endl;
+   } catch (YAML::Exception &e) {
+      std::cout << "Error Occured" << std::endl;
+      std::cout << e.what() << std::endl;
+      return kFALSE;
+   }
    return kTRUE;
 }
 

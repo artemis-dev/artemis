@@ -31,6 +31,7 @@ art::TLoop* art::TLoopManager::Add(const char *filename)
 {
    TLoop *loop = new TLoop;
    fLoops->Add(loop);
+   loop->Load(filename);
    return loop;
 }
 

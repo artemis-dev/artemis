@@ -21,13 +21,13 @@ art::TTimerProcessor::~TTimerProcessor()
 {
 }
 
-void art::TTimerProcessor::BeginOfRun()
+void art::TTimerProcessor::PreLoop()
 {
    gBenchmark->Reset();
    gBenchmark->Start("analysis");
 }
 
-void art::TTimerProcessor::EndOfRun()
+void art::TTimerProcessor::PostLoop()
 {
    gBenchmark->Show("analysis");
 }

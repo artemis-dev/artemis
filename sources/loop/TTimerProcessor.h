@@ -22,8 +22,8 @@ public:
    TTimerProcessor();
    ~TTimerProcessor();
 
-   virtual void BeginOfRun();
-   virtual void EndOfRun();
+   virtual void PreLoop();
+   virtual void PostLoop();
 
 protected:
 

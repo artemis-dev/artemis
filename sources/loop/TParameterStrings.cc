@@ -10,6 +10,11 @@
  */
 #include "TParameterStrings.h"
 
+#include <vector>
+#include <yaml-cpp/yaml.h>
+
+
+
 art::TParameterStrings::TParameterStrings()
 {
 }
@@ -103,3 +108,22 @@ Bool_t art::TParameterStrings::IsSet(const char* name)
    return fParamMap[key].size() > 0;
 }
 
+void operator >> (const YAML::Node &node, art::TParameterStrings *&str) {
+   std::vector <TString> prm;
+   std::string name,value;
+   for (YAML::Iterator it = node.begin(); it != node.end(); it++) {
+      prm.clear();
+      const YAML::Node &param = *it;
+      param["name"] >> name;
+      if (param["value"].Type() == YAML::NodeType::Scalar) {
+         param["value"] >> value;
+         prm.push_back(value);
+      } else if (param["value"].Type() == YAML::NodeType::Sequence) {
+         for (YAML::Iterator itv = param["value"].begin(); itv != param["value"].end(); itv++) {
+            (*itv) >> value;
+            prm.push_back(value);
+         }
+      }
+      str->Add(name.data(),prm);
+   }
+}
