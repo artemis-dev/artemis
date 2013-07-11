@@ -12,9 +12,11 @@
 
 art::TEventCollection::TEventCollection()
 {
+   fObjects = new TList;
 }
 art::TEventCollection::~TEventCollection()
 {
+   delete fObjects;
 }
 
 

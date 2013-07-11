@@ -34,6 +34,7 @@
 #pragma link C++ class art::TEventCollection;
 #pragma link C++ class art::TProcessor;
 #pragma link C++ class art::TTimerProcessor;
+#pragma link C++ class art::TCounterEventStore;
 
 
 #endif /* __CINT__ */

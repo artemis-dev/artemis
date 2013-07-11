@@ -18,7 +18,8 @@ SUBSRC = \
 	TProcessor.cc \
 	TParameter.cc \
 	TParameterStrings.cc \
-	TTimerProcessor.cc
+	TTimerProcessor.cc \
+	TCounterEventStore.cc 
 
 
 

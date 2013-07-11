@@ -31,6 +31,8 @@ public:
     * enumeration for conditions 
     */
    enum EProc {kRunning, kBeginOfRun, kEndOfRun, kStopEvent, kStopLoop};
+   static const char* kConditionName;
+
 
    TLoop();
    ~TLoop();
@@ -42,10 +44,10 @@ public:
    virtual void        Clear(Option_t * /*option*/ ="") { }
 
    Bool_t Load(const char* filename);
-   TConditionBit *GetCondition() { return &fCondition; }
+   TConditionBit *GetCondition() { return fCondition; }
 
 private:
-   TConditionBit fCondition;
+   TConditionBit *fCondition;
    
    TEventCollection   *fEventCollection;
    std::list<TProcessor*>   fProcessors;

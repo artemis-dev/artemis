@@ -16,17 +16,20 @@
 #include <TProcessID.h>
 #include <TRint.h>
 
+const char* art::TLoop::kConditionName = "condition";
 
 ClassImp(art::TLoop);
 
 art::TLoop::TLoop()
 {
    fEventCollection = new TEventCollection;
+   fCondition       = new TConditionBit;
 }
 
 art::TLoop::~TLoop()
 {
    delete fEventCollection;
+   delete fCondition;
 }
 
 #if 0
@@ -84,6 +87,7 @@ Bool_t art::TLoop::Load(const char* filename)
       std::cout << e.what() << std::endl;
       return kFALSE;
    }
+   Init();
    return kTRUE;
 }
 
@@ -94,6 +98,8 @@ Bool_t art::TLoop::Init()
    std::list<TProcessor*>::iterator itrEnd   = fProcessors.end();
    // initialization function
 //   fEventCollection->Clear();
+   fEventCollection->Add(kConditionName,fCondition,kTRUE);
+   fCondition->Set(kBeginOfRun);
    for (itr = itrBegin; itr!=itrEnd; itr++) {
       (*itr)->Init(fEventCollection);
    }
@@ -107,14 +113,13 @@ Bool_t art::TLoop::Resume()
    std::list<TProcessor*>::iterator itrBegin = fProcessors.begin();
    std::list<TProcessor*>::iterator itrEnd   = fProcessors.end();
    // if the loop is already running, do nothing
-   if (fCondition.IsSet(kRunning)) return kFALSE;
-   printf("runing\n");
+   if (fCondition->IsSet(kRunning)) return kFALSE;
    // set status as running
-   fCondition.Set(kRunning);
+   fCondition->Set(kRunning);
    // if the loop start at the first time, call BeginOfRun
-   if (fCondition.IsSet(kBeginOfRun)) {
+   if (fCondition->IsSet(kBeginOfRun)) {
       for_each(itrBegin,itrEnd,std::mem_fun(&TProcessor::BeginOfRun));
-      fCondition.Unset(kBeginOfRun);
+      fCondition->Unset(kBeginOfRun);
    }
    // do prerun
    // For the special call to remap branch etc.
@@ -124,25 +129,24 @@ Bool_t art::TLoop::Resume()
       Int_t objectNumber = TProcessID::GetObjectCount();
       for (itr = itrBegin; itr != itrEnd; itr++) {
          (*itr)->Process();
-         if (fCondition.IsSet(kStopEvent)) {
-            fCondition.Unset(kStopEvent);
+         if (fCondition->IsSet(kStopEvent)) {
+            fCondition->Unset(kStopEvent);
             break;
          }
       }
       TProcessID::SetObjectCount(objectNumber);
-      if (fCondition.IsSet(kStopLoop)) {
+      if (fCondition->IsSet(kStopLoop)) {
          // requested to stop run
-         fCondition.Unset(kStopLoop);
+         fCondition->Unset(kStopLoop);
          break;
       }
    }
-   printf("stopping");
    for_each(itrBegin,itrEnd,std::mem_fun(&TProcessor::PostLoop));
-   if (fCondition.IsSet(kEndOfRun)) {
-      fCondition.Unset(kEndOfRun);
+   if (fCondition->IsSet(kEndOfRun)) {
+      fCondition->Unset(kEndOfRun);
       for_each(itrBegin,itrEnd,std::mem_fun(&TProcessor::EndOfRun));
    }
-   fCondition.Unset(kRunning);
+   fCondition->Unset(kRunning);
    ((TRint*)gApplication)->SetPrompt("artemis [%d] ");
 
    return kTRUE;
