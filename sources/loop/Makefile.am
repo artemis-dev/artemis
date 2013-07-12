@@ -19,7 +19,11 @@ SUBSRC = \
 	TParameter.cc \
 	TParameterStrings.cc \
 	TTimerProcessor.cc \
-	TCounterEventStore.cc 
+	TCounterEventStore.cc \
+	TRandomNumberEventStore.cc \
+	TRandomNumberProcessor.cc \
+	TTreeEventStore.cc \
+	TOutputTreeProcessor.cc
 
 
 

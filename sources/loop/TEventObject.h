@@ -35,7 +35,9 @@ public:
    TEventObject(const char* name,TObject *obj, Bool_t isPassive = kTRUE);
    ~TEventObject();
 
-   void** GetObjectRef() { return &fP; }
+   void**  GetObjectRef() { return &fP; }
+   Bool_t  IsPassive() { return fIsPassive; }
+   TClass *GetClass() { return fClass; }
 private:
    void   *fP;
    Bool_t  fIsPassive;

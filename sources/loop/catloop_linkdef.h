@@ -34,7 +34,13 @@
 #pragma link C++ class art::TEventCollection;
 #pragma link C++ class art::TProcessor;
 #pragma link C++ class art::TTimerProcessor;
+#pragma link C++ class art::TOutputTreeProcessor;
 #pragma link C++ class art::TCounterEventStore;
+#pragma link C++ class art::TRandomNumberEventStore;
+#pragma link C++ class art::TRandomNumberProcessor;
+#pragma link C++ class art::TTreeEventStore;
+#pragma link C++ class art::TSimpleData;
+
 
 
 #endif /* __CINT__ */

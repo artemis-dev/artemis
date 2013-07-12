@@ -78,6 +78,7 @@ namespace art {
       virtual TString Type() const{
          // not implemented
          if (typeid(T) == typeid(Int_t)) return "Int_t";
+         if (typeid(T) == typeid(Long_t)) return "Long_t";
          if (typeid(T) == typeid(Float_t)) return "Float_t";
          if (typeid(T) == typeid(Double_t)) return "Double_t";
          if (typeid(T) == typeid(Bool_t)) return "Bool_t";
@@ -118,6 +119,11 @@ namespace art {
       }
       
       static TString ToString(Int_t prm, int n) {
+         TString str;
+         str += prm;
+         return str;
+      }
+      static TString ToString(Long_t prm, int n) {
          TString str;
          str += prm;
          return str;

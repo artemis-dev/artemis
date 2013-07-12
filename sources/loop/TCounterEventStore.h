@@ -12,7 +12,6 @@
 #define TCOUNTEREVENTSTORE_H
 
 #include <TProcessor.h>
-#include <TEventCollection.h>
 #include <TConditionBit.h>
 
 namespace art {

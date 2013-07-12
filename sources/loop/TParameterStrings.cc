@@ -77,6 +77,12 @@ void art::TParameterStrings::GetValue(const char* name, Int_t& param)
    param = fParamMap[name][0].Atoi();
 }
 
+void art::TParameterStrings::GetValue(const char* name, Long_t& param)
+{
+   if (fParamMap[name].size()==0) return;
+   param = fParamMap[name][0].Atoll();
+}
+
 void art::TParameterStrings::GetValue(const char* name, Float_t& param)
 {
    if (fParamMap[name].size()==0) return;

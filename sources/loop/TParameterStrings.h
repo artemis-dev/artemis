@@ -42,6 +42,7 @@ public:
    void GetValue(const char* name, StringVec_t& param);
 
    void GetValue(const char* name, Int_t& param);
+   void GetValue(const char* name, Long_t& param);
    void GetValue(const char* name, Float_t& param);
    void GetValue(const char* name, Bool_t& param);
    void GetValue(const char* name, TString& param);

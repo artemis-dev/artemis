@@ -20,7 +20,7 @@ art::TEventObject::~TEventObject()
 }
 
 art::TEventObject::TEventObject(const char* name, TObject *obj, Bool_t isPassive)
-   : TNamed(name,name), fP(obj),fIsPassive(isPassive), fClass(obj->Class())
+   : TNamed(name,name), fP(obj),fIsPassive(isPassive)
 {
-   
+   if (obj) fClass = obj->IsA();
 }

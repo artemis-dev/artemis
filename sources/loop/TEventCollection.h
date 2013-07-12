@@ -29,6 +29,7 @@ public:
 
    virtual void   Add(const char* name, TObject* obj, Bool_t isPassive = kTRUE);
    virtual TEventObject* Get(const char* name);
+   virtual TIter* GetIter() { return new TIter(fObjects); }
    
 protected:
    TList *fObjects;
