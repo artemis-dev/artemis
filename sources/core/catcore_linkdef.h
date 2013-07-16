@@ -25,6 +25,8 @@
 #pragma link C++ class TCatStreamBuf;
 #pragma link C++ class TCatOstream;
 
+#pragma link C++ class art::TConfigFile;
+
 // #pragma link C++ class TCatParameterI;
 // #pragma link C++ class TCatParameterF;
 // #pragma link C++ class TCatParameterS;
