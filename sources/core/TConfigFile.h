@@ -36,7 +36,8 @@ private:
    TString   fComment;
    TString   fDelim;
    TString   fEOL;
-   TList    *fTokens;
+   TObjArray *fTokens;
+   Int_t     fIdx;
 
    ClassDef(TConfigFile,1);
 };

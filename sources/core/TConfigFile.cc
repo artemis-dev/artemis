@@ -25,7 +25,6 @@ art::TConfigFile::TConfigFile(const char *filename,
    if (!fFile) {
       perror("file not exist");
    }
-   fTokens = new TList;
    fEOL.Resize(1);
 }
 art::TConfigFile::~TConfigFile()
@@ -37,7 +36,11 @@ art::TConfigFile::~TConfigFile()
 
 TString art::TConfigFile::GetNextToken()
 {
-   if (!fTokens->GetEntries()) {
+   if (fTokens && fIdx >= fTokens->GetEntriesFast()) {
+      delete fTokens;
+      fTokens = NULL;
+   }
+   if (!fTokens) {
       TString line;
       while (1) { 
          line.ReadLine(fFile);
@@ -60,17 +63,12 @@ TString art::TConfigFile::GetNextToken()
          line.Replace(line.Index(fEOL),line.Sizeof()-line.Index(fEOL),"");
       }
 
-      TObjArray *arr = line.Tokenize(fDelim);
-      for (Int_t i=0; i!=arr->GetEntriesFast();i++) {
-         fTokens->AddLast(arr->At(i)->Clone());
-      }
-      delete arr;
+      fTokens = line.Tokenize(fDelim);
+      fIdx = 0;
    }
-   if (!fTokens->GetEntries()) return TString("");
+   if (!fTokens->GetEntriesFast()) return TString("");
 
-   TObjString *strobj = (TObjString*) fTokens->First();
-   TString str =strobj->String();
-   fTokens->RemoveFirst();
-   delete strobj;
-   return str;
+   TObjString *strobj = (TObjString*) fTokens->At(fIdx);
+   fIdx++;
+   return strobj->String();
 }
