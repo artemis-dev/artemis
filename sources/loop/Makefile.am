@@ -23,8 +23,11 @@ SUBSRC = \
 	TRandomNumberEventStore.cc \
 	TRandomNumberProcessor.cc \
 	TTreeEventStore.cc \
-	TOutputTreeProcessor.cc
-
+	TOutputTreeProcessor.cc \
+	TRawDataObject.cc \
+	TSegmentedData.cc \
+	TCategorizedData.cc \
+	TMapTable.cc 
 
 
 SUBOBJ = $(SUBSRC:.cc=.o)
@@ -35,11 +38,10 @@ DICTSRC = catloop_dict.cc
 DICTOBJ = $(DICTSRC:.cc=.o)
 DICTHDR = $(DICTSRC:.cc=.h)
 
-OPTHDR = 
+OPTHDR = TDataSource.h
 INCDIR = ../../include
 
 AUTOMAKE_OPTIONS = foreign
-INCLUDES = -I$(INCDIR) -I$(ROOTSYS)/include
 CXXFLAGS = -fPIC  $(shell root-config --cflags) -I$(INCDIR) -I$(TARTSYS)/include -Wall -I../core -O2
 LDFLAGS = $(shell root-config --glibs)
 
@@ -57,7 +59,7 @@ libcatloop_la_LDFLAGS = $(LDFLAGS)
 
 $(DICTSRC): $(SUBHDR) catloop_linkdef.h
 	@echo Making $(DICTSRC) ...
-	rootcint -f $@ -c $(INCLUDES) $(CXXFLAGS)  $^
+	rootcint -f $@ -c $(CXXFLAGS)  $^
 
 header: $(include_HEADERS)
 	@echo Installing header to $(INCDIR)

@@ -40,6 +40,10 @@
 #pragma link C++ class art::TRandomNumberProcessor;
 #pragma link C++ class art::TTreeEventStore;
 #pragma link C++ class art::TSimpleData;
+#pragma link C++ class art::TRawDataObject;
+#pragma link C++ class art::TSegmentedData;
+#pragma link C++ class art::TCategorizedData;
+#pragma link C++ class art::TMapTable;
 
 
 
