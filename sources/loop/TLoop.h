@@ -17,11 +17,11 @@
 
 #include <TConditionBit.h>
 #include <TEventCollection.h>
-#include <TProcessor.h>
 
 
 namespace art {
    class TLoop;
+   class TProcessor;
 };
 
 class art::TLoop : public TObject {

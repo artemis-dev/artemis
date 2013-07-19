@@ -14,6 +14,7 @@
 #include <TEventCollection.h>
 #include <TParameterStrings.h>
 #include <TParameter.h>
+#include <TLoop.h>
 
 namespace art {
    class TProcessor;
@@ -33,6 +34,11 @@ public:
    TProcessor();
    virtual ~TProcessor();
 
+   // parant init should called
+   void InitProc(TEventCollection *col) {
+      fCondition = (TConditionBit**)(col->Get(TLoop::kConditionName)->GetObjectRef());
+      Init(col);
+   }
    virtual void Init (TEventCollection *) {;}
    virtual void BeginOfRun() {;}
    virtual void EndOfRun() {;}
@@ -40,6 +46,10 @@ public:
    virtual void PreLoop() {;}
    virtual void PostLoop() {;}
 
+   virtual void SetStopLoop() { (*fCondition)->Set(TLoop::kStopLoop); }
+   virtual void SetStopEvent() { (*fCondition)->Set(TLoop::kStopEvent); }
+   virtual void SetEndOfRun() { (*fCondition)->Set(TLoop::kEndOfRun); }
+   
    virtual void PrintDescriptionYAML();
 
 
@@ -62,6 +72,7 @@ private:
 
 protected:
    Bool_t fOutputIsTransparent;    // output transparency
+   TConditionBit **fCondition; // condition bit to control loop
    TParameterStrings *fParameters; // parameter strings
    
    // register processor parameter

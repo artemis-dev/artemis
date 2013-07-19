@@ -32,7 +32,6 @@ public:
    virtual void Process();
    
 private:
-   TConditionBit **fCondition;
    Int_t           fMaxLoop;
    Float_t        fMin;
    Float_t        fMax;

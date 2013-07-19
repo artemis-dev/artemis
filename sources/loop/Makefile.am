@@ -38,7 +38,7 @@ DICTSRC = catloop_dict.cc
 DICTOBJ = $(DICTSRC:.cc=.o)
 DICTHDR = $(DICTSRC:.cc=.h)
 
-OPTHDR = TDataSource.h
+OPTHDR = TDataSource.h TTypes.h
 INCDIR = ../../include
 
 AUTOMAKE_OPTIONS = foreign

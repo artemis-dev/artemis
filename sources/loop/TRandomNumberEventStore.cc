@@ -32,7 +32,6 @@ void art::TRandomNumberEventStore::Init(TEventCollection *col)
 {
    fData = new TSimpleData;
    col->Add(fOutputColName,fData,fOutputIsTransparent);
-   fCondition = (TConditionBit**)(col->Get(TLoop::kConditionName)->GetObjectRef());
 }
 void art::TRandomNumberEventStore::Process()
 {
@@ -40,7 +39,7 @@ void art::TRandomNumberEventStore::Process()
    fNumLoop++;
 
    if (fMaxLoop <= fNumLoop) {
-      (*fCondition)->Set(TLoop::kStopLoop);
-      (*fCondition)->Set(TLoop::kEndOfRun);
+      SetStopLoop();
+      SetEndOfRun();
    }
 }

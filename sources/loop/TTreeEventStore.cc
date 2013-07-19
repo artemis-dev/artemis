@@ -66,7 +66,7 @@ void art::TTreeEventStore::Process()
    fTree->GetEntry(fEventNum);
    fEventNum++;
    if (fMaxEventNum == fEventNum) {
-      (*fCondition)->Set(TLoop::kStopLoop);
-      (*fCondition)->Set(TLoop::kEndOfRun);
+      SetStopLoop();
+      SetEndOfRun();
    }
 }

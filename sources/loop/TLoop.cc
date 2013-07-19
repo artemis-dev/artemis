@@ -15,6 +15,7 @@
 
 #include <TProcessID.h>
 #include <TRint.h>
+#include <TProcessor.h>
 
 const char* art::TLoop::kConditionName = "condition";
 
@@ -101,7 +102,7 @@ Bool_t art::TLoop::Init()
    fEventCollection->Add(kConditionName,fCondition,kTRUE);
    fCondition->Set(kBeginOfRun);
    for (itr = itrBegin; itr!=itrEnd; itr++) {
-      (*itr)->Init(fEventCollection);
+      (*itr)->InitProc(fEventCollection);
    }
    return kTRUE;
 }

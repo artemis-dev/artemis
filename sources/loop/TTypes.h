@@ -8,15 +8,15 @@
  *  
  *    Copyright (C)2012
  */
-#ifndef TTYPES_H
-#define TTYPES_H
+#ifndef ART_TTYPES_H
+#define ART_TTYPES_H
 
-
+#include <vector> 
 class TString;
-
-typedef std::vector<TString> StringVec_t;
-typedef std::vector<float>   FloatVec_t;
-typedef std::vector<int>     IntVec_t;
-
+namespace art {
+   typedef std::vector<TString> StringVec_t;
+   typedef std::vector<float>   FloatVec_t;
+   typedef std::vector<int>     IntVec_t;
+}
 
 #endif // end of #ifdef TTYPES_H

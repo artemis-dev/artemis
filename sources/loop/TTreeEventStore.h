@@ -34,7 +34,6 @@ public:
    virtual void Process();
    
 private:
-   TConditionBit **fCondition;
    
    TString  fFileName;
    TString  fTreeName;
