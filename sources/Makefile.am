@@ -1,2 +1,2 @@
-SUBDIRS = core loop commands mc main 
+SUBDIRS = core loop ridf commands mc main 
 

@@ -30,6 +30,9 @@ TArtRint::TArtRint(int* argc, char** argv, void* options, int numOptions, Bool_t
    TFolder *top = new TFolder("artemis","artemis");
    gROOT->GetListOfBrowsables()->Add(top);
 
+   // set prompt
+   SetPrompt("artemis [%d] ");
+   
    // load mass table
    TString filepath;
    if (!gEnv) {

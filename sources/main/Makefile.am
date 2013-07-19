@@ -16,6 +16,7 @@ CXXFLAGS = -Iinclude $(shell root-config --cflags) -I$(INCDIR) -I$(TARTSYS)/incl
 LDFLAGS = $(shell root-config --glibs) \
 	-L../commands/.libs -lcatcmd \
 	-L../loop/.libs -lcatloop \
+	-L../ridf/.libs -lartridf \
 	-L../core/.libs -lcatcore \
 	-L$(TARTSYS)/lib -lanacore \
 	-L../mc/.libs -lcatmc -lyaml-cpp
