@@ -75,7 +75,7 @@ AC_CONFIG_FILES([Makefile
                  sources/Makefile
                  sources/core/Makefile
                  sources/loop/Makefile
-                 sources/ridf/Makefile
+                 sources/loop/ridf/Makefile
                  sources/commands/Makefile
                  sources/uhodo/Makefile
                  sources/mc/Makefile

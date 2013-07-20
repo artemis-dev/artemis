@@ -11,6 +11,8 @@
 #ifndef TDATASOURCE_H
 #define TDATASOURCE_H
 
+#include <TROOT.h>
+
 namespace art {
    class TDataSource;
 }

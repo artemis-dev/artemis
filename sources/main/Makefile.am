@@ -1,5 +1,6 @@
 SUBSRC = \
-	TArtRint.cc 
+	TArtRint.cc
+
 SUBOBJ = $(SUBSRC:.cc=.o)
 SUBHDR = $(SUBSRC:.cc=.h) 
 
@@ -16,14 +17,13 @@ CXXFLAGS = -Iinclude $(shell root-config --cflags) -I$(INCDIR) -I$(TARTSYS)/incl
 LDFLAGS = $(shell root-config --glibs) \
 	-L../commands/.libs -lcatcmd \
 	-L../loop/.libs -lcatloop \
-	-L../ridf/.libs -lartridf \
 	-L../core/.libs -lcatcore \
 	-L$(TARTSYS)/lib -lanacore \
 	-L../mc/.libs -lcatmc -lyaml-cpp
 
 include_HEADERS = $(SUBHDR) $(SUBHDRF)
 bin_PROGRAMS = artemis
-artemis_SOURCES = $(SUBSRC) main.cc
+artemis_SOURCES = $(SUBSRC) main.cc 
 artemis_DEPENDENCIES = $(LIBCATCORE) $(LIBCATCMD)
 artemis_LDFLAGS = $(LDFLAGS)
 

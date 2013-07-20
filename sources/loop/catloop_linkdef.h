@@ -44,6 +44,7 @@
 #pragma link C++ class art::TSegmentedData;
 #pragma link C++ class art::TCategorizedData;
 #pragma link C++ class art::TMapTable;
+#pragma link C++ class art::TFileDataSource-;
 
 
 

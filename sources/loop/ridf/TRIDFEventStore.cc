@@ -14,11 +14,14 @@
 #include <TCategorizedData.h>
 #include <TSegmentedData.h>
 #include <TDataSource.h>
+#include <TFileDataSource.h>
+#include <TRawDataObject.h>
 #include <TLoop.h>
 
 //ClassImp(art::TRIDFEventStore);
 
 art::TRIDFEventStore::TRIDFEventStore()
+   : fMaxEventNum(0),fEventNum(0),fMaxBufSize(kMaxBufSize)
 {
    StringVec_t dummy;
    RegisterInputCollection("InputFiles","The names of input files",fFileName,dummy);
@@ -33,17 +36,19 @@ art::TRIDFEventStore::TRIDFEventStore()
    fRIDFData.fCategorizedData = new TCategorizedData;
    fRIDFData.fMapTable = NULL;
    fIsOnline = kFALSE;
+   fIsEOB = kTRUE;
+   fBuffer = new Char_t[fMaxBufSize];
 
 
    // register class decoders
    // Class 3 : event header  w/o timestamp
-   fClassDecoder[3] = ClassDecoderSkip;
+   fClassDecoder[3] = ClassDecoder03;
    // Class 4 : event segment
-   fClassDecoder[4] = ClassDecoderSkip;
+   fClassDecoder[4] = ClassDecoder04;
    // Class 5 : comment block
-   fClassDecoder[5] = ClassDecoderSkip;
+   fClassDecoder[5] = ClassDecoder05;
    // Class 6 : event header w/ timestamp
-   fClassDecoder[5] = ClassDecoderSkip;
+   fClassDecoder[6] = ClassDecoderSkip;
    // Class 8 : 
    fClassDecoder[8] = ClassDecoderSkip;
    // Class 9 : 
@@ -59,6 +64,7 @@ art::TRIDFEventStore::TRIDFEventStore()
 art::TRIDFEventStore::~TRIDFEventStore()
 {
    if (fRIDFData.fMapTable) delete fRIDFData.fMapTable;
+   if (fBuffer) delete [] fBuffer;
 }
 
 
@@ -128,7 +134,7 @@ void art::TRIDFEventStore::Process()
          if (fp) {
             fclose(fp);
             fFileName.erase(fFileName.begin());
-//            fDataSource = new TFileDataSource(filename);
+            fDataSource = new TFileDataSource(filename);
          }
       }
    }
@@ -145,7 +151,7 @@ void art::TRIDFEventStore::Process()
    // check data is available or not for shared memory data source
    if (!fDataSource->IsPrepared()) {
       // no data is available now
-      SetStopLoop();
+      SetStopEvent();
       return;
    }
 
@@ -155,8 +161,8 @@ void art::TRIDFEventStore::Process()
       if (fDataSource->Read((char*)&fHeader,sizeof(fHeader))) {
          // check the header validity
          if (fHeader.Layer() != 0 ||
-             (fHeader.ClassID() != 0 ||
-              fHeader.ClassID() != 1 ||
+             (fHeader.ClassID() != 0 &&
+              fHeader.ClassID() != 1 &&
               fHeader.ClassID() != 2 )
             ) {
             return;
@@ -186,6 +192,10 @@ void art::TRIDFEventStore::Process()
 
    // parse data if available
    while (1) {
+      memcpy(&fHeader,fBuffer+fOffset,sizeof(fHeader));
+      if (fHeader.ClassID() != 3 && fHeader.ClassID() != 8 && fHeader.ClassID() != 9) {
+         fHeader.Print();
+      }
       if (fClassDecoder[fHeader.ClassID()]) {
          fClassDecoder[fHeader.ClassID()](fBuffer,fOffset,&fRIDFData);
       } else {
@@ -208,33 +218,90 @@ void art::TRIDFEventStore::Process()
 }
 
 
-// dummy decoder to skip the data
+//----------------------------------------
+// Class : any (to be skip)
+// dummy decoder to skip the data for debug
 void art::TRIDFEventStore::ClassDecoderSkip(Char_t *buf, Int_t& offset, struct RIDFData* ridfdata)
 {
    RIDFHeader header;
    memcpy(&header,buf+offset,sizeof(header));
-   printf("Class = %d\n",header.ClassID());
    offset += header.Size();
 }
+
+
+//----------------------------------------
+// Class : unknown
 // unknown class decoder to skip the data
 void art::TRIDFEventStore::ClassDecoderUnknown(Char_t *buf, Int_t& offset, struct RIDFData* ridfdata)
 {
    printf("Unkown Class\n");
    ClassDecoderSkip(buf,offset,ridfdata);
 }
+
+
+//----------------------------------------
+// Class : 03
 // decode the event header
 void art::TRIDFEventStore::ClassDecoder03(Char_t *buf, Int_t& offset, struct RIDFData* ridfdata)
 {
+   RIDFHeader header;
+   memcpy(&header,buf+offset,sizeof(header));
+   offset += sizeof(header);
+   offset += sizeof(int);
 }
+
+//----------------------------------------
+// Class : 04
 // decode the segment
 void art::TRIDFEventStore::ClassDecoder04(Char_t *buf, Int_t& offset, struct RIDFData* ridfdata)
 {
+   RIDFHeader header;
+   SegID segid;
+   Int_t index = offset;
+   Int_t size;
+   memcpy(&header,buf+offset,sizeof(header));
+   // offset should be incremented by the size written in header 
+   offset += header.Size();
+   // local valude o
+   index += sizeof(header);
+   // read segment id
+   memcpy(&segid,buf+index,sizeof(segid));
+   index += sizeof(segid);
+   // calculate segment size
+   size = header.Size() - sizeof(header) - sizeof(segid);
+   TObjArray *seg = ridfdata->fSegmentedData->FindSegmentByID(segid.Get());
+   if (!seg) ridfdata->fSegmentedData->NewSegment(segid.Get());
+
+//   TArtDecoder *decoder = TDecoderFactory::Instance()->GetDecoder(segid.Module());
+   TObject *decoder = NULL;
+   if (decoder) {
+//      decoder->Decode(&buf[index],size,seg);
+      TIter next(seg);
+      TRawDataObject *obj;
+      while ((obj = (TRawDataObject*) next())) {
+         ridfdata->fMapTable->Map(obj);
+         ridfdata->fCategorizedData->Add(obj);
+      }
+   } else {
+      printf("No such decoder for Module %d\n",segid.Module());
+   }
 }
+
+//----------------------------------------
+// Class : 05
 // decode the comment header
 void art::TRIDFEventStore::ClassDecoder05(Char_t *buf, Int_t& offset, struct RIDFData* ridfdata)
 {
+   RIDFCommentRunInfo info;
+   offset += sizeof(RIDFHeader) + sizeof(int)*2;
+   memcpy(&info,buf+offset,sizeof(info));
+   info.Print();
 }
+
+//----------------------------------------
+// Class : 06
 // decode the time stamp event header
 void art::TRIDFEventStore::ClassDecoder06(Char_t *buf, Int_t& offset, struct RIDFData* ridfdata)
 {
+   printf("Decoder 06\n");
 }
