@@ -1,4 +1,4 @@
-SUBDIR = ridf
+SUBDIRS = decoder ridf
 
 SUBSRC = \
 	TCatLoop.cc \
@@ -30,7 +30,8 @@ SUBSRC = \
 	TSegmentedData.cc \
 	TCategorizedData.cc \
 	TFileDataSource.cc \
-	TMapTable.cc 
+	TMapTable.cc \
+	TModuleDecoder.cc
 
 
 SUBOBJ = $(SUBSRC:.cc=.o)
@@ -45,7 +46,7 @@ OPTHDR = TDataSource.h TTypes.h
 INCDIR = ../../include
 
 AUTOMAKE_OPTIONS = foreign
-CXXFLAGS = -fPIC  $(shell root-config --cflags) -I$(INCDIR) -I$(TARTSYS)/include -Wall -I../core -O2
+CXXFLAGS = -fPIC  $(shell root-config --cflags) -I$(INCDIR)  -Wall -O2
 LDFLAGS = $(shell root-config --glibs)
 
 CXXFLAGS += @YAML_CPP_INCLUDE@
@@ -56,10 +57,10 @@ include_HEADERS = $(SUBHDR) $(SUBHDRF) $(OPTHDR)
 
 lib_LTLIBRARIES = libcatloop.la
 libcatloop_la_SOURCES = $(SUBSRC) $(DICTSRC)
-libcatloop_la_DEPENDENCIES = header
+libcatloop_la_DEPENDENCIES = header 
 # libcatloop_la_LIBADD = $(SUBOBJ)
 libcatloop_la_LDFLAGS = $(LDFLAGS)
-libcatloop_la_LIBADD   = ridf/libartridf.la
+libcatloop_la_LIBADD   = ridf/libartridf.la decoder/libartdecoder.la
 
 $(DICTSRC): $(SUBHDR) catloop_linkdef.h
 	@echo Making $(DICTSRC) ...

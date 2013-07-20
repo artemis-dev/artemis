@@ -270,7 +270,7 @@ void art::TRIDFEventStore::ClassDecoder04(Char_t *buf, Int_t& offset, struct RID
    // calculate segment size
    size = header.Size() - sizeof(header) - sizeof(segid);
    TObjArray *seg = ridfdata->fSegmentedData->FindSegmentByID(segid.Get());
-   if (!seg) ridfdata->fSegmentedData->NewSegment(segid.Get());
+   if (!seg) seg = ridfdata->fSegmentedData->NewSegment(segid.Get());
 
 //   TArtDecoder *decoder = TDecoderFactory::Instance()->GetDecoder(segid.Module());
    TObject *decoder = NULL;

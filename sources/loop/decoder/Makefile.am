@@ -1,12 +1,14 @@
 SUBSRC = \
-	TRIDFEventStore.cc 
+	TModuleDecoderV1190.cc \
+	TRawDataV1190.cc
+
 
 
 SUBOBJ = $(SUBSRC:.cc=.o)
 SUBHDR = $(SUBSRC:.cc=.h) 
 
 
-DICTSRC = artridf_dict.cc
+DICTSRC = artdecoder_dict.cc
 DICTOBJ = $(DICTSRC:.cc=.o)
 DICTHDR = $(DICTSRC:.cc=.h)
 
@@ -14,7 +16,7 @@ OPTHDR =
 INCDIR = ../../../include
 
 AUTOMAKE_OPTIONS = foreign
-CXXFLAGS = -fPIC -I$(INCDIR) $(shell root-config --cflags) -Wall -O2
+CXXFLAGS = -fPIC -I.. -I$(INCDIR) $(shell root-config --cflags)  -Wall -O2
 LDFLAGS = $(shell root-config --glibs)
 
 CXXFLAGS+= @YAML_CPP_INCLUDE@
@@ -23,14 +25,14 @@ LDFLAGS+= @YAML_CPP_LIB@
 
 include_HEADERS = $(SUBHDR) $(SUBHDRF) $(OPTHDR)
 
-noinst_LTLIBRARIES = libartridf.la
-libartridf_la_SOURCES = $(SUBSRC) $(DICTSRC)
-libartridf_la_DEPENDENCIES = header
-# libartridf_la_LIBADD = $(SUBOBJ)
-libartridf_la_LDFLAGS = $(LDFLAGS)
+noinst_LTLIBRARIES = libartdecoder.la
+libartdecoder_la_SOURCES = $(SUBSRC) $(DICTSRC)
+libartdecoder_la_DEPENDENCIES = header
+# libartdecoder_la_LIBADD = $(SUBOBJ)
+libartdecoder_la_LDFLAGS = $(LDFLAGS)
 
 
-$(DICTSRC): $(SUBHDR) artridf_linkdef.h
+$(DICTSRC): $(SUBHDR) artdecoder_linkdef.h
 	@echo Making $(DICTSRC) ...
 	rootcint -f $@ -c $(CXXFLAGS)  $^
 
