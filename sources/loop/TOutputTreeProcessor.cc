@@ -2,7 +2,7 @@
 /**
  * @file   TOutputTreeProcessor.cc
  * @date   Created : Jul 11, 2013 17:11:41 JST
- *   Last Modified : Jul 22, 2013 15:11:08 JST
+ *   Last Modified : Jul 22, 2013 17:56:08 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -44,11 +44,13 @@ void art::TOutputTreeProcessor::Process()
 }
 void art::TOutputTreeProcessor::PreLoop()
 {
-   TObject *br = 0;
-   TIter next(fTree->GetListOfBranches());
-   while ((br = next())) {
-      TEventObject *obj = (TEventObject*) fObjects->FindObject((TBranch*)br->GetName());
+   TObjArray *list = fTree->GetListOfBranches();
+   Int_t nBranch = list->GetEntriesFast();
+   for (Int_t i = 0; i!= nBranch; i++) {
+      TBranch *br = (TBranch*)list->At(i);
+      TEventObject *obj = (TEventObject*) fObjects->FindObject(br->GetName());
       if (!obj) {
+         printf("br : %s at %p\n",br->GetName(),obj);
          // something is wrong...
          continue;
       }
@@ -62,6 +64,7 @@ void art::TOutputTreeProcessor::PostLoop()
    while ((obj = next())) {
       ((TBranch*)obj)->ResetAddress();
    }
+   fFile->Write(0,TFile::kOverwrite);
 }
 void art::TOutputTreeProcessor::EndOfRun()
 {
