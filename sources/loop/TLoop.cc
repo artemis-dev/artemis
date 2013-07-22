@@ -13,6 +13,8 @@
 #include <fstream>
 #include <yaml-cpp/yaml.h>
 
+#include <algorithm>
+
 #include <TProcessID.h>
 #include <TRint.h>
 #include <TProcessor.h>
