@@ -2,7 +2,7 @@
 /**
  * @file   TRIDFEventStore.cc
  * @date   Created : Jul 12, 2013 17:12:35 JST
- *   Last Modified : Jul 22, 2013 18:39:59 JST
+ *   Last Modified : Jul 22, 2013 19:03:30 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -277,7 +277,6 @@ void art::TRIDFEventStore::ClassDecoder04(Char_t *buf, Int_t& offset, struct RID
       const Int_t &nData = seg->GetEntriesFast();
       for (Int_t i=0; i!=nData; i++) {
          TRawDataObject *obj = (TRawDataObject*) seg->At(i);
-         // mapping is too slow...
          ridfdata->fMapTable->Map(obj);
          ridfdata->fCategorizedData->Add(obj);
       }
