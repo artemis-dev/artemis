@@ -19,7 +19,8 @@ SUBSRC = \
 	TCatObjRefArray.cc\
 	TCatParameter.cc \
 	TCatParameterStrings.cc \
-	TCatParameterTable.cc
+	TCatParameterTable.cc \
+	TConfigFile.cc
 
 SUBOBJ = $(SUBSRC:.cc=.o)
 SUBHDR = $(SUBSRC:.cc=.h) TCatTypes.h

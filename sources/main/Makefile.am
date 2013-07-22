@@ -1,5 +1,6 @@
 SUBSRC = \
-	TArtRint.cc 
+	TArtRint.cc
+
 SUBOBJ = $(SUBSRC:.cc=.o)
 SUBHDR = $(SUBSRC:.cc=.h) 
 
@@ -22,7 +23,7 @@ LDFLAGS = $(shell root-config --glibs) \
 
 include_HEADERS = $(SUBHDR) $(SUBHDRF)
 bin_PROGRAMS = artemis
-artemis_SOURCES = $(SUBSRC) main.cc
+artemis_SOURCES = $(SUBSRC) main.cc 
 artemis_DEPENDENCIES = $(LIBCATCORE) $(LIBCATCMD)
 artemis_LDFLAGS = $(LDFLAGS)
 

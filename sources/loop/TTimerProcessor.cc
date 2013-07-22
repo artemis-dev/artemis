@@ -1,6 +1,6 @@
 /* $Id:$ */
 /**
- * @file   TCatTimerProcessor.cc
+ * @file   TTimerProcessor.cc
  * @date   Created : Jun 22, 2012 21:22:04 JST
  *   Last Modified : 
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
@@ -8,24 +8,26 @@
  *  
  *    Copyright (C)2012
  */
-#include "TCatTimerProcessor.h"
+#include "TTimerProcessor.h"
 
 #include <TBenchmark.h>
 
-TCatTimerProcessor::TCatTimerProcessor()
+ClassImp(art::TTimerProcessor);
+
+art::TTimerProcessor::TTimerProcessor()
 {
 }
-TCatTimerProcessor::~TCatTimerProcessor()
+art::TTimerProcessor::~TTimerProcessor()
 {
 }
 
-void TCatTimerProcessor::BeginOfRun()
+void art::TTimerProcessor::PreLoop()
 {
    gBenchmark->Reset();
    gBenchmark->Start("analysis");
 }
 
-void TCatTimerProcessor::EndOfRun()
+void art::TTimerProcessor::PostLoop()
 {
    gBenchmark->Show("analysis");
 }

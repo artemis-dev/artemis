@@ -24,12 +24,15 @@ TArtRint::TArtRint(int* argc, char** argv, void* options, int numOptions, Bool_t
    : TRint(fAppName, argc, argv, options, numOptions, noLogo)
 {
    TRint::ProcessLine(".x artemislogon.C");
-   TCatCmdFactory::Instance()->Register(TCatCmdMacro::Instance());
+//   TCatCmdFactory::Instance()->Register(TCatCmdMacro::Instance());
 
    // Preparation of folder for artemis
    TFolder *top = new TFolder("artemis","artemis");
    gROOT->GetListOfBrowsables()->Add(top);
 
+   // set prompt
+   SetPrompt("artemis [%d] ");
+   
    // load mass table
    TString filepath;
    if (!gEnv) {
