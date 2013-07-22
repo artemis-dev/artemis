@@ -2,7 +2,7 @@
 /**
  * @file   TRIDFEventStore.cc
  * @date   Created : Jul 12, 2013 17:12:35 JST
- *   Last Modified : Jul 22, 2013 15:14:40 JST
+ *   Last Modified : Jul 22, 2013 18:39:59 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -124,8 +124,8 @@ void art::TRIDFEventStore::Init(TEventCollection *col)
 void art::TRIDFEventStore::Process()
 {
    // try to prepare data source
-   fRIDFData.fSegmentedData->Clear();
-   fRIDFData.fCategorizedData->Clear();
+   fRIDFData.fSegmentedData->Clear("C");
+   fRIDFData.fCategorizedData->Clear("C");
    
    if (!fDataSource) {
       if (fIsOnline) {
@@ -274,9 +274,9 @@ void art::TRIDFEventStore::ClassDecoder04(Char_t *buf, Int_t& offset, struct RID
    TModuleDecoder *decoder = TModuleDecoderFactory::Instance()->Get(segid.Module());
    if (decoder) {
       decoder->Decode(&buf[index],size,seg);
-      TIter next(seg);
-      TRawDataObject *obj;
-      while ((obj = (TRawDataObject*) next())) {
+      const Int_t &nData = seg->GetEntriesFast();
+      for (Int_t i=0; i!=nData; i++) {
+         TRawDataObject *obj = (TRawDataObject*) seg->At(i);
          // mapping is too slow...
          ridfdata->fMapTable->Map(obj);
          ridfdata->fCategorizedData->Add(obj);

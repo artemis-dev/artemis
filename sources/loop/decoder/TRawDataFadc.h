@@ -2,7 +2,7 @@
 /**
  * @file   TRawDataFadc.h
  * @date   Created : Jul 20, 2013 23:20:58 JST
- *   Last Modified : Jul 22, 2013 09:14:13 JST
+ *   Last Modified : Jul 22, 2013 18:35:56 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -33,10 +33,6 @@ public:
    }
 
    virtual void Add(Int_t adc) {
-      if (fNumSample < 0 || fNumSample >= kMaxSample) {
-         printf("Exceeds the maimum number of sample\n");
-         return;
-      }
       fADC[fNumSample] = adc;
       fClock[fNumSample] = fNumSample;
       fNumSample++;
@@ -44,8 +40,8 @@ public:
 
    virtual void Clear(const Option_t* opt = "") {
       fNumSample = 0;
-      SetGeo(TRawDataObject::kInvalid);
-      SetCh(TRawDataObject::kInvalid);
+//      SetGeo(TRawDataObject::kInvalid);
+//      SetCh(TRawDataObject::kInvalid);
    }     
          
 
