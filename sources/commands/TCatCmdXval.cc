@@ -13,7 +13,6 @@
 #include "TCatCmdXval.h"
 #include <TObjArray.h>
 #include <TObjString.h>
-#include <TArtCore.h>
 #include <TCanvas.h>
 #include <TLatex.h>
 #include <TROOT.h>
@@ -21,7 +20,6 @@
 #include <TCatHistManager.h>
 #include <TCatPadManager.h>
 
-#include <TArtCore.h>
 
 using namespace std;
 
