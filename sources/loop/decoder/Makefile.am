@@ -1,6 +1,8 @@
 SUBSRC = \
 	TModuleDecoderV1190.cc \
-	TRawDataV1190.cc
+	TRawDataV1190.cc \
+	TModuleDecoderV1740.cc \
+	TRawDataFadc.cc 
 
 
 

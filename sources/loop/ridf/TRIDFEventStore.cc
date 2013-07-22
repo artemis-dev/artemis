@@ -2,7 +2,7 @@
 /**
  * @file   TRIDFEventStore.cc
  * @date   Created : Jul 12, 2013 17:12:35 JST
- *   Last Modified : 
+ *   Last Modified : Jul 22, 2013 13:21:56 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -17,6 +17,8 @@
 #include <TFileDataSource.h>
 #include <TRawDataObject.h>
 #include <TLoop.h>
+#include <TModuleDecoderFactory.h>
+#include <TModuleDecoder.h>
 
 //ClassImp(art::TRIDFEventStore);
 
@@ -193,12 +195,10 @@ void art::TRIDFEventStore::Process()
    // parse data if available
    while (1) {
       memcpy(&fHeader,fBuffer+fOffset,sizeof(fHeader));
-      if (fHeader.ClassID() != 3 && fHeader.ClassID() != 8 && fHeader.ClassID() != 9) {
-         fHeader.Print();
-      }
       if (fClassDecoder[fHeader.ClassID()]) {
          fClassDecoder[fHeader.ClassID()](fBuffer,fOffset,&fRIDFData);
       } else {
+         printf("Class ID = %d\n",fHeader.ClassID());
          ClassDecoderUnknown(fBuffer,fOffset,&fRIDFData);
       }
       if (fOffset >= fBlockSize)  {
@@ -271,14 +271,13 @@ void art::TRIDFEventStore::ClassDecoder04(Char_t *buf, Int_t& offset, struct RID
    size = header.Size() - sizeof(header) - sizeof(segid);
    TObjArray *seg = ridfdata->fSegmentedData->FindSegmentByID(segid.Get());
    if (!seg) seg = ridfdata->fSegmentedData->NewSegment(segid.Get());
-
-//   TArtDecoder *decoder = TDecoderFactory::Instance()->GetDecoder(segid.Module());
-   TObject *decoder = NULL;
+   TModuleDecoder *decoder = TModuleDecoderFactory::Instance()->Get(segid.Module());
    if (decoder) {
-//      decoder->Decode(&buf[index],size,seg);
+      decoder->Decode(&buf[index],size,seg);
       TIter next(seg);
       TRawDataObject *obj;
       while ((obj = (TRawDataObject*) next())) {
+         // mapping is too slow...
          ridfdata->fMapTable->Map(obj);
          ridfdata->fCategorizedData->Add(obj);
       }

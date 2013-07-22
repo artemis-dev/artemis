@@ -31,7 +31,9 @@ SUBSRC = \
 	TCategorizedData.cc \
 	TFileDataSource.cc \
 	TMapTable.cc \
-	TModuleDecoder.cc
+	TModuleDecoder.cc \
+	TModuleDecoderFactory.cc
+
 
 
 SUBOBJ = $(SUBSRC:.cc=.o)
