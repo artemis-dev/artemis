@@ -1,0 +1,11 @@
+Processor:
+  - name: random
+    type: art::TRandomNumberEventStore
+    parameter:
+      - name: MaxLoop
+        value: 1000
+  - name: timer
+    type: art::TTimerProcessor
+  - name: outputtree
+    type: art::TOutputTreeProcessor
+
