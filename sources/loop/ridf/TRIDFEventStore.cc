@@ -2,7 +2,7 @@
 /**
  * @file   TRIDFEventStore.cc
  * @date   Created : Jul 12, 2013 17:12:35 JST
- *   Last Modified : Jul 22, 2013 13:21:56 JST
+ *   Last Modified : Jul 22, 2013 15:14:40 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -30,7 +30,7 @@ art::TRIDFEventStore::TRIDFEventStore()
    RegisterOutputCollection("SegmentedData","The name of output array for segmented data",
                             fNameSegmented,TString("segdata"));
    RegisterOutputCollection("CategorizedData","The name of output array for categorized data",
-                            fNameSegmented,TString("catdata"));
+                            fNameCategorized,TString("catdata"));
    RegisterOptionalParameter("MapConfig","File for map configuration. Not mapped if the name is blank.",
                              fMapConfigName,TString("mapper.conf"));
 
