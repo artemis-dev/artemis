@@ -35,9 +35,6 @@ fi
 if test "x$ROOTSYS" = "x" ; then
 AC_MSG_ERROR(ROOTSYS should be set)
 fi
-if test "x$TARTSYS" = "x" ; then
-AC_MSG_ERROR(TARTSYS should be set as the path to anaroot home)
-fi
 
 # check for yaml
 AC_ARG_WITH([yaml-cpp],
