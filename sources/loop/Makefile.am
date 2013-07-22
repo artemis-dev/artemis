@@ -1,16 +1,6 @@
 SUBDIRS = decoder ridf
 
 SUBSRC = \
-	TCatLoop.cc \
-	TCatLoopManager.cc \
-	TCatLoopWidget.cc \
-	TCatProcessor.cc \
-	TCatSleepProcessor.cc \
-	TCatEventCountProcessor.cc \
-	TCatCategorizingProcessor.cc \
-	TCatEventCollection.cc \
-	TCatEventStore.cc \
-	TCatRIDFEventStore.cc \
 	TConditionBit.cc \
 	TLoop.cc \
 	TEventObject.cc \

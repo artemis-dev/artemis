@@ -9,14 +9,6 @@ else
  mv tmp.txt setup.sh
 fi
 
-if [ "x$TARTSYS" == "x" ]
-then
- echo "\$TARTSYS is not defined. please define the environment for ANAROOT."
- exit
-else
- sed s#TARTSYS#$TARTSYS#g scripts/setup.sh.org > tmp.txt
- mv tmp.txt setup.sh
-fi
 
 sed s#PPWWDD#$PWD#g setup.sh > tmp.txt
 mv tmp.txt setup.sh

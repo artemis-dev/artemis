@@ -22,9 +22,6 @@
 #pragma link C++ class TCatCmdCd;
 #pragma link C++ class TCatCmdHstore;
 #pragma link C++ class TCatCmdSave;
-#pragma link C++ class TCatCmdLoopAdd;
-#pragma link C++ class TCatCmdLoopSuspend;
-#pragma link C++ class TCatCmdLoopResume;
 #pragma link C++ class TCatCmdMacro;
 #pragma link C++ class TCatCmdLg;
 #pragma link C++ class TCatCmdXval;

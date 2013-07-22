@@ -17,8 +17,8 @@ INCDIR = ../../include
 
 AUTOMAKE_OPTIONS = foreign
 
-INCLUDES = -I$(INCDIR) -I$(ROOTSYS)/include -I$(TARTSYS)/include
-CXXFLAGS = -fPIC  $(shell root-config --cflags) -I$(INCDIR) -I$(TARTSYS)/include -Wall -O2
+INCLUDES = -I$(INCDIR) -I$(ROOTSYS)/include 
+CXXFLAGS = -fPIC  $(shell root-config --cflags) -I$(INCDIR) -Wall -O2
 LDFLAGS = $(shell root-config --glibs) 
 
 include_HEADERS = $(SUBHDR) $(SUBHDRF) $(OPTHDR)

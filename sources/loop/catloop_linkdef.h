@@ -2,7 +2,7 @@
 /**
  * @file   catloop_linkdef.h
  * @date   Created : Feb 19, 2012 11:19:06 JST
- *   Last Modified : Jul 22, 2013 08:56:20 JST
+ *   Last Modified : Jul 22, 2013 13:45:14 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -17,15 +17,6 @@
 #pragma link off all functions;
 
 // #pragma link C++ class TCatEventCollectionManager-!;
-#pragma link C++ class TCatProcessor;
-#pragma link C++ class TCatSleepProcessor;
-#pragma link C++ class TCatEventCountProcessor;
-#pragma link C++ class TCatCategorizingProcessor;
-#pragma link C++ class TCatLoop;
-#pragma link C++ class TCatLoopManager;
-#pragma link C++ class TCatLoopWidget;
-#pragma link C++ class TCatEventStore;
-#pragma link C++ class TThreadPoolTaskImp<TCatLoop, EProc>;
 
 #pragma link C++ class art::TLoop;
 #pragma link C++ class art::TLoopManager;

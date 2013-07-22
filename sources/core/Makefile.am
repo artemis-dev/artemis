@@ -1,29 +1,32 @@
 SUBSRC = \
-	TArtFadcRawDataObject.cc \
-	TArtDecoderV1740.cc \
-	TArtDecoderSIS3610.cc \
-	TArtDecoderSIS3820.cc \
-	TCatDecoderV1190.cc \
-        TCatRawDataV1190.cc \
-	TArtKbhit.cc \
-	TCatObject.cc \
-	TCatSimpleData.cc \
-	TCatHitV1190.cc \
-	TCatSortable.cc \
-	TCatDetectorArray.cc \
 	TCatHistManager.cc \
 	TCatPadManager.cc \
-	TCatRawDataCategorized.cc \
-	TCatStreamBuf.cc \
-	TCatOstream.cc \
-	TCatObjRefArray.cc\
-	TCatParameter.cc \
-	TCatParameterStrings.cc \
-	TCatParameterTable.cc \
 	TConfigFile.cc
 
+#        TArtFadcRawDataObject.cc \
+#	TArtDecoderV1740.cc \
+#	TArtDecoderSIS3610.cc \
+#	TArtDecoderSIS3820.cc \
+#	TCatDecoderV1190.cc \
+#        TCatRawDataV1190.cc \
+#	TArtKbhit.cc \
+#	TCatObject.cc \
+#	TCatSimpleData.cc \
+#	TCatHitV1190.cc \
+#	TCatSortable.cc \
+#	TCatDetectorArray.cc \
+#	TCatRawDataCategorized.cc \
+#	TCatStreamBuf.cc \
+#	TCatOstream.cc \
+#	TCatObjRefArray.cc\
+#	TCatParameter.cc \
+#	TCatParameterStrings.cc \
+#	TCatParameterTable.cc \
+#
+
 SUBOBJ = $(SUBSRC:.cc=.o)
-SUBHDR = $(SUBSRC:.cc=.h) TCatTypes.h
+SUBHDR = $(SUBSRC:.cc=.h)
+# TCatTypes.h
 
 
 DICTSRC = catcore_dict.cc
@@ -35,8 +38,8 @@ INCDIR = ../../include
 
 AUTOMAKE_OPTIONS = foreign
 
-INCLUDES = -I$(INCDIR) -I$(ROOTSYS)/include -I$(TARTSYS)/include
-CXXFLAGS = -fPIC  $(shell root-config --cflags) -I$(INCDIR) -I$(TARTSYS)/include -Wall -O2
+INCLUDES = -I$(INCDIR) -I$(ROOTSYS)/include 
+CXXFLAGS = -fPIC  $(shell root-config --cflags) -I$(INCDIR) -Wall -O2
 CXXFLAGS += -pg
 LDFLAGS = $(shell root-config --glibs) 
 
