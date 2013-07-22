@@ -22,7 +22,8 @@ SUBSRC = \
 	TFileDataSource.cc \
 	TMapTable.cc \
 	TModuleDecoder.cc \
-	TModuleDecoderFactory.cc
+	TModuleDecoderFactory.cc \
+	TRawDataSimple.cc
 
 
 
