@@ -40,7 +40,7 @@ AUTOMAKE_OPTIONS = foreign
 
 INCLUDES = -I$(INCDIR) -I$(ROOTSYS)/include 
 CXXFLAGS = -fPIC  $(shell root-config --cflags) -I$(INCDIR) -Wall -O2
-CXXFLAGS += -pg
+#CXXFLAGS += -pg
 LDFLAGS = $(shell root-config --glibs) 
 
 include_HEADERS = $(SUBHDR) $(SUBHDRF) $(OPTHDR)
