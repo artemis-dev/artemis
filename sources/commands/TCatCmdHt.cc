@@ -2,7 +2,7 @@
 /**
  * @file   TCatCmdHt.cc
  * @date   Created : Feb 06, 2012 11:06:16 JST
- *   Last Modified : Apr 21, 2012 16:18:28 JST
+ *   Last Modified : Jul 22, 2013 14:15:11 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -11,12 +11,10 @@
 #include "TCatCmdHt.h"
 #include <TObjArray.h>
 #include <TObjString.h>
-#include <TArtCore.h>
 #include <TCanvas.h>
 #include <TCatHistManager.h>
 #include <TCatPadManager.h>
 
-#include <TArtCore.h>
 
 
 TCatCmdHt::TCatCmdHt()
@@ -72,7 +70,7 @@ Long_t TCatCmdHt::Run(Int_t id1, Int_t id2, TString& opt)
    for (Int_t i=0; i<n; i++) {
       if (id1+i < 0) return 1;
       if (!TCatPadManager::Instance()->Next()) {
-         TArtCore::Info("TCatCmdHt","Not enough pads to draw");
+         // TArtCore::Info("TCatCmdHt","Not enough pads to draw");
          return 1;
       }
       TCatHistManager::Instance()->DrawObject(id1+i,opt);
