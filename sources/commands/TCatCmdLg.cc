@@ -18,11 +18,11 @@ TCatCmdLg::TCatCmdLg(const EAxis axis, Bool_t value)
    : fAxis(axis), fValue(value)
 {
    TString cmd = fValue ? "lg" : "ln";
-   char caxis = 'x' + fAxis;
+   char caxis = (int)'x' + fAxis;
    cmd += caxis;
    SetName(cmd);
-   SetTitle(TString::Format("Set %s scale for %c",(fValue?"Log":"Linear"),'X'+fAxis));
-   fMethod = new TMethodCall(TVirtualPad::Class(),TString::Format("SetLog%c",'x'+fAxis),TString::Format("%d",fValue));
+   SetTitle(TString::Format("Set %s scale for %c",(fValue?"Log":"Linear"),(int)'X'+fAxis));
+   fMethod = new TMethodCall(TVirtualPad::Class(),TString::Format("SetLog%c",(int)'x'+fAxis),TString::Format("%d",fValue));
 }
 TCatCmdLg::~TCatCmdLg()
 {

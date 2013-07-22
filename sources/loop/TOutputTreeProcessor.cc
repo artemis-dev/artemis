@@ -2,7 +2,7 @@
 /**
  * @file   TOutputTreeProcessor.cc
  * @date   Created : Jul 11, 2013 17:11:41 JST
- *   Last Modified : 
+ *   Last Modified : Jul 22, 2013 15:11:08 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -34,7 +34,7 @@ void art::TOutputTreeProcessor::Init(TEventCollection *col)
    TEventObject *obj;
    while ((obj = (TEventObject*)iter->Next())) {
       if (obj->IsPassive()) continue;
-      fTree->Branch(obj->GetName(),obj->GetClass()->GetName(),obj->GetObjectRef(),32000,0);
+      fTree->Branch(obj->GetName(),obj->GetClass()->GetName(),obj->GetObjectRef(),3200000,0);
       fObjects->Add(obj);
    }
 }
