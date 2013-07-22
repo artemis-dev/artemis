@@ -2,7 +2,7 @@
 /**
  * @file   TCatCmdSl.cc
  * @date   Created : Feb 09, 2012 23:09:34 JST
- *   Last Modified : Feb 10, 2012 00:31:44 JST
+ *   Last Modified : Jul 22, 2013 14:16:02 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -12,7 +12,6 @@
 
 #include <TCatHistManager.h>
 #include <TDirectory.h>
-#include <TArtCore.h>
 #include <TH2.h>
 
 TCatCmdSl::TCatCmdSl(const EAxis& axis)
@@ -42,7 +41,7 @@ Long_t TCatCmdSl::Cmd(vector<TString> args)
       TObject *obj = TCatHistManager::Instance()->GetObject(id1+i);
       if (!obj) continue;
       if (!obj->InheritsFrom(TH2::Class())) {
-         TArtCore::Info(GetName(),"%s is not 2D histogram",obj->GetName());
+         // TArtCore::Info(GetName(),"%s is not 2D histogram",obj->GetName());
          continue;
       }
       Run((TH2*)obj);

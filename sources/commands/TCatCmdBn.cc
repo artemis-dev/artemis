@@ -2,7 +2,7 @@
 /**
  * @file   TCatCmdBn.cc
  * @date   Created : Feb 09, 2012 10:09:53 JST
- *   Last Modified : Feb 09, 2012 20:17:15 JST
+ *   Last Modified : Jul 22, 2013 14:14:58 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -11,7 +11,6 @@
 #include "TCatCmdBn.h"
 
 #include <TCatHistManager.h>
-#include <TArtCore.h>
 #include <TH2.h>
 
 TCatCmdBn::TCatCmdBn(EAxis axis)
@@ -42,7 +41,7 @@ Long_t TCatCmdBn::Cmd(vector<TString> args)
       TObject *obj = TCatHistManager::Instance()->GetObject(id1+i);
       if (!obj) continue;
       if (!obj->InheritsFrom(TH2::Class())) {
-         TArtCore::Info(GetName(),"%s is not 2D histogram",obj->GetName());
+         // TArtCore::Info(GetName(),"%s is not 2D histogram",obj->GetName());
          continue;
       }
       Run((TH2*) obj, start, end);

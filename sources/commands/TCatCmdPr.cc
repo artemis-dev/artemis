@@ -2,7 +2,7 @@
 /**
  * @file   TCatCmdPr.cc
  * @date   Created : Feb 07, 2012 22:07:36 JST
- *   Last Modified : Feb 09, 2012 22:25:13 JST
+ *   Last Modified : Jul 22, 2013 14:15:46 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -10,7 +10,6 @@
  */
 #include "TCatCmdPr.h"
 #include <TCatHistManager.h>
-#include <TArtCore.h>
 
 #include <TH1.h>
 #include <TH2.h>
@@ -39,8 +38,8 @@ Long_t TCatCmdPr::Run(Int_t id1,Int_t id2)
       TObject *obj = TCatHistManager::Instance()->GetCurrent();
       if (!obj) return 1;
       if (!obj->InheritsFrom(TH2::Class())) {
-         TArtCore::Info("TCatCmdPr::Run","%s is not 2D histogram",
-                        obj->GetName());
+         // TArtCore::Info("TCatCmdPr::Run","%s is not 2D histogram",
+         // obj->GetName());
          return 1;
       }
       Run((TH2*)obj);
@@ -52,8 +51,8 @@ Long_t TCatCmdPr::Run(Int_t id1,Int_t id2)
       TObject *obj = TCatHistManager::Instance()->GetObject(id1+i);
       if (!obj) continue;
       if (!obj->InheritsFrom(TH2::Class())) {
-         TArtCore::Info("TCatCmdPr::Run","%s is not 2D histogram",
-                        obj->GetName());
+         // TArtCore::Info("TCatCmdPr::Run","%s is not 2D histogram",
+         //               obj->GetName());
          continue;
       } 
       Run((TH2*) obj);

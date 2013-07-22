@@ -2,7 +2,7 @@
 /**
  * @file   TCatHistManager.cc
  * @date   Created : Feb 06, 2012 11:06:39 JST
- *   Last Modified : Feb 10, 2012 20:00:46 JST
+ *   Last Modified : Jul 22, 2013 14:13:44 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -11,7 +11,6 @@
 #include "TCatHistManager.h"
 #include <TKey.h>
 #include <TClass.h>
-#include <TArtCore.h>
 #include <TROOT.h>
 
 ClassImp(TCatHistManager);
@@ -137,9 +136,7 @@ TObject* TCatHistManager::GetNext()
    TObject *obj = NULL;
    if ((obj = GetObject(fCurrentID+1))) {
       fCurrentID++;
-   } else {
-      TArtCore::Info("GetNext","No more objects larger than oid = %d",fCurrentID);
-   }
+   } 
    return obj;
 }
 TObject* TCatHistManager::GetPrev()
@@ -147,9 +144,7 @@ TObject* TCatHistManager::GetPrev()
    TObject *obj = NULL;
    if ((obj = GetObject(fCurrentID-1))) {
       fCurrentID--;
-   } else {
-      TArtCore::Info("GetNext","No more objects smaller than  oid = %d",fCurrentID);
-   }
+   } 
    return obj;
 }
 
@@ -157,7 +152,5 @@ void TCatHistManager::SetId(const Int_t &id)
 {
    if (GetObject(id)) {
       fCurrentID = id;
-   } else {
-      TArtCore::Info("SetId","no such object at id = %d");
-   }
+   } 
 }
