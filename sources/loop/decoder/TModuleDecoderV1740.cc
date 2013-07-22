@@ -34,7 +34,7 @@ Int_t art::TModuleDecoderV1740::Decode(char* buf, const int &size, TObjArray *se
    
    for (UInt_t iw=0; iw < evtsize;) {
       unsigned int* bufi = (unsigned int*) bufs;
-      if (bufi[0] ==0) exit(0);
+      if (bufi[0] ==0) return 0;
       if (bufi[0]&0xd0000000) {
          // global header
          timestamp = bufi[2];
