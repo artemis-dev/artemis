@@ -2,7 +2,7 @@
 /**
  * @file   TRawDataFadc.h
  * @date   Created : Jul 20, 2013 23:20:58 JST
- *   Last Modified : Jul 22, 2013 18:35:56 JST
+ *   Last Modified : Jul 23, 2013 09:32:05 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -23,10 +23,7 @@ public:
    TRawDataFadc();
    virtual ~TRawDataFadc();
 
-   virtual void Set(Int_t geo, Int_t ch, const UInt_t time,
-                    Int_t offset, UInt_t pat) {
-      SetGeo(geo);
-      SetCh(ch);
+   virtual void SetFadcInfo(const UInt_t time,Int_t offset, UInt_t pat) {
       fTimestamp = time;
       fOffset = offset;
       fPattern = pat;

@@ -1,7 +1,7 @@
 /*
  * @file TModuleDecoderV1190.cc
  * @date  Created : 2008/11/26 21:34:03 JST<BR>
- *  Last Modified : 2013/07/20 00:18:53 JST
+ *  Last Modified : Jul 23, 2013 09:33:23 JST
  *--------------------------------------------------------
  *    Comment : 
  *              copied from anapaw source and renamed
@@ -59,6 +59,7 @@ Int_t art::TModuleDecoderV1190::Decode(char* buf, const int &size, TObjArray *se
          if (fHitData->GetEntriesFast() <= idx || !fHitData->At(idx)) {
             // if no data object is available, create one
             TObject *obj = New();
+            ((TRawDataV1190*)obj)->SetSegInfo(seg->GetUniqueID(),igeo,ich);
             fHitData->AddAtAndExpand(obj,idx);
             seg->Add(obj);
          }

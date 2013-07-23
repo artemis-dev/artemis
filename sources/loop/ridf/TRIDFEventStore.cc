@@ -2,7 +2,7 @@
 /**
  * @file   TRIDFEventStore.cc
  * @date   Created : Jul 12, 2013 17:12:35 JST
- *   Last Modified : Jul 22, 2013 19:03:30 JST
+ *   Last Modified : Jul 23, 2013 09:42:13 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -269,8 +269,11 @@ void art::TRIDFEventStore::ClassDecoder04(Char_t *buf, Int_t& offset, struct RID
    index += sizeof(segid);
    // calculate segment size
    size = header.Size() - sizeof(header) - sizeof(segid);
-   TObjArray *seg = ridfdata->fSegmentedData->FindSegmentByID(segid.Get());
-   if (!seg) seg = ridfdata->fSegmentedData->NewSegment(segid.Get());
+   // Segid for map consists of rev, device, fp, and detector.
+   // Module id should be removed. (now Get return the moduleid removed segment id).
+   UInt_t mapsegid = segid.Get();
+   TObjArray *seg = ridfdata->fSegmentedData->FindSegmentByID(mapsegid);
+   if (!seg) seg = ridfdata->fSegmentedData->NewSegment(mapsegid);
    TModuleDecoder *decoder = TModuleDecoderFactory::Instance()->Get(segid.Module());
    if (decoder) {
       decoder->Decode(&buf[index],size,seg);
