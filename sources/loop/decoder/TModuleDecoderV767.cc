@@ -3,7 +3,7 @@
  * @brief  Decorder class for V767
  *
  * @date   Created:       2013-07-23 10:35:05
- *         Last Modified: 2013-07-23 16:35:56
+ *         Last Modified: 2013-07-24 16:15:47
  * @author KAWASE Shoichiro <kawase@cns.s.u-tokyo.ac.jp>
  *
  * @note   - TRawDataV767 is typedef of TRawDataV1190.
@@ -26,7 +26,6 @@ using art::TRawDataV767;
 // Default constructor
 TModuleDecoderV767::TModuleDecoderV767() 
    : TModuleDecoder(kID, TRawDataV767::Class()){
-   // array length should be 128 (maximum number of channel)
    fHitData = new TObjArray;
 }
 
@@ -48,10 +47,10 @@ TModuleDecoderV767& TModuleDecoderV767::operator=(const TModuleDecoderV767& rhs)
 }
 
 Int_t TModuleDecoderV767::Decode(char* buffer, const int &size, TObjArray *seg){
-   unsigned int *evtData = (unsigned int*) buffer;
-   unsigned int  evtSize = size / sizeof(unsigned int);
+   UInt_t *evtData = (unsigned int*) buffer;
+   UInt_t  evtSize = size / sizeof(unsigned int);
 
-   Int_t  headerID, geoID, evtID, channel, idx, measure;
+   UInt_t  headerID, geoID, evtID, channel, idx, measure;
    Bool_t ghf;          // Global Header Flag
    Bool_t isLeadingEdge;
 

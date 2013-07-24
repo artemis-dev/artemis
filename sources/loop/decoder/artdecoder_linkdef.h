@@ -24,6 +24,7 @@
 #pragma link C++ class art::TModuleDecoderSkip-;
 #pragma link C++ class art::TModuleDecoderV767-;
 #pragma link C++ typedef art::TRawDataV767;
+#pragma link C++ class art::TModuleDecoderV7XX-;
 
 
 #endif /* __CINT__ */
