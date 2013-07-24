@@ -131,7 +131,7 @@ void art::TRIDFEventStore::Process()
       if (fIsOnline) {
 //         fDataSource = new TShmDataSourceRIDF(fSHMID);
       } else if (fFileName.size()){
-         TString& filename = fFileName.front();
+         TString filename = fFileName.front();
          FILE *fp = fopen(filename,"r");
          if (fp) {
             fclose(fp);
