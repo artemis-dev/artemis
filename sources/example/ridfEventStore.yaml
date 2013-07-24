@@ -1,0 +1,21 @@
+Processor:
+  - name: ridfevent
+    type: art::TRIDFEventStore
+    parameter:
+      - name: InputFiles
+        value:
+          - phys1701.ridf
+#          - phys1701.ridf
+      - name: TreeName
+        value: tree
+  - name: timer
+    type: art::TTimerProcessor
+#  - name: randomproc
+#    type: art::TRandomNumberProcessor
+  - name: outputtree
+    type: art::TOutputTreeProcessor
+#    parameter:
+#      - name: FileName
+#        value: hoge.root
+        
+
