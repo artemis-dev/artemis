@@ -21,7 +21,7 @@
 #pragma link C++ class art::TRawDataV1190;
 #pragma link C++ class art::TModuleDecoderV1740-;
 #pragma link C++ class art::TRawDataFadc;
-
+#pragma link C++ class art::TModuleDecoderSkip-;
 
 
 #endif /* __CINT__ */

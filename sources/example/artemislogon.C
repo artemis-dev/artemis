@@ -42,6 +42,11 @@
       art::TModuleDecoderFactory *df = art::TModuleDecoderFactory::Instance();
       df->Register(new art::TModuleDecoderV1190);
       df->Register(new art::TModuleDecoderV1740);
+      df->Register(new art::TModuleDecoderSkip(0));
+      df->Register(new art::TModuleDecoderSkip(1));
+      df->Register(new art::TModuleDecoderSkip(21));
+      df->Register(new art::TModuleDecoderSkip(23));
+      df->Register(new art::TModuleDecoderSkip(26));
       
 //      TArtDecoderFactory *df = TArtDecoderFactory::Instance();
 //      df->Register(TArtDecoderSIS3610::Instance());
