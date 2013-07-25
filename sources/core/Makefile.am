@@ -1,4 +1,5 @@
 SUBSRC = \
+	TCatParameterTable.cc \
 	TCatHistManager.cc \
 	TCatPadManager.cc \
 	TConfigFile.cc
