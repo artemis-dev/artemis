@@ -38,7 +38,7 @@
 #pragma link C++ class art::TFileDataSource-;
 #pragma link C++ class art::TModuleDecoderFactory-;
 #pragma link C++ class art::TRawDataSimple;
-
+#pragma link C++ class art::TRawDataPair;
 
 
 

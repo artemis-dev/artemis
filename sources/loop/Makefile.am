@@ -23,7 +23,8 @@ SUBSRC = \
 	TMapTable.cc \
 	TModuleDecoder.cc \
 	TModuleDecoderFactory.cc \
-	TRawDataSimple.cc
+	TRawDataSimple.cc \
+	TRawDataPair.cc
 
 
 
