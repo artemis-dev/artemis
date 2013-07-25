@@ -3,10 +3,11 @@
  * @brief  Rawdata container with two values
  *
  * @date   Created:       2013-07-25 10:19:08
- *         Last Modified: 2013-07-25 12:03:18
+ *         Last Modified: 2013-07-25 12:20:39
  * @author KAWASE Shoichiro <kawase@cns.s.u-tokyo.ac.jp>
  *
  * @note   This class contains two Int_t values
+ *         You can access the values via (Get|Set)(First|Second) and operator[].
  *
  *    Copyright (C) 2013 KAWASE Shoichiro All rights reserved
  */
@@ -31,6 +32,7 @@ public:
    // Assignment operator
    TRawDataPair& operator=(const TRawDataPair& rhs);
 
+   // offers array-like access: idx = 0 -> fFirst, 1 -> fSecond
    Int_t& operator[](const Int_t idx);
 
    void SetFirst(const Int_t &first) { fFirst = first; }
@@ -39,6 +41,7 @@ public:
    Int_t GetFirst() const { return fFirst; }
    Int_t GetSecond() const { return fSecond; }
 
+   // swap fFirst and fSecond
    void Swap();
 
 private:
