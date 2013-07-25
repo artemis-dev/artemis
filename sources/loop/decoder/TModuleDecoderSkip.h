@@ -3,7 +3,7 @@
  * @brief
  *
  * @date   Created:       2013-07-24 17:29:34
- *         Last Modified: 2013-07-24 17:39:16
+ *         Last Modified: 2013-07-25 10:11:17
  * @author KAWASE Shoichiro <kawase@cns.s.u-tokyo.ac.jp>
  *
  *    Copyright (C) 2013 KAWASE Shoichiro All rights reserved
@@ -21,7 +21,7 @@ namespace art{
 class art::TModuleDecoderSkip : public TModuleDecoder {
   public:
    // Default constructor
-   TModuleDecoderSkip(const Int_t id);
+   explicit TModuleDecoderSkip(const Int_t id);
    // Default destructor
    virtual ~TModuleDecoderSkip();
    // Copy constructor
