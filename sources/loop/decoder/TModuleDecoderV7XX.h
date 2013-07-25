@@ -3,7 +3,7 @@
  * @brief  Decoder Class for V7XX
  *
  * @date   Created:       2013-07-24 14:31:09
- *         Last Modified: 2013-07-24 14:53:34
+ *         Last Modified: 2013-07-25 16:15:17
  * @author KAWASE Shoichiro <kawase@cns.s.u-tokyo.ac.jp>
  *
  *    Copyright (C) 2013 KAWASE Shoichiro All rights reserved
@@ -36,15 +36,17 @@ class art::TModuleDecoderV7XX : public TModuleDecoder{
    TModuleDecoderV7XX();
    // Default destructor
    virtual ~TModuleDecoderV7XX();
-   // Copy constructor
-   TModuleDecoderV7XX(const TModuleDecoderV7XX& rhs);
-   // Assignment operator
-   TModuleDecoderV7XX& operator=(const TModuleDecoderV7XX& rhs);
 
    virtual Int_t Decode(char* buffer, const int &size, TObjArray *seg);
 
 protected:
    TObjArray *fHitData;
+
+private:
+   // Copy constructor (prohibited)
+   TModuleDecoderV7XX(const TModuleDecoderV7XX& rhs);
+   // Assignment operator (prohibited)
+   TModuleDecoderV7XX& operator=(const TModuleDecoderV7XX& rhs);
 };
 
 #endif // TMODULEDECODERV7XX_H

@@ -3,7 +3,7 @@
  * @brief  Decorder Class for V7XX
  *
  * @date   Created:       2013-07-24 14:41:31
- *         Last Modified: 2013-07-24 16:15:57
+ *         Last Modified: 2013-07-25 16:15:34
  * @author KAWASE Shoichiro <kawase@cns.s.u-tokyo.ac.jp>
  *
  *    Copyright (C) 2013 KAWASE Shoichiro All rights reserved.
@@ -26,18 +26,6 @@ TModuleDecoderV7XX::TModuleDecoderV7XX()
 
 // Default destructor
 TModuleDecoderV7XX::~TModuleDecoderV7XX() {
-}
-
-// Copy constructor
-TModuleDecoderV7XX::TModuleDecoderV7XX(const TModuleDecoderV7XX& rhs)
-   : TModuleDecoder(kID, TRawDataSimple::Class()){
-}
-
-// Assignment operator
-TModuleDecoderV7XX& TModuleDecoderV7XX::operator=(const TModuleDecoderV7XX& rhs) {
-   if (this != &rhs) {
-   }
-   return *this;
 }
 
 Int_t TModuleDecoderV7XX::Decode(char* buffer, const Int_t &size, TObjArray *seg){

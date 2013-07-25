@@ -3,7 +3,7 @@
  * @brief  Decorder class for V767
  *
  * @date   Created:       2013-07-23 10:35:05
- *         Last Modified: 2013-07-24 16:15:47
+ *         Last Modified: 2013-07-25 16:14:34
  * @author KAWASE Shoichiro <kawase@cns.s.u-tokyo.ac.jp>
  *
  * @note   - TRawDataV767 is typedef of TRawDataV1190.
@@ -32,18 +32,6 @@ TModuleDecoderV767::TModuleDecoderV767()
 // Default destructor
 TModuleDecoderV767::~TModuleDecoderV767() {
    delete fHitData;
-}
-
-// Copy constructor
-TModuleDecoderV767::TModuleDecoderV767(const TModuleDecoderV767& rhs)
-   : TModuleDecoder(kID, TRawDataV767::Class()){
-}
-
-// Assignment operator
-TModuleDecoderV767& TModuleDecoderV767::operator=(const TModuleDecoderV767& rhs) {
-   if (this != &rhs) {
-   }
-   return *this;
 }
 
 Int_t TModuleDecoderV767::Decode(char* buffer, const int &size, TObjArray *seg){

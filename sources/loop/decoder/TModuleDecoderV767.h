@@ -3,7 +3,7 @@
  * @brief  Decoder Class for V767
  *
  * @date   Created:       2013-07-23 10:28:45
- *         Last Modified: 2013-07-23 14:56:02
+ *         Last Modified: 2013-07-25 16:14:18
  * @author KAWASE Shoichiro <kawase@cns.s.u-tokyo.ac.jp>
  *
  *    Copyright (C) 2013 KAWASE Shoichiro All rights reserved
@@ -40,15 +40,18 @@ public:
    TModuleDecoderV767();
    // Default destructor
    virtual ~TModuleDecoderV767();
-   // Copy constructor
-   TModuleDecoderV767(const TModuleDecoderV767& rhs);
-   // Assignment operator
-   TModuleDecoderV767& operator=(const TModuleDecoderV767& rhs);
 
    virtual Int_t Decode(char* buffer, const int &size, TObjArray *seg);
 
 protected:
    TObjArray *fHitData;
+
+private:
+   // Copy constructor (prohibited)
+   TModuleDecoderV767(const TModuleDecoderV767& rhs);
+   // Assignment operator (prohibited)
+   TModuleDecoderV767& operator=(const TModuleDecoderV767& rhs);
+
 };
 
 #endif // TMODULEDECODERV767_H
