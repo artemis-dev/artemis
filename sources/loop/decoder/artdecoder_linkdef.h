@@ -25,7 +25,10 @@
 #pragma link C++ class art::TModuleDecoderV767-;
 #pragma link C++ typedef art::TRawDataV767;
 #pragma link C++ class art::TModuleDecoderV7XX-;
-
+#pragma link C++ class art::TModuleDecoderFixed<UChar_t>-;
+#pragma link C++ class art::TModuleDecoderFixed<UShort_t>-;
+#pragma link C++ class art::TModuleDecoderFixed<UInt_t>-;
+//#pragma link C++ class art::TModuleDecoderFixed<ULong64_t>-;
 
 #endif /* __CINT__ */
 
