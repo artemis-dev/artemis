@@ -3,7 +3,7 @@
  * @brief  Decorder class for V767
  *
  * @date   Created:       2013-07-23 10:35:05
- *         Last Modified: 2013-07-25 16:14:34
+ *         Last Modified: 2013-07-30 10:34:34
  * @author KAWASE Shoichiro <kawase@cns.s.u-tokyo.ac.jp>
  *
  * @note   - TRawDataV767 is typedef of TRawDataV1190.
@@ -42,7 +42,7 @@ Int_t TModuleDecoderV767::Decode(char* buffer, const int &size, TObjArray *seg){
    Bool_t ghf;          // Global Header Flag
    Bool_t isLeadingEdge;
 
-   TRawDataV1190 *data; // should be changed to TRawDataV767
+   TRawDataV767 *data;
 
    ghf = kFALSE;
 
