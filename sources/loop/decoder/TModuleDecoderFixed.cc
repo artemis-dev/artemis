@@ -3,7 +3,7 @@
  * @brief
  *
  * @date   Created:       2013-07-30 16:34:07
- *         Last Modified: 2013-07-31 15:14:12
+ *         Last Modified: 2013-07-31 16:24:37
  * @author KAWASE Shoichiro <kawase@cns.s.u-tokyo.ac.jp>
  *
  *    Copyright (C) 2013 KAWASE Shoichiro All rights reserved.
@@ -16,14 +16,12 @@
 using art::TModuleDecoderFixed;
 using art::TRawDataSimple;
 
-// Default constructor
 template <typename T> TModuleDecoderFixed<T>::TModuleDecoderFixed(const Int_t id, const Int_t size)
-   : TModuleDecoder(id, TRawDataSimple::Class()){
+   : TModuleDecoder(id, TRawDataSimple<T>::Class()){
    fHitData = new TObjArray;
    CalcMaskMeasure(size);
 }
 
-// Default destructor
 template <typename T> TModuleDecoderFixed<T>::~TModuleDecoderFixed() {
 }
 
@@ -42,7 +40,7 @@ template <typename T> Int_t TModuleDecoderFixed<T>::Decode(char* buffer, const i
    T          *evtData = (T*) buffer;
    T           measure;
 
-   TRawDataSimple *data;
+   TRawDataSimple<T> *data;
 
    Clear();
    fHitData->Clear();
@@ -54,12 +52,12 @@ template <typename T> Int_t TModuleDecoderFixed<T>::Decode(char* buffer, const i
       if (fHitData->GetEntriesFast() <= iData || !fHitData->At(iData)) {
 	 // if no data available, create one
 	 TObject *obj = New();
-	 ((TRawDataSimple*)obj)->SetSegInfo(seg->GetUniqueID(), kGeoID, iData);
+	 ((TRawDataSimple<T>*)obj)->SetSegInfo(seg->GetUniqueID(), kGeoID, iData);
 	 fHitData->AddAtAndExpand(obj,iData);
 	 seg->Add(obj);
       }
 
-      data = (TRawDataSimple*)fHitData->At(iData);
+      data = (TRawDataSimple<T>*)fHitData->At(iData);
       data->Set(measure);
       fHitData->AddAt(NULL,iData);
    }
@@ -71,4 +69,4 @@ template <typename T> Int_t TModuleDecoderFixed<T>::Decode(char* buffer, const i
 template class TModuleDecoderFixed<UChar_t>;
 template class TModuleDecoderFixed<UShort_t>;
 template class TModuleDecoderFixed<UInt_t>;
-//template class TModuleDecoderFixed<ULong64_t>;
+template class TModuleDecoderFixed<ULong64_t>;

@@ -3,7 +3,7 @@
  * @brief  Decorder Class for V7XX
  *
  * @date   Created:       2013-07-24 14:41:31
- *         Last Modified: 2013-07-25 16:15:34
+ *         Last Modified: 2013-07-31 16:25:02
  * @author KAWASE Shoichiro <kawase@cns.s.u-tokyo.ac.jp>
  *
  *    Copyright (C) 2013 KAWASE Shoichiro All rights reserved.
@@ -18,13 +18,11 @@
 using art::TModuleDecoderV7XX;
 using art::TRawDataSimple;
 
-// Default constructor
 TModuleDecoderV7XX::TModuleDecoderV7XX()
-   : TModuleDecoder(kID, TRawDataSimple::Class()){
+   : TModuleDecoder(kID, TRawDataSimple<UInt_t>::Class()){
    fHitData = new TObjArray;
 }
 
-// Default destructor
 TModuleDecoderV7XX::~TModuleDecoderV7XX() {
 }
 
@@ -34,7 +32,7 @@ Int_t TModuleDecoderV7XX::Decode(char* buffer, const Int_t &size, TObjArray *seg
    Bool_t  evtFlag = kFALSE;
    Int_t   headerID, geoID, channel, idx;
 
-   TRawDataSimple *data;
+   TRawDataSimple<UInt_t> *data;
    
    for (Int_t i=0; i != evtSize; ++i) {
       headerID = (evtData[i] & kHeaderMask);
@@ -53,13 +51,13 @@ Int_t TModuleDecoderV7XX::Decode(char* buffer, const Int_t &size, TObjArray *seg
 	       if (fHitData->GetEntriesFast() <= idx || !fHitData->At(idx)) {
 		  // if no data available, create one
 		  TObject *obj = New();
-		  ((TRawDataSimple*)obj)->SetSegInfo(seg->GetUniqueID(),
+		  ((TRawDataSimple<UInt_t>*)obj)->SetSegInfo(seg->GetUniqueID(),
 						   geoID,channel);
 		  fHitData->AddAtAndExpand(obj,idx);
 		  seg->Add(obj);
 	       }
 	       
-	       data = (TRawDataSimple*)fHitData->At(idx);
+	       data = (TRawDataSimple<UInt_t>*)fHitData->At(idx);
 	       //           printf("[V7XX] evtData[%d] = %d\n",i, evtData[i]&0x1fff);
 	       data->Set( evtData[i] & kMaskMeasure );
 	    }

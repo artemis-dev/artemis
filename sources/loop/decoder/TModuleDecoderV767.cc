@@ -3,7 +3,7 @@
  * @brief  Decorder class for V767
  *
  * @date   Created:       2013-07-23 10:35:05
- *         Last Modified: 2013-07-30 10:34:34
+ *         Last Modified: 2013-07-31 16:25:22
  * @author KAWASE Shoichiro <kawase@cns.s.u-tokyo.ac.jp>
  *
  * @note   - TRawDataV767 is typedef of TRawDataV1190.
@@ -23,13 +23,11 @@
 using art::TModuleDecoderV767;
 using art::TRawDataV767;
 
-// Default constructor
 TModuleDecoderV767::TModuleDecoderV767() 
    : TModuleDecoder(kID, TRawDataV767::Class()){
    fHitData = new TObjArray;
 }
 
-// Default destructor
 TModuleDecoderV767::~TModuleDecoderV767() {
    delete fHitData;
 }
