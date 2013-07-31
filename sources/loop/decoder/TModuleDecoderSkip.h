@@ -3,7 +3,7 @@
  * @brief
  *
  * @date   Created:       2013-07-24 17:29:34
- *         Last Modified: 2013-07-25 10:11:17
+ *         Last Modified: 2013-07-31 09:57:35
  * @author KAWASE Shoichiro <kawase@cns.s.u-tokyo.ac.jp>
  *
  *    Copyright (C) 2013 KAWASE Shoichiro All rights reserved
@@ -19,20 +19,19 @@ namespace art{
 }
 
 class art::TModuleDecoderSkip : public TModuleDecoder {
-  public:
+public:
    // Default constructor
    explicit TModuleDecoderSkip(const Int_t id);
    // Default destructor
    virtual ~TModuleDecoderSkip();
-   // Copy constructor
-   TModuleDecoderSkip(const TModuleDecoderSkip& rhs);
-   // Assignment operator
-   TModuleDecoderSkip& operator=(const TModuleDecoderSkip& rhs);
 
    virtual Int_t Decode(char* buffer, const int &size, TObjArray *seg){return 0;}
 
 private:
-   Int_t fID;
+   // Copy constructor (prohibited)
+   TModuleDecoderSkip(const TModuleDecoderSkip& rhs);
+   // Assignment operator (prohibited)
+   TModuleDecoderSkip& operator=(const TModuleDecoderSkip& rhs);
 
 };
 

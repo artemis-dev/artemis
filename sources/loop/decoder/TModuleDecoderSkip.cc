@@ -3,7 +3,7 @@
  * @brief
  *
  * @date   Created:       2013-07-24 17:33:07
- *         Last Modified: 2013-07-24 17:41:21
+ *         Last Modified: 2013-07-31 09:57:06
  * @author KAWASE Shoichiro <kawase@cns.s.u-tokyo.ac.jp>
  *
  *    Copyright (C) 2013 KAWASE Shoichiro All rights reserved.
@@ -23,17 +23,5 @@ TModuleDecoderSkip::TModuleDecoderSkip(const Int_t id)
 
 // Default destructor
 TModuleDecoderSkip::~TModuleDecoderSkip() {
-}
-
-// Copy constructor
-TModuleDecoderSkip::TModuleDecoderSkip(const TModuleDecoderSkip& rhs)
-   : TModuleDecoder(rhs.fID, NULL) {
-}
-
-// Assignment operator
-TModuleDecoderSkip& TModuleDecoderSkip::operator=(const TModuleDecoderSkip& rhs) {
-   if (this != &rhs) {
-   }
-   return *this;
 }
 
