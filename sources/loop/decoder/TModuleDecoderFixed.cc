@@ -3,7 +3,7 @@
  * @brief
  *
  * @date   Created:       2013-07-30 16:34:07
- *         Last Modified: 2013-07-31 16:24:37
+ *         Last Modified: 2013-08-01 11:27:43
  * @author KAWASE Shoichiro <kawase@cns.s.u-tokyo.ac.jp>
  *
  *    Copyright (C) 2013 KAWASE Shoichiro All rights reserved.
@@ -37,7 +37,7 @@ template <typename T> void TModuleDecoderFixed<T>::CalcMaskMeasure(const Int_t s
 template <typename T> Int_t TModuleDecoderFixed<T>::Decode(char* buffer, const int &size, TObjArray *seg) {
    const Int_t kGeoID  = 0;
    UInt_t      evtSize = size / sizeof(T);
-   T          *evtData = (T*) buffer;
+   T          *evtData = reinterpret_cast<T*>(buffer);
    T           measure;
 
    TRawDataSimple<T> *data;
@@ -51,13 +51,13 @@ template <typename T> Int_t TModuleDecoderFixed<T>::Decode(char* buffer, const i
 
       if (fHitData->GetEntriesFast() <= iData || !fHitData->At(iData)) {
 	 // if no data available, create one
-	 TObject *obj = New();
-	 ((TRawDataSimple<T>*)obj)->SetSegInfo(seg->GetUniqueID(), kGeoID, iData);
+	 TRawDataSimple<T>* obj = static_cast<TRawDataSimple<T>*>(this->New());
+	 obj->SetSegInfo(seg->GetUniqueID(), kGeoID, iData);
 	 fHitData->AddAtAndExpand(obj,iData);
 	 seg->Add(obj);
       }
 
-      data = (TRawDataSimple<T>*)fHitData->At(iData);
+      data = static_cast<TRawDataSimple<T>*>(fHitData->At(iData));
       data->Set(measure);
       fHitData->AddAt(NULL,iData);
    }

@@ -3,7 +3,7 @@
  * @brief  Decorder class for V767
  *
  * @date   Created:       2013-07-23 10:35:05
- *         Last Modified: 2013-07-31 16:25:22
+ *         Last Modified: 2013-08-01 11:17:12
  * @author KAWASE Shoichiro <kawase@cns.s.u-tokyo.ac.jp>
  *
  * @note   - TRawDataV767 is typedef of TRawDataV1190.
@@ -23,8 +23,10 @@
 using art::TModuleDecoderV767;
 using art::TRawDataV767;
 
+typedef TRawDataV767 V767Raw_t;
+
 TModuleDecoderV767::TModuleDecoderV767() 
-   : TModuleDecoder(kID, TRawDataV767::Class()){
+   : TModuleDecoder(kID, V767Raw_t::Class()){
    fHitData = new TObjArray;
 }
 
@@ -33,14 +35,14 @@ TModuleDecoderV767::~TModuleDecoderV767() {
 }
 
 Int_t TModuleDecoderV767::Decode(char* buffer, const int &size, TObjArray *seg){
-   UInt_t *evtData = (unsigned int*) buffer;
-   UInt_t  evtSize = size / sizeof(unsigned int);
+   UInt_t *evtData = reinterpret_cast<UInt_t*>(buffer);
+   UInt_t  evtSize = size / sizeof(UInt_t);
 
    UInt_t  headerID, geoID, evtID, channel, idx, measure;
    Bool_t ghf;          // Global Header Flag
    Bool_t isLeadingEdge;
 
-   TRawDataV767 *data;
+   V767Raw_t *data;
 
    ghf = kFALSE;
 
@@ -67,14 +69,13 @@ Int_t TModuleDecoderV767::Decode(char* buffer, const int &size, TObjArray *seg){
 	    // check if the data object exists
 	    if (fHitData->GetEntriesFast() <= idx || !fHitData->At(idx)) {
 	       // if no data available, create one
-	       TObject *obj = New();
-	       ((TRawDataV767*)obj)->SetSegInfo(seg->GetUniqueID(),
-						 geoID,channel);
+	       V767Raw_t *obj = static_cast<V767Raw_t*>(this->New());
+	       obj->SetSegInfo(seg->GetUniqueID(),geoID,channel);
 	       fHitData->AddAtAndExpand(obj,idx);
 	       seg->Add(obj);
 	    }
 
-	    data = (TRawDataV767*)fHitData->At(idx);
+	    data = static_cast<V767Raw_t*>(fHitData->At(idx));
 
 	    if (isLeadingEdge) {
 	       data->SetLeading(measure);
