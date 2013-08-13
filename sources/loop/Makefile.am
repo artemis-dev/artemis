@@ -24,6 +24,8 @@ SUBSRC = \
 	TModuleDecoder.cc \
 	TModuleDecoderFactory.cc \
 	TRawDataSimple.cc \
+	TRawTiming.cc \
+	TRawTimingWithEdge.cc \
 	TRawDataPair.cc
 
 
