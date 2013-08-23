@@ -3,10 +3,7 @@
 /.*
 
 # managed
-!autogen.sh
-!config.h.in
-!configure.in
-!configure.scan
+!configure.ac
 !.gitignore
 !Makefile.am
 !scripts
