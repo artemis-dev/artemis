@@ -3,7 +3,7 @@
  * @brief  Decorder Class for V7XX
  *
  * @date   Created:       2013-07-24 14:41:31
- *         Last Modified: 2013-08-01 11:15:17
+ *         Last Modified: 2013-08-21 14:10:45
  * @author KAWASE Shoichiro <kawase@cns.s.u-tokyo.ac.jp>
  *
  *    Copyright (C) 2013 KAWASE Shoichiro All rights reserved.
@@ -26,6 +26,8 @@ TModuleDecoderV7XX::TModuleDecoderV7XX()
 }
 
 TModuleDecoderV7XX::~TModuleDecoderV7XX() {
+   if (fHitData) delete fHitData;
+   fHitData = NULL;
 }
 
 Int_t TModuleDecoderV7XX::Decode(char* buffer, const Int_t &size, TObjArray *seg){

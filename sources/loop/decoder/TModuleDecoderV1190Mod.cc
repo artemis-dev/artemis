@@ -25,6 +25,8 @@ TModuleDecoderV1190Mod::TModuleDecoderV1190Mod()
 }
 TModuleDecoderV1190Mod::~TModuleDecoderV1190Mod()
 {
+   if (fHitData) delete fHitData;
+   fHitData = NULL;
 }
 
 Int_t TModuleDecoderV1190Mod::Decode(char* buf, const int &size, TObjArray *seg)
@@ -67,7 +69,7 @@ Int_t TModuleDecoderV1190Mod::Decode(char* buf, const int &size, TObjArray *seg)
             fHitData->AddAtAndExpand(obj,idx);
             seg->Add(obj);
          }
-         
+
          data = static_cast<V1190Raw_t*>(fHitData->At(idx));
 
 	 data->Set(measure);

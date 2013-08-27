@@ -3,7 +3,7 @@
  * @brief
  *
  * @date   Created:       2013-08-13 12:18:30
- *         Last Modified: 2013-08-13 13:08:06
+ *         Last Modified: 2013-08-15 11:54:19
  * @author KAWASE Shoichiro <kawase@cns.s.u-tokyo.ac.jp>
  *
  *    Copyright (C) 2013 KAWASE Shoichiro All rights reserved
@@ -23,6 +23,8 @@ public:
    // Default destructor
    ~TRawTiming();
 
+   virtual UInt_t GetTiming() {return Get();}
+   virtual void SetTiming(UInt_t val) {Set(val);}
    virtual Bool_t IsLeading() const {return kTRUE;}
 
 private:

@@ -3,7 +3,7 @@
  * @brief
  *
  * @date   Created:       2013-08-13 13:04:27
- *         Last Modified: 2013-08-13 13:06:37
+ *         Last Modified: 2013-08-13 14:12:34
  * @author KAWASE Shoichiro <kawase@cns.s.u-tokyo.ac.jp>
  *
  *    Copyright (C) 2013 KAWASE Shoichiro All rights reserved.
@@ -17,7 +17,7 @@ ClassImp(art::TRawTimingWithEdge);
 
 // Default constructor
 TRawTimingWithEdge::TRawTimingWithEdge() 
-   : fIsLeading(kTRUE){
+   : fIsLeading(true){
 }
 
 // Default destructor

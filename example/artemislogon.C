@@ -1,9 +1,9 @@
 {
    {
       TString path = gSystem->GetDynamicPath();
-      path.Append("./processors:$WORKDIR/processors:.");
+      path.Append(":./processors:.");
       gSystem->SetDynamicPath(path);
-//      gSystem->Load("libuser");
+      gSystem->Load("libuser");
 //      gSystem->Load("libMinuit");
    }
 
@@ -36,7 +36,7 @@
 
    {
       TString path = gSystem->GetIncludePath();
-      path.Append("-I$WORKDIR/processors");
+      path.Append("-I./processors");
       gSystem->SetIncludePath(path);
    }
    {
@@ -52,7 +52,7 @@
 // mod ID 23 : V767
       df->Register(new art::TModuleDecoderV767);
 // mod ID 24 : V1190
-      df->Register(new art::TModuleDecoderV1190);
+      df->Register(new art::TModuleDecoderV1190Mod);
 // mod ID 26 : V1190C
       df->Register(new art::TModuleDecoderSkip(26));
 // mod ID 63 : V1740

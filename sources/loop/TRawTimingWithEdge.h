@@ -3,7 +3,7 @@
  * @brief
  *
  * @date   Created:       2013-08-13 12:50:09
- *         Last Modified: 2013-08-13 13:06:41
+ *         Last Modified: 2013-08-14 08:56:01
  * @author KAWASE Shoichiro <kawase@cns.s.u-tokyo.ac.jp>
  *
  *    Copyright (C) 2013 KAWASE Shoichiro All rights reserved
@@ -26,8 +26,8 @@ public:
    virtual Bool_t IsLeading() const {return fIsLeading;}
    void SetEdge(Bool_t edge) {fIsLeading = edge;}
 
-   static const Bool_t kLeading = kTRUE;
-   static const Bool_t kTrailing = kFALSE;
+   static const Bool_t kLeading = kTRUE;    //!
+   static const Bool_t kTrailing = kFALSE;  //!
 
 private:
    Bool_t fIsLeading;

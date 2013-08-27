@@ -3,7 +3,7 @@
  * @brief  Decorder class for V767
  *
  * @date   Created:       2013-07-23 10:35:05
- *         Last Modified: 2013-08-13 13:32:08
+ *         Last Modified: 2013-08-21 14:10:36
  * @author KAWASE Shoichiro <kawase@cns.s.u-tokyo.ac.jp>
  *
  * @note   - TRawDataV767 is typedef of TRawDataV1190.
@@ -18,12 +18,12 @@
 
 #include <TObjArray.h>
 
-#include <TRawDataV767.h>
+#include <TRawTimingWithEdge.h>
 
 using art::TModuleDecoderV767;
-using art::TTimingWithEdge;
+using art::TRawTimingWithEdge;
 
-typedef TTimingWithEdge V767Raw_t;
+typedef TRawTimingWithEdge V767Raw_t;
 
 TModuleDecoderV767::TModuleDecoderV767() 
    : TModuleDecoder(kID, V767Raw_t::Class()){
@@ -31,7 +31,8 @@ TModuleDecoderV767::TModuleDecoderV767()
 }
 
 TModuleDecoderV767::~TModuleDecoderV767() {
-   delete fHitData;
+   if (fHitData) delete fHitData;
+   fHitData = NULL;
 }
 
 Int_t TModuleDecoderV767::Decode(char* buffer, const int &size, TObjArray *seg){

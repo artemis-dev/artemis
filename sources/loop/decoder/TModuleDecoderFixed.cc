@@ -3,7 +3,7 @@
  * @brief
  *
  * @date   Created:       2013-07-30 16:34:07
- *         Last Modified: 2013-08-01 11:27:43
+ *         Last Modified: 2013-08-21 14:09:43
  * @author KAWASE Shoichiro <kawase@cns.s.u-tokyo.ac.jp>
  *
  *    Copyright (C) 2013 KAWASE Shoichiro All rights reserved.
@@ -23,6 +23,8 @@ template <typename T> TModuleDecoderFixed<T>::TModuleDecoderFixed(const Int_t id
 }
 
 template <typename T> TModuleDecoderFixed<T>::~TModuleDecoderFixed() {
+   if (fHitData) delete fHitData;
+   fHitData = NULL;
 }
 
 template <typename T> void TModuleDecoderFixed<T>::CalcMaskMeasure(const Int_t size) {

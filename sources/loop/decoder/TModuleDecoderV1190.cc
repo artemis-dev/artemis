@@ -21,6 +21,8 @@ art::TModuleDecoderV1190::TModuleDecoderV1190()
 }
 art::TModuleDecoderV1190::~TModuleDecoderV1190()
 {
+   if (fHitData) delete fHitData;
+   fHitData = NULL;
 }
 
 Int_t art::TModuleDecoderV1190::Decode(char* buf, const int &size, TObjArray *seg)

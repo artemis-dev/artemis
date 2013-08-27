@@ -45,7 +45,7 @@ void art::TCategorizedData::Add(TRawDataObject *obj)
    const Int_t &tid = obj->GetType();
    TObjArray *detector = NULL;
    TRefArray *type     = NULL;
-   
+
    if (cid == TRawDataObject::kInvalid) return;
    // find or create category if the current category is null or different from the requested one
    if (!fCategory || fCategory->GetUniqueID() != cid) {
