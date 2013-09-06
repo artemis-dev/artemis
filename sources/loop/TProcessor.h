@@ -2,7 +2,7 @@
 /**
  * @file   TProcessor.h
  * @date   Created : Jul 10, 2013 17:10:49 JST
- *   Last Modified : 
+ *   Last Modified : Aug 26, 2013 11:44:53 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -46,9 +46,9 @@ public:
    virtual void PreLoop() {;}
    virtual void PostLoop() {;}
 
-   virtual void SetStopLoop() { (*fCondition)->Set(TLoop::kStopLoop); }
-   virtual void SetStopEvent() { (*fCondition)->Set(TLoop::kStopEvent); }
-   virtual void SetEndOfRun() { (*fCondition)->Set(TLoop::kEndOfRun); }
+   virtual void SetStopLoop() { if (fCondition) (*fCondition)->Set(TLoop::kStopLoop); }
+   virtual void SetStopEvent() { if (fCondition)  (*fCondition)->Set(TLoop::kStopEvent); }
+   virtual void SetEndOfRun() { if (fCondition)  (*fCondition)->Set(TLoop::kEndOfRun); }
    
    virtual void PrintDescriptionYAML();
 
