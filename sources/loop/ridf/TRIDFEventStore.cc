@@ -2,7 +2,7 @@
 /**
  * @file   TRIDFEventStore.cc
  * @date   Created : Jul 12, 2013 17:12:35 JST
- *   Last Modified : Jul 23, 2013 09:42:13 JST
+ *   Last Modified : Sep 17, 2013 18:26:14 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -42,6 +42,10 @@ art::TRIDFEventStore::TRIDFEventStore()
    fBuffer = new Char_t[fMaxBufSize];
 
 
+   // initialize 
+   for (Int_t i=0; i!=64; i++) {
+      fClassDecoder[i] = NULL;
+   }
    // register class decoders
    // Class 3 : event header  w/o timestamp
    fClassDecoder[3] = ClassDecoder03;
@@ -65,6 +69,8 @@ art::TRIDFEventStore::TRIDFEventStore()
 }
 art::TRIDFEventStore::~TRIDFEventStore()
 {
+   if (fRIDFData.fSegmentedData) delete fRIDFData.fSegmentedData;
+   if (fRIDFData.fCategorizedData) delete fRIDFData.fCategorizedData; 
    if (fRIDFData.fMapTable) delete fRIDFData.fMapTable;
    if (fBuffer) delete [] fBuffer;
 }
