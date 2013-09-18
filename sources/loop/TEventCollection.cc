@@ -2,7 +2,7 @@
 /**
  * @file   TEventCollection.cc
  * @date   Created : Jul 10, 2013 17:10:20 JST
- *   Last Modified : 
+ *   Last Modified : Sep 16, 2013 12:52:32 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -28,4 +28,9 @@ void   art::TEventCollection::Add(const char* name, TObject* obj, Bool_t isPassi
 art::TEventObject* art::TEventCollection::Get(const char* name)
 {
    return (TEventObject*) fObjects->FindObject(name);
+}
+
+void art::TEventCollection::Delete()
+{
+   fObjects->Delete();
 }

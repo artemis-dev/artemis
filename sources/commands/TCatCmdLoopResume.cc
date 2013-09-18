@@ -2,21 +2,21 @@
 /**
  * @file   TCatCmdLoopResume.cc
  * @date   Created : May 02, 2012 16:02:06 JST
- *   Last Modified : May 02, 2012 17:28:30 JST
+ *   Last Modified : Sep 16, 2013 13:05:43 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
  *    Copyright (C)2012
  */
 #include "TCatCmdLoopResume.h"
-#include "TCatLoopManager.h"
+#include "TLoopManager.h"
 
 ClassImp(TCatCmdLoopResume);
 
 TCatCmdLoopResume::TCatCmdLoopResume()
 {
    SetName("resume");
-   SetTitle("resume loop");
+   SetTitle("resume loop (only first loop is resumed currently)");
 }
 TCatCmdLoopResume::~TCatCmdLoopResume()
 {
@@ -31,10 +31,10 @@ TCatCmdLoopResume* TCatCmdLoopResume::Instance()
 
 Long_t TCatCmdLoopResume::Cmd(vector<TString> args)
 {
-   TCatLoopManager *lm = TCatLoopManager::Instance();
+   art::TLoopManager *lm = art::TLoopManager::Instance();
    switch (args.size()) {
    case 1:
-      lm->Resume();
+      lm->Resume(0);
       break;
    default:
       break;

@@ -2,7 +2,7 @@
 /**
  * @file   TLoopManager.cc
  * @date   Created : Jul 10, 2013 17:10:36 JST
- *   Last Modified : 
+ *   Last Modified : Sep 18, 2013 13:43:32 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -29,6 +29,12 @@ art::TLoopManager* art::TLoopManager::Instance()
 
 art::TLoop* art::TLoopManager::Add(const char *filename)
 {
+   if (fLoops->GetEntries() > 0) {
+      printf("currently not supported to perform many loops at the same time\n");
+      printf("please terminate before continue.\n");
+      return NULL;
+   }
+      
    TLoop *loop = new TLoop;
    fLoops->Add(loop);
    loop->Load(filename);
@@ -37,25 +43,42 @@ art::TLoop* art::TLoopManager::Add(const char *filename)
 
 Int_t art::TLoopManager::Resume(Int_t i)
 {
-   TLoopControl task;
-   fLoopControl->PushTask(task,GetLoop(i));
+   TLoop *l = GetLoop(i);
+   if (l) {
+      TLoopControl *task = new TLoopControl;
+      task->Resume();
+      fLoopControl->PushTask(*task,l);
+   } else {
+      printf("No loop is ready\n");
+   }
    return kTRUE;
 }
 Int_t art::TLoopManager::Suspend(Int_t i)
 {
-   TLoopControl task;
-   task.Suspend();
-   fLoopControl->PushTask(task,GetLoop(i));
-   return kTRUE;
+   TLoop* l = GetLoop(i);
+   if (l) {
+      TLoopControl *task = new TLoopControl;
+      task->Suspend();
+      fLoopControl->PushTask(*task,l);
+   } else {
+      printf("No loop is ready\n");
+   }
+    return kTRUE;
 
 }
 Int_t art::TLoopManager::Terminate(Int_t i)
 {
+   TObject * obj = fLoops->At(i);
+   fLoops->Remove(obj);
+   delete obj;
    return kTRUE;
 }
 art::TLoop* art::TLoopManager::GetLoop(Int_t i)
 {
-   return (TLoop*)fLoops->At(i);
+   if (i >= 0 && i < fLoops->GetEntries()) {
+      return (TLoop*)fLoops->At(i);
+   }
+   return NULL;
 }
 
 

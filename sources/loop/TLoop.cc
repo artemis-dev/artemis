@@ -2,7 +2,7 @@
 /**
  * @file   TLoop.cc
  * @date   Created : Apr 26, 2012 20:26:47 JST
- *   Last Modified : Mar 20, 2013 18:06:09 JST
+ *   Last Modified : Sep 17, 2013 18:59:20 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -31,40 +31,17 @@ art::TLoop::TLoop()
 
 art::TLoop::~TLoop()
 {
+   std::list<TProcessor*>::iterator itr;
+   std::list<TProcessor*>::iterator itrBegin = fProcessors.begin();
+   std::list<TProcessor*>::iterator itrEnd   = fProcessors.end();
+   for (itr = itrBegin; itr != itrEnd; itr++) {
+      delete *itr;
+   }
+   fEventCollection->Delete();
    delete fEventCollection;
    delete fCondition;
 }
 
-#if 0
-Bool_t art::TLoop::AddProcess(const char *name, const char *procname)
-{
-   TClass *cls = gROOT->GetClass(procname);
-   if (!cls) {
-      printf("not such processor : %s\n",procname);
-      return kFALSE;
-   }
-   TCatProcessor *proc = (TCatProcessor*) cls->New();
-   if (!proc) {
-      return kFALSE;
-   }
-   proc->SetName(name);
-   proc->SetWidget(fWidget);
-   fProcessors.push_back(proc);
-   return kTRUE;
-}
-
-
-Bool_t art::TLoop::AddProcess(const char *name, TCatProcessor *proc)
-{
-   if (!proc) {
-      return kFALSE;
-   }
-   proc->SetName(name);
-   proc->SetWidget(fWidget);
-   fProcessors.push_back(proc);
-   return kTRUE;
-}
-#endif
 Bool_t art::TLoop::Load(const char* filename)
 {
    std::ifstream fin(filename);
@@ -128,8 +105,8 @@ Bool_t art::TLoop::Resume()
    // For the special call to remap branch etc.
    for_each(itrBegin,itrEnd,std::mem_fun(&TProcessor::PreLoop));
    // start loop
-   while (1) {
-      Int_t objectNumber = TProcessID::GetObjectCount();
+   while (1) { 
+     Int_t objectNumber = TProcessID::GetObjectCount();
       for (itr = itrBegin; itr != itrEnd; itr++) {
          (*itr)->Process();
          if (fCondition->IsSet(kStopEvent)) {

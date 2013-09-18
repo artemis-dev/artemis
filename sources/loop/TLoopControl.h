@@ -2,7 +2,7 @@
 /**
  * @file   TLoopControl.h
  * @date   Created : Jul 10, 2013 17:10:33 JST
- *   Last Modified : 
+ *   Last Modified : Sep 17, 2013 15:01:50 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -26,6 +26,7 @@ public:
 
    bool runTask(TLoop* loop);
 
+   void Resume() { fMode = kResume; }
    void Suspend() { fMode = kSuspend; }
 private:
    enum {kResume, kSuspend} fMode;
