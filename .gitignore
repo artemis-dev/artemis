@@ -6,10 +6,11 @@
 !configure.ac
 !.gitignore
 !Makefile.am
-!scripts
 !sources
+!example
+!README
 
 # additional exception
 *~
 *.swp
-
+.root_hist
