@@ -43,7 +43,7 @@ Int_t TModuleDecoderV1190Mod::Decode(char* buf, const int &size, TObjArray *seg)
    Clear();
    fHitData->Clear();
    
-   for (Int_t i=0; i<evtsize; i++) {
+   for (Int_t i=0; i<evtsize; ++i) {
       ih = evtdata[i]&kHeaderMask;
       switch (ih) {
       case kGlobalHeader:
