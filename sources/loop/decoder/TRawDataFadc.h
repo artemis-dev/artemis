@@ -2,7 +2,7 @@
 /**
  * @file   TRawDataFadc.h
  * @date   Created : Jul 20, 2013 23:20:58 JST
- *   Last Modified : Jul 23, 2013 09:32:05 JST
+ *   Last Modified : Sep 18, 2013 22:22:01 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -39,7 +39,15 @@ public:
       fNumSample = 0;
 //      SetGeo(TRawDataObject::kInvalid);
 //      SetCh(TRawDataObject::kInvalid);
-   }     
+   }
+
+   virtual Int_t GetNumSample() { return fNumSample; }
+   virtual UInt_t GetTimestamp() { return fTimestamp; }
+   virtual Int_t GetOffset() { return fOffset; }
+   virtual UInt_t GetPattern() { return fPattern; }
+
+   UShort_t& operator[] (int idx) { return fADC[idx]; }
+   
          
 
 protected:

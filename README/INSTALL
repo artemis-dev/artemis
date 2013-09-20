@@ -1,0 +1,90 @@
+Installation of Artemis from source
+
+Contents:
+========
+1 . Getting the source
+1.1 Getting the tar file containing the source
+1.2 Getting the source tree from git repository
+2.  Getting ready to build
+3.  Installation Location
+4.  Compilation
+5.  Install
+
+
+
+1. Getting the source
+=====================
+
+1.1 Getting the tar file containing the source
+----------------------------------------------
+
+To install Artemis from source you first have to get the tar file containing the source.
+This tar file can be found in the usual Artemis download ares (where?).
+The files are named artemis-<version>.source.tar.gz.
+
+Here's the short summary
+
+1.2 Getting the source tree from git repository
+-----------------------------------------------
+
+Another way to get the source is to access the repository.
+(Currently it is at the web server of CNS.)
+
+1) Get access to the repository
+
+% git clone mail.cns.s.u-tokyo.ac.jp:/home/ota/repos/pub/artemis.git
+
+2) Get a specific version
+
+% cd artemis
+% git checkout 1.0.0
+
+2. Getting ready to build
+=========================
+
+The Artemis depends on ROOT and yaml-cpp libraries.
+Please refere the web sites below and install their correct versions.
+Environmental variable ROOTSYS, PATH, LD_LIBRARY_PATH should be set correctly.
+
+   ROOT (>5.32.0)
+      http://root.cern.ch
+   yaml-cpp (0.3.0)
+      https://code.google.com/p/yaml-cpp/
+   autoconf (>2.59)
+      yum, apt-get etc.
+
+
+3. Installation Location
+========================
+
+The default `--prefix' path is `/usr/local', which will result in the
+Artemis files to be installed in `/usr/local/bin', `/usr/local/lib',
+etc. You can specify an installation prefix other than `/usr/local' by
+giving `configure' the option `--prefix=PATH'. For more detailed
+location specifications see `configure --help'.
+
+   
+4. Compilation
+==============
+
+You need to specify the correct path to the yaml-cpp library by using
+the `--with-yaml-cpp' path.  You don't need to specify the path to
+root libraries, since the root libraries is specified by root-config
+in the Makefile.
+
+Assuming you installed yaml-cpp to $HOME/local/{include, lib},
+
+% cd artemis
+% ./autoreconf --install [--verbose --force]
+% ./configure --with-yaml-cpp=$HOME/local
+% make
+
+5. Install
+==========
+
+Do e.g.:
+
+% make install
+
+
+

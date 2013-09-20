@@ -26,12 +26,13 @@
 //   cf->Register(TCatCmdBnx::Instance());
 //   cf->Register(TCatCmdBny::Instance());
    cf->Register(TCatCmdSly::Instance());
-//   cf->Register(TCatCmdLoopAdd::Instance());
-//   cf->Register(TCatCmdLoopResume::Instance());
-//   cf->Register(TCatCmdLoopSuspend::Instance());
+   cf->Register(TCatCmdLoopAdd::Instance());
+   cf->Register(TCatCmdLoopResume::Instance());
+   cf->Register(TCatCmdLoopSuspend::Instance());
+   cf->Register(TCatCmdLoopTerminate::Instance());
    cf->Register(new TCatCmdHstore);
-//   cf->Register(TCatCmdSave::Instance());
-//   cf->Register(TCatCmdXval::Instance());
+   cf->Register(TCatCmdSave::Instance());
+   cf->Register(TCatCmdXval::Instance());
 
    {
       TString path = gSystem->GetIncludePath();

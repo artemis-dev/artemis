@@ -18,7 +18,7 @@ using art::TModuleDecoderSkip;
 // Default constructor
 TModuleDecoderSkip::TModuleDecoderSkip(const Int_t id)
    : TModuleDecoder(id, NULL) {
-   printf("[TModuleDecorderSkip] segID = %d will be skipped.\n",id);
+   printf("[TModuleDecorderSkip] ModuleID = %d will be skipped.\n",id);
 }
 
 // Default destructor
