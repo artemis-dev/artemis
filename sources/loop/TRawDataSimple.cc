@@ -23,7 +23,9 @@ template <typename T> art::TRawDataSimple<T>::~TRawDataSimple()
 }
 
 // explicit instantiations
+namespace art{
 template class TRawDataSimple<UChar_t>;
 template class TRawDataSimple<UShort_t>;
 template class TRawDataSimple<UInt_t>;
 template class TRawDataSimple<ULong64_t>;
+}

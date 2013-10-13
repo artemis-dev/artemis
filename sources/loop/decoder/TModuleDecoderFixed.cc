@@ -3,7 +3,7 @@
  * @brief
  *
  * @date   Created:       2013-07-30 16:34:07
- *         Last Modified: 2013-08-21 14:09:43
+ *         Last Modified: 2013-10-13 12:10:16
  * @author KAWASE Shoichiro <kawase@cns.s.u-tokyo.ac.jp>
  *
  *    Copyright (C) 2013 KAWASE Shoichiro All rights reserved.
@@ -68,7 +68,9 @@ template <typename T> Int_t TModuleDecoderFixed<T>::Decode(char* buffer, const i
 }
 
 // explicit instantiations to limit T to be one of unsigned integer types.
+namespace art{
 template class TModuleDecoderFixed<UChar_t>;
 template class TModuleDecoderFixed<UShort_t>;
 template class TModuleDecoderFixed<UInt_t>;
 template class TModuleDecoderFixed<ULong64_t>;
+}

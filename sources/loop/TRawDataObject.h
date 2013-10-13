@@ -53,6 +53,16 @@ public:
       fType  = type;
    }
 
+   virtual void Clear(Option_t *opt="") {
+      TObject::Clear(opt);
+      fSegID = kInvalid;
+      fGeo   = kInvalid;
+      fCh    = kInvalid;
+      fCatID = kInvalid;
+      fDetID = kInvalid;
+      fType  = kInvalid;
+   }
+
 protected:
    Int_t fSegID; // segment id 
    Int_t fGeo; // geographical address or virtual station number

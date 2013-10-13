@@ -3,7 +3,7 @@
  * @brief  Rawdata container with two values
  *
  * @date   Created:       2013-07-25 10:19:08
- *         Last Modified: 2013-07-25 12:20:39
+ *         Last Modified: 2013-10-13 12:28:57
  * @author KAWASE Shoichiro <kawase@cns.s.u-tokyo.ac.jp>
  *
  * @note   This class contains two Int_t values
@@ -43,6 +43,12 @@ public:
 
    // swap fFirst and fSecond
    void Swap();
+
+   virtual void Clear(Option_t *opt="") {
+      TRawDataObject::Clear(opt);
+      fFirst  = TRawDataObject::kInvalid;
+      fSecond = TRawDataObject::kInvalid;
+   }
 
 private:
    Int_t fFirst;

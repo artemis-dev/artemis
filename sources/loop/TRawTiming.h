@@ -3,7 +3,7 @@
  * @brief
  *
  * @date   Created:       2013-08-13 12:18:30
- *         Last Modified: 2013-08-15 11:54:19
+ *         Last Modified: 2013-10-13 12:29:37
  * @author KAWASE Shoichiro <kawase@cns.s.u-tokyo.ac.jp>
  *
  *    Copyright (C) 2013 KAWASE Shoichiro All rights reserved
@@ -26,6 +26,10 @@ public:
    virtual UInt_t GetTiming() {return Get();}
    virtual void SetTiming(UInt_t val) {Set(val);}
    virtual Bool_t IsLeading() const {return kTRUE;}
+
+   virtual void Clear(Option_t *opt="") {
+      TRawDataSimple<UInt_t>::Clear(opt);
+   }
 
 private:
    // Copy constructor (prohibited)

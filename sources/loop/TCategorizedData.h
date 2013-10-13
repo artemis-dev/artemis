@@ -42,6 +42,7 @@ public:
    }
 
    virtual void Clear(Option_t *opt = "") {
+      TObject::Clear(opt);
       fCats->Clear(opt);
       fDets->Clear(opt);
       fTypes->Clear(opt);

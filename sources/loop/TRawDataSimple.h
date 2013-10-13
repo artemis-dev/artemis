@@ -23,6 +23,11 @@ public:
 
    void Set(T val) { fValue = val; }
    T Get() { return fValue; }
+
+   void Clear(Option_t *opt="") {
+      TRawDataObject::Clear(opt);
+      fValue = art::TRawDataObject::kInvalid;
+   }
       
 private:
    T fValue;
