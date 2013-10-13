@@ -60,12 +60,12 @@ TVirtualPad *TCatPadManager::Next()
 
 TVirtualPad *TCatPadManager::Current()
 {
-   fCurrent->GetPad(fCurrentPadId);
+   return fCurrent->GetPad(fCurrentPadId);
 }
 
 TVirtualPad* TCatPadManager::Get(Int_t idx)
 {
-   fCurrent->GetPad(idx);
+   return fCurrent->GetPad(idx);
 }
 
 TCanvas *TCatPadManager::GetCanvas() 
