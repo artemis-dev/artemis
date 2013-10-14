@@ -2,7 +2,7 @@
 /**
  * @file   TRawDataSimple.cc
  * @date   Created : Jul 22, 2013 18:22:37 JST
- *   Last Modified : Jul 22, 2013 18:17:12 JST
+ *   Last Modified : 2013-07-31 16:19:36
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -10,12 +10,22 @@
  */
 #include "TRawDataSimple.h"
 
-ClassImp(art::TRawDataSimple);
+templateClassImp(art::TRawDataSimple);
 
-art::TRawDataSimple::TRawDataSimple()
+using art::TRawDataSimple;
+
+template <typename T> art::TRawDataSimple<T>::TRawDataSimple()
    : fValue(TRawDataObject::kInvalid)
 {
 }
-art::TRawDataSimple::~TRawDataSimple()
+template <typename T> art::TRawDataSimple<T>::~TRawDataSimple()
 {
+}
+
+// explicit instantiations
+namespace art{
+template class TRawDataSimple<UChar_t>;
+template class TRawDataSimple<UShort_t>;
+template class TRawDataSimple<UInt_t>;
+template class TRawDataSimple<ULong64_t>;
 }

@@ -2,7 +2,7 @@
 /**
  * @file   TCategorizedData.cc
  * @date   Created : Jul 17, 2013 16:17:19 JST
- *   Last Modified : Sep 19, 2013 10:14:13 JST
+ *   Last Modified: 2013-10-13 12:17:30
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -45,7 +45,7 @@ void art::TCategorizedData::Add(TRawDataObject *obj)
    const Int_t &tid = obj->GetType();
    TObjArray *detector = NULL;
    TRefArray *type     = NULL;
-   
+
    if (cid == TRawDataObject::kInvalid) return;
    // find or create category if the current category is null or different from the requested one
    if (!fCategory || fCategory->GetUniqueID() != cid) {

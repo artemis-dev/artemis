@@ -37,7 +37,12 @@
 #pragma link C++ class art::TMapTable;
 #pragma link C++ class art::TFileDataSource-;
 #pragma link C++ class art::TModuleDecoderFactory-;
-#pragma link C++ class art::TRawDataSimple;
+#pragma link C++ class art::TRawDataSimple<UChar_t>;
+#pragma link C++ class art::TRawDataSimple<UShort_t>;
+#pragma link C++ class art::TRawDataSimple<UInt_t>;
+#pragma link C++ class art::TRawDataSimple<ULong64_t>;
+#pragma link C++ class art::TRawTiming;
+#pragma link C++ class art::TRawTimingWithEdge;
 #pragma link C++ class art::TRawDataPair;
 
 
