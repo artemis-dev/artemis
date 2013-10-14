@@ -113,7 +113,7 @@ protected:
       void Print() {
          printf(" RUN   : %s%s\n",fRunName,fRunNumber);
          printf(" Start : %s %s\n",fDate, fStartTime);
-         printf(" Stop  : %s %s\n",fDate,fStartTime);
+         printf(" Stop  : %s  %s\n",fDate, fStopTime);
          printf(" Header: %s\n",fHeader);
          printf(" Ender : %s\n",fEnder);
       }

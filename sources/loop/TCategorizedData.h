@@ -42,9 +42,11 @@ public:
    }
 
    virtual void Clear(Option_t *opt = "") {
+      TObject::Clear(opt);
       fCats->Clear(opt);
       fDets->Clear(opt);
       fTypes->Clear(opt);
+      fCategory = NULL;
    }
 
    virtual void Add(TRawDataObject *obj);
@@ -62,6 +64,6 @@ private:
    static TClonesArray *fgTypes; //!
 
    
-   ClassDef(art::TCategorizedData,1);
+   ClassDef(TCategorizedData,1);
 };
 #endif // end of #ifdef TCATEGORIZEDDATA_H

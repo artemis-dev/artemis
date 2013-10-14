@@ -15,7 +15,7 @@
 #include <iostream>
 
 art::TProcessor::TProcessor()
-   :  fParameters(NULL), fInitialized(kFALSE)
+   :  fInitialized(kFALSE), fParameters(NULL)
 {
    RegisterOptionalParameter("OutputTransparency","Output is persistent if false (default)",
                              fOutputIsTransparent,kFALSE);

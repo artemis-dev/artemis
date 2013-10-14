@@ -1,5 +1,5 @@
 /*
- * @file TModuleDecoderV1190.cc
+ * @file TModuleDecoderV1190Mod.cc
  * @date  Created : 2008/11/26 21:34:03 JST<BR>
  *  Last Modified : Jul 23, 2013 09:33:23 JST
  *--------------------------------------------------------
@@ -9,29 +9,33 @@
  *--------------------------------------------------------
  *    Copyright (C)2008-2013 by Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  */
-#include "TModuleDecoderV1190.h"
+#include "TModuleDecoderV1190Mod.h"
 
-#include <TRawDataV1190.h>
+#include <TRawTimingWithEdge.h>
 #include <TObjArray.h>
 
-art::TModuleDecoderV1190::TModuleDecoderV1190()
-   : TModuleDecoder(kID,TRawDataV1190::Class()) {
-   // array length should be 128 (maximum number of channel)
+using art::TModuleDecoderV1190Mod;
+using art::TRawTimingWithEdge;
+
+typedef TRawTimingWithEdge V1190Raw_t;
+
+TModuleDecoderV1190Mod::TModuleDecoderV1190Mod()
+   : TModuleDecoder(kID,V1190Raw_t::Class()) {
    fHitData = new TObjArray; 
 }
-art::TModuleDecoderV1190::~TModuleDecoderV1190()
+TModuleDecoderV1190Mod::~TModuleDecoderV1190Mod()
 {
    if (fHitData) delete fHitData;
    fHitData = NULL;
 }
 
-Int_t art::TModuleDecoderV1190::Decode(char* buf, const int &size, TObjArray *seg)
+Int_t TModuleDecoderV1190Mod::Decode(char* buf, const int &size, TObjArray *seg)
 {
-   unsigned int *evtdata = (unsigned int*) buf;
-   unsigned int evtsize = size/sizeof(unsigned int);
-   int ih, igeo, ich;
-   int ghf, thf, bncid, evtid, edge, idx;
-   TRawDataV1190 *data;
+   UInt_t *evtdata = (UInt_t*) buf;
+   UInt_t evtsize = size/sizeof(UInt_t);
+   Int_t ih, igeo, ich;
+   Int_t ghf, thf, bncid, evtid, edge, idx;
+   V1190Raw_t *data;
    Int_t measure;
    ghf = thf = 0;
 
@@ -39,7 +43,7 @@ Int_t art::TModuleDecoderV1190::Decode(char* buf, const int &size, TObjArray *se
    Clear();
    fHitData->Clear();
    
-   for (int i=0; i<evtsize; i++) {
+   for (Int_t i=0; i<evtsize; ++i) {
       ih = evtdata[i]&kHeaderMask;
       switch (ih) {
       case kGlobalHeader:
@@ -60,22 +64,18 @@ Int_t art::TModuleDecoderV1190::Decode(char* buf, const int &size, TObjArray *se
          // check if the data object exists.
          if (fHitData->GetEntriesFast() <= idx || !fHitData->At(idx)) {
             // if no data object is available, create one
-            TObject *obj = New();
-            ((TRawDataV1190*)obj)->SetSegInfo(seg->GetUniqueID(),igeo,ich);
+            V1190Raw_t *obj = static_cast<V1190Raw_t*>(this->New());
+            obj->SetSegInfo(seg->GetUniqueID(),igeo,ich);
             fHitData->AddAtAndExpand(obj,idx);
             seg->Add(obj);
          }
-         
-         data = (TRawDataV1190*)fHitData->At(idx);
 
-         if (edge) {
-            // incoming data is trailing edge
-            data->SetTrailing(measure);
-            fHitData->AddAt(NULL,idx);
-         } else {
-            // if the data is leading edge, just set value
-            data->SetLeading(measure);
-         }
+         data = static_cast<V1190Raw_t*>(fHitData->At(idx));
+
+	 data->Set(measure);
+	 data->SetEdge(!edge); // definition of edge is opposite to that in TRawTimingWithEdge
+	 fHitData->AddAt(NULL,idx);
+
          break;
       case kTDCTrailer:
          break;

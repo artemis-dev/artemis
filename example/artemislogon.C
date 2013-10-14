@@ -1,9 +1,9 @@
 {
    {
       TString path = gSystem->GetDynamicPath();
-      path.Append("./processors:$WORKDIR/processors:.");
+      path.Append(":./processors:.");
       gSystem->SetDynamicPath(path);
-//      gSystem->Load("libuser");
+      gSystem->Load("libuser");
 //      gSystem->Load("libMinuit");
    }
 
@@ -36,18 +36,27 @@
 
    {
       TString path = gSystem->GetIncludePath();
-      path.Append("-I$WORKDIR/processors");
+      path.Append("-I./processors");
       gSystem->SetIncludePath(path);
    }
    {
       art::TModuleDecoderFactory *df = art::TModuleDecoderFactory::Instance();
-      df->Register(new art::TModuleDecoderV1190);
-      df->Register(new art::TModuleDecoderV1740);
-      df->Register(new art::TModuleDecoderSkip(0));
-      df->Register(new art::TModuleDecoderSkip(1));
-      df->Register(new art::TModuleDecoderSkip(21));
-      df->Register(new art::TModuleDecoderSkip(23));
+// mod ID 0 : Fixed16
+      const Int_t digits0 = 16;
+      df->Register(new art::TModuleDecoderFixed<unsigned short>(0,digits0) );
+// mod ID 1 : Fixed24
+      const Int_t digits1 = 24;
+      df->Register(new art::TModuleDecoderFixed<unsigned int>(1,digits1) );
+// mod ID 21 : V7XX
+      df->Register(new art::TModuleDecoderV7XX);
+// mod ID 23 : V767
+      df->Register(new art::TModuleDecoderV767);
+// mod ID 24 : V1190
+      df->Register(new art::TModuleDecoderV1190Mod);
+// mod ID 26 : V1190C
       df->Register(new art::TModuleDecoderSkip(26));
+// mod ID 63 : V1740
+      df->Register(new art::TModuleDecoderV1740);
       
 //      TArtDecoderFactory *df = TArtDecoderFactory::Instance();
 //      df->Register(TArtDecoderSIS3610::Instance());

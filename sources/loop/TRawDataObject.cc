@@ -12,14 +12,16 @@
 
 ClassImp(art::TRawDataObject);
 
-const Int_t art::TRawDataObject::kInvalid = -1E+8;
+using art::TRawDataObject;
 
-art::TRawDataObject::TRawDataObject()
+const Int_t TRawDataObject::kInvalid = -1E+8;
+
+TRawDataObject::TRawDataObject()
    : fSegID(kInvalid), fGeo(kInvalid), fCh(kInvalid),
      fCatID(kInvalid),fDetID(kInvalid),fType(kInvalid)
 {
 }
 
-art::TRawDataObject::~TRawDataObject()
+TRawDataObject::~TRawDataObject()
 {
 }
