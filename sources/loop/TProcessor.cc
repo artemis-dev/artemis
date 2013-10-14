@@ -2,7 +2,7 @@
 /**
  * @file   TProcessor.cc
  * @date   Created : Jul 10, 2013 17:10:19 JST
- *   Last Modified : 
+ *   Last Modified : Sep 17, 2013 18:13:29 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -15,7 +15,7 @@
 #include <iostream>
 
 art::TProcessor::TProcessor()
-   :  fParameters(NULL), fInitialized(kFALSE)
+   :  fInitialized(kFALSE), fParameters(NULL)
 {
    RegisterOptionalParameter("OutputTransparency","Output is persistent if false (default)",
                              fOutputIsTransparent,kFALSE);
@@ -131,4 +131,5 @@ void operator >> (const YAML::Node &node, art::TProcessor *&proc)
       // std::cout << e.what() << std::endl;
    }
    proc->SetParameters(str);
+   proc->SetName(name.data());
 }

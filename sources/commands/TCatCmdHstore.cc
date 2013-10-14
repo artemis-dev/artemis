@@ -2,7 +2,7 @@
 /**
  * @file   TCatCmdHstore.cc
  * @date   Created : Jul 13, 2012 10:13:10 JST
- *   Last Modified : 
+ *   Last Modified : Aug 05, 2013 19:17:43 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -53,10 +53,10 @@ Long_t TCatCmdHstore::Run(const char* filename, const Option_t *opt)
 void TCatCmdHstore::WriteRecursive(TDirectory *parent, TList *list)
 {
    if (!parent || !list) return;
-   parent->cd();
    Int_t nObj = list->GetEntries();
    for (Int_t i=0; i != nObj; i++) {
       TObject *obj = list->At(i);
+      parent->cd();
       if (obj->InheritsFrom("TH1")) {
          obj->Write();
       } else if (obj->InheritsFrom("TDirectory")) {

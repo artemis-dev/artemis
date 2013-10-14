@@ -2,7 +2,7 @@
 /**
  * @file   TRawDataFadc.h
  * @date   Created : Jul 20, 2013 23:20:58 JST
- *   Last Modified : Jul 22, 2013 09:14:13 JST
+ *   Last Modified : Sep 18, 2013 22:22:01 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -23,20 +23,13 @@ public:
    TRawDataFadc();
    virtual ~TRawDataFadc();
 
-   virtual void Set(Int_t geo, Int_t ch, const UInt_t time,
-                    Int_t offset, UInt_t pat) {
-      SetGeo(geo);
-      SetCh(ch);
+   virtual void SetFadcInfo(const UInt_t time,Int_t offset, UInt_t pat) {
       fTimestamp = time;
       fOffset = offset;
       fPattern = pat;
    }
 
    virtual void Add(Int_t adc) {
-      if (fNumSample < 0 || fNumSample >= kMaxSample) {
-         printf("Exceeds the maimum number of sample\n");
-         return;
-      }
       fADC[fNumSample] = adc;
       fClock[fNumSample] = fNumSample;
       fNumSample++;
@@ -44,9 +37,17 @@ public:
 
    virtual void Clear(const Option_t* opt = "") {
       fNumSample = 0;
-      SetGeo(TRawDataObject::kInvalid);
-      SetCh(TRawDataObject::kInvalid);
-   }     
+//      SetGeo(TRawDataObject::kInvalid);
+//      SetCh(TRawDataObject::kInvalid);
+   }
+
+   virtual Int_t GetNumSample() { return fNumSample; }
+   virtual UInt_t GetTimestamp() { return fTimestamp; }
+   virtual Int_t GetOffset() { return fOffset; }
+   virtual UInt_t GetPattern() { return fPattern; }
+
+   UShort_t& operator[] (int idx) { return fADC[idx]; }
+   
          
 
 protected:

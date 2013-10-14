@@ -22,7 +22,11 @@ SUBSRC = \
 	TFileDataSource.cc \
 	TMapTable.cc \
 	TModuleDecoder.cc \
-	TModuleDecoderFactory.cc
+	TModuleDecoderFactory.cc \
+	TRawDataSimple.cc \
+	TRawTiming.cc \
+	TRawTimingWithEdge.cc \
+	TRawDataPair.cc
 
 
 

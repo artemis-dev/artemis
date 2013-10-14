@@ -2,7 +2,7 @@
 /**
  * @file   TTreeEventStore.cc
  * @date   Created : Jul 11, 2013 21:11:20 JST
- *   Last Modified : 
+ *   Last Modified : Aug 24, 2013 08:49:15 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -33,6 +33,7 @@ art::TTreeEventStore::TTreeEventStore()
 art::TTreeEventStore::~TTreeEventStore()
 {
    if (fFile) fFile->Close();
+   fTree = NULL;
 }
 
 

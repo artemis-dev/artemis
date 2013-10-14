@@ -2,7 +2,7 @@
 /**
  * @file   TLoopControl.cc
  * @date   Created : Jul 10, 2013 18:10:21 JST
- *   Last Modified : 
+ *   Last Modified : Sep 17, 2013 18:53:50 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -27,5 +27,9 @@ bool art::TLoopControl::runTask(TLoop* loop)
       loop->GetCondition()->Set(TLoop::kStopLoop);
       return kTRUE;
       break;
+   default:
+      printf("nothing happen with mode %d\n",fMode);
+      break;
+      return kFALSE;
    } 
 }

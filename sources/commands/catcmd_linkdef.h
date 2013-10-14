@@ -25,6 +25,11 @@
 #pragma link C++ class TCatCmdMacro;
 #pragma link C++ class TCatCmdLg;
 #pragma link C++ class TCatCmdXval;
+#pragma link C++ class TCatCmdLoopAdd;
+#pragma link C++ class TCatCmdLoopResume;
+#pragma link C++ class TCatCmdLoopSuspend;
+#pragma link C++ class TCatCmdLoopTerminate;
+
 
 #pragma link C++ class TCatCmdFactory+;
 

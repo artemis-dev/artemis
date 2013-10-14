@@ -2,6 +2,11 @@ SUBSRC = \
 	TModuleDecoderV1190.cc \
 	TRawDataV1190.cc \
 	TModuleDecoderV1740.cc \
+	TModuleDecoderSkip.cc \
+	TModuleDecoderV767.cc \
+	TModuleDecoderV7XX.cc \
+	TModuleDecoderFixed.cc \
+	TModuleDecoderV1190Mod.cc \
 	TRawDataFadc.cc 
 
 
@@ -9,6 +14,7 @@ SUBSRC = \
 SUBOBJ = $(SUBSRC:.cc=.o)
 SUBHDR = $(SUBSRC:.cc=.h) 
 
+SUBHDR += TRawDataV767.h
 
 DICTSRC = artdecoder_dict.cc
 DICTOBJ = $(DICTSRC:.cc=.o)

@@ -2,7 +2,7 @@
 /**
  * @file   TCatCmdLoopSuspend.h
  * @date   Created : May 02, 2012 16:02:31 JST
- *   Last Modified : May 02, 2012 16:19:33 JST
+ *   Last Modified : Sep 16, 2013 11:32:47 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -10,8 +10,6 @@
  */
 #ifndef TCATCMDLOOPSUSPEND_H
 #define TCATCMDLOOPSUSPEND_H
-
-#include "TCatCmd.h"
 
 #include "TCatCmd.h"
 

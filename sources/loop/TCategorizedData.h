@@ -2,7 +2,7 @@
 /**
  * @file   TCategorizedData.h
  * @date   Created : Jul 16, 2013 17:16:43 JST
- *   Last Modified : 
+ *   Last Modified : Sep 19, 2013 09:18:43 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *
@@ -42,9 +42,11 @@ public:
    }
 
    virtual void Clear(Option_t *opt = "") {
+      TObject::Clear(opt);
       fCats->Clear(opt);
       fDets->Clear(opt);
       fTypes->Clear(opt);
+      fCategory = NULL;
    }
 
    virtual void Add(TRawDataObject *obj);
@@ -62,6 +64,6 @@ private:
    static TClonesArray *fgTypes; //!
 
    
-   ClassDef(art::TCategorizedData,1);
+   ClassDef(TCategorizedData,1);
 };
 #endif // end of #ifdef TCATEGORIZEDDATA_H

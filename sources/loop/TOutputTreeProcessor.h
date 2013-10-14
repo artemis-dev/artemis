@@ -2,7 +2,7 @@
 /**
  * @file   TOutputTreeProcessor.h
  * @date   Created : Jul 11, 2013 17:11:09 JST
- *   Last Modified : 
+ *   Last Modified : Jul 22, 2013 18:47:32 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -29,7 +29,7 @@ public:
    virtual void Process();
    virtual void PreLoop();
    virtual void PostLoop();
-   virtual void EndOfRun();
+
    
 
 private:

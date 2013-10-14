@@ -2,7 +2,8 @@ SUBSRC = \
 	TArtEventCollections.cc \
 	TArtParticle.cc \
 	TArtAtomicMassTable.cc \
-	TCatTwoBodyKinematics.cc
+	TCatTwoBodyKinematics.cc \
+	TBinaryReactionGenerator.cc
 
 SUBOBJ = $(SUBSRC:.cc=.o)
 SUBHDR = $(SUBSRC:.cc=.h) TArtSystemOfUnit.h
@@ -17,8 +18,7 @@ INCDIR = ../../include
 
 AUTOMAKE_OPTIONS = foreign
 
-INCLUDES = -I$(INCDIR) -I$(ROOTSYS)/include 
-CXXFLAGS = -fPIC  $(shell root-config --cflags) -I$(INCDIR) -Wall -O2
+CXXFLAGS = -fPIC  -I$(INCDIR)  $(shell root-config --cflags) -Wall -O2
 LDFLAGS = $(shell root-config --glibs) 
 
 include_HEADERS = $(SUBHDR) $(SUBHDRF) $(OPTHDR)
@@ -31,7 +31,7 @@ libcatmc_la_LDFLAGS = $(LDFLAGS)
 
 $(DICTSRC): $(SUBHDR) catmc_linkdef.h
 	@echo Making $(DICTSRC) ...
-	rootcint -f $@ -c $(DEFAULT_INCLUDES) $(INCLUDES) $^
+	rootcint -f $@ -c $(DEFAULT_INCLUDES) -I$(INCDIR) -I$(ROOTSYS)/include $^
 
 header: $(include_HEADERS)
 	@echo Installing header to $(INCDIR)

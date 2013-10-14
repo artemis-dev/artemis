@@ -1,37 +1,19 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
-#
 
-AC_PREREQ(2.59)
-AC_INIT(libcat, 0.1.0, [ota@cns.s.u-tokyo.ac.jp])
+AC_PREREQ([2.59])
+AC_INIT(libcat, 0.1.0, [artemis-dev@cns.s.u-tokyo.ac.jp])
 AM_INIT_AUTOMAKE([foreign])
-AC_CONFIG_SRCDIR([config.h.in])
-AC_CONFIG_HEADER([config.h])
-AC_ENABLE_STATIC(no)
-AC_PROG_LIBTOOL
+AC_CONFIG_SRCDIR([sources/loop/catloop_linkdef.h])
+AC_CONFIG_HEADERS([config.h])
 
 # Checks for programs.
 AC_PROG_CXX([clang++ g++34 g++])
 AC_PROG_CC([clang gcc34 gcc])
+AC_PROG_LIBTOOL
 AC_PROG_RANLIB
 
-# Checks for header files.
-AC_HEADER_STDC
-AC_CHECK_HEADERS([limits.h stdlib.h string.h strings.h unistd.h])
-if test "`uname -m`" = "x86_64" ; then
-AC_SUBST(X11DIR,[/usr/lib64])
-else
-AC_SUBST(X11DIR,[/usr/X11R6/lib])
-fi
-
-AC_PATH_XTRA
-
-if test "`uname`" = "Darwin" ; then
-AC_SUBST(SOEXT,[dylib])
-else
-AC_SUBST(SOEXT,[so])
-fi
-
+# Checks for libraries.
 if test "x$ROOTSYS" = "x" ; then
 AC_MSG_ERROR(ROOTSYS should be set)
 fi
@@ -57,26 +39,35 @@ fi
 ROOTLIBS="`$ROOTSYS/bin/root-config --glibs`"
 AC_SUBST(ROOTLIBS)
 
+# Checks for header files.
+AC_CHECK_HEADERS([termios.h unistd.h])
+
+AC_PATH_XTRA
+
+if test "`uname -s`" = "Darwin" ; then
+AC_SUBST(SOEXT,[dylib])
+else
+AC_SUBST(SOEXT,[so])
+fi
+
 # Checks for typedefs, structures, and compiler characteristics.
 AC_HEADER_STDBOOL
 AC_C_CONST
 AC_C_INLINE
+AC_TYPE_SIZE_T
 
 # Checks for library functions.
-AC_FUNC_MALLOC
+AC_HEADER_STDC
 AC_FUNC_STAT
-AC_FUNC_VPRINTF
-AC_CHECK_FUNCS([bzero memset strpbrk strtol])
 
 AC_CONFIG_FILES([Makefile
                  sources/Makefile
+                 sources/commands/Makefile
                  sources/core/Makefile
                  sources/loop/Makefile
                  sources/loop/decoder/Makefile
                  sources/loop/ridf/Makefile
-                 sources/commands/Makefile
-                 sources/uhodo/Makefile
-                 sources/mc/Makefile
                  sources/main/Makefile
-		 ])
+                 sources/mc/Makefile
+                 sources/uhodo/Makefile])
 AC_OUTPUT

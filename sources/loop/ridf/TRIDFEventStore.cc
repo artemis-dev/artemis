@@ -2,7 +2,7 @@
 /**
  * @file   TRIDFEventStore.cc
  * @date   Created : Jul 12, 2013 17:12:35 JST
- *   Last Modified : Jul 22, 2013 15:14:40 JST
+ *   Last Modified : Sep 17, 2013 18:26:14 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -42,6 +42,10 @@ art::TRIDFEventStore::TRIDFEventStore()
    fBuffer = new Char_t[fMaxBufSize];
 
 
+   // initialize 
+   for (Int_t i=0; i!=64; i++) {
+      fClassDecoder[i] = NULL;
+   }
    // register class decoders
    // Class 3 : event header  w/o timestamp
    fClassDecoder[3] = ClassDecoder03;
@@ -65,6 +69,8 @@ art::TRIDFEventStore::TRIDFEventStore()
 }
 art::TRIDFEventStore::~TRIDFEventStore()
 {
+   if (fRIDFData.fSegmentedData) delete fRIDFData.fSegmentedData;
+   if (fRIDFData.fCategorizedData) delete fRIDFData.fCategorizedData; 
    if (fRIDFData.fMapTable) delete fRIDFData.fMapTable;
    if (fBuffer) delete [] fBuffer;
 }
@@ -124,14 +130,14 @@ void art::TRIDFEventStore::Init(TEventCollection *col)
 void art::TRIDFEventStore::Process()
 {
    // try to prepare data source
-   fRIDFData.fSegmentedData->Clear();
-   fRIDFData.fCategorizedData->Clear();
+   fRIDFData.fSegmentedData->Clear("C");
+   fRIDFData.fCategorizedData->Clear("C");
    
    if (!fDataSource) {
       if (fIsOnline) {
 //         fDataSource = new TShmDataSourceRIDF(fSHMID);
       } else if (fFileName.size()){
-         TString& filename = fFileName.front();
+         TString filename = fFileName.front();
          FILE *fp = fopen(filename,"r");
          if (fp) {
             fclose(fp);
@@ -269,15 +275,17 @@ void art::TRIDFEventStore::ClassDecoder04(Char_t *buf, Int_t& offset, struct RID
    index += sizeof(segid);
    // calculate segment size
    size = header.Size() - sizeof(header) - sizeof(segid);
-   TObjArray *seg = ridfdata->fSegmentedData->FindSegmentByID(segid.Get());
-   if (!seg) seg = ridfdata->fSegmentedData->NewSegment(segid.Get());
+   // Segid for map consists of rev, device, fp, and detector.
+   // Module id should be removed. (now Get return the moduleid removed segment id).
+   UInt_t mapsegid = segid.Get();
+   TObjArray *seg = ridfdata->fSegmentedData->FindSegmentByID(mapsegid);
+   if (!seg) seg = ridfdata->fSegmentedData->NewSegment(mapsegid);
    TModuleDecoder *decoder = TModuleDecoderFactory::Instance()->Get(segid.Module());
    if (decoder) {
       decoder->Decode(&buf[index],size,seg);
-      TIter next(seg);
-      TRawDataObject *obj;
-      while ((obj = (TRawDataObject*) next())) {
-         // mapping is too slow...
+      const Int_t &nData = seg->GetEntriesFast();
+      for (Int_t i=0; i!=nData; i++) {
+         TRawDataObject *obj = (TRawDataObject*) seg->At(i);
          ridfdata->fMapTable->Map(obj);
          ridfdata->fCategorizedData->Add(obj);
       }

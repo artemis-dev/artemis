@@ -2,7 +2,7 @@
 /**
  * @file   TRIDFEventStore.h
  * @date   Created : Jul 12, 2013 17:12:43 JST
- *   Last Modified : 
+ *   Last Modified : Jul 23, 2013 09:37:08 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -113,7 +113,7 @@ protected:
       void Print() {
          printf(" RUN   : %s%s\n",fRunName,fRunNumber);
          printf(" Start : %s %s\n",fDate, fStartTime);
-         printf(" Stop  : %s %s\n",fDate,fStartTime);
+         printf(" Stop  : %s  %s\n",fDate, fStopTime);
          printf(" Header: %s\n",fHeader);
          printf(" Ender : %s\n",fEnder);
       }
@@ -129,7 +129,8 @@ protected:
       Int_t Detector() { return ((fSegID >> 8) & 0x3f); }
       Int_t FP() { return ((fSegID >> 14) & 0x3f); }
       Int_t Device() { return ((fSegID>>20) & 0x3f); }
-      Int_t Get() { return fSegID; }
+      // return segid but module id is removed
+      UInt_t Get() { return (fSegID & 0xffffff00); }
    private:
       unsigned int fSegID;
    };

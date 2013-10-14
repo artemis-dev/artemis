@@ -2,7 +2,7 @@
 /**
  * @file   TEventCollection.h
  * @date   Created : Apr 26, 2012 23:26:19 JST
- *   Last Modified : Feb 02, 2013 22:01:51 JST
+ *   Last Modified : Sep 16, 2013 12:55:57 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -30,6 +30,8 @@ public:
    virtual void   Add(const char* name, TObject* obj, Bool_t isPassive = kTRUE);
    virtual TEventObject* Get(const char* name);
    virtual TIter* GetIter() { return new TIter(fObjects); }
+
+   virtual void Delete();
    
 protected:
    TList *fObjects;

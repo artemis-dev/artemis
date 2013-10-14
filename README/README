@@ -1,0 +1,24 @@
+README File for Artemis
+
+Contents
+========
+
+Directory artemis/ :
+
+README       - directory containing important information
+LICENSE      - usage terms and conditions
+configure.ac - build configuration file for autoreconf
+
+
+Examples
+========
+
+To run the example, go to the example directory and do, e.g.:
+
+% artemis
+artemis [0] add rndmEventStore.yaml
+artemis [1] resume
+artemis [2] suspend
+artemis [3] terminate
+
+

@@ -2,7 +2,7 @@
 /**
  * @file   TModuleDecoderV1740.cc
  * @date   Created : Feb 06, 2013 15:06:29 JST
- *   Last Modified : Jul 22, 2013 09:24:26 JST
+ *   Last Modified : Jul 23, 2013 09:35:03 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -52,7 +52,8 @@ Int_t art::TModuleDecoderV1740::Decode(char* buf, const int &size, TObjArray *se
             TRawDataFadc* data = (TRawDataFadc*) New();
             Int_t ch = 64;
             Int_t len = 0;
-            data->Set(geo,ch,timestamp,len,pattern);
+            data->SetSegInfo(seg->GetUniqueID(),geo,ch);
+            data->SetFadcInfo(timestamp,len,pattern);
             seg->Add(data);
             continue;
          }
@@ -65,7 +66,8 @@ Int_t art::TModuleDecoderV1740::Decode(char* buf, const int &size, TObjArray *se
                int nSamples = ((bufi[1]&0x3fff0000)>>16);
                int pBegin = (bufi[1]&0xffff);
                TRawDataFadc *data = (TRawDataFadc*) New();
-               data->Set(geo,ch,timestamp,pBegin,pattern);
+               data->SetSegInfo(seg->GetUniqueID(),geo,ch);
+               data->SetFadcInfo(timestamp,pBegin,pattern);
                bufs += 4;
                for (i = 0; i < nSamples; i++) {
                   data->Add((Int_t)bufs[i]);
@@ -81,14 +83,15 @@ Int_t art::TModuleDecoderV1740::Decode(char* buf, const int &size, TObjArray *se
                end   = (bufi[1]&0xffff);
                int sample = end - begin;
                TRawDataFadc *data = (TRawDataFadc*) New();
-               data->Set(geo,ch,timestamp,(post - total + begin),pattern);
+               seg->Add(data);
+               data->SetSegInfo(seg->GetUniqueID(),geo,ch);
+               data->SetFadcInfo(timestamp,(post - total + begin),pattern);
                bufs+=4;
                for (i = 0; i!=sample; i++) {
                   data->Add(bufs[i]);
                }
-               seg->Add(data);
-               iws += 4 + sample;
-               iw  += 4 + sample;
+               iws += (4 + sample);
+               iw  += (4 + sample);
                bufs += sample;
             } else {
                printf("Decode" "Unknown Header 0x%08x",bufi[0]);

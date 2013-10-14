@@ -21,7 +21,11 @@ SUBSRC = \
 	TCatCmdSave.cc \
 	TCatCmdMacro.cc \
 	TCatCmdLg.cc \
-	TCatCmdXval.cc
+	TCatCmdXval.cc \
+	TCatCmdLoopAdd.cc \
+	TCatCmdLoopResume.cc \
+	TCatCmdLoopSuspend.cc \
+	TCatCmdLoopTerminate.cc 
 
 
 SUBOBJ = $(SUBSRC:.cc=.o)

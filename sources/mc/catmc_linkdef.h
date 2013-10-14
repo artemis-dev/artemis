@@ -2,7 +2,7 @@
 /**
  * @file   LinkDefArtMC.h
  * @date   Created : Jan 25, 2011 21:25:03 JST
- *   Last Modified : Aug 04, 2011 19:33:54 JST
+ *   Last Modified : Aug 21, 2013 18:39:47 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -20,6 +20,7 @@
 #pragma link C++ class TArtParticle+;
 #pragma link C++ class TCatTwoBodyKinematics;
 #pragma link C++ class TArtAtomicMassTable;
+#pragma link C++ class art::TBinaryReactionGenerator;
 #pragma link C++ global gAtomicMassTable;
 #pragma link C++ namespace TArtSystemOfUnit;
 

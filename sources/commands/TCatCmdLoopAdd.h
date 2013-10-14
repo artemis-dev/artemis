@@ -2,7 +2,7 @@
 /**
  * @file   TCatCmdLoopAdd.h
  * @date   Created : May 02, 2012 16:02:46 JST
- *   Last Modified : May 02, 2012 16:31:59 JST
+ *   Last Modified : Sep 16, 2013 10:50:21 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -13,7 +13,6 @@
 
 #include <TCatCmd.h>
 
-class TFolder;
 
 class TCatCmdLoopAdd  : public TCatCmd {
 protected:
@@ -26,10 +25,6 @@ public:
    virtual Long_t Cmd(vector<TString> args);
 
    virtual void Help();
-
-   // load yaml-format steering file
-   // this method should be moved to elsewhere
-   virtual Bool_t LoadYAML(TString filename, TFolder *thisloop);
 
    ClassDef(TCatCmdLoopAdd,1);
 };
