@@ -2,7 +2,7 @@
 /**
  * @file   TRIDFEventStore.cc
  * @date   Created : Jul 12, 2013 17:12:35 JST
- *   Last Modified : Sep 17, 2013 18:26:14 JST
+ *   Last Modified : Oct 18, 2013 16:44:27 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -200,6 +200,7 @@ void art::TRIDFEventStore::Process()
 
    // parse data if available
    while (1) {
+      TModuleDecoderFactory::Instance()->Clear();
       memcpy(&fHeader,fBuffer+fOffset,sizeof(fHeader));
       if (fClassDecoder[fHeader.ClassID()]) {
          fClassDecoder[fHeader.ClassID()](fBuffer,fOffset,&fRIDFData);
@@ -240,7 +241,9 @@ void art::TRIDFEventStore::ClassDecoderSkip(Char_t *buf, Int_t& offset, struct R
 // unknown class decoder to skip the data
 void art::TRIDFEventStore::ClassDecoderUnknown(Char_t *buf, Int_t& offset, struct RIDFData* ridfdata)
 {
-   printf("Unkown Class\n");
+   RIDFHeader header;
+   memcpy(&header,buf+offset,sizeof(header));
+   printf("Unkown Class ID = %d\n",header.ClassID());
    ClassDecoderSkip(buf,offset,ridfdata);
 }
 
@@ -252,8 +255,18 @@ void art::TRIDFEventStore::ClassDecoder03(Char_t *buf, Int_t& offset, struct RID
 {
    RIDFHeader header;
    memcpy(&header,buf+offset,sizeof(header));
+   Int_t last = offset + header.Size();
    offset += sizeof(header);
    offset += sizeof(int);
+   while (offset < last) {
+      memcpy(&header,buf+offset,sizeof(header));
+      if (header.ClassID() == 4) {
+         ClassDecoder04(buf,offset,ridfdata);
+      } else {
+         printf("offset = %d, last = %d\n",offset,last);
+         ClassDecoderUnknown(buf,offset,ridfdata);
+      }
+   }
 }
 
 //----------------------------------------
@@ -286,6 +299,10 @@ void art::TRIDFEventStore::ClassDecoder04(Char_t *buf, Int_t& offset, struct RID
       const Int_t &nData = seg->GetEntriesFast();
       for (Int_t i=0; i!=nData; i++) {
          TRawDataObject *obj = (TRawDataObject*) seg->At(i);
+         if (obj->GetCatID() != TRawDataObject::kInvalid) {
+            // already mapped
+            continue;
+         }
          ridfdata->fMapTable->Map(obj);
          ridfdata->fCategorizedData->Add(obj);
       }
