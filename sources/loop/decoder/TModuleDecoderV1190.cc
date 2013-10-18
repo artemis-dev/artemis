@@ -36,7 +36,6 @@ Int_t art::TModuleDecoderV1190::Decode(char* buf, const int &size, TObjArray *se
    ghf = thf = 0;
 
    // clear old hits
-   Clear();
    fHitData->Clear();
    
    for (int i=0; i<evtsize; i++) {

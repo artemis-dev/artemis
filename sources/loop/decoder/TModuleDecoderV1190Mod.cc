@@ -40,7 +40,6 @@ Int_t TModuleDecoderV1190Mod::Decode(char* buf, const int &size, TObjArray *seg)
    ghf = thf = 0;
 
    // clear old hits
-   Clear();
    fHitData->Clear();
    
    for (Int_t i=0; i<evtsize; ++i) {
