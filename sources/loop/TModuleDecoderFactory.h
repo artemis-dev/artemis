@@ -2,7 +2,7 @@
 /**
  * @file   TModuleDecoderFactory.h
  * @date   Created : Jul 22, 2013 08:22:10 JST
- *   Last Modified : Jul 22, 2013 08:54:40 JST
+ *   Last Modified : Oct 18, 2013 16:39:15 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -30,8 +30,15 @@ public:
    void Register(TModuleDecoder *decoder);
    TModuleDecoder* Get(Int_t did) { return (TModuleDecoder*) fDecoders->At(did); }
 
+   virtual void Clear() {
+      Int_t n = fDecodersSparse->GetEntriesFast();
+      for (Int_t i=0; i!=n; i++) {
+         fDecodersSparse->At(i)->Clear("C");
+      }
+   }
+
 protected:
    TObjArray *fDecoders;
-
+   TObjArray *fDecodersSparse;
 };
 #endif // end of #ifdef TMODULEDECODERFACTORY_H

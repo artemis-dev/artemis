@@ -2,7 +2,7 @@
 /**
  * @file   TModuleDecoderV1740.cc
  * @date   Created : Feb 06, 2013 15:06:29 JST
- *   Last Modified : Jul 23, 2013 09:35:03 JST
+ *   Last Modified : Oct 18, 2013 16:41:02 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -29,8 +29,6 @@ Int_t art::TModuleDecoderV1740::Decode(char* buf, const int &size, TObjArray *se
    int post, ch, begin, end;
    int total;
    unsigned short* bufs = (unsigned short*) buf;
-//   printf("size = %d\n",size);
-   Clear();
    
    for (UInt_t iw=0; iw < evtsize;) {
       unsigned int* bufi = (unsigned int*) bufs;
@@ -52,6 +50,7 @@ Int_t art::TModuleDecoderV1740::Decode(char* buf, const int &size, TObjArray *se
             TRawDataFadc* data = (TRawDataFadc*) New();
             Int_t ch = 64;
             Int_t len = 0;
+            data->Clear("C");
             data->SetSegInfo(seg->GetUniqueID(),geo,ch);
             data->SetFadcInfo(timestamp,len,pattern);
             seg->Add(data);
@@ -66,6 +65,7 @@ Int_t art::TModuleDecoderV1740::Decode(char* buf, const int &size, TObjArray *se
                int nSamples = ((bufi[1]&0x3fff0000)>>16);
                int pBegin = (bufi[1]&0xffff);
                TRawDataFadc *data = (TRawDataFadc*) New();
+               data->Clear("C");
                data->SetSegInfo(seg->GetUniqueID(),geo,ch);
                data->SetFadcInfo(timestamp,pBegin,pattern);
                bufs += 4;
@@ -84,6 +84,7 @@ Int_t art::TModuleDecoderV1740::Decode(char* buf, const int &size, TObjArray *se
                int sample = end - begin;
                TRawDataFadc *data = (TRawDataFadc*) New();
                seg->Add(data);
+               data->Clear("C");
                data->SetSegInfo(seg->GetUniqueID(),geo,ch);
                data->SetFadcInfo(timestamp,(post - total + begin),pattern);
                bufs+=4;

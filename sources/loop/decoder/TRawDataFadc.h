@@ -2,7 +2,7 @@
 /**
  * @file   TRawDataFadc.h
  * @date   Created : Jul 20, 2013 23:20:58 JST
- *   Last Modified : Sep 18, 2013 22:22:01 JST
+ *   Last Modified : Oct 18, 2013 16:55:03 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -37,6 +37,7 @@ public:
 
    virtual void Clear(const Option_t* opt = "") {
       fNumSample = 0;
+      TRawDataObject::Clear(opt);
 //      SetGeo(TRawDataObject::kInvalid);
 //      SetCh(TRawDataObject::kInvalid);
    }
