@@ -33,6 +33,11 @@ public:
    // get filename
    const char* GetFilename() const { return fFilename.Data(); }
 
+   TCatParameterTable(const TCatParameterTable& rhs);
+   virtual TCatParameterTable& operator=(const TCatParameterTable& rhs);
+   virtual void Copy(TObject &obj) const;
+
+
 protected:
    virtual void SetPoint(Int_t i, Double_t x, Double_t y) { TGraph::SetPoint(i,x,y); }
    virtual void BuildSpline();

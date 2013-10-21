@@ -3,7 +3,7 @@
  * @brief  Decorder class for V767
  *
  * @date   Created:       2013-07-23 10:35:05
- *         Last Modified: 2013-08-21 14:10:36
+ *         Last Modified: 2013-10-18 17:44:43
  * @author KAWASE Shoichiro <kawase@cns.s.u-tokyo.ac.jp>
  *
  * @note   - TRawDataV767 is typedef of TRawDataV1190.
@@ -48,7 +48,6 @@ Int_t TModuleDecoderV767::Decode(char* buffer, const int &size, TObjArray *seg){
    ghf = kFALSE;
 
    /* clear old hits */
-   Clear();
    fHitData->Clear();
 
    /* main decoding routine */
