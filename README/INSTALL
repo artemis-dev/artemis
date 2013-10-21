@@ -75,7 +75,7 @@ in the Makefile.
 Assuming you installed yaml-cpp to $HOME/local/{include, lib},
 
 % cd artemis
-% ./autoreconf --install [--verbose --force]
+% autoreconf --install [--verbose --force]
 % ./configure --with-yaml-cpp=$HOME/local
 % make
 
