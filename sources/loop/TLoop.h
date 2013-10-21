@@ -3,7 +3,7 @@
 /**
  * @file   TLoop.h
  * @date   Created : Apr 26, 2012 19:26:12 JST
- *   Last Modified : Mar 20, 2013 18:03:41 JST
+ *   Last Modified : Oct 21, 2013 16:36:39 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -17,7 +17,6 @@
 
 #include <TConditionBit.h>
 #include <TEventCollection.h>
-
 
 namespace art {
    class TLoop;
@@ -43,7 +42,7 @@ public:
 
    virtual void        Clear(Option_t * /*option*/ ="") { }
 
-   Bool_t Load(const char* filename);
+   Bool_t Load(const char* dirname, const char* basename, std::list<Long_t> *loaded);
    TConditionBit *GetCondition() { return fCondition; }
 
 private:
