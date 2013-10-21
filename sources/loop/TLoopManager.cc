@@ -2,13 +2,15 @@
 /**
  * @file   TLoopManager.cc
  * @date   Created : Jul 10, 2013 17:10:36 JST
- *   Last Modified : Oct 21, 2013 15:09:41 JST
+ *   Last Modified : Oct 21, 2013 16:36:29 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
  *    Copyright (C)2013
  */
 #include "TLoopManager.h"
+
+#include <TSystem.h>
 
 art::TLoopManager::TLoopManager()
 {
@@ -34,11 +36,14 @@ art::TLoop* art::TLoopManager::Add(const char *filename)
       printf("please terminate before continue.\n");
       return NULL;
    }
+
+   const char *dirname = gSystem->DirName(filename);
+   const char *basename = gSystem->BaseName(filename);
       
    TLoop *loop = new TLoop;
-   std::vector <const char*> loaded;
+   std::list <Long_t> loaded;
    fLoops->Add(loop);
-   loop->Load(filename, &loaded);
+   loop->Load(dirname, basename, &loaded);
    loop->Init();
    return loop;
 }
