@@ -3,7 +3,7 @@
  * @brief
  *
  * @date   Created:       2013-07-30 16:34:07
- *         Last Modified: 2013-10-13 12:10:16
+ *         Last Modified: 2013-10-18 17:45:01
  * @author KAWASE Shoichiro <kawase@cns.s.u-tokyo.ac.jp>
  *
  *    Copyright (C) 2013 KAWASE Shoichiro All rights reserved.
@@ -44,7 +44,6 @@ template <typename T> Int_t TModuleDecoderFixed<T>::Decode(char* buffer, const i
 
    TRawDataSimple<T> *data;
 
-   Clear();
    fHitData->Clear();
 
    // check if the data object exists

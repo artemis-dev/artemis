@@ -3,10 +3,7 @@
  * @date  Created : 2008/11/26 21:30:29 JST
  *  Last Modified : 2013/07/20 00:18:53 JST
  *--------------------------------------------------------
- *    Comment : ich will be +1000 in the case of trailing edge measurement
- *              for the possibility of leading and trailing edge measurement
- *          
- *              copied from anapaw source and renamed
+ *    Comment : modified to use data container TRawTimingWithEdge
  *
  *--------------------------------------------------------
  *    Copyright (C)2008-2013 by Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>

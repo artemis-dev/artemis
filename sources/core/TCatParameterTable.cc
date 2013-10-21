@@ -17,6 +17,8 @@ TCatParameterTable::TCatParameterTable()
 }
 TCatParameterTable::~TCatParameterTable()
 {
+   if (fSplineXY) delete fSplineXY;
+   if (fSplineYX) delete fSplineYX;
 }
 
 TCatParameterTable::TCatParameterTable(const char* filename, const char *format, Option_t *opt, Bool_t xIsFirst)
@@ -32,6 +34,28 @@ TCatParameterTable::TCatParameterTable(const char* filename, const char *format,
       }
    }
    BuildSpline();
+}
+
+TCatParameterTable::TCatParameterTable(const TCatParameterTable& rhs) {
+   ((TCatParameterTable&)rhs).Copy(*this);
+}
+
+TCatParameterTable& TCatParameterTable::operator=(const TCatParameterTable& rhs) {
+   if (this != &rhs) {
+      ((TCatParameterTable&)rhs).Copy(*this);
+   }
+   return *this;
+}
+
+void TCatParameterTable::Copy(TObject &obj) const {
+   ((TGraph&)obj).operator=((TGraph&)obj);
+   TCatParameterTable &cobj = (TCatParameterTable&)obj;
+   cobj.fFilename = fFilename;
+   cobj.fFormat = fFormat;
+   cobj.fScaleY = fScaleY;
+   cobj.fXIsFirst = fXIsFirst;
+
+   cobj.BuildSpline(); // maybe slow. needs modification of this class.
 }
 
 void TCatParameterTable::ScaleY(const Double_t &scale)
