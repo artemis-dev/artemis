@@ -2,7 +2,7 @@
 /**
  * @file   TLoop.cc
  * @date   Created : Apr 26, 2012 20:26:47 JST
- *   Last Modified : Sep 17, 2013 18:59:20 JST
+ *   Last Modified : Oct 21, 2013 15:15:02 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -42,19 +42,35 @@ art::TLoop::~TLoop()
    delete fCondition;
 }
 
-Bool_t art::TLoop::Load(const char* filename)
+Bool_t art::TLoop::Load(const char* filename, std::vector<const char*> *loaded)
 {
+   for (std::vector<const char*>::iterator itr = loaded->begin(); itr != loaded->end(); itr++) {
+      if (*itr == filename) {
+         std::cerr << "Include loop found: " << filename << std::endl;
+         return kFALSE;
+      }
+   }
+
    std::ifstream fin(filename);
    YAML::Parser parser(fin);
    YAML::Node doc;
    std::string name, type, value;
-   
+
+   loaded->push_back(filename);   
+
    parser.GetNextDocument(doc);
    fin.close();
    try {
       const YAML::Node &node = doc["Processor"];
       // iterate for all the processors
       for (YAML::Iterator it = node.begin(); it != node.end(); it++) {
+         if (const YAML::Node *include = (*it).FindValue("include")) {
+            std::string name;
+            *include >> name;
+            if (!Load(name.c_str(), loaded))
+               return kFALSE;
+            continue;
+         }
          TProcessor *proc = NULL;
          (*it) >> proc;
          if (!proc) return kFALSE;
@@ -67,7 +83,7 @@ Bool_t art::TLoop::Load(const char* filename)
       std::cout << e.what() << std::endl;
       return kFALSE;
    }
-   Init();
+//   Init();
    return kTRUE;
 }
 

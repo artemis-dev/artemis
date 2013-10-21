@@ -2,7 +2,7 @@
 /**
  * @file   TLoopManager.cc
  * @date   Created : Jul 10, 2013 17:10:36 JST
- *   Last Modified : Sep 18, 2013 13:43:32 JST
+ *   Last Modified : Oct 21, 2013 15:09:41 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -36,8 +36,10 @@ art::TLoop* art::TLoopManager::Add(const char *filename)
    }
       
    TLoop *loop = new TLoop;
+   std::vector <const char*> loaded;
    fLoops->Add(loop);
-   loop->Load(filename);
+   loop->Load(filename, &loaded);
+   loop->Init();
    return loop;
 }
 
