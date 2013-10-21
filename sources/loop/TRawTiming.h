@@ -3,7 +3,7 @@
  * @brief
  *
  * @date   Created:       2013-08-13 12:18:30
- *         Last Modified: 2013-10-21 10:21:11
+ *         Last Modified: 2013-10-21 10:29:57
  * @author KAWASE Shoichiro <kawase@cns.s.u-tokyo.ac.jp>
  *
  *    Copyright (C) 2013 KAWASE Shoichiro All rights reserved
@@ -23,12 +23,13 @@ public:
    // Default destructor
    ~TRawTiming();
 
+   virtual Int_t GetRawTiming() const {return Get();}
    virtual Int_t GetTiming() const {return (Int_t)Get() - fReference;}
    virtual void SetTiming(const UInt_t val) {Set(val);}
    virtual Bool_t IsLeading() const {return kTRUE;}
 
    virtual UInt_t GetReference() {return fReference;}
-   virtual void SetReference(const UInt_t val) {fReference = val;}
+   virtual void SetReference(const Int_t val) {fReference = val;}
 
    virtual void Clear(Option_t *opt="") {
       TRawDataSimple<UInt_t>::Clear(opt);
@@ -36,7 +37,7 @@ public:
    }
 
 protected:
-   UInt_t fReference;
+   Int_t fReference;
 
 private:
    // Copy constructor (prohibited)
