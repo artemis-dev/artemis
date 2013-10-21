@@ -2,7 +2,7 @@
 /**
  * @file   TLoop.cc
  * @date   Created : Apr 26, 2012 20:26:47 JST
- *   Last Modified : Oct 21, 2013 15:15:02 JST
+ *   Last Modified : Oct 21, 2013 16:36:48 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -18,6 +18,9 @@
 #include <TProcessID.h>
 #include <TRint.h>
 #include <TProcessor.h>
+
+#include <TSystem.h>
+#include <TString.h>
 
 const char* art::TLoop::kConditionName = "condition";
 
@@ -42,10 +45,14 @@ art::TLoop::~TLoop()
    delete fCondition;
 }
 
-Bool_t art::TLoop::Load(const char* filename, std::vector<const char*> *loaded)
+Bool_t art::TLoop::Load(const char* dirname, const char* basename, std::list<Long_t> *loaded)
 {
-   for (std::vector<const char*>::iterator itr = loaded->begin(); itr != loaded->end(); itr++) {
-      if (*itr == filename) {
+   const char *filename = gSystem->ConcatFileName(dirname, basename);
+   FileStat_t fstat;
+   gSystem->GetPathInfo(filename, fstat);
+
+   for (std::list<Long_t>::iterator itr = loaded->begin(); itr != loaded->end(); itr++) {
+      if (*itr == fstat.fIno) {
          std::cerr << "Include loop found: " << filename << std::endl;
          return kFALSE;
       }
@@ -56,7 +63,7 @@ Bool_t art::TLoop::Load(const char* filename, std::vector<const char*> *loaded)
    YAML::Node doc;
    std::string name, type, value;
 
-   loaded->push_back(filename);   
+   loaded->push_back(fstat.fIno);
 
    parser.GetNextDocument(doc);
    fin.close();
@@ -67,7 +74,7 @@ Bool_t art::TLoop::Load(const char* filename, std::vector<const char*> *loaded)
          if (const YAML::Node *include = (*it).FindValue("include")) {
             std::string name;
             *include >> name;
-            if (!Load(name.c_str(), loaded))
+            if (!Load(dirname, name.c_str(), loaded))
                return kFALSE;
             continue;
          }
