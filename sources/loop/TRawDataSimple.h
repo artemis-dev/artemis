@@ -21,8 +21,8 @@ public:
    TRawDataSimple();
    ~TRawDataSimple();
 
-   void Set(T val) { fValue = val; }
-   T Get() { return fValue; }
+   void Set(const T val) { fValue = val; }
+   T Get() const { return fValue; }
 
    void Clear(Option_t *opt="") {
       TRawDataObject::Clear(opt);
