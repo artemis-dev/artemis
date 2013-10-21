@@ -2,7 +2,7 @@
 /**
  * @file   TParameterStrings.cc
  * @date   Created : May 18, 2012 14:18:07 JST
- *   Last Modified : May 19, 2012 18:10:41 JST
+ *   Last Modified : Oct 21, 2013 13:05:23 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -126,8 +126,19 @@ void operator >> (const YAML::Node &node, art::TParameterStrings *&str) {
          prm.push_back(value);
       } else if (param["value"].Type() == YAML::NodeType::Sequence) {
          for (YAML::Iterator itv = param["value"].begin(); itv != param["value"].end(); itv++) {
-            (*itv) >> value;
-            prm.push_back(value);
+            if (itv->Type() == YAML::NodeType::Scalar) {
+               (*itv) >> value;
+               prm.push_back(value);
+            } else if (itv->Type() == YAML::NodeType::Sequence) {
+               for (YAML::Iterator itv2 = (*itv).begin(); itv2 != (*itv).end(); itv2++) {
+                  if (itv2->Type() == YAML::NodeType::Scalar) {
+                     (*itv2) >> value;
+                     prm.push_back(value);
+                  } else {
+                     // NOT SUPPORTED
+                  }
+               }
+            }
          }
       }
       str->Add(name.data(),prm);
