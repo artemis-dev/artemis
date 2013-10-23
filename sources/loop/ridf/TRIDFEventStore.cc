@@ -2,7 +2,7 @@
 /**
  * @file   TRIDFEventStore.cc
  * @date   Created : Jul 12, 2013 17:12:35 JST
- *   Last Modified : Oct 18, 2013 16:44:27 JST
+ *   Last Modified : Oct 23, 2013 19:13:14 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -54,7 +54,7 @@ art::TRIDFEventStore::TRIDFEventStore()
    // Class 5 : comment block
    fClassDecoder[5] = ClassDecoder05;
    // Class 6 : event header w/ timestamp
-   fClassDecoder[6] = ClassDecoderSkip;
+   fClassDecoder[6] = ClassDecoder06;
    // Class 8 : 
    fClassDecoder[8] = ClassDecoderSkip;
    // Class 9 : 
@@ -327,5 +327,20 @@ void art::TRIDFEventStore::ClassDecoder05(Char_t *buf, Int_t& offset, struct RID
 // decode the time stamp event header
 void art::TRIDFEventStore::ClassDecoder06(Char_t *buf, Int_t& offset, struct RIDFData* ridfdata)
 {
-   printf("Decoder 06\n");
+   RIDFHeader header;
+   memcpy(&header,buf+offset,sizeof(header));
+   Int_t last = offset + header.Size();
+   offset += sizeof(header);
+   offset += sizeof(int);
+   // ignore timestamp for now
+   offset += sizeof(ULong64_t);
+   while (offset < last) {
+      memcpy(&header,buf+offset,sizeof(header));
+      if (header.ClassID() == 4) {
+         ClassDecoder04(buf,offset,ridfdata);
+      } else {
+         printf("offset = %d, last = %d\n",offset,last);
+         ClassDecoderUnknown(buf,offset,ridfdata);
+      }
+   }
 }
