@@ -3,7 +3,7 @@
  * @brief  Decorder Class for V7XX
  *
  * @date   Created:       2013-07-24 14:41:31
- *         Last Modified: 2013-08-21 14:10:45
+ *         Last Modified: 2013-10-28 09:31:31
  * @author KAWASE Shoichiro <kawase@cns.s.u-tokyo.ac.jp>
  *
  *    Copyright (C) 2013 KAWASE Shoichiro All rights reserved.
@@ -13,12 +13,12 @@
 
 #include <TObjArray.h>
 
-#include <TRawDataSimple.h>
+#include <TRawTiming.h>
 
 using art::TModuleDecoderV7XX;
-using art::TRawDataSimple;
+using art::TRawTiming;
 
-typedef TRawDataSimple<UInt_t> V7XXRaw_t;
+typedef TRawTiming V7XXRaw_t;
 
 TModuleDecoderV7XX::TModuleDecoderV7XX()
    : TModuleDecoder(kID, V7XXRaw_t::Class()){
