@@ -3,7 +3,7 @@
  * @brief  Decorder Class for V7XX
  *
  * @date   Created:       2013-07-24 14:41:31
- *         Last Modified: 2013-10-28 09:31:31
+ *         Last Modified: 2013-10-28 13:00:01
  * @author KAWASE Shoichiro <kawase@cns.s.u-tokyo.ac.jp>
  *
  *    Copyright (C) 2013 KAWASE Shoichiro All rights reserved.
@@ -37,6 +37,9 @@ Int_t TModuleDecoderV7XX::Decode(char* buffer, const Int_t &size, TObjArray *seg
    Int_t   headerID, geoID, channel, idx;
 
    V7XXRaw_t *data;
+
+   // clear old hits
+   fHitData->Clear();
    
    for (Int_t i=0; i != evtSize; ++i) {
       headerID = (evtData[i] & kHeaderMask);
@@ -63,6 +66,7 @@ Int_t TModuleDecoderV7XX::Decode(char* buffer, const Int_t &size, TObjArray *seg
 	       data = static_cast<V7XXRaw_t*>(fHitData->At(idx));
 	       //           printf("[V7XX] evtData[%d] = %d\n",i, evtData[i]&0x1fff);
 	       data->Set( evtData[i] & kMaskMeasure );
+	       fHitData->AddAt(NULL,idx);
 	    }
 	    break;
 	    
