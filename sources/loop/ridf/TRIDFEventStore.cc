@@ -2,7 +2,7 @@
 /**
  * @file   TRIDFEventStore.cc
  * @date   Created : Jul 12, 2013 17:12:35 JST
- *   Last Modified : Oct 23, 2013 19:13:14 JST
+ *   Last Modified : Oct 29, 2013 17:00:03 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -243,7 +243,7 @@ void art::TRIDFEventStore::ClassDecoderUnknown(Char_t *buf, Int_t& offset, struc
 {
    RIDFHeader header;
    memcpy(&header,buf+offset,sizeof(header));
-   printf("Unkown Class ID = %d\n",header.ClassID());
+   printf("Unkown Class ID = %d, size = %d\n",header.ClassID(),header.Size());
    ClassDecoderSkip(buf,offset,ridfdata);
 }
 
@@ -316,10 +316,17 @@ void art::TRIDFEventStore::ClassDecoder04(Char_t *buf, Int_t& offset, struct RID
 // decode the comment header
 void art::TRIDFEventStore::ClassDecoder05(Char_t *buf, Int_t& offset, struct RIDFData* ridfdata)
 {
+   RIDFHeader header;
+   Int_t local = offset;
+   memcpy(&header,buf+offset,sizeof(header));
+   offset += header.Size();
    RIDFCommentRunInfo info;
-   offset += sizeof(RIDFHeader) + sizeof(int)*2;
-   memcpy(&info,buf+offset,sizeof(info));
-   info.Print();
+   local += sizeof(RIDFHeader) + sizeof(int);
+   if ((*(int*)(buf+local)) == 1) {
+      local+=sizeof(int);
+      memcpy(&info,buf+local,sizeof(info));
+      info.Print();
+   }
 }
 
 //----------------------------------------
