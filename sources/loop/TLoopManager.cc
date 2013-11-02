@@ -2,7 +2,7 @@
 /**
  * @file   TLoopManager.cc
  * @date   Created : Jul 10, 2013 17:10:36 JST
- *   Last Modified : Oct 21, 2013 16:36:29 JST
+ *   Last Modified : Oct 26, 2013 05:54:43 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -37,9 +37,9 @@ art::TLoop* art::TLoopManager::Add(const char *filename)
       return NULL;
    }
 
-   const char *dirname = gSystem->DirName(filename);
-   const char *basename = gSystem->BaseName(filename);
-      
+   const TString dirname = gSystem->DirName(filename);
+   const TString basename = gSystem->BaseName(filename);
+
    TLoop *loop = new TLoop;
    std::list <Long_t> loaded;
    fLoops->Add(loop);
