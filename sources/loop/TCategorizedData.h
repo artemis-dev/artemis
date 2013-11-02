@@ -2,7 +2,7 @@
 /**
  * @file   TCategorizedData.h
  * @date   Created : Jul 16, 2013 17:16:43 JST
- *   Last Modified : Sep 19, 2013 09:18:43 JST
+ *   Last Modified : Oct 30, 2013 05:37:19 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *
@@ -34,6 +34,7 @@ public:
    virtual TObjArray* FindCategory(const Int_t &id) {
       const Int_t &n = fCats->GetEntriesFast();
       for (Int_t i=0; i != n; i++) {
+         if (!fCats->At(i)) continue;
          if ((Int_t)fCats->At(i)->GetUniqueID() == id) {
             return (TObjArray*)fCats->At(i);
          }

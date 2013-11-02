@@ -2,7 +2,7 @@
 /**
  * @file   TOutputTreeProcessor.cc
  * @date   Created : Jul 11, 2013 17:11:41 JST
- *   Last Modified : Jul 22, 2013 18:47:20 JST
+ *   Last Modified : Oct 19, 2013 00:04:24 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -11,6 +11,7 @@
 #include "TOutputTreeProcessor.h"
 #include <TEventObject.h>
 #include <TDirectory.h>
+#include <TROOT.h>
 
 ClassImp(art::TOutputTreeProcessor);
 
@@ -22,6 +23,7 @@ art::TOutputTreeProcessor::TOutputTreeProcessor()
 }
 art::TOutputTreeProcessor::~TOutputTreeProcessor()
 {
+   delete fTree;
    if (fFile) fFile->Close();
    delete fObjects;
 }
@@ -65,6 +67,7 @@ void art::TOutputTreeProcessor::PostLoop()
    while ((obj = next())) {
       ((TBranch*)obj)->ResetAddress();
    }
+   if (!gDirectory) gDirectory = gROOT;
    TDirectory *saved = gDirectory;
    fFile->cd();
    fTree->Write(0,TFile::kOverwrite);
