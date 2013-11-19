@@ -1,32 +1,33 @@
 SUBDIRS = decoder ridf
 
-SUBSRC = \
-	TConditionBit.cc \
-	TLoop.cc \
-	TEventObject.cc \
-	TEventCollection.cc \
-	TLoopManager.cc \
-	TLoopControl.cc \
-	TProcessor.cc \
-	TParameter.cc \
-	TParameterStrings.cc \
-	TTimerProcessor.cc \
-	TCounterEventStore.cc \
-	TRandomNumberEventStore.cc \
-	TRandomNumberProcessor.cc \
-	TTreeEventStore.cc \
-	TOutputTreeProcessor.cc \
-	TRawDataObject.cc \
-	TSegmentedData.cc \
-	TCategorizedData.cc \
-	TFileDataSource.cc \
-	TMapTable.cc \
-	TModuleDecoder.cc \
-	TModuleDecoderFactory.cc \
-	TRawDataSimple.cc \
-	TRawTiming.cc \
-	TRawTimingWithEdge.cc \
-	TRawDataPair.cc
+SUBSRC = 
+SUBSRC+=TConditionBit.cc 
+SUBSRC+=TLoop.cc 
+SUBSRC+=TEventObject.cc 
+SUBSRC+=TEventCollection.cc 
+SUBSRC+=TLoopManager.cc 
+SUBSRC+=TLoopControl.cc 
+SUBSRC+=TProcessor.cc 
+SUBSRC+=TParameter.cc 
+SUBSRC+=TParameterStrings.cc 
+SUBSRC+=TTimerProcessor.cc 
+SUBSRC+=TCounterEventStore.cc 
+SUBSRC+=TRandomNumberEventStore.cc 
+SUBSRC+=TRandomNumberProcessor.cc 
+SUBSRC+=TTreeEventStore.cc 
+SUBSRC+=TOutputTreeProcessor.cc 
+SUBSRC+=TRawDataObject.cc 
+SUBSRC+=TSegmentedData.cc 
+SUBSRC+=TCategorizedData.cc 
+SUBSRC+=TFileDataSource.cc 
+SUBSRC+=TMapTable.cc 
+SUBSRC+=TModuleDecoder.cc 
+SUBSRC+=TModuleDecoderFactory.cc 
+SUBSRC+=TRawDataSimple.cc 
+SUBSRC+=TRawTiming.cc 
+SUBSRC+=TRawTimingWithEdge.cc 
+SUBSRC+=TRawDataPair.cc 
+SUBSRC+=TRunInfo.cc
 
 
 

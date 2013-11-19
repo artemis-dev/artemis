@@ -2,7 +2,7 @@
 /**
  * @file   artridf_linkdef.h
  * @date   Created : Jul 07, 2013 22:48:06 JST
- *   Last Modified : May 19, 2012 18:12:31 JST
+ *   Last Modified : Nov 19, 2013 17:04:30 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -18,6 +18,7 @@
 
 
 #pragma link C++ class art::TRIDFEventStore-;
+#pragma link C++ class art::TRIDFEventStore::RIDFCommentRunInfo;
 
 
 
