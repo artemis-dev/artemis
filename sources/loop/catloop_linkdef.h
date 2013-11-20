@@ -2,7 +2,7 @@
 /**
  * @file   catloop_linkdef.h
  * @date   Created : Feb 19, 2012 11:19:06 JST
- *   Last Modified : Jul 22, 2013 18:17:39 JST
+ *   Last Modified : Nov 19, 2013 17:37:56 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -44,7 +44,7 @@
 #pragma link C++ class art::TRawTiming;
 #pragma link C++ class art::TRawTimingWithEdge;
 #pragma link C++ class art::TRawDataPair;
-
+#pragma link C++ class art::TRunInfo;
 
 
 #endif /* __CINT__ */

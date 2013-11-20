@@ -2,7 +2,7 @@
 /**
  * @file   TRIDFEventStore.h
  * @date   Created : Jul 12, 2013 17:12:43 JST
- *   Last Modified : Jul 23, 2013 09:37:08 JST
+ *   Last Modified : Nov 19, 2013 17:14:02 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -38,6 +38,7 @@ protected:
       TMapTable        *fMapTable; //!
       TSegmentedData   *fSegmentedData;
       TCategorizedData *fCategorizedData;
+      TList   *fRunHeaders;
    } fRIDFData;
    TDataSource      *fDataSource;
 
@@ -48,6 +49,7 @@ protected:
    TString           fNameSegmented;
    TString           fNameCategorized;;
    TString           fMapConfigName;
+   TString           fNameRunHeaders;
 
    Long_t   fMaxEventNum;
    Long_t   fEventNum; //! local Event number
@@ -89,6 +91,7 @@ protected:
       Int_t Address() { return ((fHeader>>32) & 0xffffffff); }
       unsigned long long int& operator=(unsigned long long int val) { return (fHeader = val); }
       void Print() {
+         printf("data    = 0x%8lx\n",fHeader);
          printf("Size    = %d\n",Size());
          printf("ClassID = %d\n",ClassID());
          printf("Layer   = %d\n",Layer());

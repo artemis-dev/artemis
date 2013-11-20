@@ -2,7 +2,7 @@
 /**
  * @file   TRIDFEventStore.cc
  * @date   Created : Jul 12, 2013 17:12:35 JST
- *   Last Modified : Oct 23, 2013 19:13:14 JST
+ *   Last Modified : Nov 19, 2013 18:55:28 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -19,8 +19,10 @@
 #include <TLoop.h>
 #include <TModuleDecoderFactory.h>
 #include <TModuleDecoder.h>
+#include <TRunInfo.h>
+#include <TTimeStamp.h>
 
-//ClassImp(art::TRIDFEventStore);
+#include <map>
 
 art::TRIDFEventStore::TRIDFEventStore()
    : fMaxEventNum(0),fEventNum(0),fMaxBufSize(kMaxBufSize)
@@ -31,12 +33,15 @@ art::TRIDFEventStore::TRIDFEventStore()
                             fNameSegmented,TString("segdata"));
    RegisterOutputCollection("CategorizedData","The name of output array for categorized data",
                             fNameCategorized,TString("catdata"));
+   RegisterOutputCollection("RunHeadersName","the name of output array for run headers, run header will be stored once",
+                            fNameRunHeaders,TString("runheader"));
    RegisterOptionalParameter("MapConfig","File for map configuration. Not mapped if the name is blank.",
                              fMapConfigName,TString("mapper.conf"));
 
    fRIDFData.fSegmentedData = new TSegmentedData;
    fRIDFData.fCategorizedData = new TCategorizedData;
    fRIDFData.fMapTable = NULL;
+   fRIDFData.fRunHeaders = new TList;
    fIsOnline = kFALSE;
    fIsEOB = kTRUE;
    fBuffer = new Char_t[fMaxBufSize];
@@ -72,6 +77,7 @@ art::TRIDFEventStore::~TRIDFEventStore()
    if (fRIDFData.fSegmentedData) delete fRIDFData.fSegmentedData;
    if (fRIDFData.fCategorizedData) delete fRIDFData.fCategorizedData; 
    if (fRIDFData.fMapTable) delete fRIDFData.fMapTable;
+   if (fRIDFData.fRunHeaders) delete fRIDFData.fRunHeaders;
    if (fBuffer) delete [] fBuffer;
 }
 
@@ -89,6 +95,8 @@ void art::TRIDFEventStore::Init(TEventCollection *col)
 
    col->Add(fNameSegmented,fRIDFData.fSegmentedData,fOutputIsTransparent);
    col->Add(fNameCategorized,fRIDFData.fCategorizedData,fOutputIsTransparent);
+   col->AddInfo(fNameRunHeaders,fRIDFData.fRunHeaders,fOutputIsTransparent);
+   fRIDFData.fRunHeaders->SetName(fNameRunHeaders);
    fCondition = (TConditionBit**)(col->Get(TLoop::kConditionName)->GetObjectRef());
 
    //--------------------------------------------------
@@ -243,7 +251,7 @@ void art::TRIDFEventStore::ClassDecoderUnknown(Char_t *buf, Int_t& offset, struc
 {
    RIDFHeader header;
    memcpy(&header,buf+offset,sizeof(header));
-   printf("Unkown Class ID = %d\n",header.ClassID());
+   printf("Unkown Class ID = %d, size = %d\n",header.ClassID(),header.Size());
    ClassDecoderSkip(buf,offset,ridfdata);
 }
 
@@ -316,10 +324,54 @@ void art::TRIDFEventStore::ClassDecoder04(Char_t *buf, Int_t& offset, struct RID
 // decode the comment header
 void art::TRIDFEventStore::ClassDecoder05(Char_t *buf, Int_t& offset, struct RIDFData* ridfdata)
 {
-   RIDFCommentRunInfo info;
-   offset += sizeof(RIDFHeader) + sizeof(int)*2;
-   memcpy(&info,buf+offset,sizeof(info));
-   info.Print();
+   RIDFHeader header;
+   Int_t local = offset;
+   memcpy(&header,buf+offset,sizeof(header));
+   offset += header.Size();
+   local += sizeof(RIDFHeader) + sizeof(int);
+   std::map<TString,Int_t> month;
+   month.insert(std::map<TString,Int_t>::value_type(TString("Jan"),1));
+   month.insert(std::map<TString,Int_t>::value_type(TString("Feb"),2));
+   month.insert(std::map<TString,Int_t>::value_type(TString("Mar"),3));
+   month.insert(std::map<TString,Int_t>::value_type(TString("Apr"),4));
+   month.insert(std::map<TString,Int_t>::value_type(TString("May"),5));
+   month.insert(std::map<TString,Int_t>::value_type(TString("Jun"),6));
+   month.insert(std::map<TString,Int_t>::value_type(TString("Jul"),7));
+   month.insert(std::map<TString,Int_t>::value_type(TString("Aug"),8));
+   month.insert(std::map<TString,Int_t>::value_type(TString("Sep"),9));
+   month.insert(std::map<TString,Int_t>::value_type(TString("Oct"),10));
+   month.insert(std::map<TString,Int_t>::value_type(TString("Nov"),11));
+   month.insert(std::map<TString,Int_t>::value_type(TString("Dec"),12));
+   if ((*(int*)(buf+local)) == 1) {
+      RIDFCommentRunInfo info;
+      local+=sizeof(int);
+      memcpy(&info,buf+local,sizeof(RIDFCommentRunInfo));
+      info.Print();
+      TString runName = info.fRunName;
+      TString runNumber = info.fRunNumber;
+      TString startTime = info.fStartTime;
+      TString stopTime = info.fStopTime;
+      TString date = info.fDate;
+      TString fHeader = info.fHeader;
+      TString fEnder = info.fEnder;
+      TRunInfo *runinfo = new TRunInfo(runName+runNumber,runName+runNumber);
+      TTimeStamp start(2000+TString(date(7,2)).Atoi(),month[TString(date(3,3))],TString(date(0,2)).Atoi(),
+                       TString(startTime(9,2)).Atoi(),TString(startTime(12,2)).Atoi(),TString(startTime(15,2)).Atoi(),
+                       0,kFALSE);
+      TTimeStamp stop(2000+TString(date(7,2)).Atoi(),month[TString(date(3,3))],TString(date(0,2)).Atoi(),
+                      TString(stopTime(8,2)).Atoi(),TString(stopTime(11,2)).Atoi(),TString(stopTime(14,2)).Atoi(),
+                      0,kFALSE);
+      if (start.GetSec() > stop.GetSec()) {
+         stop.SetSec(stop.GetSec()+86400);
+      }
+      runinfo->SetRunName(runName.Data());
+      runinfo->SetRunNumber(runNumber.Atoll());
+      runinfo->SetStartTime(start.GetSec());
+      runinfo->SetStopTime(stop.GetSec());
+      runinfo->SetHeader(fHeader);
+      runinfo->SetEnder(fEnder);
+      ridfdata->fRunHeaders->Add(runinfo);
+   }
 }
 
 //----------------------------------------
