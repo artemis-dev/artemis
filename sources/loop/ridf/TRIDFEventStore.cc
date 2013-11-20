@@ -2,7 +2,7 @@
 /**
  * @file   TRIDFEventStore.cc
  * @date   Created : Jul 12, 2013 17:12:35 JST
- *   Last Modified : Nov 19, 2013 18:55:28 JST
+ *   Last Modified : Nov 20, 2013 17:27:55 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -21,11 +21,12 @@
 #include <TModuleDecoder.h>
 #include <TRunInfo.h>
 #include <TTimeStamp.h>
+#include <TEventHeader.h>
 
 #include <map>
 
 art::TRIDFEventStore::TRIDFEventStore()
-   : fMaxEventNum(0),fEventNum(0),fMaxBufSize(kMaxBufSize)
+   : fMaxEventNum(0),fEventNum(0),fEventNumTotal(0), fMaxBufSize(kMaxBufSize)
 {
    StringVec_t dummy;
    RegisterInputCollection("InputFiles","The names of input files",fFileName,dummy);
@@ -35,6 +36,8 @@ art::TRIDFEventStore::TRIDFEventStore()
                             fNameCategorized,TString("catdata"));
    RegisterOutputCollection("RunHeadersName","the name of output array for run headers, run header will be stored once",
                             fNameRunHeaders,TString("runheader"));
+   RegisterOutputCollection("EventHeaderName","the name of event header",
+                            fNameEventHeader,TString("eventheader"));
    RegisterOptionalParameter("MapConfig","File for map configuration. Not mapped if the name is blank.",
                              fMapConfigName,TString("mapper.conf"));
 
@@ -42,6 +45,7 @@ art::TRIDFEventStore::TRIDFEventStore()
    fRIDFData.fCategorizedData = new TCategorizedData;
    fRIDFData.fMapTable = NULL;
    fRIDFData.fRunHeaders = new TList;
+   fRIDFData.fEventHeader = new TEventHeader;
    fIsOnline = kFALSE;
    fIsEOB = kTRUE;
    fBuffer = new Char_t[fMaxBufSize];
@@ -78,6 +82,7 @@ art::TRIDFEventStore::~TRIDFEventStore()
    if (fRIDFData.fCategorizedData) delete fRIDFData.fCategorizedData; 
    if (fRIDFData.fMapTable) delete fRIDFData.fMapTable;
    if (fRIDFData.fRunHeaders) delete fRIDFData.fRunHeaders;
+   if (fRIDFData.fEventHeader) delete fRIDFData.fEventHeader;
    if (fBuffer) delete [] fBuffer;
 }
 
@@ -95,6 +100,7 @@ void art::TRIDFEventStore::Init(TEventCollection *col)
 
    col->Add(fNameSegmented,fRIDFData.fSegmentedData,fOutputIsTransparent);
    col->Add(fNameCategorized,fRIDFData.fCategorizedData,fOutputIsTransparent);
+   col->Add(fNameEventHeader,fRIDFData.fEventHeader,fOutputIsTransparent);
    col->AddInfo(fNameRunHeaders,fRIDFData.fRunHeaders,fOutputIsTransparent);
    fRIDFData.fRunHeaders->SetName(fNameRunHeaders);
    fCondition = (TConditionBit**)(col->Get(TLoop::kConditionName)->GetObjectRef());
@@ -266,6 +272,8 @@ void art::TRIDFEventStore::ClassDecoder03(Char_t *buf, Int_t& offset, struct RID
    Int_t last = offset + header.Size();
    offset += sizeof(header);
    offset += sizeof(int);
+   ridfdata->fEventHeader->IncrementEventNumber();
+   ((TRunInfo*)ridfdata->fRunHeaders->Last())->IncrementEventNumber();
    while (offset < last) {
       memcpy(&header,buf+offset,sizeof(header));
       if (header.ClassID() == 4) {
@@ -371,6 +379,8 @@ void art::TRIDFEventStore::ClassDecoder05(Char_t *buf, Int_t& offset, struct RID
       runinfo->SetHeader(fHeader);
       runinfo->SetEnder(fEnder);
       ridfdata->fRunHeaders->Add(runinfo);
+      ridfdata->fEventHeader->SetRunName(runName.Data());
+      ridfdata->fEventHeader->SetRunNumber(runNumber.Atoll());
    }
 }
 
@@ -382,8 +392,11 @@ void art::TRIDFEventStore::ClassDecoder06(Char_t *buf, Int_t& offset, struct RID
    RIDFHeader header;
    memcpy(&header,buf+offset,sizeof(header));
    Int_t last = offset + header.Size();
+   ridfdata->fEventHeader->IncrementEventNumber();
+   ((TRunInfo*)ridfdata->fRunHeaders->Last())->IncrementEventNumber();
    offset += sizeof(header);
    offset += sizeof(int);
+   ridfdata->fEventHeader->SetTimestamp(*(Long64_t*)(buf+offset));
    // ignore timestamp for now
    offset += sizeof(ULong64_t);
    while (offset < last) {

@@ -2,7 +2,7 @@
 /**
  * @file   TRIDFEventStore.h
  * @date   Created : Jul 12, 2013 17:12:43 JST
- *   Last Modified : Nov 19, 2013 17:14:02 JST
+ *   Last Modified : Nov 20, 2013 14:35:33 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -20,6 +20,7 @@ namespace art {
    class TSegmentedData;
    class TCategorizedData;
    class TDataSource;
+   class TEventHeader;
 }
 
 class art::TRIDFEventStore  : public TProcessor {
@@ -39,6 +40,7 @@ protected:
       TSegmentedData   *fSegmentedData;
       TCategorizedData *fCategorizedData;
       TList   *fRunHeaders;
+      TEventHeader *fEventHeader;
    } fRIDFData;
    TDataSource      *fDataSource;
 
@@ -50,9 +52,11 @@ protected:
    TString           fNameCategorized;;
    TString           fMapConfigName;
    TString           fNameRunHeaders;
+   TString           fNameEventHeader;
 
    Long_t   fMaxEventNum;
    Long_t   fEventNum; //! local Event number
+   Long_t   fEventNumTotal; //! total event number
 
    Int_t    fMaxBufSize; // maximum buffer size
    Char_t  *fBuffer; // local buffer for the data read

@@ -2,7 +2,7 @@
 /**
  * @file   TRunInfo.cc
  * @date   Created : Nov 19, 2013 17:19:20 JST
- *   Last Modified : Nov 19, 2013 18:10:15 JST
+ *   Last Modified : Nov 20, 2013 15:23:50 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -18,13 +18,13 @@ using art::TRunInfo;
 ClassImp(TRunInfo);
 
 TRunInfo::TRunInfo()
-   : fRunName(),fRunNumber(0),fStartTime(0),fStopTime(0),fHeader(),fEnder()
+   : fRunName(),fRunNumber(0),fStartTime(0),fStopTime(0),fHeader(),fEnder(), fEventNumber(0)
 {
 }
 
 TRunInfo::TRunInfo(const char *name, const char *title)
    : TNamed(name, title),
-     fRunName(),fRunNumber(0),fStartTime(0),fStopTime(0),fHeader(),fEnder()
+     fRunName(),fRunNumber(0),fStartTime(0),fStopTime(0),fHeader(),fEnder(), fEventNumber(0)
 {
 }
 TRunInfo::~TRunInfo()
@@ -46,4 +46,5 @@ void TRunInfo::Print(Option_t *) const
    printf("%s Stop  : %s\n",indent.Data(),stopTime.AsString("s"));
    printf("%s Header: %s\n",indent.Data(),fHeader.Data());
    printf("%s Ender : %s\n",indent.Data(),fEnder.Data());
+   printf("%s %d events analyzed\n",indent.Data(),fEventNumber);
 }

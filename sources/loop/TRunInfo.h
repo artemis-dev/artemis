@@ -2,7 +2,7 @@
 /**
  * @file   TRunInfo.h
  * @date   Created : Nov 19, 2013 17:19:35 JST
- *   Last Modified : Nov 19, 2013 17:53:08 JST
+ *   Last Modified : Nov 20, 2013 14:36:26 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -52,6 +52,8 @@ public:
    virtual TString GetHeader() { return fHeader; }
    // get ender
    virtual TString GetEnder() { return fEnder; }
+   // increment event number
+   virtual void IncrementEventNumber() { fEventNumber++; }
 
    // print
    virtual void Print(Option_t *opt = "") const;
@@ -63,6 +65,7 @@ protected:
    Long64_t fStopTime; 
    TString  fHeader;
    TString  fEnder;
+   Long_t   fEventNumber;
 
 
    ClassDef(TRunInfo,1);

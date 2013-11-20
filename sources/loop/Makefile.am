@@ -28,6 +28,7 @@ SUBSRC+=TRawTiming.cc
 SUBSRC+=TRawTimingWithEdge.cc 
 SUBSRC+=TRawDataPair.cc 
 SUBSRC+=TRunInfo.cc
+SUBSRC+=TEventHeader.cc
 
 
 
