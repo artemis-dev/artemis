@@ -3,7 +3,7 @@
  * @brief
  *
  * @date   Created:       2013-08-13 12:18:30
- *         Last Modified: 2013-10-21 10:29:57
+ *         Last Modified: 2013-11-20 10:02:10
  * @author KAWASE Shoichiro <kawase@cns.s.u-tokyo.ac.jp>
  *
  *    Copyright (C) 2013 KAWASE Shoichiro All rights reserved
@@ -20,16 +20,15 @@ class TRawTiming : public TRawDataSimple<UInt_t> {
 public:
    // Default constructor
    TRawTiming();
-   // Default destructor
-   ~TRawTiming();
+   virtual ~TRawTiming();
 
    virtual Int_t GetRawTiming() const {return Get();}
    virtual Int_t GetTiming() const {return (Int_t)Get() - fReference;}
-   virtual void SetTiming(const UInt_t val) {Set(val);}
+   virtual void SetTiming(UInt_t val) {Set(val);}
    virtual Bool_t IsLeading() const {return kTRUE;}
 
-   virtual UInt_t GetReference() {return fReference;}
-   virtual void SetReference(const Int_t val) {fReference = val;}
+   virtual UInt_t GetReference() const {return fReference;}
+   virtual void SetReference(Int_t val) {fReference = val;}
 
    virtual void Clear(Option_t *opt="") {
       TRawDataSimple<UInt_t>::Clear(opt);
@@ -41,9 +40,9 @@ protected:
 
 private:
    // Copy constructor (prohibited)
-   TRawTiming(const TRawTiming& rhs);
+   TRawTiming(const TRawTiming&);
    // Assignment operator (prohibited)
-   TRawTiming& operator=(const TRawTiming& rhs);
+   TRawTiming& operator=(const TRawTiming&);
 
    ClassDef(TRawTiming,1);
 

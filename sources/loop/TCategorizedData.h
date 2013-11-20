@@ -27,11 +27,11 @@ public:
    TCategorizedData();
    ~TCategorizedData();
 
-   virtual TObjArray* GetCategory(const Int_t &idx) {
+   virtual TObjArray* GetCategory(Int_t idx) {
       return (TObjArray*) fCats->At(idx);
    }
 
-   virtual TObjArray* FindCategory(const Int_t &id) {
+   virtual TObjArray* FindCategory(Int_t id) {
       const Int_t &n = fCats->GetEntriesFast();
       for (Int_t i=0; i != n; i++) {
          if (!fCats->At(i)) continue;
