@@ -2,7 +2,7 @@
 /**
  * @file   TRIDFEventStore.cc
  * @date   Created : Jul 12, 2013 17:12:35 JST
- *   Last Modified : Nov 20, 2013 17:27:55 JST
+ *   Last Modified : Nov 20, 2013 20:56:38 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -100,8 +100,8 @@ void art::TRIDFEventStore::Init(TEventCollection *col)
 
    col->Add(fNameSegmented,fRIDFData.fSegmentedData,fOutputIsTransparent);
    col->Add(fNameCategorized,fRIDFData.fCategorizedData,fOutputIsTransparent);
-   col->Add(fNameEventHeader,fRIDFData.fEventHeader,fOutputIsTransparent);
-   col->AddInfo(fNameRunHeaders,fRIDFData.fRunHeaders,fOutputIsTransparent);
+   col->Add(fNameEventHeader,fRIDFData.fEventHeader,kFALSE);
+   col->AddInfo(fNameRunHeaders,fRIDFData.fRunHeaders,kFALSE);
    fRIDFData.fRunHeaders->SetName(fNameRunHeaders);
    fCondition = (TConditionBit**)(col->Get(TLoop::kConditionName)->GetObjectRef());
 

@@ -2,7 +2,7 @@
 /**
  * @file   TCategorizedData.h
  * @date   Created : Jul 16, 2013 17:16:43 JST
- *   Last Modified : Oct 30, 2013 05:37:19 JST
+ *   Last Modified : Nov 21, 2013 10:51:20 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *
@@ -45,18 +45,22 @@ public:
    virtual void Clear(Option_t *opt = "") {
       TObject::Clear(opt);
       fCats->Clear(opt);
-      fDets->Clear(opt);
-      fTypes->Clear(opt);
+      fgCats->Clear(opt);
+      fgDets->Clear(opt);
+      fgTypes->Clear(opt);
+      
+//      fDets->Clear(opt);
+//      fTypes->Clear(opt);
       fCategory = NULL;
    }
 
    virtual void Add(TRawDataObject *obj);
    
 
-private:
-   TClonesArray *fCats; //-> array with all categories
-   TClonesArray *fDets; //-> array with all detectors
-   TClonesArray *fTypes; //-> array with all datatypes
+protected:
+   TObjArray *fCats; //-> array with all categories
+//   TObjArray *fDets; //-> array with all detectors
+//   TObjArray *fTypes; //-> array with all datatypes
 
    TObjArray *fCategory; //! cash for the last category
 

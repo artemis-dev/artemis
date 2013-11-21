@@ -2,7 +2,7 @@
 /**
  * @file   TTreeEventStore.cc
  * @date   Created : Jul 11, 2013 21:11:20 JST
- *   Last Modified : Aug 24, 2013 08:49:15 JST
+ *   Last Modified : Nov 20, 2013 20:09:54 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -56,8 +56,8 @@ void art::TTreeEventStore::Init(TEventCollection *col)
    TIter next(fTree->GetListOfBranches());
    TBranch *br = NULL;
    while ((br =(TBranch*)next())) {
-      col->Add(br->GetName(),(TObject*)TClass::GetClass(br->GetClassName())->New(),kFALSE);
-      printf("branch : %s",br->GetName());
+      col->Add(br->GetName(),(TObject*)TClass::GetClass(br->GetClassName())->New(),kTRUE);
+      printf("branch : %s\n",br->GetName());
       fTree->SetBranchAddress(br->GetName(),col->Get(br->GetName())->GetObjectRef());
    }
    if (!fMaxEventNum) fMaxEventNum = fTree->GetEntries();
