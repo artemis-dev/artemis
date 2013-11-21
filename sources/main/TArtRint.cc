@@ -2,7 +2,7 @@
 /**
  * @file   TArtRint.cc
  * @date   Created : Feb 06, 2012 00:06:18 JST
- *   Last Modified : Feb 02, 2013 19:35:31 JST
+ *   Last Modified : Nov 21, 2013 17:12:13 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -53,11 +53,7 @@ TArtRint::~TArtRint()
 
 Long_t TArtRint::ProcessLine(const char* line, Bool_t sync, Int_t* error)
 {
-   if (TCatCmdFactory::Instance()->ProcessLine(TString::Format("automacro %s",line))) {
-      // macro was found
-      return 1;
-   } else
-      if (TCatCmdFactory::Instance()->ProcessLine(line)) {
+   if (TCatCmdFactory::Instance()->ProcessLine(line)) {
       return 1;
    }
    return TRint::ProcessLine(line,sync,error);
