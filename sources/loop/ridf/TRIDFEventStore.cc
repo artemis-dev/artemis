@@ -2,7 +2,7 @@
 /**
  * @file   TRIDFEventStore.cc
  * @date   Created : Jul 12, 2013 17:12:35 JST
- *   Last Modified : Nov 20, 2013 20:56:38 JST
+ *   Last Modified : Nov 21, 2013 18:24:40 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -103,7 +103,6 @@ void art::TRIDFEventStore::Init(TEventCollection *col)
    col->Add(fNameEventHeader,fRIDFData.fEventHeader,kFALSE);
    col->AddInfo(fNameRunHeaders,fRIDFData.fRunHeaders,kFALSE);
    fRIDFData.fRunHeaders->SetName(fNameRunHeaders);
-   fCondition = (TConditionBit**)(col->Get(TLoop::kConditionName)->GetObjectRef());
 
    //--------------------------------------------------
    // Create map table 

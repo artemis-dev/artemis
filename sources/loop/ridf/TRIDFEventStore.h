@@ -2,7 +2,7 @@
 /**
  * @file   TRIDFEventStore.h
  * @date   Created : Jul 12, 2013 17:12:43 JST
- *   Last Modified : Nov 20, 2013 14:35:33 JST
+ *   Last Modified : Nov 21, 2013 18:22:41 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -34,7 +34,6 @@ public:
    virtual void Process();
 
 protected:
-   TConditionBit   **fCondition; //!
    struct RIDFData {
       TMapTable        *fMapTable; //!
       TSegmentedData   *fSegmentedData;
