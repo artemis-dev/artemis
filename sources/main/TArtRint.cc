@@ -2,7 +2,7 @@
 /**
  * @file   TArtRint.cc
  * @date   Created : Feb 06, 2012 00:06:18 JST
- *   Last Modified : Nov 21, 2013 17:12:13 JST
+ *   Last Modified : Nov 21, 2013 18:12:31 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -11,6 +11,7 @@
 #include "TArtRint.h"
 #include <TFolder.h>
 #include <TROOT.h>
+#include <TInterpreter.h>
 
 #include "TCatCmdFactory.h"
 #include "TCatCmdMacro.h"
@@ -53,8 +54,13 @@ TArtRint::~TArtRint()
 
 Long_t TArtRint::ProcessLine(const char* line, Bool_t sync, Int_t* error)
 {
-   if (TCatCmdFactory::Instance()->ProcessLine(line)) {
-      return 1;
+   if (sync) {
+      return TRint::ProcessLine(line,sync,error);
    }
-   return TRint::ProcessLine(line,sync,error);
+   if (TCatCmdFactory::Instance()->ProcessLine(TString(line))) {
+      return 1;
+   } else {
+      return TRint::ProcessLine(line,sync,error);
+   }
+   return 0;
 }
