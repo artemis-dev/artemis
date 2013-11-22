@@ -3,7 +3,7 @@
  * @brief  Rawdata container with two values
  *
  * @date   Created:       2013-07-25 10:19:08
- *         Last Modified: 2013-10-13 12:28:57
+ *         Last Modified: 2013-11-20 10:01:58
  * @author KAWASE Shoichiro <kawase@cns.s.u-tokyo.ac.jp>
  *
  * @note   This class contains two Int_t values
@@ -25,18 +25,17 @@ class art::TRawDataPair : public TRawDataObject {
 public:
    // Default constructor
    TRawDataPair();
-   // Default destructor
-   ~TRawDataPair();
+   virtual ~TRawDataPair();
    // Copy constructor
    TRawDataPair(const TRawDataPair& rhs);
    // Assignment operator
    TRawDataPair& operator=(const TRawDataPair& rhs);
 
    // offers array-like access: idx = 0 -> fFirst, 1 -> fSecond
-   Int_t& operator[](const Int_t idx);
+   Int_t& operator[](Int_t idx);
 
-   void SetFirst(const Int_t &first) { fFirst = first; }
-   void SetSecond(const Int_t &second) { fSecond = second; }
+   void SetFirst(Int_t first) { fFirst = first; }
+   void SetSecond(Int_t second) { fSecond = second; }
 
    Int_t GetFirst() const { return fFirst; }
    Int_t GetSecond() const { return fSecond; }

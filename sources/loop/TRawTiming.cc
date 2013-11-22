@@ -3,7 +3,7 @@
  * @brief
  *
  * @date   Created:       2013-08-13 12:30:28
- *         Last Modified: 2013-08-13 13:04:20
+ *         Last Modified: 2013-11-12 15:25:54
  * @author KAWASE Shoichiro <kawase@cns.s.u-tokyo.ac.jp>
  *
  *    Copyright (C) 2013 KAWASE Shoichiro All rights reserved.
@@ -19,7 +19,6 @@ using art::TRawTiming;
 TRawTiming::TRawTiming() {
 }
 
-// Default destructor
 TRawTiming::~TRawTiming() {
 }
 

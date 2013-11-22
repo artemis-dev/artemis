@@ -19,7 +19,7 @@ template <typename T> class TRawDataSimple  : public TRawDataObject  {
 
 public:
    TRawDataSimple();
-   ~TRawDataSimple();
+   virtual ~TRawDataSimple();
 
    void Set(const T val) { fValue = val; }
    T Get() const { return fValue; }

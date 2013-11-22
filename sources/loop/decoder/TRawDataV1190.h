@@ -23,8 +23,8 @@ public:
    TRawDataV1190();
    ~TRawDataV1190();
 
-   void SetLeading(const Int_t &val) { fLeading = val; }
-   void SetTrailing(const Int_t &val) { fTrailing = val; }
+   void SetLeading(Int_t val) { fLeading = val; }
+   void SetTrailing(Int_t val) { fTrailing = val; }
 
    Int_t GetLeading() { return fLeading; }
    Int_t GetTrailing() { return fTrailing; }

@@ -37,7 +37,7 @@ public:
       return NULL;
    }
 
-   virtual TObjArray* FindSegment(const Int_t dev, const Int_t fp, const Int_t det) {
+   virtual TObjArray* FindSegment(Int_t dev, Int_t fp, Int_t det) {
       Int_t id;
       id = (dev << 20) + (fp << 14) + (det << 8);
       return FindSegmentByID(id);

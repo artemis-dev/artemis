@@ -49,8 +49,8 @@ void art::TMapTable::Map(TRawDataObject *obj)
 }
 
 
-Bool_t  art::TMapTable::SetMap(const Int_t &segid, const Int_t &geo, const Int_t &ch,
-                            const Int_t &cat, const Int_t &det, const Int_t &type)
+Bool_t  art::TMapTable::SetMap(Int_t segid, Int_t geo, Int_t ch,
+			       Int_t cat, Int_t det, Int_t type)
 {
    // Set current table to be segid
    SetSegmentID(segid);

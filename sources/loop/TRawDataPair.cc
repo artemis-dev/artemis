@@ -3,7 +3,7 @@
  * @brief  rawdata container with two values
  *
  * @date   Created:       2013-07-25 10:44:58
- *         Last Modified: 2013-07-25 12:20:30
+ *         Last Modified: 2013-11-12 15:39:56
  * @author KAWASE Shoichiro <kawase@cns.s.u-tokyo.ac.jp>
  *
  * @note   This class contains two Int_t values
@@ -23,7 +23,6 @@ TRawDataPair::TRawDataPair()
    : fFirst(TRawDataObject::kInvalid), fSecond(TRawDataObject::kInvalid){
 }
 
-// Default destructor
 TRawDataPair::~TRawDataPair() {
 }
 
@@ -46,7 +45,7 @@ Int_t& TRawDataPair::operator[](const Int_t idx){
 }
 
 void TRawDataPair::Swap() {
-   Int_t temp = fFirst;
+   const Int_t temp = fFirst;
    fFirst = fSecond;
    fSecond = temp;
 }
