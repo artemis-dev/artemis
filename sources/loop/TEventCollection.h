@@ -2,7 +2,7 @@
 /**
  * @file   TEventCollection.h
  * @date   Created : Apr 26, 2012 23:26:19 JST
- *   Last Modified : Nov 19, 2013 16:37:39 JST
+ *   Last Modified : Nov 22, 2013 18:05:24 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -34,7 +34,7 @@ public:
    // get an event object by name
    virtual TEventObject* Get(const char* name);
    // get a reference to an event object by name
-   virtual TObject** GetObjectRef(const char *name);
+   virtual void** GetObjectRef(const char *name);
    // get an information object
    virtual TObject* GetInfo(const char *name);
    // get the iterator of event objects
