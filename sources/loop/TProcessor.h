@@ -2,7 +2,7 @@
 /**
  * @file   TProcessor.h
  * @date   Created : Jul 10, 2013 17:10:49 JST
- *   Last Modified : Aug 26, 2013 11:44:53 JST
+ *   Last Modified : Nov 22, 2013 10:34:28 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -39,7 +39,9 @@ public:
       fCondition = (TConditionBit**)(col->Get(TLoop::kConditionName)->GetObjectRef());
       Init(col);
    }
+protected:
    virtual void Init (TEventCollection *) {;}
+public:
    virtual void BeginOfRun() {;}
    virtual void EndOfRun() {;}
    virtual void Process() {;}

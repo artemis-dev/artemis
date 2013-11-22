@@ -2,7 +2,7 @@
 /**
  * @file   TRIDFEventStore.cc
  * @date   Created : Jul 12, 2013 17:12:35 JST
- *   Last Modified : Nov 21, 2013 18:24:40 JST
+ *   Last Modified : Nov 22, 2013 13:20:05 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -312,14 +312,16 @@ void art::TRIDFEventStore::ClassDecoder04(Char_t *buf, Int_t& offset, struct RID
    if (decoder) {
       decoder->Decode(&buf[index],size,seg);
       const Int_t &nData = seg->GetEntriesFast();
-      for (Int_t i=0; i!=nData; i++) {
-         TRawDataObject *obj = (TRawDataObject*) seg->At(i);
-         if (obj->GetCatID() != TRawDataObject::kInvalid) {
-            // already mapped
-            continue;
+      if (ridfdata->fMapTable) {
+         for (Int_t i=0; i!=nData; i++) {
+            TRawDataObject *obj = (TRawDataObject*) seg->At(i);
+            if (obj->GetCatID() != TRawDataObject::kInvalid) {
+               // already mapped
+               continue;
+            }
+            ridfdata->fMapTable->Map(obj);
+            ridfdata->fCategorizedData->Add(obj);
          }
-         ridfdata->fMapTable->Map(obj);
-         ridfdata->fCategorizedData->Add(obj);
       }
    } else {
       printf("No such decoder for Module %d\n",segid.Module());
