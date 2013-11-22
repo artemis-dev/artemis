@@ -2,16 +2,13 @@
 /**
  * @file   TRIDFEventStore.cc
  * @date   Created : Jul 12, 2013 17:12:35 JST
- *   Last Modified : Nov 22, 2013 13:20:05 JST
+ *   Last Modified : Nov 22, 2013 17:57:25 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
  *    Copyright (C)2013
  */
 #include "TRIDFEventStore.h"
-#include <TConfigFile.h>
-#include <TMapTable.h>
-#include <TCategorizedData.h>
 #include <TSegmentedData.h>
 #include <TDataSource.h>
 #include <TFileDataSource.h>
@@ -32,18 +29,12 @@ art::TRIDFEventStore::TRIDFEventStore()
    RegisterInputCollection("InputFiles","The names of input files",fFileName,dummy);
    RegisterOutputCollection("SegmentedData","The name of output array for segmented data",
                             fNameSegmented,TString("segdata"));
-   RegisterOutputCollection("CategorizedData","The name of output array for categorized data",
-                            fNameCategorized,TString("catdata"));
    RegisterOutputCollection("RunHeadersName","the name of output array for run headers, run header will be stored once",
                             fNameRunHeaders,TString("runheader"));
    RegisterOutputCollection("EventHeaderName","the name of event header",
                             fNameEventHeader,TString("eventheader"));
-   RegisterOptionalParameter("MapConfig","File for map configuration. Not mapped if the name is blank.",
-                             fMapConfigName,TString("mapper.conf"));
 
    fRIDFData.fSegmentedData = new TSegmentedData;
-   fRIDFData.fCategorizedData = new TCategorizedData;
-   fRIDFData.fMapTable = NULL;
    fRIDFData.fRunHeaders = new TList;
    fRIDFData.fEventHeader = new TEventHeader;
    fIsOnline = kFALSE;
@@ -79,8 +70,6 @@ art::TRIDFEventStore::TRIDFEventStore()
 art::TRIDFEventStore::~TRIDFEventStore()
 {
    if (fRIDFData.fSegmentedData) delete fRIDFData.fSegmentedData;
-   if (fRIDFData.fCategorizedData) delete fRIDFData.fCategorizedData; 
-   if (fRIDFData.fMapTable) delete fRIDFData.fMapTable;
    if (fRIDFData.fRunHeaders) delete fRIDFData.fRunHeaders;
    if (fRIDFData.fEventHeader) delete fRIDFData.fEventHeader;
    if (fBuffer) delete [] fBuffer;
@@ -99,44 +88,10 @@ void art::TRIDFEventStore::Init(TEventCollection *col)
    }
 
    col->Add(fNameSegmented,fRIDFData.fSegmentedData,fOutputIsTransparent);
-   col->Add(fNameCategorized,fRIDFData.fCategorizedData,fOutputIsTransparent);
    col->Add(fNameEventHeader,fRIDFData.fEventHeader,kFALSE);
    col->AddInfo(fNameRunHeaders,fRIDFData.fRunHeaders,kFALSE);
    fRIDFData.fRunHeaders->SetName(fNameRunHeaders);
 
-   //--------------------------------------------------
-   // Create map table 
-   //--------------------------------------------------
-   if (!fMapConfigName.IsNull()) {
-      if (!fRIDFData.fMapTable) fRIDFData.fMapTable = new TMapTable;
-      TConfigFile file(fMapConfigName);
-      const Int_t nids = 5;
-      while (1) {
-         const TString& mapfilename = file.GetNextToken();
-         const Int_t&   ndata       = file.GetNextToken().Atoi();
-         if (!mapfilename.Length() || !ndata) {
-            // no more map file is available 
-            break;
-         }
-         TConfigFile mapfile(mapfilename,"#",", \t","#");
-         while (1) {
-            const TString& cidstr = mapfile.GetNextToken();
-            const TString& didstr = mapfile.GetNextToken();
-            if (!cidstr.Length() || !didstr.Length()) break;
-            const Int_t& cid = cidstr.Atoi();
-            const Int_t& did = didstr.Atoi();
-            Int_t ids[nids];
-            for (Int_t i = 0; i!=ndata; i++) {
-               for (Int_t j=0; j!=nids; j++) {
-                  ids[j] = mapfile.GetNextToken().Atoi();
-               }
-               Int_t segid = (((ids[0]&0x3f)<<20) | ((ids[1]&0x3f)<<14) |((ids[2]&0x3f)<<8));
-               fRIDFData.fMapTable->SetMap(segid,ids[3],ids[4],cid,did,i);
-            }
-         }
-      }
-      printf("mapfile %s is loaded\n",fMapConfigName.Data());
-   }
 }
 
 
@@ -144,7 +99,6 @@ void art::TRIDFEventStore::Process()
 {
    // try to prepare data source
    fRIDFData.fSegmentedData->Clear("C");
-   fRIDFData.fCategorizedData->Clear("C");
    
    if (!fDataSource) {
       if (fIsOnline) {
@@ -311,18 +265,6 @@ void art::TRIDFEventStore::ClassDecoder04(Char_t *buf, Int_t& offset, struct RID
    TModuleDecoder *decoder = TModuleDecoderFactory::Instance()->Get(segid.Module());
    if (decoder) {
       decoder->Decode(&buf[index],size,seg);
-      const Int_t &nData = seg->GetEntriesFast();
-      if (ridfdata->fMapTable) {
-         for (Int_t i=0; i!=nData; i++) {
-            TRawDataObject *obj = (TRawDataObject*) seg->At(i);
-            if (obj->GetCatID() != TRawDataObject::kInvalid) {
-               // already mapped
-               continue;
-            }
-            ridfdata->fMapTable->Map(obj);
-            ridfdata->fCategorizedData->Add(obj);
-         }
-      }
    } else {
       printf("No such decoder for Module %d\n",segid.Module());
    }

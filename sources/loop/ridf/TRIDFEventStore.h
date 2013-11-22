@@ -2,7 +2,7 @@
 /**
  * @file   TRIDFEventStore.h
  * @date   Created : Jul 12, 2013 17:12:43 JST
- *   Last Modified : Nov 21, 2013 18:22:41 JST
+ *   Last Modified : Nov 22, 2013 17:58:04 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -94,7 +94,7 @@ protected:
       Int_t Address() { return ((fHeader>>32) & 0xffffffff); }
       unsigned long long int& operator=(unsigned long long int val) { return (fHeader = val); }
       void Print() {
-         printf("data    = 0x%8lx\n",fHeader);
+         printf("data    = 0x%8Lx\n",fHeader);
          printf("Size    = %d\n",Size());
          printf("ClassID = %d\n",ClassID());
          printf("Layer   = %d\n",Layer());

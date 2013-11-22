@@ -2,7 +2,7 @@
 /**
  * @file   TMapTable.h
  * @date   Created : Jul 16, 2013 22:16:52 JST
- *   Last Modified : 
+ *   Last Modified : Nov 23, 2013 01:36:44 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -25,7 +25,7 @@ public:
    virtual ~TMapTable();
 
    virtual void SetSegmentID(Int_t segid) {
-      if (!fCurrentTable || fCurrentTable->GetUniqueID() != segid) {
+      if (!fCurrentTable || fCurrentTable->GetUniqueID() != (UInt_t)segid) {
          fCurrentTable = fMapTable->FindSegmentByID(segid);
          if (!fCurrentTable) fCurrentTable = fMapTable->NewSegment(segid);
       }
