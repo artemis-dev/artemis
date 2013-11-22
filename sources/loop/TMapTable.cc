@@ -2,7 +2,7 @@
 /**
  * @file   TMapTable.cc
  * @date   Created : Jul 16, 2013 23:16:31 JST
- *   Last Modified : 
+ *   Last Modified : Nov 23, 2013 01:37:14 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -25,7 +25,7 @@ art::TMapTable::~TMapTable()
 
 void art::TMapTable::Map(TRawDataObject *obj)
 {
-   if (!fCurrentTable || fCurrentTable->GetUniqueID() != obj->GetSegID()) {
+   if (!fCurrentTable || fCurrentTable->GetUniqueID() != (UInt_t)obj->GetSegID()) {
       fCurrentTable = fMapTable->FindSegmentByID(obj->GetSegID());
    }
    if (!fCurrentTable) {
@@ -65,7 +65,7 @@ Bool_t  art::TMapTable::SetMap(Int_t segid, Int_t geo, Int_t ch,
    if (geomap->GetEntriesFast() > ch) {
       TRawDataObject *old = (TRawDataObject*) geomap->At(ch);
       if (old) {
-         printf("Map already exists defined\n");
+         printf("Map already exists\n");
          printf("Segment %x, geo = %d, ch = %d\n",segid,geo,ch);
          printf("  Old: cat = %d, det = %d, type = %d\n",
                 old->GetCatID(),old->GetDetID(),old->GetType());

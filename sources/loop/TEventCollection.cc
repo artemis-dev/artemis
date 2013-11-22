@@ -2,7 +2,7 @@
 /**
  * @file   TEventCollection.cc
  * @date   Created : Jul 10, 2013 17:10:20 JST
- *   Last Modified : Nov 19, 2013 16:58:35 JST
+ *   Last Modified : Nov 22, 2013 18:05:58 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -40,13 +40,13 @@ art::TEventObject* TEventCollection::Get(const char* name)
    return (TEventObject*) fObjects->FindObject(name);
 }
 
-TObject** TEventCollection::GetObjectRef(const char *name) {
+void** TEventCollection::GetObjectRef(const char *name) {
    TObject *obj = NULL;
    if (!(obj = fObjects->FindObject(name))) {
       printf("<art::TEventCollection::GetReference> no such object %s",name);
       return NULL;
    }
-   return (TObject**)((TEventObject*)obj)->GetObjectRef();
+   return (void**)((TEventObject*)obj)->GetObjectRef();
 }
 
 TObject* TEventCollection::GetInfo(const char *name) {
