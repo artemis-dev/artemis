@@ -2,7 +2,7 @@
 /**
  * @file   TProcessor.h
  * @date   Created : Jul 10, 2013 17:10:49 JST
- *   Last Modified : Nov 22, 2013 10:34:28 JST
+ *   Last Modified : Nov 26, 2013 15:12:17 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -76,6 +76,7 @@ protected:
    Bool_t fOutputIsTransparent;    // output transparency
    TConditionBit **fCondition; // condition bit to control loop
    TParameterStrings *fParameters; // parameter strings
+   Int_t  fVerboseLevel; // verbose level
    
    // register processor parameter
    template<class T>

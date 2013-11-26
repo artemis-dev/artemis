@@ -2,7 +2,7 @@
 /**
  * @file   TProcessor.cc
  * @date   Created : Jul 10, 2013 17:10:19 JST
- *   Last Modified : Sep 17, 2013 18:13:29 JST
+ *   Last Modified : Nov 26, 2013 15:19:31 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -19,6 +19,7 @@ art::TProcessor::TProcessor()
 {
    RegisterOptionalParameter("OutputTransparency","Output is persistent if false (default)",
                              fOutputIsTransparent,kFALSE);
+   RegisterOptionalParameter("Verbose","verbose level (default 1 : non quiet)",fVerboseLevel,1);
 }
 
 art::TProcessor::~TProcessor()

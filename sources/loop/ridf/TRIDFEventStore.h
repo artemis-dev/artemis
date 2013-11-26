@@ -2,7 +2,7 @@
 /**
  * @file   TRIDFEventStore.h
  * @date   Created : Jul 12, 2013 17:12:43 JST
- *   Last Modified : Nov 26, 2013 15:04:18 JST
+ *   Last Modified : Nov 26, 2013 15:17:46 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -44,7 +44,8 @@ protected:
       TCategorizedData *fCategorizedData;
       TList   *fRunHeaders;
       TEventHeader *fEventHeader;
-   } fRIDFData;
+      Int_t        *fVerboseLevel;
+   } fRIDFData; //!
    TDataSource      *fDataSource; //!
 
    Bool_t fIsOnline;

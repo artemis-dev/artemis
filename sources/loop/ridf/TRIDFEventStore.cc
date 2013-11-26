@@ -2,7 +2,7 @@
 /**
  * @file   TRIDFEventStore.cc
  * @date   Created : Jul 12, 2013 17:12:35 JST
- *   Last Modified : Nov 26, 2013 14:14:04 JST
+ *   Last Modified : Nov 26, 2013 15:18:22 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -38,6 +38,7 @@ art::TRIDFEventStore::TRIDFEventStore()
    fRIDFData.fSegmentedData = new TSegmentedData;
    fRIDFData.fRunHeaders = new TList;
    fRIDFData.fEventHeader = new TEventHeader;
+   fRIDFData.fVerboseLevel = &fVerboseLevel;
    fIsOnline = kFALSE;
    fIsEOB = kTRUE;
    fBuffer = new Char_t[fMaxBufSize];
@@ -223,7 +224,9 @@ void art::TRIDFEventStore::ClassDecoder05(Char_t *buf, Int_t& offset, struct RID
       RIDFCommentRunInfo info;
       local+=sizeof(int);
       memcpy(&info,buf+local,sizeof(RIDFCommentRunInfo));
-      info.Print();
+      if (*(ridfdata->fVerboseLevel) > 0) {
+         info.Print();
+      }
       TString runName = info.fRunName;
       TString runNumber = info.fRunNumber;
       TString startTime = info.fStartTime;
