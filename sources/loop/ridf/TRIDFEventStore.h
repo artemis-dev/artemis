@@ -2,7 +2,7 @@
 /**
  * @file   TRIDFEventStore.h
  * @date   Created : Jul 12, 2013 17:12:43 JST
- *   Last Modified : Nov 22, 2013 17:58:04 JST
+ *   Last Modified : Nov 26, 2013 15:04:18 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -32,6 +32,10 @@ public:
    
    virtual void Init(TEventCollection *col);
    virtual void Process();
+protected:
+   Bool_t Open();
+   Bool_t GetNextBlock();
+   Bool_t GetNextEvent();
 
 protected:
    struct RIDFData {
@@ -41,7 +45,7 @@ protected:
       TList   *fRunHeaders;
       TEventHeader *fEventHeader;
    } fRIDFData;
-   TDataSource      *fDataSource;
+   TDataSource      *fDataSource; //!
 
    Bool_t fIsOnline;
    Int_t  fIsEOB;
@@ -52,15 +56,17 @@ protected:
    TString           fMapConfigName;
    TString           fNameRunHeaders;
    TString           fNameEventHeader;
+   TString           fSourceName;
+   TString           fSearchPath;
 
    Long_t   fMaxEventNum;
    Long_t   fEventNum; //! local Event number
    Long_t   fEventNumTotal; //! total event number
 
-   Int_t    fMaxBufSize; // maximum buffer size
-   Char_t  *fBuffer; // local buffer for the data read
-   Int_t    fOffset; // read offset
-   Int_t    fBlockSize;   // size of read block
+   Int_t    fMaxBufSize; //! maximum buffer size
+   Char_t  *fBuffer; //! local buffer for the data read
+   Int_t    fOffset; //! read offset
+   Int_t    fBlockSize;   //! size of read block
 
    // use function pointer array to decode classes instead of function object.
    // since the number of classes may not change so much and they are easy to be maintained.
@@ -141,9 +147,6 @@ protected:
       unsigned int fSegID;
    };
       
-
-
-//   ClassDef(TRIDFEventStore,1);
-   
+   ClassDef(TRIDFEventStore,1); // Event store for ridf format files
 };
 #endif // end of #ifdef TRIDFEVENTSTORE_H

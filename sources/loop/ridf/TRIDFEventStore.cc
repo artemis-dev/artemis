@@ -2,7 +2,7 @@
 /**
  * @file   TRIDFEventStore.cc
  * @date   Created : Jul 12, 2013 17:12:35 JST
- *   Last Modified : Nov 22, 2013 17:57:25 JST
+ *   Last Modified : Nov 26, 2013 14:14:04 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -19,6 +19,7 @@
 #include <TRunInfo.h>
 #include <TTimeStamp.h>
 #include <TEventHeader.h>
+#include <TSystem.h>
 
 #include <map>
 
@@ -40,6 +41,7 @@ art::TRIDFEventStore::TRIDFEventStore()
    fIsOnline = kFALSE;
    fIsEOB = kTRUE;
    fBuffer = new Char_t[fMaxBufSize];
+   fSearchPath = ".";
 
 
    // initialize 
@@ -99,94 +101,18 @@ void art::TRIDFEventStore::Process()
 {
    // try to prepare data source
    fRIDFData.fSegmentedData->Clear("C");
-   
-   if (!fDataSource) {
-      if (fIsOnline) {
-//         fDataSource = new TShmDataSourceRIDF(fSHMID);
-      } else if (fFileName.size()){
-         TString filename = fFileName.front();
-         FILE *fp = fopen(filename,"r");
-         if (fp) {
-            fclose(fp);
-            fFileName.erase(fFileName.begin());
-            fDataSource = new TFileDataSource(filename);
-         }
-      }
-   }
-
-   if (!fDataSource) {
-      // no file is available
-      // all the input files are analyzed or cannot open file
-      SetStopEvent();
-      SetStopLoop();
-      SetEndOfRun();
-      return;
-   }
-
-   // check data is available or not for shared memory data source
-   if (!fDataSource->IsPrepared()) {
-      // no data is available now
-      SetStopEvent();
-      return;
-   }
-
-   // read data block if the data is availab
-   if (fIsEOB) {
-      // check if header is available
-      if (fDataSource->Read((char*)&fHeader,sizeof(fHeader))) {
-         // check the header validity
-         if (fHeader.Layer() != 0 ||
-             (fHeader.ClassID() != 0 &&
-              fHeader.ClassID() != 1 &&
-              fHeader.ClassID() != 2 )
-            ) {
+   // try to get next event
+   while (!GetNextEvent()) {
+      // try to get next block if no event is available
+      while (!GetNextBlock()) {
+         // try to open data source if no block is available 
+         if (!Open()) {
+            // loop is end if no data source is available
+            SetStopEvent();
+            SetStopLoop();
+            SetEndOfRun();
             return;
          }
-         // check if block is availalbe
-         fBlockSize   = fHeader.Size() - sizeof(fHeader);
-         if (fDataSource->Read(fBuffer,fBlockSize)) {
-            // block was read
-            fIsEOB = kFALSE;
-            fOffset = 0;
-            // total block size includes the size of header
-         } else {
-            fOffset = fBlockSize = 0;
-            fHeader = 0LL;
-         }
-      }
-   }
-
-   // check if no data is available 
-   if (fIsEOB) {
-      // no data is available
-      SetStopEvent();
-      delete fDataSource;
-      fDataSource = NULL;
-      return;
-   }
-
-   // parse data if available
-   while (1) {
-      TModuleDecoderFactory::Instance()->Clear();
-      memcpy(&fHeader,fBuffer+fOffset,sizeof(fHeader));
-      if (fClassDecoder[fHeader.ClassID()]) {
-         fClassDecoder[fHeader.ClassID()](fBuffer,fOffset,&fRIDFData);
-      } else {
-         printf("Class ID = %d\n",fHeader.ClassID());
-         ClassDecoderUnknown(fBuffer,fOffset,&fRIDFData);
-      }
-      if (fOffset >= fBlockSize)  {
-         fIsEOB = kTRUE;
-      }
-      // TClassDecoder::Decode(fBuffer,fOffset,fNext,something?)
-      // if the data is available or not
-      if (fRIDFData.fSegmentedData->GetEntriesFast()) {
-         // the data is available
-         break;
-      } else  if (fIsEOB) {
-         // no data is available
-         SetStopEvent();
-         break;
       }
    }
 }
@@ -349,6 +275,118 @@ void art::TRIDFEventStore::ClassDecoder06(Char_t *buf, Int_t& offset, struct RID
       } else {
          printf("offset = %d, last = %d\n",offset,last);
          ClassDecoderUnknown(buf,offset,ridfdata);
+      }
+   }
+}
+
+//----------------------------------------
+// Open
+Bool_t art::TRIDFEventStore::Open()
+{
+   if (fDataSource) {
+      Error("Open","Data source is already prepared");
+      return kFALSE;
+   }
+
+   if (fIsOnline) {
+      Warning("Open","Online mode is not implimented yet");
+      return kFALSE;
+   } else {
+      TString filename;
+      while (fFileName.size()) {
+         filename = fFileName.front();
+         fSourceName = fFileName.front();
+         fFileName.erase(fFileName.begin());
+         if (gSystem->FindFile(fSearchPath,fSourceName)) {
+            break;
+         }
+         Error("Open","no such file '%s' in search path '%s'",filename.Data(),fSearchPath.Data());
+      }
+      if (filename == "") {
+         // no file is available
+         return kFALSE;
+      }
+      fDataSource = new TFileDataSource(filename);
+      return kTRUE;
+   }
+
+   // unexpected to reach here
+   Error("Open","Unexpected error at %d",__LINE__);
+   return kFALSE;
+}
+
+//----------------------------------------
+// GetNextBlock to get next block
+Bool_t art::TRIDFEventStore::GetNextBlock()
+{
+   if (!fIsEOB) {
+      Error("GetNextBlock","Unexpectedly called. Event block contains more data.");
+      return kFALSE;
+   }
+   if (!fDataSource) {
+      // data source is not ready
+      return kFALSE;
+   }
+   if (!fDataSource->Read((char*)&fHeader,sizeof(fHeader))) {
+      // no more data is ready in this data source
+      delete fDataSource;
+      fDataSource = NULL;
+      return kFALSE;
+   }
+   // check the header validity
+   if (fHeader.Layer() != 0 ||
+       (fHeader.ClassID() != 0 &&
+        fHeader.ClassID() != 1 &&
+        fHeader.ClassID() != 2 )
+      ) {
+      // invalid event block
+      Error("Process","Invalid event block with class id = %d",fHeader.ClassID());
+      // erase invalid data source
+      delete fDataSource;
+      return kFALSE;
+   }
+   // check if block is availalbe
+   fBlockSize   = fHeader.Size() - sizeof(fHeader);
+   if (fDataSource->Read(fBuffer,fBlockSize)) {
+      // block was read
+      fIsEOB = kFALSE;
+      fOffset = 0;
+      // total block size includes the size of header
+      return kTRUE;
+   } else {
+      // unexpectedly block was not available
+      Error("Process","Empty block");
+      fOffset = fBlockSize = 0;
+      fHeader = 0LL;
+      return kFALSE;
+   }
+}
+
+
+Bool_t art::TRIDFEventStore::GetNextEvent()
+{
+   if (fIsEOB) return kFALSE;
+   // parse data if available
+   while (1) {
+      TModuleDecoderFactory::Instance()->Clear();
+      memcpy(&fHeader,fBuffer+fOffset,sizeof(fHeader));
+      if (fClassDecoder[fHeader.ClassID()]) {
+         fClassDecoder[fHeader.ClassID()](fBuffer,fOffset,&fRIDFData);
+      } else {
+         printf("Class ID = %d\n",fHeader.ClassID());
+         ClassDecoderUnknown(fBuffer,fOffset,&fRIDFData);
+      }
+      if (fOffset >= fBlockSize)  {
+         fIsEOB = kTRUE;
+      }
+      // TClassDecoder::Decode(fBuffer,fOffset,fNext,something?)
+      // if the data is available or not
+      if (fRIDFData.fSegmentedData->GetEntriesFast()) {
+         // the data is available
+         return kTRUE;
+      } else  if (fIsEOB) {
+         // no data is available
+         return kFALSE;
       }
    }
 }

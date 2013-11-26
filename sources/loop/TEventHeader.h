@@ -2,7 +2,7 @@
 /**
  * @file   TEventHeader.h
  * @date   Created : Nov 20, 2013 13:20:07 JST
- *   Last Modified : Nov 20, 2013 14:38:16 JST
+ *   Last Modified : Nov 26, 2013 13:46:51 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -31,9 +31,9 @@ public:
    // get timestamp
    virtual Long64_t GetTimestamp() { return fTimestamp; }
    // get event number in one run
-   virtual Long64_t GetEventNumver() { return fEventNumber; }
+   virtual Long64_t GetEventNumber() { return fEventNumber; }
    // get event number in total 
-   virtual Long64_t GetEventNumverTotal() { return fEventNumberTotal; }
+   virtual Long64_t GetEventNumberTotal() { return fEventNumberTotal; }
    // increment event number
    virtual void IncrementEventNumber() {
       fEventNumber++;
