@@ -26,6 +26,8 @@
 // #pragma link C++ class TCatOstream;
 
 #pragma link C++ class art::TConfigFile;
+#pragma link C++ class art::TSharedMemory;
+#pragma link C++ class art::TSemaphoreObject;
 
 // #pragma link C++ class TCatParameterI;
 // #pragma link C++ class TCatParameterF;

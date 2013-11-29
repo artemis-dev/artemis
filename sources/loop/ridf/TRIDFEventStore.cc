@@ -2,7 +2,7 @@
 /**
  * @file   TRIDFEventStore.cc
  * @date   Created : Jul 12, 2013 17:12:35 JST
- *   Last Modified : Nov 26, 2013 15:18:22 JST
+ *   Last Modified : Nov 30, 2013 01:00:18 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -12,6 +12,7 @@
 #include <TSegmentedData.h>
 #include <TDataSource.h>
 #include <TFileDataSource.h>
+#include <TSharedMemoryDataSource.h>
 #include <TRawDataObject.h>
 #include <TLoop.h>
 #include <TModuleDecoderFactory.h>
@@ -24,7 +25,8 @@
 #include <map>
 
 art::TRIDFEventStore::TRIDFEventStore()
-   : fMaxEventNum(0),fEventNum(0),fEventNumTotal(0), fMaxBufSize(kMaxBufSize)
+   : fMaxEventNum(0),fEventNum(0),fEventNumTotal(0), fMaxBufSize(kMaxBufSize),
+     fSHMID(0), fBlockNumber(0)
 {
    StringVec_t dummy;
    RegisterInputCollection("InputFiles","The names of input files",fFileName,dummy);
@@ -34,6 +36,8 @@ art::TRIDFEventStore::TRIDFEventStore()
                             fNameRunHeaders,TString("runheader"));
    RegisterOutputCollection("EventHeaderName","the name of event header",
                             fNameEventHeader,TString("eventheader"));
+   RegisterProcessorParameter("SHMID","Shared memory id (default : 0)",fSHMID,0);
+   
 
    fRIDFData.fSegmentedData = new TSegmentedData;
    fRIDFData.fRunHeaders = new TList;
@@ -76,6 +80,7 @@ art::TRIDFEventStore::~TRIDFEventStore()
    if (fRIDFData.fRunHeaders) delete fRIDFData.fRunHeaders;
    if (fRIDFData.fEventHeader) delete fRIDFData.fEventHeader;
    if (fBuffer) delete [] fBuffer;
+   if (fDataSource) delete fDataSource;
 }
 
 
@@ -106,6 +111,11 @@ void art::TRIDFEventStore::Process()
    while (!GetNextEvent()) {
       // try to get next block if no event is available
       while (!GetNextBlock()) {
+         // check stop condition
+         if ((*fCondition)->IsSet(TLoop::kStopLoop)) {
+            SetStopEvent();
+            return;
+         }
          // try to open data source if no block is available 
          if (!Open()) {
             // loop is end if no data source is available
@@ -287,13 +297,35 @@ void art::TRIDFEventStore::ClassDecoder06(Char_t *buf, Int_t& offset, struct RID
 Bool_t art::TRIDFEventStore::Open()
 {
    if (fDataSource) {
+      if (fIsOnline) {
+         return kTRUE;
+      }
       Error("Open","Data source is already prepared");
       return kFALSE;
    }
 
    if (fIsOnline) {
-      Warning("Open","Online mode is not implimented yet");
-      return kFALSE;
+      Info("Open","Online mode");
+      Int_t shmid = kSHMID_BASE + 2 * fSHMID;
+      Int_t semkey = kSEMKEY_BASE + 2 * fSHMID;
+      Int_t size = kSHM_BUFF_SIZE + 4;
+      fDataSource = new TSharedMemoryDataSource(shmid,semkey,size);
+      
+      if (!fDataSource->IsPrepared()) {
+         Error("Open","Catnnot prepare shared memory data source with shmid = %d",fSHMID);
+         return kFALSE;
+      }
+      TRunInfo *runinfo = new TRunInfo("Online","Online");
+      runinfo->SetRunName("Online");
+      runinfo->SetRunNumber(0);
+      runinfo->SetStartTime(0);
+      runinfo->SetStopTime(0);
+      runinfo->SetHeader("");
+      runinfo->SetEnder("");
+      fRIDFData.fRunHeaders->Add(runinfo);
+      fRIDFData.fEventHeader->SetRunName("Online");
+      fRIDFData.fEventHeader->SetRunNumber(0);
+      return kTRUE;
    } else {
       TString filename;
       while (fFileName.size()) {
@@ -330,8 +362,24 @@ Bool_t art::TRIDFEventStore::GetNextBlock()
       // data source is not ready
       return kFALSE;
    }
+   if (fIsOnline) {
+      Int_t nBlock = 0;
+      fDataSource->Lock();
+      fDataSource->Seek(kSHM_BUFF_SIZE,SEEK_SET);
+      fDataSource->Read((char*)&nBlock,sizeof(Int_t));
+      fDataSource->Seek(0,SEEK_SET);
+      fDataSource->Unlock();
+      if (fBlockNumber == nBlock) {
+         gSystem->Sleep(1);
+         return kFALSE;
+      } else {
+         fBlockNumber = nBlock;
+      }
+   }
+   fDataSource->Lock();
    if (!fDataSource->Read((char*)&fHeader,sizeof(fHeader))) {
       // no more data is ready in this data source
+      fDataSource->Unlock();
       delete fDataSource;
       fDataSource = NULL;
       return kFALSE;
@@ -344,6 +392,7 @@ Bool_t art::TRIDFEventStore::GetNextBlock()
       ) {
       // invalid event block
       Error("Process","Invalid event block with class id = %d",fHeader.ClassID());
+      fDataSource->Unlock();
       // erase invalid data source
       delete fDataSource;
       return kFALSE;
@@ -355,9 +404,11 @@ Bool_t art::TRIDFEventStore::GetNextBlock()
       fIsEOB = kFALSE;
       fOffset = 0;
       // total block size includes the size of header
+      fDataSource->Unlock();
       return kTRUE;
    } else {
       // unexpectedly block was not available
+      fDataSource->Unlock();
       Error("Process","Empty block");
       fOffset = fBlockSize = 0;
       fHeader = 0LL;

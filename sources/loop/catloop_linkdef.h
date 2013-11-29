@@ -2,7 +2,7 @@
 /**
  * @file   catloop_linkdef.h
  * @date   Created : Feb 19, 2012 11:19:06 JST
- *   Last Modified : Nov 22, 2013 17:58:37 JST
+ *   Last Modified : Nov 29, 2013 22:17:32 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -47,6 +47,7 @@
 #pragma link C++ class art::TRunInfo;
 #pragma link C++ class art::TEventHeader;
 #pragma link C++ class art::TMappingProcessor;
+#pragma link C++ class art::TSharedMemoryDataSource;
 
 
 #endif /* __CINT__ */

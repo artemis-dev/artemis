@@ -2,7 +2,7 @@
 /**
  * @file   TRIDFEventStore.h
  * @date   Created : Jul 12, 2013 17:12:43 JST
- *   Last Modified : Nov 26, 2013 15:17:46 JST
+ *   Last Modified : Nov 30, 2013 00:13:05 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -68,6 +68,13 @@ protected:
    Char_t  *fBuffer; //! local buffer for the data read
    Int_t    fOffset; //! read offset
    Int_t    fBlockSize;   //! size of read block
+
+   // for online mode
+   static const Int_t kSHM_BUFF_SIZE = 0x80000; // 256 kByte
+   static const Int_t kSHMID_BASE    = 561000;
+   static const Int_t kSEMKEY_BASE   = 561001;
+   Int_t fSHMID;
+   Int_t fBlockNumber;
 
    // use function pointer array to decode classes instead of function object.
    // since the number of classes may not change so much and they are easy to be maintained.

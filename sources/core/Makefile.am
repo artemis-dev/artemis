@@ -1,8 +1,11 @@
-SUBSRC = \
-	TCatParameterTable.cc \
-	TCatHistManager.cc \
-	TCatPadManager.cc \
-	TConfigFile.cc
+SUBSRC  =
+SUBSRC += TCatParameterTable.cc 
+SUBSRC += TCatHistManager.cc
+SUBSRC += TCatPadManager.cc
+SUBSRC += TConfigFile.cc
+SUBSRC += TSharedMemory.cc
+SUBSRC += TSemaphoreObject.cc
+
 
 #        TArtFadcRawDataObject.cc \
 #	TArtDecoderV1740.cc \
