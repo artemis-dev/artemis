@@ -8,8 +8,8 @@ AC_CONFIG_SRCDIR([sources/loop/catloop_linkdef.h])
 AC_CONFIG_HEADERS([config.h])
 
 # Checks for programs.
-AC_PROG_CXX([clang++ g++34 g++])
-AC_PROG_CC([clang gcc34 gcc])
+AC_PROG_CXX([clang++ g++ g++34])
+AC_PROG_CC([clang gcc gcc34])
 AC_PROG_LIBTOOL
 AC_PROG_RANLIB
 
