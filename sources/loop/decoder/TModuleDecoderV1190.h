@@ -1,7 +1,7 @@
 /*
  * @file TModuleDecoderV1190.h
  * @date  Created : 2008/11/26 21:30:29 JST
- *  Last Modified : 2013/07/20 00:18:53 JST
+ *  Last Modified : Feb 14, 2014 20:06:14 JST
  *--------------------------------------------------------
  *    Comment : modified to use data container TRawTimingWithEdge
  *
@@ -48,5 +48,7 @@ public:
 
 protected:
    TObjArray *fHitData; // array to temporally store the data for the aggregation
+
+   ClassDef(TModuleDecoderV1190,0); // decoder for module V1190
 };
 #endif // end of #ifdef TMODULEDECODERV1190_H

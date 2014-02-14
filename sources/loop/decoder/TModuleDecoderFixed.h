@@ -34,6 +34,8 @@ private:
    TModuleDecoderFixed(const TModuleDecoderFixed<T>&);
    // Assignment operator (prohibited)
    TModuleDecoderFixed<T>& operator=(const TModuleDecoderFixed<T>&);
+
+   ClassDef(TModuleDecoderFixed,0);
 };
 
 } // namespace art

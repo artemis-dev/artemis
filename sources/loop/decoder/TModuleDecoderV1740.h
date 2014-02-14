@@ -2,7 +2,7 @@
 /**
  * @file   TModuleDecoderV1740.h
  * @date   Created : Feb 06, 2013 15:06:14 JST
- *   Last Modified : Jul 21, 2013 08:59:38 JST
+ *   Last Modified : Feb 14, 2014 20:06:21 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -39,5 +39,7 @@ public:
          }
       }
    } V1740EventHeader_t;
+
+   ClassDef(TModuleDecoderV1740,0); // decoder for V1740
 };
 #endif // end of #ifdef TMODULEDECODERV1740_H

@@ -33,6 +33,7 @@ private:
    // Assignment operator (prohibited)
    TModuleDecoderSkip& operator=(const TModuleDecoderSkip&);
 
+   ClassDef(TModuleDecoderSkip,0); 
 };
 
 #endif // TMODULEDECODERSKIP_H

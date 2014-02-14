@@ -2,7 +2,7 @@
 /**
  * @file   TParameter.h
  * @date   Created : May 18, 2012 14:18:34 JST
- *   Last Modified : May 19, 2012 17:28:17 JST
+ *   Last Modified : Feb 14, 2014 20:19:46 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -106,7 +106,7 @@ namespace art {
       T  fDefValue;
       
       template<class T1> 
-      static TString ToString(std::vector<T1> v, int n) {
+      static TString ToString(std::vector<T1> v, int) {
          TString str;
          typename std::vector<T1>::iterator it;
          for (it = v.begin(); it != v.end(); it++) {
@@ -118,22 +118,22 @@ namespace art {
          return str;
       }
       
-      static TString ToString(Int_t prm, int n) {
+      static TString ToString(Int_t prm, int) {
          TString str;
          str += prm;
          return str;
       }
-      static TString ToString(Long_t prm, int n) {
+      static TString ToString(Long_t prm, int) {
          TString str;
          str += prm;
          return str;
       }
-      static TString ToString(Float_t prm, int n) {
+      static TString ToString(Float_t prm, int) {
          TString str;
          str += prm;
          return str;
       }
-      static TString ToString(TString prm, int n) {
+      static TString ToString(TString prm, int) {
          TString str;
          str += prm;
          return str;
