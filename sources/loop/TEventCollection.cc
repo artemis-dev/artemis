@@ -2,7 +2,7 @@
 /**
  * @file   TEventCollection.cc
  * @date   Created : Jul 10, 2013 17:10:20 JST
- *   Last Modified : Nov 22, 2013 18:05:58 JST
+ *   Last Modified : 2014-03-04 09:14:32 (kawase)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -43,7 +43,7 @@ art::TEventObject* TEventCollection::Get(const char* name)
 void** TEventCollection::GetObjectRef(const char *name) {
    TObject *obj = NULL;
    if (!(obj = fObjects->FindObject(name))) {
-      printf("<art::TEventCollection::GetReference> no such object %s",name);
+      printf("<art::TEventCollection::GetReference> no such object %s\n",name);
       return NULL;
    }
    return (void**)((TEventObject*)obj)->GetObjectRef();
@@ -52,7 +52,7 @@ void** TEventCollection::GetObjectRef(const char *name) {
 TObject* TEventCollection::GetInfo(const char *name) {
    TObject *obj = NULL;
    if (!(obj = fUserInfo->FindObject(name))) {
-      printf("<art::TEventCollection::GetInfo> no such info %s",name);
+      printf("<art::TEventCollection::GetInfo> no such info %s\n",name);
       return NULL;
    }
    return *(TObject**)((TEventObject*)obj)->GetObjectRef();
