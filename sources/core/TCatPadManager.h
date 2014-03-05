@@ -2,7 +2,7 @@
 /**
  * @file   TCatPadManager.h
  * @date   Created : Feb 06, 2012 18:06:59 JST
- *   Last Modified : Feb 07, 2012 17:28:06 JST
+ *   Last Modified : Feb 24, 2014 17:27:31 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -33,5 +33,7 @@ public:
    TCanvas *fCurrent;
    Int_t    fCurrentPadId;
    Int_t    fNumSubPads;
+
+   ClassDef(TCatPadManager,0); // pad manager
 };
 #endif // end of #ifdef TCATPADMANAGER_H

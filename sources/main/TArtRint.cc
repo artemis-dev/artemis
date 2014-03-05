@@ -2,7 +2,7 @@
 /**
  * @file   TArtRint.cc
  * @date   Created : Feb 06, 2012 00:06:18 JST
- *   Last Modified : Nov 21, 2013 18:12:31 JST
+ *   Last Modified : Mar 03, 2014 14:04:32 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -28,7 +28,7 @@ TArtRint::TArtRint(int* argc, char** argv, void* options, int numOptions, Bool_t
 //   TCatCmdFactory::Instance()->Register(TCatCmdMacro::Instance());
 
    // Preparation of folder for artemis
-   TFolder *top = new TFolder("artemis","artemis");
+   TFolder *top = gROOT->GetRootFolder()->AddFolder("artemis","artemis top level folders");
    gROOT->GetListOfBrowsables()->Add(top);
 
    // set prompt
