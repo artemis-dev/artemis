@@ -2,7 +2,7 @@
 /**
  * @file   TTreeEventStore.cc
  * @date   Created : Jul 11, 2013 21:11:20 JST
- *   Last Modified : Nov 20, 2013 20:09:54 JST
+ *   Last Modified : Mar 07, 2014 13:30:09 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -41,15 +41,19 @@ void art::TTreeEventStore::Init(TEventCollection *col)
 {
    fEventNum = 0;
    fCondition = (TConditionBit**)(col->Get(TLoop::kConditionName)->GetObjectRef());
-   printf("fFileName = %s\n",fFileName.Data());
+   Info("Init","Input file = %s",fFileName.Data());
+   TDirectory *saved = gDirectory;
    fFile = TFile::Open(fFileName);
+   saved->cd();
    if (!fFile) {
       (*fCondition)->Set(TLoop::kStopLoop);
       return ;
    }
-   printf("fTreeName = %s\n",fTreeName.Data());
+   Info("Init","Input tree = %s",fTreeName.Data());
    fTree = (TTree*)fFile->Get(fTreeName);
    if (!fTree) {
+      Error("Init","Input tree '%s' does not exist in '%s'",fTreeName.Data(),
+            fFileName.Data());
       (*fCondition)->Set(TLoop::kStopLoop);
       return;
    }
@@ -60,6 +64,8 @@ void art::TTreeEventStore::Init(TEventCollection *col)
       printf("branch : %s\n",br->GetName());
       fTree->SetBranchAddress(br->GetName(),col->Get(br->GetName())->GetObjectRef());
    }
+   fTree->LoadTree(0);
+   fTree->GetEntry(0);
    if (!fMaxEventNum) fMaxEventNum = fTree->GetEntries();
 }
 void art::TTreeEventStore::Process()
