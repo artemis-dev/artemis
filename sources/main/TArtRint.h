@@ -2,7 +2,7 @@
 /**
  * @file   TArtRint.h
  * @date   Created : Feb 06, 2012 00:06:28 JST
- *   Last Modified : Mar 03, 2014 14:07:45 JST
+ *   Last Modified : Mar 10, 2014 13:03:56 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -24,6 +24,6 @@ private:
    TArtRint(const TArtRint&);
 
    virtual Long_t ProcessLine(const char* line, Bool_t sync = kFALSE, Int_t* error = 0);
-
+   virtual void   Terminate(Int_t status);
 };
 #endif // end of #ifdef TARTRINT_H

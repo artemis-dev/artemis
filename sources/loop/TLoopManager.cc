@@ -2,7 +2,7 @@
 /**
  * @file   TLoopManager.cc
  * @date   Created : Jul 10, 2013 17:10:36 JST
- *   Last Modified : Oct 26, 2013 05:54:43 JST
+ *   Last Modified : Mar 10, 2014 16:04:31 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -62,7 +62,7 @@ Int_t art::TLoopManager::Resume(Int_t i)
 }
 Int_t art::TLoopManager::Suspend(Int_t i)
 {
-   TLoop* l = GetLoop(i);
+   TLoop* l =  (TLoop*) fLoops->At(i);
    if (l) {
       TLoopControl *task = new TLoopControl;
       task->Suspend();
@@ -75,7 +75,11 @@ Int_t art::TLoopManager::Suspend(Int_t i)
 }
 Int_t art::TLoopManager::Terminate(Int_t i)
 {
-   TObject * obj = fLoops->At(i);
+   TLoop * obj = (TLoop*) fLoops->At(i);
+   Suspend(i);
+   while (obj->GetCondition()->IsSet(TLoop::kRunning)) {
+      gSystem->Sleep(100);
+   }
    fLoops->Remove(obj);
    delete obj;
    return kTRUE;

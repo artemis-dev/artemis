@@ -2,7 +2,7 @@
 /**
  * @file   TArtRint.cc
  * @date   Created : Feb 06, 2012 00:06:18 JST
- *   Last Modified : Mar 03, 2014 14:04:32 JST
+ *   Last Modified : Mar 10, 2014 16:06:24 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -12,7 +12,7 @@
 #include <TFolder.h>
 #include <TROOT.h>
 #include <TInterpreter.h>
-
+#include "TLoopManager.h"
 #include "TCatCmdFactory.h"
 #include "TCatCmdMacro.h"
 #include "TArtAtomicMassTable.h"
@@ -63,4 +63,14 @@ Long_t TArtRint::ProcessLine(const char* line, Bool_t sync, Int_t* error)
       return TRint::ProcessLine(line,sync,error);
    }
    return 0;
+}
+
+void   TArtRint::Terminate(Int_t status)
+{
+   art::TLoopManager *lm = art::TLoopManager::Instance();
+   Int_t n = lm->GetEntries();
+   for (Int_t i=0; i!=n; i++) {
+      lm->Terminate(i);
+   }
+   TRint::Terminate(status);
 }
