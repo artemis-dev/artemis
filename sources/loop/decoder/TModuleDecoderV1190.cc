@@ -1,7 +1,7 @@
 /*
  * @file TModuleDecoderV1190.cc
  * @date  Created : 2008/11/26 21:34:03 JST<BR>
- *  Last Modified : Jul 23, 2013 09:33:23 JST
+ *  Last Modified : Mar 17, 2014 13:05:56 JST
  *--------------------------------------------------------
  *    Comment : 
  *              copied from anapaw source and renamed
@@ -44,46 +44,47 @@ Int_t TModuleDecoderV1190::Decode(char* buf, const int &size, TObjArray *seg)
    
    for (Int_t i=0; i<evtsize; ++i) {
       ih = evtdata[i]&kHeaderMask;
-      switch (ih) {
-      case kGlobalHeader:
-         ghf = 1;
-         igeo = (evtdata[i]&kMaskGeometry)>>kShiftGeometry;
-         break;
-      case kTDCHeader:
-         if (ghf!=1) return 0;
-         bncid = (evtdata[i]&kMaskBunchID)>>kShiftBunchID;
-         evtid = (evtdata[i]&kMaskEventCounter)>>kShiftEventCounter;
-         break;
-      case kTDCMeasurement:
-         ich = (evtdata[i]&kMaskChannel) >> kShiftChannel;
-         edge = (evtdata[i]&kMaskEdgeType) >> kShiftEdgeType;
-         idx = igeo * 128 + ich;
-         measure = (evtdata[i]&kMaskMeasure) >> kShiftMeasure;
-
-         // check if the data object exists.
-         if (fHitData->GetEntriesFast() <= idx || !fHitData->At(idx)) {
-            // if no data object is available, create one
-            V1190Raw_t *obj = static_cast<V1190Raw_t*>(this->New());
-            obj->SetSegInfo(seg->GetUniqueID(),igeo,ich);
-            fHitData->AddAtAndExpand(obj,idx);
-            seg->Add(obj);
-         }
-
-         data = static_cast<V1190Raw_t*>(fHitData->At(idx));
-
-	 data->Set(measure);
-	 data->SetEdge(!edge); // definition of edge is opposite to that in TRawTimingWithEdge
-	 fHitData->AddAt(NULL,idx);
-
-         break;
-      case kTDCTrailer:
-         break;
-      case kTDCError:
-         printf("V1190 [TDC Error    ] : 0x%08x\n", evtdata[i]);
-         break;
-      case kGlobalTrailer:
+      if ((evtdata[i]&kHeaderMask) == kGlobalTrailer) {
          ghf = 0;
-         break;
+      } else  {
+         switch (ih) {
+         case kGlobalHeader:
+            ghf = 1;
+            igeo = (evtdata[i]&kMaskGeometry)>>kShiftGeometry;
+            break;
+         case kTDCHeader:
+            if (ghf!=1) return 0;
+            bncid = (evtdata[i]&kMaskBunchID)>>kShiftBunchID;
+            evtid = (evtdata[i]&kMaskEventCounter)>>kShiftEventCounter;
+            break;
+         case kTDCMeasurement:
+            ich = (evtdata[i]&kMaskChannel) >> kShiftChannel;
+            edge = (evtdata[i]&kMaskEdgeType) >> kShiftEdgeType;
+            idx = igeo * 128 + ich;
+            measure = (evtdata[i]&kMaskMeasure) >> kShiftMeasure;
+            
+            // check if the data object exists.
+            if (fHitData->GetEntriesFast() <= idx || !fHitData->At(idx)) {
+               // if no data object is available, create one
+               V1190Raw_t *obj = static_cast<V1190Raw_t*>(this->New());
+               obj->SetSegInfo(seg->GetUniqueID(),igeo,ich);
+               fHitData->AddAtAndExpand(obj,idx);
+               seg->Add(obj);
+            }
+            
+            data = static_cast<V1190Raw_t*>(fHitData->At(idx));
+            
+            data->Set(measure);
+            data->SetEdge(!edge); // definition of edge is opposite to that in TRawTimingWithEdge
+            fHitData->AddAt(NULL,idx);
+            
+            break;
+         case kTDCTrailer:
+            break;
+         case kTDCError:
+            printf("V1190 [TDC Error    ] : 0x%08x\n", evtdata[i]);
+            break;
+         }
       }
    }
 
