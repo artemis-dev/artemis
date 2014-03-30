@@ -2,7 +2,7 @@
 /**
  * @file   TArtRint.cc
  * @date   Created : Feb 06, 2012 00:06:18 JST
- *   Last Modified : Mar 10, 2014 16:06:24 JST
+ *   Last Modified : Mar 15, 2014 16:57:59 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -22,7 +22,7 @@
 const char* kARTEMISLOGON_C = "artemislogon.C";
 
 TArtRint::TArtRint(int* argc, char** argv, void* options, int numOptions, Bool_t noLogo)
-   : TRint(fAppName, argc, argv, options, numOptions, noLogo)
+   : TRint(gAppName, argc, argv, options, numOptions, noLogo)
 {
    TRint::ProcessLine(".x artemislogon.C");
 //   TCatCmdFactory::Instance()->Register(TCatCmdMacro::Instance());

@@ -2,7 +2,7 @@
 /**
  * @file   TArtRint.h
  * @date   Created : Feb 06, 2012 00:06:28 JST
- *   Last Modified : Mar 10, 2014 13:03:56 JST
+ *   Last Modified : Mar 15, 2014 16:53:23 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -13,7 +13,7 @@
 
 #include <TRint.h>
 
-static const char* fAppName = "artemis";
+const char* gAppName = "artemis";
 class TArtRint  : public TRint {
 
 public:
