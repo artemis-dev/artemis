@@ -1,11 +1,11 @@
 /*
  * @file TModuleDecoderV1190.cc
  * @date  Created : 2008/11/26 21:34:03 JST<BR>
- *  Last Modified : Mar 17, 2014 13:05:56 JST
+ *  Last Modified : 2014-03-17 13:31:50 JST (kawase)
  *--------------------------------------------------------
- *    Comment : 
+ *    Comment :
  *              copied from anapaw source and renamed
- *    
+ *
  *--------------------------------------------------------
  *    Copyright (C)2008-2013 by Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  */
@@ -21,8 +21,14 @@ typedef TRawTimingWithEdge V1190Raw_t;
 
 TModuleDecoderV1190::TModuleDecoderV1190()
    : TModuleDecoder(kID,V1190Raw_t::Class()) {
-   fHitData = new TObjArray; 
+   fHitData = new TObjArray;
 }
+
+TModuleDecoderV1190::TModuleDecoderV1190(Int_t id)
+   : TModuleDecoder(id,V1190Raw_t::Class()) {
+   fHitData = new TObjArray;
+}
+
 TModuleDecoderV1190::~TModuleDecoderV1190()
 {
    if (fHitData) delete fHitData;
@@ -41,7 +47,7 @@ Int_t TModuleDecoderV1190::Decode(char* buf, const int &size, TObjArray *seg)
 
    // clear old hits
    fHitData->Clear();
-   
+
    for (Int_t i=0; i<evtsize; ++i) {
       ih = evtdata[i]&kHeaderMask;
       if ((evtdata[i]&kHeaderMask) == kGlobalTrailer) {
