@@ -2,7 +2,7 @@
 /**
  * @file   TProcessor.cc
  * @date   Created : Jul 10, 2013 17:10:19 JST
- *   Last Modified : Feb 27, 2014 13:57:33 JST
+ *   Last Modified : 2014-04-12 17:05:14 JST (kawase)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -79,24 +79,25 @@ void art::TProcessor::PrintDescriptionYAML()
              << YAML::Key << "type" << YAML::Value 
              << TString::Format("%s",GetTitle())
              << YAML::Key << "parameter" << YAML::Value;
-
-         out << YAML::BeginSeq;
+         out << YAML::BeginMap;
          ProcPrmMap_t::iterator it;
          for (it = fParamMap.begin(); it != fParamMap.end(); it++) {
-            TParameter *prm = it->second;
-            out << YAML::BeginMap;
-            out << YAML::Key << "name" << YAML::Value << prm->GetName();
-            out << YAML::Comment(prm->GetTitle().Data());
-            out << YAML::Key << "type" << YAML::Value << prm->Type()
-                << YAML::Key << "size" << YAML::Value << prm->Size()
-                << YAML::Key << "value" << YAML::Value 
-                << YAML::BeginSeq
-                << prm->DefaultValue()
-                << YAML::EndSeq;
-            out << YAML::EndMap;
+	    art::TParameter *prm = it->second;
+	    const TString &comment = TString::Format("[%s] %s",prm->Type().Data(),prm->GetTitle().Data());
+	    out << YAML::Key << prm->GetName();
+	    if (prm->IsVector()) {
+	       out << YAML::Comment(comment.Data())
+		   << YAML::Value
+		   << YAML::BeginSeq
+		   << prm->DefaultValue()
+		   << YAML::EndSeq;
+	    } else {
+	    out << YAML::Value
+		<< prm->DefaultValue()
+		<< YAML::Comment(comment.Data());
+	    }
          }
-         out << YAML::EndSeq;
-
+         out << YAML::EndMap;
       }
       out   << YAML::EndMap;
    }
