@@ -2,7 +2,7 @@
 /**
  * @file   TParameter.h
  * @date   Created : May 18, 2012 14:18:34 JST
- *   Last Modified : 2014-04-12 17:00:33 JST (kawase)
+ *   Last Modified : 2014-04-12 17:42:51 JST (kawase)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *
@@ -42,6 +42,7 @@ public:
    virtual TString DefaultValue() const = 0;
    virtual TString Value() const = 0;
 
+   virtual Bool_t IsStringVector() const = 0;
    virtual Bool_t IsVector() const = 0;
 
    virtual Bool_t IsOptional() const { return fIsOptional; }
@@ -89,6 +90,11 @@ namespace art {
          if (typeid(T) == typeid(std::vector<Bool_t>)) return "vector<Bool_t>";
          if (typeid(T) == typeid(StringVec_t)) return "StringVec_t";
          return "unsupported";
+      }
+
+      virtual Bool_t IsStringVector() const {
+	 if (typeid(T) == typeid(StringVec_t)) return kTRUE;
+	 return kFALSE;
       }
 
       virtual Bool_t IsVector() const {

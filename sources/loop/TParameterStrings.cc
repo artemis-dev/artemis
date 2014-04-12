@@ -2,7 +2,7 @@
 /**
  * @file   TParameterStrings.cc
  * @date   Created : May 18, 2012 14:18:07 JST
- *   Last Modified : 2014-04-12 16:19:08 JST (kawase)
+ *   Last Modified : 2014-04-12 18:01:04 JST (kawase)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *
@@ -117,7 +117,6 @@ void operator >> (const YAML::Node &node, art::TParameterStrings *&str) {
    for (YAML::Iterator it = node.begin(); it != node.end(); ++it) {
       std::vector <TString> prm;
       it.first() >> name;
-      printf("%s %d\n",name.c_str(),it.second().Type());
       if (it.second().Type() == YAML::NodeType::Scalar) {
 	 it.second() >> value;
 	 prm.push_back(value);
@@ -125,13 +124,11 @@ void operator >> (const YAML::Node &node, art::TParameterStrings *&str) {
 	 for (YAML::Iterator itv = it.second().begin(); itv != it.second().end(); ++itv) {
 	    if (itv->Type() == YAML::NodeType::Scalar) {
 	       *itv >> value;
-	       printf("%s\n",value.c_str());
 	       prm.push_back(value);
 	    } else if (itv->Type() == YAML::NodeType::Sequence) {
                for (YAML::Iterator itv2 = itv->begin(); itv2 != itv->end(); ++itv2) {
                   if (itv2->Type() == YAML::NodeType::Scalar) {
                      *itv2 >> value;
-		     printf("%s\n",value.c_str());
 		     prm.push_back(value);
                   } else {
                      // NOT SUPPORTED

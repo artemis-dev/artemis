@@ -2,7 +2,7 @@
 /**
  * @file   TProcessor.cc
  * @date   Created : Jul 10, 2013 17:10:19 JST
- *   Last Modified : 2014-04-12 17:05:14 JST (kawase)
+ *   Last Modified : 2014-04-12 17:58:38 JST (kawase)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -82,17 +82,28 @@ void art::TProcessor::PrintDescriptionYAML()
          out << YAML::BeginMap;
          ProcPrmMap_t::iterator it;
          for (it = fParamMap.begin(); it != fParamMap.end(); it++) {
-	    art::TParameter *prm = it->second;
+	    TParameter *prm = it->second;
 	    const TString &comment = TString::Format("[%s] %s",prm->Type().Data(),prm->GetTitle().Data());
 	    out << YAML::Key << prm->GetName();
-	    if (prm->IsVector()) {
+	    if (prm->IsStringVector()) {
 	       out << YAML::Comment(comment.Data())
 		   << YAML::Value
 		   << YAML::BeginSeq
 		   << prm->DefaultValue()
 		   << YAML::EndSeq;
+	    } else if (prm->IsVector()) {
+	       const TString &value = prm->DefaultValue();
+	       TObjArray *values = value.Tokenize(", ");
+	       const Int_t n = values->GetEntriesFast();
+	       out << YAML::Value
+		   << YAML::Flow
+		   << YAML::BeginSeq;
+	       for(int i = 0; i != n ; ++i)
+		  out << ((TObjString*)values->At(i))->GetString().Data();
+	       out << YAML::EndSeq;
+	       out << YAML::Comment(comment.Data());
 	    } else {
-	    out << YAML::Value
+	       out << YAML::Value
 		<< prm->DefaultValue()
 		<< YAML::Comment(comment.Data());
 	    }
