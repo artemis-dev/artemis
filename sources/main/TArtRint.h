@@ -2,7 +2,7 @@
 /**
  * @file   TArtRint.h
  * @date   Created : Feb 06, 2012 00:06:28 JST
- *   Last Modified : Feb 06, 2012 00:38:31 JST
+ *   Last Modified : Mar 15, 2014 16:53:23 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -13,7 +13,7 @@
 
 #include <TRint.h>
 
-static const char* fAppName = "anaroot";
+const char* gAppName = "artemis";
 class TArtRint  : public TRint {
 
 public:
@@ -24,6 +24,6 @@ private:
    TArtRint(const TArtRint&);
 
    virtual Long_t ProcessLine(const char* line, Bool_t sync = kFALSE, Int_t* error = 0);
-
+   virtual void   Terminate(Int_t status);
 };
 #endif // end of #ifdef TARTRINT_H

@@ -2,7 +2,7 @@
 /**
  * @file   TCatPadManager.cc
  * @date   Created : Feb 06, 2012 19:06:29 JST
- *   Last Modified : Feb 07, 2012 18:52:48 JST
+ *   Last Modified : Mar 03, 2014 14:09:38 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -28,7 +28,7 @@ TCatPadManager* TCatPadManager::Instance()
 
 void TCatPadManager::CreateCanvas()
 {
-   fCurrent = new TCanvas("artcanvas","anaroot canvas",800,800);
+   fCurrent = new TCanvas("artcanvas","canvas",800,800);
    fCurrent->Connect("Closed()","TCatPadManager",this,"Closed()");
    fCurrentPadId = 0;
    fNumSubPads = 0;

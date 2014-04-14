@@ -2,7 +2,7 @@
 /**
  * @file   TCatCmdHstore.cc
  * @date   Created : Jul 13, 2012 10:13:10 JST
- *   Last Modified : Aug 05, 2013 19:17:43 JST
+ *   Last Modified : Feb 20, 2014 07:29:31 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -46,6 +46,7 @@ Long_t TCatCmdHstore::Run(const char* filename, const Option_t *opt)
       printf(" File %s does not exist or is not writable\n",filename);
       printf(" Please check your option : %s\n",opt);
    }
+   file->Close();
    wkdir->cd();     
    return 1;
 }

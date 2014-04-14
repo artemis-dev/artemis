@@ -52,6 +52,8 @@ private:
    // Assignment operator (prohibited)
    TModuleDecoderV767& operator=(const TModuleDecoderV767& rhs);
 
+
+   ClassDef(TModuleDecoderV767,0);
 };
 
 #endif // TMODULEDECODERV767_H

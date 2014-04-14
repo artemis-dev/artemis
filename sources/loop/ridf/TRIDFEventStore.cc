@@ -2,44 +2,51 @@
 /**
  * @file   TRIDFEventStore.cc
  * @date   Created : Jul 12, 2013 17:12:35 JST
- *   Last Modified : Oct 29, 2013 17:00:03 JST
+ *   Last Modified : Nov 30, 2013 01:00:18 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
  *    Copyright (C)2013
  */
 #include "TRIDFEventStore.h"
-#include <TConfigFile.h>
-#include <TMapTable.h>
-#include <TCategorizedData.h>
 #include <TSegmentedData.h>
 #include <TDataSource.h>
 #include <TFileDataSource.h>
+#include <TSharedMemoryDataSource.h>
 #include <TRawDataObject.h>
 #include <TLoop.h>
 #include <TModuleDecoderFactory.h>
 #include <TModuleDecoder.h>
+#include <TRunInfo.h>
+#include <TTimeStamp.h>
+#include <TEventHeader.h>
+#include <TSystem.h>
 
-//ClassImp(art::TRIDFEventStore);
+#include <map>
 
 art::TRIDFEventStore::TRIDFEventStore()
-   : fMaxEventNum(0),fEventNum(0),fMaxBufSize(kMaxBufSize)
+   : fMaxEventNum(0),fEventNum(0),fEventNumTotal(0), fMaxBufSize(kMaxBufSize),
+     fSHMID(0), fBlockNumber(0)
 {
    StringVec_t dummy;
    RegisterInputCollection("InputFiles","The names of input files",fFileName,dummy);
    RegisterOutputCollection("SegmentedData","The name of output array for segmented data",
                             fNameSegmented,TString("segdata"));
-   RegisterOutputCollection("CategorizedData","The name of output array for categorized data",
-                            fNameCategorized,TString("catdata"));
-   RegisterOptionalParameter("MapConfig","File for map configuration. Not mapped if the name is blank.",
-                             fMapConfigName,TString("mapper.conf"));
+   RegisterOutputCollection("RunHeadersName","the name of output array for run headers, run header will be stored once",
+                            fNameRunHeaders,TString("runheader"));
+   RegisterOutputCollection("EventHeaderName","the name of event header",
+                            fNameEventHeader,TString("eventheader"));
+   RegisterProcessorParameter("SHMID","Shared memory id (default : 0)",fSHMID,0);
+   
 
    fRIDFData.fSegmentedData = new TSegmentedData;
-   fRIDFData.fCategorizedData = new TCategorizedData;
-   fRIDFData.fMapTable = NULL;
+   fRIDFData.fRunHeaders = new TList;
+   fRIDFData.fEventHeader = new TEventHeader;
+   fRIDFData.fVerboseLevel = &fVerboseLevel;
    fIsOnline = kFALSE;
    fIsEOB = kTRUE;
    fBuffer = new Char_t[fMaxBufSize];
+   fSearchPath = ".";
 
 
    // initialize 
@@ -70,9 +77,10 @@ art::TRIDFEventStore::TRIDFEventStore()
 art::TRIDFEventStore::~TRIDFEventStore()
 {
    if (fRIDFData.fSegmentedData) delete fRIDFData.fSegmentedData;
-   if (fRIDFData.fCategorizedData) delete fRIDFData.fCategorizedData; 
-   if (fRIDFData.fMapTable) delete fRIDFData.fMapTable;
+   if (fRIDFData.fRunHeaders) delete fRIDFData.fRunHeaders;
+   if (fRIDFData.fEventHeader) delete fRIDFData.fEventHeader;
    if (fBuffer) delete [] fBuffer;
+   if (fDataSource) delete fDataSource;
 }
 
 
@@ -88,42 +96,10 @@ void art::TRIDFEventStore::Init(TEventCollection *col)
    }
 
    col->Add(fNameSegmented,fRIDFData.fSegmentedData,fOutputIsTransparent);
-   col->Add(fNameCategorized,fRIDFData.fCategorizedData,fOutputIsTransparent);
-   fCondition = (TConditionBit**)(col->Get(TLoop::kConditionName)->GetObjectRef());
+   col->Add(fNameEventHeader,fRIDFData.fEventHeader,kFALSE);
+   col->AddInfo(fNameRunHeaders,fRIDFData.fRunHeaders,kFALSE);
+   fRIDFData.fRunHeaders->SetName(fNameRunHeaders);
 
-   //--------------------------------------------------
-   // Create map table 
-   //--------------------------------------------------
-   if (!fMapConfigName.IsNull()) {
-      if (!fRIDFData.fMapTable) fRIDFData.fMapTable = new TMapTable;
-      TConfigFile file(fMapConfigName);
-      const Int_t nids = 5;
-      while (1) {
-         const TString& mapfilename = file.GetNextToken();
-         const Int_t&   ndata       = file.GetNextToken().Atoi();
-         if (!mapfilename.Length() || !ndata) {
-            // no more map file is available 
-            break;
-         }
-         TConfigFile mapfile(mapfilename,"#",", \t","#");
-         while (1) {
-            const TString& cidstr = mapfile.GetNextToken();
-            const TString& didstr = mapfile.GetNextToken();
-            if (!cidstr.Length() || !didstr.Length()) break;
-            const Int_t& cid = cidstr.Atoi();
-            const Int_t& did = didstr.Atoi();
-            Int_t ids[nids];
-            for (Int_t i = 0; i!=ndata; i++) {
-               for (Int_t j=0; j!=nids; j++) {
-                  ids[j] = mapfile.GetNextToken().Atoi();
-               }
-               Int_t segid = (((ids[0]&0x3f)<<20) | ((ids[1]&0x3f)<<14) |((ids[2]&0x3f)<<8));
-               fRIDFData.fMapTable->SetMap(segid,ids[3],ids[4],cid,did,i);
-            }
-         }
-      }
-      printf("mapfile %s is loaded\n",fMapConfigName.Data());
-   }
 }
 
 
@@ -131,95 +107,23 @@ void art::TRIDFEventStore::Process()
 {
    // try to prepare data source
    fRIDFData.fSegmentedData->Clear("C");
-   fRIDFData.fCategorizedData->Clear("C");
-   
-   if (!fDataSource) {
-      if (fIsOnline) {
-//         fDataSource = new TShmDataSourceRIDF(fSHMID);
-      } else if (fFileName.size()){
-         TString filename = fFileName.front();
-         FILE *fp = fopen(filename,"r");
-         if (fp) {
-            fclose(fp);
-            fFileName.erase(fFileName.begin());
-            fDataSource = new TFileDataSource(filename);
-         }
-      }
-   }
-
-   if (!fDataSource) {
-      // no file is available
-      // all the input files are analyzed or cannot open file
-      SetStopEvent();
-      SetStopLoop();
-      SetEndOfRun();
-      return;
-   }
-
-   // check data is available or not for shared memory data source
-   if (!fDataSource->IsPrepared()) {
-      // no data is available now
-      SetStopEvent();
-      return;
-   }
-
-   // read data block if the data is availab
-   if (fIsEOB) {
-      // check if header is available
-      if (fDataSource->Read((char*)&fHeader,sizeof(fHeader))) {
-         // check the header validity
-         if (fHeader.Layer() != 0 ||
-             (fHeader.ClassID() != 0 &&
-              fHeader.ClassID() != 1 &&
-              fHeader.ClassID() != 2 )
-            ) {
+   // try to get next event
+   while (!GetNextEvent()) {
+      // try to get next block if no event is available
+      while (!GetNextBlock()) {
+         // check stop condition
+         if ((*fCondition)->IsSet(TLoop::kStopLoop)) {
+            SetStopEvent();
             return;
          }
-         // check if block is availalbe
-         fBlockSize   = fHeader.Size() - sizeof(fHeader);
-         if (fDataSource->Read(fBuffer,fBlockSize)) {
-            // block was read
-            fIsEOB = kFALSE;
-            fOffset = 0;
-            // total block size includes the size of header
-         } else {
-            fOffset = fBlockSize = 0;
-            fHeader = 0LL;
+         // try to open data source if no block is available 
+         if (!Open()) {
+            // loop is end if no data source is available
+            SetStopEvent();
+            SetStopLoop();
+            SetEndOfRun();
+            return;
          }
-      }
-   }
-
-   // check if no data is available 
-   if (fIsEOB) {
-      // no data is available
-      SetStopEvent();
-      delete fDataSource;
-      fDataSource = NULL;
-      return;
-   }
-
-   // parse data if available
-   while (1) {
-      TModuleDecoderFactory::Instance()->Clear();
-      memcpy(&fHeader,fBuffer+fOffset,sizeof(fHeader));
-      if (fClassDecoder[fHeader.ClassID()]) {
-         fClassDecoder[fHeader.ClassID()](fBuffer,fOffset,&fRIDFData);
-      } else {
-         printf("Class ID = %d\n",fHeader.ClassID());
-         ClassDecoderUnknown(fBuffer,fOffset,&fRIDFData);
-      }
-      if (fOffset >= fBlockSize)  {
-         fIsEOB = kTRUE;
-      }
-      // TClassDecoder::Decode(fBuffer,fOffset,fNext,something?)
-      // if the data is available or not
-      if (fRIDFData.fSegmentedData->GetEntriesFast()) {
-         // the data is available
-         break;
-      } else  if (fIsEOB) {
-         // no data is available
-         SetStopEvent();
-         break;
       }
    }
 }
@@ -258,6 +162,8 @@ void art::TRIDFEventStore::ClassDecoder03(Char_t *buf, Int_t& offset, struct RID
    Int_t last = offset + header.Size();
    offset += sizeof(header);
    offset += sizeof(int);
+   ridfdata->fEventHeader->IncrementEventNumber();
+   ((TRunInfo*)ridfdata->fRunHeaders->Last())->IncrementEventNumber();
    while (offset < last) {
       memcpy(&header,buf+offset,sizeof(header));
       if (header.ClassID() == 4) {
@@ -296,16 +202,6 @@ void art::TRIDFEventStore::ClassDecoder04(Char_t *buf, Int_t& offset, struct RID
    TModuleDecoder *decoder = TModuleDecoderFactory::Instance()->Get(segid.Module());
    if (decoder) {
       decoder->Decode(&buf[index],size,seg);
-      const Int_t &nData = seg->GetEntriesFast();
-      for (Int_t i=0; i!=nData; i++) {
-         TRawDataObject *obj = (TRawDataObject*) seg->At(i);
-         if (obj->GetCatID() != TRawDataObject::kInvalid) {
-            // already mapped
-            continue;
-         }
-         ridfdata->fMapTable->Map(obj);
-         ridfdata->fCategorizedData->Add(obj);
-      }
    } else {
       printf("No such decoder for Module %d\n",segid.Module());
    }
@@ -320,12 +216,53 @@ void art::TRIDFEventStore::ClassDecoder05(Char_t *buf, Int_t& offset, struct RID
    Int_t local = offset;
    memcpy(&header,buf+offset,sizeof(header));
    offset += header.Size();
-   RIDFCommentRunInfo info;
    local += sizeof(RIDFHeader) + sizeof(int);
+   std::map<TString,Int_t> month;
+   month.insert(std::map<TString,Int_t>::value_type(TString("Jan"),1));
+   month.insert(std::map<TString,Int_t>::value_type(TString("Feb"),2));
+   month.insert(std::map<TString,Int_t>::value_type(TString("Mar"),3));
+   month.insert(std::map<TString,Int_t>::value_type(TString("Apr"),4));
+   month.insert(std::map<TString,Int_t>::value_type(TString("May"),5));
+   month.insert(std::map<TString,Int_t>::value_type(TString("Jun"),6));
+   month.insert(std::map<TString,Int_t>::value_type(TString("Jul"),7));
+   month.insert(std::map<TString,Int_t>::value_type(TString("Aug"),8));
+   month.insert(std::map<TString,Int_t>::value_type(TString("Sep"),9));
+   month.insert(std::map<TString,Int_t>::value_type(TString("Oct"),10));
+   month.insert(std::map<TString,Int_t>::value_type(TString("Nov"),11));
+   month.insert(std::map<TString,Int_t>::value_type(TString("Dec"),12));
    if ((*(int*)(buf+local)) == 1) {
+      RIDFCommentRunInfo info;
       local+=sizeof(int);
-      memcpy(&info,buf+local,sizeof(info));
-      info.Print();
+      memcpy(&info,buf+local,sizeof(RIDFCommentRunInfo));
+      if (*(ridfdata->fVerboseLevel) > 0) {
+         info.Print();
+      }
+      TString runName = info.fRunName;
+      TString runNumber = info.fRunNumber;
+      TString startTime = info.fStartTime;
+      TString stopTime = info.fStopTime;
+      TString date = info.fDate;
+      TString fHeader = info.fHeader;
+      TString fEnder = info.fEnder;
+      TRunInfo *runinfo = new TRunInfo(runName+runNumber,runName+runNumber);
+      TTimeStamp start(2000+TString(date(7,2)).Atoi(),month[TString(date(3,3))],TString(date(0,2)).Atoi(),
+                       TString(startTime(9,2)).Atoi(),TString(startTime(12,2)).Atoi(),TString(startTime(15,2)).Atoi(),
+                       0,kFALSE);
+      TTimeStamp stop(2000+TString(date(7,2)).Atoi(),month[TString(date(3,3))],TString(date(0,2)).Atoi(),
+                      TString(stopTime(8,2)).Atoi(),TString(stopTime(11,2)).Atoi(),TString(stopTime(14,2)).Atoi(),
+                      0,kFALSE);
+      if (start.GetSec() > stop.GetSec()) {
+         stop.SetSec(stop.GetSec()+86400);
+      }
+      runinfo->SetRunName(runName.Data());
+      runinfo->SetRunNumber(runNumber.Atoll());
+      runinfo->SetStartTime(start.GetSec());
+      runinfo->SetStopTime(stop.GetSec());
+      runinfo->SetHeader(fHeader);
+      runinfo->SetEnder(fEnder);
+      ridfdata->fRunHeaders->Add(runinfo);
+      ridfdata->fEventHeader->SetRunName(runName.Data());
+      ridfdata->fEventHeader->SetRunNumber(runNumber.Atoll());
    }
 }
 
@@ -337,8 +274,11 @@ void art::TRIDFEventStore::ClassDecoder06(Char_t *buf, Int_t& offset, struct RID
    RIDFHeader header;
    memcpy(&header,buf+offset,sizeof(header));
    Int_t last = offset + header.Size();
+   ridfdata->fEventHeader->IncrementEventNumber();
+   ((TRunInfo*)ridfdata->fRunHeaders->Last())->IncrementEventNumber();
    offset += sizeof(header);
    offset += sizeof(int);
+   ridfdata->fEventHeader->SetTimestamp(*(Long64_t*)(buf+offset));
    // ignore timestamp for now
    offset += sizeof(ULong64_t);
    while (offset < last) {
@@ -348,6 +288,159 @@ void art::TRIDFEventStore::ClassDecoder06(Char_t *buf, Int_t& offset, struct RID
       } else {
          printf("offset = %d, last = %d\n",offset,last);
          ClassDecoderUnknown(buf,offset,ridfdata);
+      }
+   }
+}
+
+//----------------------------------------
+// Open
+Bool_t art::TRIDFEventStore::Open()
+{
+   if (fDataSource) {
+      if (fIsOnline) {
+         return kTRUE;
+      }
+      Error("Open","Data source is already prepared");
+      return kFALSE;
+   }
+
+   if (fIsOnline) {
+      Info("Open","Online mode");
+      Int_t shmid = kSHMID_BASE + 2 * fSHMID;
+      Int_t semkey = kSEMKEY_BASE + 2 * fSHMID;
+      Int_t size = kSHM_BUFF_SIZE + 4;
+      fDataSource = new TSharedMemoryDataSource(shmid,semkey,size);
+      
+      if (!fDataSource->IsPrepared()) {
+         Error("Open","Catnnot prepare shared memory data source with shmid = %d",fSHMID);
+         return kFALSE;
+      }
+      TRunInfo *runinfo = new TRunInfo("Online","Online");
+      runinfo->SetRunName("Online");
+      runinfo->SetRunNumber(0);
+      runinfo->SetStartTime(0);
+      runinfo->SetStopTime(0);
+      runinfo->SetHeader("");
+      runinfo->SetEnder("");
+      fRIDFData.fRunHeaders->Add(runinfo);
+      fRIDFData.fEventHeader->SetRunName("Online");
+      fRIDFData.fEventHeader->SetRunNumber(0);
+      return kTRUE;
+   } else {
+      TString filename;
+      while (fFileName.size()) {
+         filename = fFileName.front();
+         fSourceName = fFileName.front();
+         fFileName.erase(fFileName.begin());
+         if (gSystem->FindFile(fSearchPath,fSourceName)) {
+            break;
+         }
+         Error("Open","no such file '%s' in search path '%s'",filename.Data(),fSearchPath.Data());
+      }
+      if (filename == "") {
+         // no file is available
+         return kFALSE;
+      }
+      fDataSource = new TFileDataSource(filename);
+      return kTRUE;
+   }
+
+   // unexpected to reach here
+   Error("Open","Unexpected error at %d",__LINE__);
+   return kFALSE;
+}
+
+//----------------------------------------
+// GetNextBlock to get next block
+Bool_t art::TRIDFEventStore::GetNextBlock()
+{
+   if (!fIsEOB) {
+      Error("GetNextBlock","Unexpectedly called. Event block contains more data.");
+      return kFALSE;
+   }
+   if (!fDataSource) {
+      // data source is not ready
+      return kFALSE;
+   }
+   if (fIsOnline) {
+      Int_t nBlock = 0;
+      fDataSource->Lock();
+      fDataSource->Seek(kSHM_BUFF_SIZE,SEEK_SET);
+      fDataSource->Read((char*)&nBlock,sizeof(Int_t));
+      fDataSource->Seek(0,SEEK_SET);
+      fDataSource->Unlock();
+      if (fBlockNumber == nBlock) {
+         gSystem->Sleep(1);
+         return kFALSE;
+      } else {
+         fBlockNumber = nBlock;
+      }
+   }
+   fDataSource->Lock();
+   if (!fDataSource->Read((char*)&fHeader,sizeof(fHeader))) {
+      // no more data is ready in this data source
+      fDataSource->Unlock();
+      delete fDataSource;
+      fDataSource = NULL;
+      return kFALSE;
+   }
+   // check the header validity
+   if (fHeader.Layer() != 0 ||
+       (fHeader.ClassID() != 0 &&
+        fHeader.ClassID() != 1 &&
+        fHeader.ClassID() != 2 )
+      ) {
+      // invalid event block
+      Error("Process","Invalid event block with class id = %d",fHeader.ClassID());
+      fDataSource->Unlock();
+      // erase invalid data source
+      delete fDataSource;
+      return kFALSE;
+   }
+   // check if block is availalbe
+   fBlockSize   = fHeader.Size() - sizeof(fHeader);
+   if (fDataSource->Read(fBuffer,fBlockSize)) {
+      // block was read
+      fIsEOB = kFALSE;
+      fOffset = 0;
+      // total block size includes the size of header
+      fDataSource->Unlock();
+      return kTRUE;
+   } else {
+      // unexpectedly block was not available
+      fDataSource->Unlock();
+      Error("Process","Empty block");
+      fOffset = fBlockSize = 0;
+      fHeader = 0LL;
+      return kFALSE;
+   }
+}
+
+
+Bool_t art::TRIDFEventStore::GetNextEvent()
+{
+   if (fIsEOB) return kFALSE;
+   // parse data if available
+   while (1) {
+      TModuleDecoderFactory::Instance()->Clear();
+      memcpy(&fHeader,fBuffer+fOffset,sizeof(fHeader));
+      if (fClassDecoder[fHeader.ClassID()]) {
+         fClassDecoder[fHeader.ClassID()](fBuffer,fOffset,&fRIDFData);
+      } else {
+         printf("Class ID = %d\n",fHeader.ClassID());
+         ClassDecoderUnknown(fBuffer,fOffset,&fRIDFData);
+      }
+      if (fOffset >= fBlockSize)  {
+         fIsEOB = kTRUE;
+      }
+      // TClassDecoder::Decode(fBuffer,fOffset,fNext,something?)
+      // if the data is available or not
+      if (fRIDFData.fSegmentedData->GetEntriesFast()) {
+         // the data is available
+         return kTRUE;
+      } else  if (fIsEOB) {
+         // no data is available
+         return kFALSE;
       }
    }
 }

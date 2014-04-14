@@ -2,7 +2,7 @@
 /**
  * @file   TRIDFEventStore.h
  * @date   Created : Jul 12, 2013 17:12:43 JST
- *   Last Modified : Oct 29, 2013 16:33:24 JST
+ *   Last Modified : Nov 30, 2013 00:13:05 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -20,6 +20,7 @@ namespace art {
    class TSegmentedData;
    class TCategorizedData;
    class TDataSource;
+   class TEventHeader;
 }
 
 class art::TRIDFEventStore  : public TProcessor {
@@ -31,15 +32,21 @@ public:
    
    virtual void Init(TEventCollection *col);
    virtual void Process();
+protected:
+   Bool_t Open();
+   Bool_t GetNextBlock();
+   Bool_t GetNextEvent();
 
 protected:
-   TConditionBit   **fCondition; //!
    struct RIDFData {
       TMapTable        *fMapTable; //!
       TSegmentedData   *fSegmentedData;
       TCategorizedData *fCategorizedData;
-   } fRIDFData;
-   TDataSource      *fDataSource;
+      TList   *fRunHeaders;
+      TEventHeader *fEventHeader;
+      Int_t        *fVerboseLevel;
+   } fRIDFData; //!
+   TDataSource      *fDataSource; //!
 
    Bool_t fIsOnline;
    Int_t  fIsEOB;
@@ -48,14 +55,26 @@ protected:
    TString           fNameSegmented;
    TString           fNameCategorized;;
    TString           fMapConfigName;
+   TString           fNameRunHeaders;
+   TString           fNameEventHeader;
+   TString           fSourceName;
+   TString           fSearchPath;
 
    Long_t   fMaxEventNum;
    Long_t   fEventNum; //! local Event number
+   Long_t   fEventNumTotal; //! total event number
 
-   Int_t    fMaxBufSize; // maximum buffer size
-   Char_t  *fBuffer; // local buffer for the data read
-   Int_t    fOffset; // read offset
-   Int_t    fBlockSize;   // size of read block
+   Int_t    fMaxBufSize; //! maximum buffer size
+   Char_t  *fBuffer; //! local buffer for the data read
+   Int_t    fOffset; //! read offset
+   Int_t    fBlockSize;   //! size of read block
+
+   // for online mode
+   static const Int_t kSHM_BUFF_SIZE = 0x80000; // 256 kByte
+   static const Int_t kSHMID_BASE    = 561000;
+   static const Int_t kSEMKEY_BASE   = 561001;
+   Int_t fSHMID;
+   Int_t fBlockNumber;
 
    // use function pointer array to decode classes instead of function object.
    // since the number of classes may not change so much and they are easy to be maintained.
@@ -89,7 +108,7 @@ protected:
       Int_t Address() { return ((fHeader>>32) & 0xffffffff); }
       unsigned long long int& operator=(unsigned long long int val) { return (fHeader = val); }
       void Print() {
-         printf("data    = 0x%8x\n",fHeader);
+         printf("data    = 0x%8Lx\n",fHeader);
          printf("Size    = %d\n",Size());
          printf("ClassID = %d\n",ClassID());
          printf("Layer   = %d\n",Layer());
@@ -136,9 +155,6 @@ protected:
       unsigned int fSegID;
    };
       
-
-
-//   ClassDef(TRIDFEventStore,1);
-   
+   ClassDef(TRIDFEventStore,1); // Event store for ridf format files
 };
 #endif // end of #ifdef TRIDFEVENTSTORE_H

@@ -21,11 +21,14 @@
 // #pragma link C++ class TCatSortable+;
 // #pragma link C++ class TCatHitV1190+;
 // #pragma link C++ class TCatDetectorArray+;
- #pragma link C++ class TCatHistManager+;
+#pragma link C++ class TCatHistManager+;
+#pragma link C++ class TCatPadManager;
 // #pragma link C++ class TCatStreamBuf;
 // #pragma link C++ class TCatOstream;
 
 #pragma link C++ class art::TConfigFile;
+#pragma link C++ class art::TSharedMemory;
+#pragma link C++ class art::TSemaphoreObject;
 
 // #pragma link C++ class TCatParameterI;
 // #pragma link C++ class TCatParameterF;

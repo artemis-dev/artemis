@@ -47,6 +47,8 @@ private:
    TModuleDecoderV7XX(const TModuleDecoderV7XX& rhs);
    // Assignment operator (prohibited)
    TModuleDecoderV7XX& operator=(const TModuleDecoderV7XX& rhs);
+
+   ClassDef(TModuleDecoderV7XX,0);
 };
 
 #endif // TMODULEDECODERV7XX_H

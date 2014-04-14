@@ -2,7 +2,7 @@
 /**
  * @file   TProcessor.h
  * @date   Created : Jul 10, 2013 17:10:49 JST
- *   Last Modified : Aug 26, 2013 11:44:53 JST
+ *   Last Modified : Nov 26, 2013 15:12:17 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -39,7 +39,9 @@ public:
       fCondition = (TConditionBit**)(col->Get(TLoop::kConditionName)->GetObjectRef());
       Init(col);
    }
+protected:
    virtual void Init (TEventCollection *) {;}
+public:
    virtual void BeginOfRun() {;}
    virtual void EndOfRun() {;}
    virtual void Process() {;}
@@ -74,6 +76,7 @@ protected:
    Bool_t fOutputIsTransparent;    // output transparency
    TConditionBit **fCondition; // condition bit to control loop
    TParameterStrings *fParameters; // parameter strings
+   Int_t  fVerboseLevel; // verbose level
    
    // register processor parameter
    template<class T>

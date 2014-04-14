@@ -2,7 +2,7 @@
 /**
  * @file   TSegmentedData.h
  * @date   Created : Jul 16, 2013 22:16:53 JST
- *   Last Modified : Jul 22, 2013 15:00:35 JST
+ *   Last Modified : Nov 25, 2013 12:07:09 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -16,7 +16,7 @@ namespace art {
    class TSegmentedData;
 }
 
-class art::TSegmentedData  : public TClonesArray {
+class art::TSegmentedData  : public TObjArray {
 
 public:
    TSegmentedData();
@@ -24,8 +24,9 @@ public:
 
    
    virtual TObjArray *NewSegment(Int_t id) {
-      TObject *obj = ConstructedAt(GetEntriesFast());
+      TObject *obj = fArray->ConstructedAt(fArray->GetEntriesFast());
       obj->SetUniqueID(id);
+      Add(obj);
       return (TObjArray*) obj;
    }
    virtual TObjArray* FindSegmentByID(Int_t id) {
@@ -36,13 +37,21 @@ public:
       return NULL;
    }
 
-   virtual TObjArray* FindSegment(const Int_t dev, const Int_t fp, const Int_t det) {
+   virtual TObjArray* FindSegment(Int_t dev, Int_t fp, Int_t det) {
       Int_t id;
       id = (dev << 20) + (fp << 14) + (det << 8);
       return FindSegmentByID(id);
    }
 
+   virtual void Clear(Option_t *opt = "") {
+      TObjArray::Clear(opt);
+      fArray->Clear(opt);
+   }
 
+
+protected:
+   TClonesArray *fArray; //!
+   
    ClassDef(TSegmentedData,1);
 };
 #endif // end of #ifdef TSEGMENTEDDATA_H

@@ -12,13 +12,12 @@ LIBCATCMD = ../commands/.libs/libcatcmd.$(SOEXT)
 
 INCDIR = ../../include
 
-INCLUDES = -I../core/ -I$(ROOTSYS)/include -I../commands/
+INCLUDES = -I. -I../core/ -I$(ROOTSYS)/include -I../commands/
 CXXFLAGS = -Iinclude $(shell root-config --cflags) -I$(INCDIR)  -O2
-LDFLAGS = $(shell root-config --glibs) \
-	-L../commands/.libs -lcatcmd \
+LDFLAGS = -L../commands/.libs -lcatcmd \
 	-L../loop/.libs -lcatloop \
 	-L../core/.libs -lcatcore \
-	-L../mc/.libs -lcatmc -lyaml-cpp
+	-L../mc/.libs -lcatmc $(shell root-config --glibs) -lyaml-cpp
 
 include_HEADERS = $(SUBHDR) $(SUBHDRF)
 bin_PROGRAMS = artemis

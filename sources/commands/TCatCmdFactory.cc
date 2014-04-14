@@ -2,7 +2,7 @@
 /**
  * @file   TCatCmdFactory.cc
  * @date   Created : Feb 06, 2012 10:06:33 JST
- *   Last Modified : Feb 10, 2012 20:45:54 JST
+ *   Last Modified : Feb 14, 2014 18:46:31 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -61,12 +61,17 @@ Long_t TCatCmdFactory::ProcessLine(TString line)
    return cmd->Exec(line);
 }
 
-void TCatCmdFactory::Register(TCatCmd *cmd)
+void TCatCmdFactory::Register(TCatCmd *cmd, Bool_t replace)
 {
-   if (!fCmds->FindObject(cmd)) {
+   TObject *obj = fCmds->FindObject(cmd->GetName());
+   if (!obj) {
 //      cmd->Print();
       fCmds->Add(cmd);
-   } 
+   } else if (replace) {
+      fCmds->Remove(obj);
+      delete obj;
+      fCmds->Add(cmd);
+   }
    fCmds->Sort();
 }
 

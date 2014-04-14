@@ -2,7 +2,7 @@
 /**
  * @file   TLoopManager.h
  * @date   Created : Apr 21, 2012 17:21:44 JST
- *   Last Modified : Mar 20, 2013 18:02:24 JST
+ *   Last Modified : Mar 10, 2014 15:57:24 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -32,10 +32,10 @@ public:
    static TLoopManager* Instance();
    
    TLoop* Add(const char *filename = "");
-   Int_t Resume(Int_t i = kInvalid);
-   Int_t Suspend(Int_t i = kInvalid);
-   Int_t Terminate(Int_t i = kInvalid);
-   TLoop* GetLoop(Int_t i = kInvalid);
+   Int_t Resume(Int_t i = 0);
+   Int_t Suspend(Int_t i = 0);
+   Int_t Terminate(Int_t i = 0);
+   TLoop* GetLoop(Int_t i = 0);
    Int_t GetEntries() { return fLoops->GetEntries(); }
 private:
    TList *fLoops;

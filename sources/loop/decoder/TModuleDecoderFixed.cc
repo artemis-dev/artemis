@@ -47,7 +47,7 @@ template <typename T> Int_t TModuleDecoderFixed<T>::Decode(char* buffer, const i
    fHitData->Clear();
 
    // check if the data object exists
-   for (Int_t iData = 0; iData != evtSize; ++iData){
+   for (Int_t iData = 0; iData != (Int_t)evtSize; ++iData){
       measure = evtData[iData] & fMaskMeasure;
 
       if (fHitData->GetEntriesFast() <= iData || !fHitData->At(iData)) {

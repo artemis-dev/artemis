@@ -2,7 +2,7 @@
 /**
  * @file   TOutputTreeProcessor.cc
  * @date   Created : Jul 11, 2013 17:11:41 JST
- *   Last Modified : Jul 22, 2013 18:47:20 JST
+ *   Last Modified : Nov 21, 2013 11:22:48 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -11,6 +11,7 @@
 #include "TOutputTreeProcessor.h"
 #include <TEventObject.h>
 #include <TDirectory.h>
+#include <TROOT.h>
 
 ClassImp(art::TOutputTreeProcessor);
 
@@ -22,6 +23,7 @@ art::TOutputTreeProcessor::TOutputTreeProcessor()
 }
 art::TOutputTreeProcessor::~TOutputTreeProcessor()
 {
+   fTree->GetUserInfo()->Clear();
    if (fFile) fFile->Close();
    delete fObjects;
 }
@@ -37,6 +39,12 @@ void art::TOutputTreeProcessor::Init(TEventCollection *col)
       if (obj->IsPassive()) continue;
       fTree->Branch(obj->GetName(),obj->GetClass()->GetName(),obj->GetObjectRef(),3200000,0);
       fObjects->Add(obj);
+   }
+
+   TIter *infoiter = col->GetUserInfoIter();
+   while ((obj = (TEventObject*)infoiter->Next())) {
+      if (obj->IsPassive()) continue;
+      fTree->GetUserInfo()->Add(*(TObject**)obj->GetObjectRef());
    }
 }
 void art::TOutputTreeProcessor::Process()
@@ -65,6 +73,7 @@ void art::TOutputTreeProcessor::PostLoop()
    while ((obj = next())) {
       ((TBranch*)obj)->ResetAddress();
    }
+   if (!gDirectory) gDirectory = gROOT;
    TDirectory *saved = gDirectory;
    fFile->cd();
    fTree->Write(0,TFile::kOverwrite);

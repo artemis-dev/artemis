@@ -2,7 +2,7 @@
 /**
  * @file   TProcessor.cc
  * @date   Created : Jul 10, 2013 17:10:19 JST
- *   Last Modified : Sep 17, 2013 18:13:29 JST
+ *   Last Modified : Feb 27, 2014 13:57:33 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -10,7 +10,6 @@
  */
 #include "TProcessor.h"
 #include <TClass.h>
-#include <TROOT.h>
 #include <yaml-cpp/yaml.h>
 #include <iostream>
 
@@ -19,6 +18,7 @@ art::TProcessor::TProcessor()
 {
    RegisterOptionalParameter("OutputTransparency","Output is persistent if false (default)",
                              fOutputIsTransparent,kFALSE);
+   RegisterOptionalParameter("Verbose","verbose level (default 1 : non quiet)",fVerboseLevel,1);
 }
 
 art::TProcessor::~TProcessor()
@@ -116,7 +116,7 @@ void operator >> (const YAML::Node &node, art::TProcessor *&proc)
       std::cout << e.what() << std::endl;
       return;
    }
-   TClass *cls = gROOT->GetClass(type.data());
+   TClass *cls = TClass::GetClass(type.data());
    if (!cls) {
       std::cout << "  no such processor, or processor is not register in dictionary" << std::endl;
       std::cout << "  " << name << " " << type  << std::endl;

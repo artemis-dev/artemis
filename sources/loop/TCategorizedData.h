@@ -2,7 +2,7 @@
 /**
  * @file   TCategorizedData.h
  * @date   Created : Jul 16, 2013 17:16:43 JST
- *   Last Modified : Sep 19, 2013 09:18:43 JST
+ *   Last Modified : Nov 21, 2013 10:51:20 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *
@@ -27,13 +27,14 @@ public:
    TCategorizedData();
    ~TCategorizedData();
 
-   virtual TObjArray* GetCategory(const Int_t &idx) {
+   virtual TObjArray* GetCategory(Int_t idx) {
       return (TObjArray*) fCats->At(idx);
    }
 
-   virtual TObjArray* FindCategory(const Int_t &id) {
+   virtual TObjArray* FindCategory(Int_t id) {
       const Int_t &n = fCats->GetEntriesFast();
       for (Int_t i=0; i != n; i++) {
+         if (!fCats->At(i)) continue;
          if ((Int_t)fCats->At(i)->GetUniqueID() == id) {
             return (TObjArray*)fCats->At(i);
          }
@@ -44,18 +45,22 @@ public:
    virtual void Clear(Option_t *opt = "") {
       TObject::Clear(opt);
       fCats->Clear(opt);
-      fDets->Clear(opt);
-      fTypes->Clear(opt);
+      fgCats->Clear(opt);
+      fgDets->Clear(opt);
+      fgTypes->Clear(opt);
+      
+//      fDets->Clear(opt);
+//      fTypes->Clear(opt);
       fCategory = NULL;
    }
 
    virtual void Add(TRawDataObject *obj);
    
 
-private:
-   TClonesArray *fCats; //-> array with all categories
-   TClonesArray *fDets; //-> array with all detectors
-   TClonesArray *fTypes; //-> array with all datatypes
+protected:
+   TObjArray *fCats; //-> array with all categories
+//   TObjArray *fDets; //-> array with all detectors
+//   TObjArray *fTypes; //-> array with all datatypes
 
    TObjArray *fCategory; //! cash for the last category
 

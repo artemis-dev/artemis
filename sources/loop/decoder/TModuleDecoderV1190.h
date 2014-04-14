@@ -1,7 +1,7 @@
 /*
  * @file TModuleDecoderV1190.h
  * @date  Created : 2008/11/26 21:30:29 JST
- *  Last Modified : 2013/07/20 00:18:53 JST
+ *  Last Modified : 2014-03-11 12:48:43 JST (kawase)
  *--------------------------------------------------------
  *    Comment : modified to use data container TRawTimingWithEdge
  *
@@ -20,7 +20,8 @@ class art::TModuleDecoderV1190  : public TModuleDecoder {
 public:
    static const int kID = 24;
 
-   TModuleDecoderV1190();
+   TModuleDecoderV1190();         // constructor with default id = kID for compatibility
+   TModuleDecoderV1190(Int_t id); // constructor with id
    virtual ~TModuleDecoderV1190();
    virtual Int_t Decode(char* buffer, const int &size, TObjArray *seg);
 
@@ -48,5 +49,7 @@ public:
 
 protected:
    TObjArray *fHitData; // array to temporally store the data for the aggregation
+
+   ClassDef(TModuleDecoderV1190,0); // decoder for module V1190
 };
 #endif // end of #ifdef TMODULEDECODERV1190_H

@@ -26,28 +26,28 @@ public:
    TRawDataObject();
    virtual ~TRawDataObject();
 
-   virtual Int_t GetSegID() { return fSegID; }
-   virtual Int_t GetGeo() { return fGeo; }
-   virtual Int_t GetCh() { return fCh; }
+   virtual Int_t GetSegID() const { return fSegID; }
+   virtual Int_t GetGeo() const { return fGeo; }
+   virtual Int_t GetCh() const { return fCh; }
 
-   virtual Int_t GetCatID() { return fCatID; }
-   virtual Int_t GetDetID() { return fDetID; }
-   virtual Int_t GetType() { return fType; }
+   virtual Int_t GetCatID() const { return fCatID; }
+   virtual Int_t GetDetID() const { return fDetID; }
+   virtual Int_t GetType() const { return fType; }
 
-   virtual void SetSegID(const Int_t &val) { fSegID = val; }
-   virtual void SetGeo(const Int_t &val) { fGeo = val; }
-   virtual void SetCh(const Int_t &val) { fCh = val; }
+   virtual void SetSegID(Int_t val) { fSegID = val; }
+   virtual void SetGeo(Int_t val) { fGeo = val; }
+   virtual void SetCh(Int_t val) { fCh = val; }
 
-   virtual void SetCatID(const Int_t &val) { fCatID = val; }
-   virtual void SetDetID(const Int_t &val) { fDetID = val; }
-   virtual void SetType(const Int_t &val) { fType = val; }
+   virtual void SetCatID(Int_t val) { fCatID = val; }
+   virtual void SetDetID(Int_t val) { fDetID = val; }
+   virtual void SetType(Int_t val) { fType = val; }
 
-   virtual void SetSegInfo(const Int_t &segid,  const Int_t& geo, const Int_t& ch) {
+   virtual void SetSegInfo(Int_t segid,  Int_t geo, Int_t ch) {
       fSegID = segid;
       fGeo   = geo;
       fCh    = ch;
    }
-   virtual void SetCatInfo(const Int_t &catid, const Int_t& detid, const Int_t& type) {
+   virtual void SetCatInfo(Int_t catid, Int_t detid, Int_t type) {
       fCatID = catid;
       fDetID = detid;
       fType  = type;

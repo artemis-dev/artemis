@@ -2,7 +2,7 @@
 /**
  * @file   TCatCmdSave.h
  * @date   Created : Oct 01, 2012 13:01:07 JST
- *   Last Modified : 
+ *   Last Modified : Feb 13, 2014 17:20:06 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -20,8 +20,8 @@ public:
    ~TCatCmdSave();
 
    static TCatCmdSave* Instance();
-   Long_t Cmd(vector<TString> tokens);
-   Long_t Run(TString &filename);
+   virtual Long_t Cmd(vector<TString> tokens);
+   virtual Long_t Run(TString &filename);
 
    ClassDef(TCatCmdSave,1);
 

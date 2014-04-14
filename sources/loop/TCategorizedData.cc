@@ -23,11 +23,11 @@ art::TCategorizedData::TCategorizedData()
 {
    if (!fgCats) fgCats = new TClonesArray("TObjArray",100);
    if (!fgDets) fgDets = new TClonesArray("TObjArray",1000);
-   if (!fgTypes) fgTypes = new TClonesArray("TRefArray",10000);
+   if (!fgTypes) fgTypes = new TClonesArray("TObjArray",10000);
 
-   fCats = fgCats;
-   fDets = fgDets;
-   fTypes = fgTypes;
+   fCats  = new TObjArray;
+//   fDets  = new TObjArray;
+//   fTypes = new TObjArray;
    fCategory = NULL;
 }
 art::TCategorizedData::~TCategorizedData()
@@ -44,15 +44,16 @@ void art::TCategorizedData::Add(TRawDataObject *obj)
    const Int_t &did = obj->GetDetID();
    const Int_t &tid = obj->GetType();
    TObjArray *detector = NULL;
-   TRefArray *type     = NULL;
+   TObjArray *type     = NULL;
 
    if (cid == TRawDataObject::kInvalid) return;
    // find or create category if the current category is null or different from the requested one
    if (!fCategory || fCategory->GetUniqueID() != cid) {
       fCategory = FindCategory(cid);
       if (!fCategory) {
-         fCategory = (TObjArray*) fCats->ConstructedAt(fCats->GetEntriesFast());
+         fCategory = (TObjArray*) fgCats->ConstructedAt(fgCats->GetEntriesFast());
          fCategory->SetUniqueID(cid);
+         fCats->Add(fCategory);
       }
    }
 
@@ -66,15 +67,15 @@ void art::TCategorizedData::Add(TRawDataObject *obj)
    }
    // if detector is null, then the detector should be created
    if (!detector) {
-      detector = (TObjArray*) fDets->ConstructedAt(fDets->GetEntriesFast());
+      detector = (TObjArray*) fgDets->ConstructedAt(fgDets->GetEntriesFast());
       detector->SetUniqueID(did);
       fCategory->Add(detector);
    }
    
    // add data to corresponding type
-   type = (TRefArray*) detector->At(tid);
+   type = (TObjArray*) detector->At(tid);
    if (type == NULL) {
-      type = (TRefArray*) fTypes->ConstructedAt(fTypes->GetEntriesFast());
+      type = (TObjArray*) fgTypes->ConstructedAt(fgTypes->GetEntriesFast());
       type->SetUniqueID(tid);
       detector->AddAtAndExpand(type,tid);
    }

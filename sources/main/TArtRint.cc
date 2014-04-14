@@ -2,7 +2,7 @@
 /**
  * @file   TArtRint.cc
  * @date   Created : Feb 06, 2012 00:06:18 JST
- *   Last Modified : Feb 02, 2013 19:35:31 JST
+ *   Last Modified : Mar 15, 2014 16:57:59 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -11,7 +11,8 @@
 #include "TArtRint.h"
 #include <TFolder.h>
 #include <TROOT.h>
-
+#include <TInterpreter.h>
+#include "TLoopManager.h"
 #include "TCatCmdFactory.h"
 #include "TCatCmdMacro.h"
 #include "TArtAtomicMassTable.h"
@@ -21,13 +22,13 @@
 const char* kARTEMISLOGON_C = "artemislogon.C";
 
 TArtRint::TArtRint(int* argc, char** argv, void* options, int numOptions, Bool_t noLogo)
-   : TRint(fAppName, argc, argv, options, numOptions, noLogo)
+   : TRint(gAppName, argc, argv, options, numOptions, noLogo)
 {
    TRint::ProcessLine(".x artemislogon.C");
 //   TCatCmdFactory::Instance()->Register(TCatCmdMacro::Instance());
 
    // Preparation of folder for artemis
-   TFolder *top = new TFolder("artemis","artemis");
+   TFolder *top = gROOT->GetRootFolder()->AddFolder("artemis","artemis top level folders");
    gROOT->GetListOfBrowsables()->Add(top);
 
    // set prompt
@@ -53,12 +54,23 @@ TArtRint::~TArtRint()
 
 Long_t TArtRint::ProcessLine(const char* line, Bool_t sync, Int_t* error)
 {
-   if (TCatCmdFactory::Instance()->ProcessLine(TString::Format("automacro %s",line))) {
-      // macro was found
-      return 1;
-   } else
-      if (TCatCmdFactory::Instance()->ProcessLine(line)) {
-      return 1;
+   if (sync) {
+      return TRint::ProcessLine(line,sync,error);
    }
-   return TRint::ProcessLine(line,sync,error);
+   if (TCatCmdFactory::Instance()->ProcessLine(TString(line))) {
+      return 1;
+   } else {
+      return TRint::ProcessLine(line,sync,error);
+   }
+   return 0;
+}
+
+void   TArtRint::Terminate(Int_t status)
+{
+   art::TLoopManager *lm = art::TLoopManager::Instance();
+   Int_t n = lm->GetEntries();
+   for (Int_t i=0; i!=n; i++) {
+      lm->Terminate(i);
+   }
+   TRint::Terminate(status);
 }
