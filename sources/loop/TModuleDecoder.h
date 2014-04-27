@@ -2,7 +2,7 @@
 /**
  * @file   TModuleDecoder.h
  * @date   Created : Jul 20, 2013 10:20:00 JST
- *   Last Modified : 
+ *   Last Modified : Apr 29, 2014 15:12:37 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -22,11 +22,16 @@ namespace art {
 class art::TModuleDecoder  : public TNamed {
 
 public:
+   TModuleDecoder();
    TModuleDecoder(Int_t id, TClass *dataClass = NULL);
    ~TModuleDecoder();
 
-   virtual Int_t ID() { return fID; }
+   // override default decoder id
+   virtual void SetID(Int_t id) { fID = id; }
+   virtual Int_t GetID() { return fID; }
    virtual Int_t Decode(char* buffer, const int &size, TObjArray *seg) = 0;
+   virtual void SetClass(TClass *dataClass);
+   virtual TClass* GetClass() { return fHits?fHits->GetClass():NULL; }
 
 protected:
    virtual TObject* New() { return (fHits)?fHits->ConstructedAt(fHits->GetEntriesFast()):NULL; }
@@ -35,5 +40,7 @@ protected:
 protected:
    Int_t fID;
    TClonesArray *fHits;
+
+   ClassDef(TModuleDecoder,1); // base class of module decoder
 };
 #endif // end of #ifdef TMODULEDECODER_H

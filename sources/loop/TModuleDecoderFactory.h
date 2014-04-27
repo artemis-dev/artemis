@@ -2,7 +2,7 @@
 /**
  * @file   TModuleDecoderFactory.h
  * @date   Created : Jul 22, 2013 08:22:10 JST
- *   Last Modified : Oct 18, 2013 16:39:15 JST
+ *   Last Modified : Apr 27, 2014 12:43:57 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -23,9 +23,13 @@ protected:
    TModuleDecoderFactory();
 
 public:
-   ~TModuleDecoderFactory();
+   virtual ~TModuleDecoderFactory();
 
+   // singleton for register the decoders
    static TModuleDecoderFactory* Instance();
+
+   // clone this instance for the multiple use of TRIDFEventStore
+   TModuleDecoderFactory* CloneInstance();
 
    void Register(TModuleDecoder *decoder);
    TModuleDecoder* Get(Int_t did) { return (TModuleDecoder*) fDecoders->At(did); }
@@ -40,5 +44,7 @@ public:
 protected:
    TObjArray *fDecoders;
    TObjArray *fDecodersSparse;
+
+   ClassDef(TModuleDecoderFactory,1); // module decoder factory
 };
 #endif // end of #ifdef TMODULEDECODERFACTORY_H

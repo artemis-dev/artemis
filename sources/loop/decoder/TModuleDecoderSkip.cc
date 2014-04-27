@@ -16,6 +16,11 @@
 using art::TModuleDecoderSkip;
 
 // Default constructor
+TModuleDecoderSkip::TModuleDecoderSkip()
+   : TModuleDecoder(0,NULL)
+{
+}
+
 TModuleDecoderSkip::TModuleDecoderSkip(const Int_t id)
    : TModuleDecoder(id, NULL) {
    printf("[TModuleDecorderSkip] ModuleID = %d will be skipped.\n",id);

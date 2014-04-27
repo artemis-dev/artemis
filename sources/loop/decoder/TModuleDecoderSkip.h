@@ -20,8 +20,11 @@ namespace art{
 
 class art::TModuleDecoderSkip : public TModuleDecoder {
 public:
-   // Default constructor
-   explicit TModuleDecoderSkip(Int_t id);
+   
+   // Default constructor for TClass::New to clone
+   TModuleDecoderSkip();
+   // normal constructor
+   TModuleDecoderSkip(Int_t id);
    // Default destructor
    virtual ~TModuleDecoderSkip();
 
