@@ -2,7 +2,7 @@
 /**
  * @file   main.cc
  * @date   Created : Feb 06, 2012 00:06:56 JST
- *   Last Modified : Feb 06, 2012 00:42:12 JST
+ *   Last Modified : May 05, 2014 07:12:46 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -12,7 +12,7 @@
 
 int main (int argc, char **argv)
 {
-   TArtRint *theApp = new TArtRint(&argc, argv);
+   art::TArtRint *theApp = new art::TArtRint(&argc, argv);
    theApp->Run();
    return 0;
 }
