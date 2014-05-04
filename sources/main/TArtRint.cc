@@ -2,7 +2,7 @@
 /**
  * @file   TArtRint.cc
  * @date   Created : Feb 06, 2012 00:06:18 JST
- *   Last Modified : Mar 15, 2014 16:57:59 JST
+ *   Last Modified : May 05, 2014 07:09:35 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -18,8 +18,7 @@
 #include "TArtAtomicMassTable.h"
 #include "TEnv.h"
 
-// default value for CATLOGN
-const char* kARTEMISLOGON_C = "artemislogon.C";
+using art::TArtRint;
 
 TArtRint::TArtRint(int* argc, char** argv, void* options, int numOptions, Bool_t noLogo)
    : TRint(gAppName, argc, argv, options, numOptions, noLogo)

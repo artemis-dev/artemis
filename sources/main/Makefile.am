@@ -12,8 +12,8 @@ LIBCATCMD = ../commands/.libs/libcatcmd.$(SOEXT)
 
 INCDIR = ../../include
 
-INCLUDES = -I. -I../core/ -I$(ROOTSYS)/include -I../commands/
-CXXFLAGS = -Iinclude $(shell root-config --cflags) -I$(INCDIR)  -O2
+INCLUDES = -I. -I../core/  -I../commands/ -I$(ROOTSYS)/include
+CXXFLAGS = -Iinclude -I$(INCDIR)  $(shell root-config --cflags) -O2
 LDFLAGS = -L../commands/.libs -lcatcmd \
 	-L../loop/.libs -lcatloop \
 	-L../core/.libs -lcatcore \

@@ -2,7 +2,7 @@
 /**
  * @file   TArtRint.h
  * @date   Created : Feb 06, 2012 00:06:28 JST
- *   Last Modified : Mar 15, 2014 16:53:23 JST
+ *   Last Modified : May 05, 2014 07:08:18 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -12,9 +12,13 @@
 #define TARTRINT_H
 
 #include <TRint.h>
+namespace art {
+   class TArtRint;
+   const char* const kARTEMISLOGON_C = "artemislogon.C";
+   const char* const gAppName = "artemis";
 
-const char* gAppName = "artemis";
-class TArtRint  : public TRint {
+}
+class art::TArtRint  : public TRint {
 
 public:
 
