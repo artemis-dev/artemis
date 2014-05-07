@@ -2,7 +2,7 @@
 /**
  * @file   TProcessor.h
  * @date   Created : Jul 10, 2013 17:10:49 JST
- *   Last Modified : Nov 26, 2013 15:12:17 JST
+ *   Last Modified : May 07, 2014 17:51:25 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -85,7 +85,7 @@ protected:
                                   T& parameter,
                                   const T& defaultParam,
                                   int size = 0) {
-      fParamMap[name] = new TParameter_t<T>(name,description,parameter,
+      fParamMap[TString(name)] = new TParameter_t<T>(name,description,parameter,
                                                defaultParam,false,size);
    }                                               
    
