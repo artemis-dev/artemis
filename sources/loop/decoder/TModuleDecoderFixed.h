@@ -18,6 +18,7 @@ namespace art{
 
 template <typename T> class TModuleDecoderFixed : public TModuleDecoder {
 public:
+   TModuleDecoderFixed();
    TModuleDecoderFixed(Int_t id, Int_t size);
    virtual ~TModuleDecoderFixed();
 
