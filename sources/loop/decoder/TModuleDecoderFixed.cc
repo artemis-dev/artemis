@@ -16,6 +16,11 @@
 using art::TModuleDecoderFixed;
 using art::TRawDataSimple;
 
+template <typename T> TModuleDecoderFixed<T>::TModuleDecoderFixed()
+   : TModuleDecoder(0, TRawDataSimple<T>::Class())
+{
+}
+
 template <typename T> TModuleDecoderFixed<T>::TModuleDecoderFixed(const Int_t id, const Int_t size)
    : TModuleDecoder(id, TRawDataSimple<T>::Class()){
    fHitData = new TObjArray;
