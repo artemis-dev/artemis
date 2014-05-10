@@ -2,10 +2,10 @@
 /**
  * @file   TProcessor.cc
  * @date   Created : Jul 10, 2013 17:10:19 JST
- *   Last Modified : Feb 27, 2014 13:57:33 JST
+ *   Last Modified : 2014-04-14 10:54:35 JST (kawase)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
- *  
- *  
+ *
+ *
  *    Copyright (C)2013
  */
 #include "TProcessor.h"
@@ -16,9 +16,12 @@
 art::TProcessor::TProcessor()
    :  fInitialized(kFALSE), fParameters(NULL)
 {
-   RegisterOptionalParameter("OutputTransparency","Output is persistent if false (default)",
+   RegisterOptionalParameter("OutputTransparency",
+			     "Output is persistent if false (default)",
                              fOutputIsTransparent,kFALSE);
-   RegisterOptionalParameter("Verbose","verbose level (default 1 : non quiet)",fVerboseLevel,1);
+   RegisterOptionalParameter("Verbose",
+			     "verbose level (default 1 : non quiet)",
+			     fVerboseLevel,1);
 }
 
 art::TProcessor::~TProcessor()
@@ -53,7 +56,7 @@ void art::TProcessor::SetParameters(TParameterStrings *params)
    if (fParameters) delete fParameters;
    // own the parameters
    fParameters = params;
-   // update parameters using new parameter string 
+   // update parameters using new parameter string
    UpdateParameters();
 }
 
@@ -67,6 +70,17 @@ void art::TProcessor::UpdateParameters()
 
 void art::TProcessor::PrintDescriptionYAML()
 {
+   TString name;
+   if (strcmp(GetName(),"")){
+      name = GetName();
+   } else {
+      TString classname = IsA()->GetName();
+      name = TString::Format("My%s",classname.Remove(0,classname.Last(':')+1).Data());
+   }
+
+   const TString& title =
+	 strcmp(GetTitle(),"") ? TString(GetTitle()) : TString(IsA()->GetName());
+
    YAML::Emitter out;
    out << YAML::BeginMap;
    {
@@ -74,35 +88,51 @@ void art::TProcessor::PrintDescriptionYAML()
       out << YAML::Value;
       out << YAML::BeginMap;
       {
-         out << YAML::Key << "name" << YAML::Value 
-             << TString::Format("My%s",GetTitle())
-             << YAML::Key << "type" << YAML::Value 
-             << TString::Format("%s",GetTitle())
+         out << YAML::Key << "name" << YAML::Value
+             << name.Data()
+             << YAML::Key << "type" << YAML::Value
+             << title.Data()
              << YAML::Key << "parameter" << YAML::Value;
-
-         out << YAML::BeginSeq;
+         out << YAML::BeginMap;
          ProcPrmMap_t::iterator it;
          for (it = fParamMap.begin(); it != fParamMap.end(); it++) {
-            TParameter *prm = it->second;
-            out << YAML::BeginMap;
-            out << YAML::Key << "name" << YAML::Value << prm->GetName();
-            out << YAML::Comment(prm->GetTitle().Data());
-            out << YAML::Key << "type" << YAML::Value << prm->Type()
-                << YAML::Key << "size" << YAML::Value << prm->Size()
-                << YAML::Key << "value" << YAML::Value 
-                << YAML::BeginSeq
-                << prm->DefaultValue()
-                << YAML::EndSeq;
-            out << YAML::EndMap;
+	    TParameter *prm = it->second;
+	    const TString &value =
+	       prm->IsValueSet() ? prm->Value() : prm->DefaultValue();
+	    const TString &comment =
+	       TString::Format("[%s] %s",
+			       prm->Type().Data(), prm->GetTitle().Data());
+	    out << YAML::Key << prm->GetName();
+	    if (prm->IsStringVector()) {
+	       out << YAML::Comment(comment.Data())
+		   << YAML::Value
+		   << YAML::BeginSeq
+		   << value.Data()
+		   << YAML::EndSeq;
+	    } else if (prm->IsVector()) {
+	       TObjArray *values = value.Tokenize(", ");
+	       const Int_t n = values->GetEntriesFast();
+	       out << YAML::Value
+		   << YAML::Flow
+		   << YAML::BeginSeq;
+	       for(int i = 0; i != n ; ++i) {
+		  out << ((TObjString*)values->At(i))->GetString().Data();
+	       }
+	       out << YAML::EndSeq;
+	       out << YAML::Comment(comment.Data());
+	    } else {
+	       out << YAML::Value
+		   << value.Data()
+		   << YAML::Comment(comment.Data());
+	    }
          }
-         out << YAML::EndSeq;
-
+         out << YAML::EndMap;
       }
       out   << YAML::EndMap;
    }
    out << YAML::EndMap;
    std::cout << out.c_str() << std::endl;
-   
+
 }
 
 void operator >> (const YAML::Node &node, art::TProcessor *&proc)

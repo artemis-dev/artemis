@@ -2,18 +2,16 @@
 /**
  * @file   TParameterStrings.cc
  * @date   Created : May 18, 2012 14:18:07 JST
- *   Last Modified : Oct 21, 2013 13:05:23 JST
+ *   Last Modified : 2014-04-12 18:01:04 JST (kawase)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
- *  
- *  
+ *
+ *
  *    Copyright (C)2012
  */
 #include "TParameterStrings.h"
 
 #include <vector>
 #include <yaml-cpp/yaml.h>
-
-
 
 art::TParameterStrings::TParameterStrings()
 {
@@ -94,7 +92,7 @@ void art::TParameterStrings::GetValue(const char* name, Bool_t& param)
    if (fParamMap[name].size()==0) return;
    param = kFALSE;
    TString str = fParamMap[name][0];
-   if (!str.CompareTo("true",TString::kIgnoreCase) || 
+   if (!str.CompareTo("true",TString::kIgnoreCase) ||
        !str.CompareTo("T",TString::kIgnoreCase) ||
        str.Atoi() == 1) {
       param = kTRUE;
@@ -115,31 +113,29 @@ Bool_t art::TParameterStrings::IsSet(const char* name)
 }
 
 void operator >> (const YAML::Node &node, art::TParameterStrings *&str) {
-   std::vector <TString> prm;
    std::string name,value;
-   for (YAML::Iterator it = node.begin(); it != node.end(); it++) {
-      prm.clear();
-      const YAML::Node &param = *it;
-      param["name"] >> name;
-      if (param["value"].Type() == YAML::NodeType::Scalar) {
-         param["value"] >> value;
-         prm.push_back(value);
-      } else if (param["value"].Type() == YAML::NodeType::Sequence) {
-         for (YAML::Iterator itv = param["value"].begin(); itv != param["value"].end(); itv++) {
-            if (itv->Type() == YAML::NodeType::Scalar) {
-               (*itv) >> value;
-               prm.push_back(value);
-            } else if (itv->Type() == YAML::NodeType::Sequence) {
-               for (YAML::Iterator itv2 = (*itv).begin(); itv2 != (*itv).end(); itv2++) {
+   for (YAML::Iterator it = node.begin(); it != node.end(); ++it) {
+      std::vector <TString> prm;
+      it.first() >> name;
+      if (it.second().Type() == YAML::NodeType::Scalar) {
+	 it.second() >> value;
+	 prm.push_back(value);
+      } else if (it.second().Type() == YAML::NodeType::Sequence) {
+	 for (YAML::Iterator itv = it.second().begin(); itv != it.second().end(); ++itv) {
+	    if (itv->Type() == YAML::NodeType::Scalar) {
+	       *itv >> value;
+	       prm.push_back(value);
+	    } else if (itv->Type() == YAML::NodeType::Sequence) {
+               for (YAML::Iterator itv2 = itv->begin(); itv2 != itv->end(); ++itv2) {
                   if (itv2->Type() == YAML::NodeType::Scalar) {
-                     (*itv2) >> value;
-                     prm.push_back(value);
+                     *itv2 >> value;
+		     prm.push_back(value);
                   } else {
                      // NOT SUPPORTED
                   }
                }
-            }
-         }
+	    }
+	 }
       }
       str->Add(name.data(),prm);
    }
