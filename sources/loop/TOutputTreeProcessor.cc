@@ -2,7 +2,7 @@
 /**
  * @file   TOutputTreeProcessor.cc
  * @date   Created : Jul 11, 2013 17:11:41 JST
- *   Last Modified : Nov 21, 2013 11:22:48 JST
+ *   Last Modified : May 09, 2014 20:10:42 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -23,7 +23,7 @@ art::TOutputTreeProcessor::TOutputTreeProcessor()
 }
 art::TOutputTreeProcessor::~TOutputTreeProcessor()
 {
-   fTree->GetUserInfo()->Clear();
+   if (fTree) fTree->GetUserInfo()->Clear();
    if (fFile) fFile->Close();
    delete fObjects;
 }

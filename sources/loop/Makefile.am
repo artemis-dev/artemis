@@ -8,7 +8,6 @@ SUBSRC+=TEventCollection.cc
 SUBSRC+=TLoopManager.cc 
 SUBSRC+=TLoopControl.cc 
 SUBSRC+=TProcessor.cc 
-SUBSRC+=TParameter.cc 
 SUBSRC+=TParameterStrings.cc 
 SUBSRC+=TTimerProcessor.cc 
 SUBSRC+=TCounterEventStore.cc 
@@ -42,11 +41,12 @@ DICTSRC = catloop_dict.cc
 DICTOBJ = $(DICTSRC:.cc=.o)
 DICTHDR = $(DICTSRC:.cc=.h)
 
-OPTHDR = TDataSource.h TTypes.h
+OPTHDR = TDataSource.h TTypes.h TProcessorParameter.h
+
 INCDIR = ../../include
 
 AUTOMAKE_OPTIONS = foreign
-CXXFLAGS = -fPIC  $(shell root-config --cflags) -I$(INCDIR)  -Wall -O2
+CXXFLAGS = -fPIC  -I$(INCDIR) $(shell root-config --cflags)  -Wall -O2
 LDFLAGS = $(shell root-config --glibs)
 
 CXXFLAGS += @YAML_CPP_INCLUDE@

@@ -2,7 +2,7 @@
 /**
  * @file   TLoop.cc
  * @date   Created : Apr 26, 2012 20:26:47 JST
- *   Last Modified : Oct 21, 2013 16:36:48 JST
+ *   Last Modified : May 09, 2014 20:04:06 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -21,6 +21,8 @@
 
 #include <TSystem.h>
 #include <TString.h>
+#include <TFolder.h>
+#include <TROOT.h>
 
 const char* art::TLoop::kConditionName = "condition";
 
@@ -104,7 +106,22 @@ Bool_t art::TLoop::Init()
    fEventCollection->Add(kConditionName,fCondition,kTRUE);
    fCondition->Set(kBeginOfRun);
    for (itr = itrBegin; itr!=itrEnd; itr++) {
-      (*itr)->InitProc(fEventCollection);
+      TProcessor *proc = (*itr);
+      proc->InitProc(fEventCollection);
+      if (proc->IsError()) {
+         Error("Init","%s (%s) %s",proc->GetName(),proc->GetTitle(),proc->GetErrorMessage());
+         return kFALSE;
+      }
+   }
+   TFolder *folder = (TFolder*) gROOT->FindObject(TString::Format("/artemis/loops/loop%d",fID));
+   if (folder) {
+      TFolder *conf = folder->AddFolder("Config","configuration");
+      TIter *infoiter = fEventCollection->GetUserInfoIter();
+      TEventObject *obj;
+      while ((obj = (TEventObject*)infoiter->Next())) {
+         conf->Add(*(TObject**)obj->GetObjectRef());
+      }
+      delete infoiter;
    }
    return kTRUE;
 }

@@ -2,7 +2,7 @@
 /**
  * @file   TLoopManager.cc
  * @date   Created : Jul 10, 2013 17:10:36 JST
- *   Last Modified : Mar 16, 2014 04:53:13 JST
+ *   Last Modified : Apr 29, 2014 14:23:36 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -50,6 +50,7 @@ art::TLoop* art::TLoopManager::Add(const char *filename)
       folder = topfolder->AddFolder("loops","container for loops");
    }
    TString name = TString::Format("loop%d",fLoops->GetEntries());
+   loop->SetID(fLoops->GetEntries());
    folder->AddFolder(name,filename);
 
    fLoops->Add(loop);

@@ -2,7 +2,7 @@
 /**
  * @file   TProcessor.cc
  * @date   Created : Jul 10, 2013 17:10:19 JST
- *   Last Modified : 2014-04-14 10:54:35 JST (kawase)
+ *   Last Modified : May 11, 2014 10:45:49 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *
@@ -12,9 +12,10 @@
 #include <TClass.h>
 #include <yaml-cpp/yaml.h>
 #include <iostream>
+#include <TClonesArray.h>
 
 art::TProcessor::TProcessor()
-   :  fInitialized(kFALSE), fParameters(NULL)
+   :   fParameters(NULL)
 {
    RegisterOptionalParameter("OutputTransparency",
 			     "Output is persistent if false (default)",
@@ -37,11 +38,97 @@ art::TProcessor::~TProcessor()
    }
 }
 
+void art::TProcessor::InitProc(TEventCollection *col)
+{
+   fCondition = (TConditionBit**)(col->Get(TLoop::kConditionName)->GetObjectRef());
+   // obtain input collection
+   Int_t nInputs = fInputs.size();
+   Int_t iInput = 0;
+   for (iInput = 0; iInput != nInputs; iInput++)  {
+      InputCollection &input = fInputs[iInput];
+      *input.fP = NULL;
+      TString inputname = *input.fName;
+      printf("%s\n",inputname.Data());
+      if (!(col->GetObjectRef(inputname))) {
+         SetStateError(TString::Format(ErrMsgFmt::INVALID_INPUT_COLLECTION,inputname.Data()));
+         return;
+      }
+      printf("*input.fName = %s\n",inputname.Data());
+      // initialize input collection
+      *input.fP = (void**) col->GetObjectRef(inputname);
+      TObject *obj = **((TObject***)input.fP);
+
+      // check if the input class match
+      if (!obj->IsA()->InheritsFrom(input.fClassName)) {
+         SetStateError(TString::Format(ErrMsgFmt::INPUT_CLASS_MISSMATCH,input.fClassName.Data(),obj->IsA()->GetName()));
+         return;
+      }
+
+      // check if the input data class for TClonesArray matches
+      if (TClass::GetClass(input.fClassName)->InheritsFrom("TClonesArray")) {
+         TClonesArray *arr = static_cast<TClonesArray*>(obj);
+         // check the pointer null
+         if (!arr->GetClass()) {
+            SetStateError(TString::Format(ErrMsgFmt::INPUT_DATA_CLASS_MISSMATCH,input.fDataClassName.Data(),"nil"));
+            return;
+         }
+         // check the class inherits from the required data
+         if (!arr->GetClass()->InheritsFrom(input.fDataClassName)) {
+            SetStateError(TString::Format(ErrMsgFmt::INPUT_DATA_CLASS_MISSMATCH,input.fDataClassName.Data(),arr->GetClass()->GetName()));
+            return;
+         }
+      }
+   }
+
+   Int_t nOutputs = fOutputs.size();
+   Int_t iOutput = 0;
+   for (iOutput = 0; iOutput != nOutputs; iOutput++) {
+      OutputCollection &output = fOutputs[iOutput];
+      TClass *cls = TClass::GetClass(output.fClassName);
+
+      // check output class exists
+      if (!cls) {
+         SetStateError(TString::Format(ErrMsgFmt::NOT_EXIST_CLASS,output.fClassName.Data()));
+         return;
+      }
+      // check output data class exists
+      if (cls == TClonesArray::Class() && 
+          !TClass::GetClass(output.fDataClassName)) {
+         SetStateError(TString::Format(ErrMsgFmt::NOT_EXIST_DATA_CLASS,output.fDataClassName.Data()));
+         return;
+      }
+      // check output collection exist
+      if (col->GetObjectRef(*output.fName)) {
+         SetStateError(TString::Format(ErrMsgFmt::OUTPUT_ALREADY_EXIST,output.fName->Data()));
+         return;
+      }
+         
+      // prepare output object
+      *output.fP = (void*) cls->New();
+      if (cls == TClonesArray::Class()) {
+         TClonesArray *arr = static_cast<TClonesArray*>(*output.fP);
+         arr->SetClass(output.fDataClassName);
+      }
+      col->Add(*output.fName,(TObject*)*output.fP,fOutputIsTransparent);
+   }
+
+   // call user defined initialization function
+   Init(col);
+   if (IsError()) {
+      return;
+   } else {
+      // initializaed correctly
+      SetStateReady();
+   }
+}   
+
 
 void art::TProcessor::Clear(Option_t *)
 {
-   fInitialized = kFALSE;
+
 }
+
+
 
 
 void art::TProcessor::SetName(const char *name)
@@ -96,7 +183,7 @@ void art::TProcessor::PrintDescriptionYAML()
          out << YAML::BeginMap;
          ProcPrmMap_t::iterator it;
          for (it = fParamMap.begin(); it != fParamMap.end(); it++) {
-	    TParameter *prm = it->second;
+	    TProcessorParameter *prm = it->second;
 	    const TString &value =
 	       prm->IsValueSet() ? prm->Value() : prm->DefaultValue();
 	    const TString &comment =
