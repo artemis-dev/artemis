@@ -2,7 +2,7 @@
 /**
  * @file   TProcessor.cc
  * @date   Created : Jul 10, 2013 17:10:19 JST
- *   Last Modified : May 11, 2014 10:45:49 JST
+ *   Last Modified : 2014-05-12 08:57:57 JST (kawase)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *
@@ -173,6 +173,7 @@ void art::TProcessor::PrintDescriptionYAML()
    {
       out << YAML::Key << "Processor";
       out << YAML::Value;
+      out << YAML::BeginSeq;
       out << YAML::BeginMap;
       {
          out << YAML::Key << "name" << YAML::Value
@@ -213,6 +214,7 @@ void art::TProcessor::PrintDescriptionYAML()
 		   << YAML::Comment(comment.Data());
 	    }
          }
+	 out << YAML::EndSeq;
          out << YAML::EndMap;
       }
       out   << YAML::EndMap;
