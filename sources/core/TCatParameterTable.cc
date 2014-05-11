@@ -2,7 +2,7 @@
 /**
  * @file   TCatParameterTable.cc
  * @date   Created : Oct 07, 2012 11:07:08 JST
- *   Last Modified : 
+ *   Last Modified : May 11, 2014 17:02:45 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -11,6 +11,8 @@
 #include "TCatParameterTable.h"
 
 #include <TMath.h>
+
+using art::TCatParameterTable;
 
 TCatParameterTable::TCatParameterTable()
 {

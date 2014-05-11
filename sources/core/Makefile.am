@@ -6,28 +6,6 @@ SUBSRC += TConfigFile.cc
 SUBSRC += TSharedMemory.cc
 SUBSRC += TSemaphoreObject.cc
 
-
-#        TArtFadcRawDataObject.cc \
-#	TArtDecoderV1740.cc \
-#	TArtDecoderSIS3610.cc \
-#	TArtDecoderSIS3820.cc \
-#	TCatDecoderV1190.cc \
-#        TCatRawDataV1190.cc \
-#	TArtKbhit.cc \
-#	TCatObject.cc \
-#	TCatSimpleData.cc \
-#	TCatHitV1190.cc \
-#	TCatSortable.cc \
-#	TCatDetectorArray.cc \
-#	TCatRawDataCategorized.cc \
-#	TCatStreamBuf.cc \
-#	TCatOstream.cc \
-#	TCatObjRefArray.cc\
-#	TCatParameter.cc \
-#	TCatParameterStrings.cc \
-#	TCatParameterTable.cc \
-#
-
 SUBOBJ = $(SUBSRC:.cc=.o)
 SUBHDR = $(SUBSRC:.cc=.h)
 # TCatTypes.h
