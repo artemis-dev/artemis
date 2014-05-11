@@ -3,13 +3,7 @@
 /.*
 
 # managed
-!configure.ac
 !.gitignore
-!Makefile.am
-!sources
-!example
-!README
-!m4
 
 # additional exception
 *~

@@ -2,16 +2,17 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.59])
-AC_INIT(libcat, 0.1.0, [artemis-dev@cns.s.u-tokyo.ac.jp])
+AC_INIT(artemis, 1.0.0, [artemis-dev@cns.s.u-tokyo.ac.jp])
 AM_INIT_AUTOMAKE([foreign])
-AC_CONFIG_SRCDIR([sources/loop/catloop_linkdef.h])
+AC_CONFIG_SRCDIR([sources/main/main.cc])
 AC_CONFIG_HEADERS([config.h])
 
 # Checks for programs.
 AC_PROG_CXX([clang++ g++ g++34])
 AC_PROG_CC([clang gcc gcc34])
 AC_PROG_LIBTOOL
-AC_PROG_RANLIB
+
+AC_CONFIG_MACRO_DIR([m4])
 
 # Checks for libraries.
 if test "x$ROOTSYS" = "x" ; then
@@ -68,6 +69,5 @@ AC_CONFIG_FILES([Makefile
                  sources/loop/decoder/Makefile
                  sources/loop/ridf/Makefile
                  sources/main/Makefile
-                 sources/mc/Makefile
-                 sources/uhodo/Makefile])
+                 sources/mc/Makefile])
 AC_OUTPUT

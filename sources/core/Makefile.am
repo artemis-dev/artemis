@@ -42,8 +42,8 @@ INCDIR = ../../include
 
 AUTOMAKE_OPTIONS = foreign
 
-INCLUDES = -I$(INCDIR) -I$(ROOTSYS)/include 
-CXXFLAGS = -fPIC  $(shell root-config --cflags) -I$(INCDIR) -Wall -O2
+MYINCLUDES = -I$(INCDIR) -I$(ROOTSYS)/include 
+CXXFLAGS = -fPIC  -I$(INCDIR) $(shell root-config --cflags) -Wall -O2
 #CXXFLAGS += -pg
 LDFLAGS = $(shell root-config --glibs) 
 
@@ -57,7 +57,7 @@ libcatcore_la_LDFLAGS = $(LDFLAGS)
 
 $(DICTSRC): $(SUBHDR) catcore_linkdef.h
 	@echo Making $(DICTSRC) ...
-	rootcint -f $@ -c $(DEFAULT_INCLUDES) $(INCLUDES) $^
+	rootcint -f $@ -c $(DEFAULT_INCLUDES) $(MYINCLUDES) $^
 
 header: $(include_HEADERS)
 	@echo Installing header to $(INCDIR)

@@ -1,1 +1,2 @@
 SUBDIRS = sources 
+ACLOCAL_AMFLAGS = -I m4
