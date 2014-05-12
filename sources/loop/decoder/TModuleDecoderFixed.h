@@ -23,7 +23,8 @@ public:
    virtual ~TModuleDecoderFixed();
 
    virtual Int_t Decode(char* buffer, const int &size, TObjArray *seg);
-
+   // Copy this mask to obj
+   virtual void Copy(TObject& obj) const;
 protected:
    T          fMaskMeasure;
    TObjArray *fHitData;

@@ -2,7 +2,7 @@
 /**
  * @file   TModuleDecoder.cc
  * @date   Created : Jul 20, 2013 11:20:55 JST
- *   Last Modified : Apr 29, 2014 16:43:22 JST
+ *   Last Modified : May 12, 2014 23:25:54 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -42,4 +42,10 @@ void art::TModuleDecoder::SetClass(TClass *dataClass)
              fID,dataClass->GetName());
    }
    if (!fHits) fHits = new TClonesArray(dataClass);
+}
+
+void art::TModuleDecoder::Copy(TObject& obj) const
+{
+   TModuleDecoder &decoder = static_cast<TModuleDecoder&>(obj);
+   decoder.fID = fID;
 }

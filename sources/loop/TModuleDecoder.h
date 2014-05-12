@@ -2,7 +2,7 @@
 /**
  * @file   TModuleDecoder.h
  * @date   Created : Jul 20, 2013 10:20:00 JST
- *   Last Modified : Apr 29, 2014 15:12:37 JST
+ *   Last Modified : May 12, 2014 23:26:04 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -32,6 +32,8 @@ public:
    virtual Int_t Decode(char* buffer, const int &size, TObjArray *seg) = 0;
    virtual void SetClass(TClass *dataClass);
    virtual TClass* GetClass() { return fHits?fHits->GetClass():NULL; }
+
+   virtual void Copy(TObject& obj) const;
 
 protected:
    virtual TObject* New() { return (fHits)?fHits->ConstructedAt(fHits->GetEntriesFast()):NULL; }

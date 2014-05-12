@@ -2,7 +2,7 @@
 /**
  * @file   TModuleDecoderFactory.cc
  * @date   Created : Jul 22, 2013 08:22:15 JST
- *   Last Modified : Apr 29, 2014 16:04:22 JST
+ *   Last Modified : May 13, 2014 00:07:13 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -36,7 +36,7 @@ art::TModuleDecoderFactory* art::TModuleDecoderFactory::CloneInstance()
       TModuleDecoder *olddec = (TModuleDecoder*)fDecodersSparse->At(i);
       TModuleDecoder *newdec = (TModuleDecoder*)olddec->IsA()->New();
       //    new copies the
-      newdec->SetID(olddec->GetID());
+      olddec->Copy(*newdec);
       factory->Register(newdec);
    }
    return factory;
