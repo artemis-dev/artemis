@@ -23,7 +23,7 @@ LDFLAGS+= @YAML_CPP_LIB@
 
 include_HEADERS = $(SUBHDR) $(SUBHDRF) $(OPTHDR)
 
-noinst_LTLIBRARIES = libartridf.la
+lib_LTLIBRARIES = libartridf.la
 libartridf_la_SOURCES = $(SUBSRC) $(DICTSRC)
 libartridf_la_DEPENDENCIES = header
 # libartridf_la_LIBADD = $(SUBOBJ)

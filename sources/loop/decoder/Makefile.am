@@ -32,7 +32,7 @@ LDFLAGS+= @YAML_CPP_LIB@
 
 include_HEADERS = $(SUBHDR) $(SUBHDRF) $(OPTHDR)
 
-noinst_LTLIBRARIES = libartdecoder.la
+lib_LTLIBRARIES = libartdecoder.la
 libartdecoder_la_SOURCES = $(SUBSRC) $(DICTSRC)
 libartdecoder_la_DEPENDENCIES = header
 # libartdecoder_la_LIBADD = $(SUBOBJ)

@@ -15,6 +15,8 @@ INCDIR = ../../include
 
 CXXFLAGS = -Iinclude -I$(INCDIR)  $(shell root-config --cflags) -O2
 LDFLAGS = -L../commands/.libs -lcatcmd \
+	-L../loop/ridf/.libs -lartridf \
+	-L../loop/decoder/.libs -lartdecoder \
 	-L../loop/.libs -lcatloop \
 	-L../core/.libs -lcatcore \
 	-L../mc/.libs -lcatmc $(shell root-config --glibs) -lyaml-cpp

@@ -60,7 +60,7 @@ libcatloop_la_SOURCES = $(SUBSRC) $(DICTSRC)
 libcatloop_la_DEPENDENCIES = header 
 # libcatloop_la_LIBADD = $(SUBOBJ)
 libcatloop_la_LDFLAGS = $(LDFLAGS)
-libcatloop_la_LIBADD   = ridf/libartridf.la decoder/libartdecoder.la
+
 
 $(DICTSRC): $(SUBHDR) catloop_linkdef.h
 	@echo Making $(DICTSRC) ...
