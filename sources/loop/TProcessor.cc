@@ -2,7 +2,7 @@
 /**
  * @file   TProcessor.cc
  * @date   Created : Jul 10, 2013 17:10:19 JST
- *   Last Modified : 2014-05-12 08:57:57 JST (kawase)
+ *   Last Modified : May 14, 2014 08:41:17 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *
@@ -15,7 +15,7 @@
 #include <TClonesArray.h>
 
 art::TProcessor::TProcessor()
-   :   fParameters(NULL)
+   :   fParameters(NULL), fState(INIT), fErrorMessage("")
 {
    RegisterOptionalParameter("OutputTransparency",
 			     "Output is persistent if false (default)",
