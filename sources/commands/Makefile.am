@@ -13,10 +13,17 @@ SUBSRC = \
 	TCatCmdBn.cc \
 	TCatCmdBnx.cc \
 	TCatCmdBny.cc \
+	TCatCmdAv.cc \
+	TCatCmdAvx.cc \
+	TCatCmdAvy.cc \
+	TCatCmdMn.cc \
+	TCatCmdMnx.cc \
+	TCatCmdMny.cc \
 	TCatCmdSl.cc \
 	TCatCmdSly.cc \
 	TCatCmdLs.cc \
 	TCatCmdCd.cc \
+	TCatCmdListg.cc \
 	TCatCmdHstore.cc \
 	TCatCmdSave.cc \
 	TCatCmdMacro.cc \

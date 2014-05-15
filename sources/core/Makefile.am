@@ -1,4 +1,6 @@
 SUBSRC  =
+SUBSRC += TArtemisObject.cc
+SUBSRC += TDataObject.cc
 SUBSRC += TCatParameterTable.cc 
 SUBSRC += TCatHistManager.cc
 SUBSRC += TCatPadManager.cc

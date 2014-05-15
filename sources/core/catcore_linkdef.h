@@ -3,6 +3,8 @@
 #pragma link off all classes;
 #pragma link off all functions;
 
+#pragma link C++ class art::TArtemisObject;
+#pragma link C++ class art::TDataObject;
 #pragma link C++ class art::TCatParameterTable;
 #pragma link C++ class TCatHistManager+;
 #pragma link C++ class TCatPadManager;
