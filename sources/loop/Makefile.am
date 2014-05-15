@@ -1,6 +1,6 @@
-SUBDIRS = decoder ridf
+SUBDIRS = decoder ridf param hist 
 
-SUBSRC = 
+SUBSRC =
 SUBSRC+=TConditionBit.cc 
 SUBSRC+=TLoop.cc 
 SUBSRC+=TEventObject.cc 
@@ -83,3 +83,4 @@ clean-local:
 
 clean: clean-local
 	rm -rf $(SUBOBJ) .libs *.lo
+	- for d in $(SUBDIRS); do (cd $$d; $(MAKE) clean); done

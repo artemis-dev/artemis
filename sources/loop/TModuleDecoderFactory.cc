@@ -2,7 +2,7 @@
 /**
  * @file   TModuleDecoderFactory.cc
  * @date   Created : Jul 22, 2013 08:22:15 JST
- *   Last Modified : May 13, 2014 00:07:13 JST
+ *   Last Modified : May 15, 2014 13:33:47 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -10,6 +10,8 @@
  */
 #include "TModuleDecoderFactory.h"
 #include <TClass.h>
+
+ClassImp(art::TModuleDecoderFactory);
 
 art::TModuleDecoderFactory::TModuleDecoderFactory()
 {

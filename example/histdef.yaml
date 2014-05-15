@@ -1,0 +1,8 @@
+group:
+  - name: top
+    title: hoge
+    contents:
+      - name: value
+        title: value
+        x: ["random.fValue",100,0.,1.]
+        

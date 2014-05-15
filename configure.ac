@@ -68,6 +68,8 @@ AC_CONFIG_FILES([Makefile
                  sources/loop/Makefile
                  sources/loop/decoder/Makefile
                  sources/loop/ridf/Makefile
+                 sources/loop/hist/Makefile
+                 sources/loop/param/Makefile
                  sources/main/Makefile
                  sources/mc/Makefile])
 AC_OUTPUT
