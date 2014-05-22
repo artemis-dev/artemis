@@ -2,7 +2,7 @@
 /**
  * @file   TProcessor.cc
  * @date   Created : Jul 10, 2013 17:10:19 JST
- *   Last Modified : May 14, 2014 08:41:17 JST
+ *   Last Modified : May 22, 2014 23:28:56 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *
@@ -40,13 +40,14 @@ art::TProcessor::~TProcessor()
 
 void art::TProcessor::InitProc(TEventCollection *col)
 {
+   Info("InitProc","Initilizing ...");
    fCondition = (TConditionBit**)(col->Get(TLoop::kConditionName)->GetObjectRef());
    // obtain input collection
    Int_t nInputs = fInputs.size();
    Int_t iInput = 0;
    for (iInput = 0; iInput != nInputs; iInput++)  {
       InputCollection &input = fInputs[iInput];
-      *input.fP = NULL;
+      *(void***)input.fP = NULL;
       TString inputname = *input.fName;
       printf("%s\n",inputname.Data());
       if (!(col->GetObjectRef(inputname))) {
@@ -55,8 +56,8 @@ void art::TProcessor::InitProc(TEventCollection *col)
       }
       printf("*input.fName = %s\n",inputname.Data());
       // initialize input collection
-      *input.fP = (void**) col->GetObjectRef(inputname);
-      TObject *obj = **((TObject***)input.fP);
+      *(void***)input.fP = (void**) col->GetObjectRef(inputname);
+      TObject *obj = **((TObject***)(void***)input.fP);
 
       // check if the input class match
       if (!obj->IsA()->InheritsFrom(input.fClassName)) {
@@ -104,12 +105,14 @@ void art::TProcessor::InitProc(TEventCollection *col)
       }
          
       // prepare output object
-      *output.fP = (void*) cls->New();
+      *(void**)output.fP = (void*) cls->New();
       if (cls == TClonesArray::Class()) {
-         TClonesArray *arr = static_cast<TClonesArray*>(*output.fP);
-         arr->SetClass(output.fDataClassName);
+         TClonesArray *arr = static_cast<TClonesArray*>(*(void**)output.fP);
+         printf("setting %s%p\n",output.fDataClassName.Data(),TClass::GetClass(output.fDataClassName));
+         arr->SetClass(TClass::GetClass(output.fDataClassName));
+         printf("set\n");
       }
-      col->Add(*output.fName,(TObject*)*output.fP,fOutputIsTransparent);
+      col->Add(*output.fName,(TObject*)*(void**)output.fP,fOutputIsTransparent);
    }
 
    // call user defined initialization function
@@ -120,6 +123,7 @@ void art::TProcessor::InitProc(TEventCollection *col)
       // initializaed correctly
       SetStateReady();
    }
+   Info("InitProc","Done");
 }   
 
 

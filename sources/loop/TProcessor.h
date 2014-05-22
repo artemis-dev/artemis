@@ -2,7 +2,7 @@
 /**
  * @file   TProcessor.h
  * @date   Created : Jul 10, 2013 17:10:49 JST
- *   Last Modified : May 11, 2014 12:12:08 JST
+ *   Last Modified : May 22, 2014 22:35:28 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -104,19 +104,18 @@ protected:
 
    class InputCollection {
    public:
-      InputCollection(void*** p,TString* name, TString className, TString dataClassName)
+      InputCollection(void* p,TString* name, TString className, TString dataClassName)
          : fP(p), fName(name),fClassName(className),fDataClassName(dataClassName) {;}
-      void*** fP; 
+      void* fP; 
       TString *fName; 
       TString fClassName;
       TString fDataClassName;
-      InputCollection &operator= (const InputCollection &t) {return *this;}
    } ;
    class OutputCollection {
    public:
-      OutputCollection(void** p,TString* name, TString className, TString dataClassName)
+      OutputCollection(void* p,TString* name, TString className, TString dataClassName)
          : fP(p), fName(name),fClassName(className),fDataClassName(dataClassName) {;}
-      void** fP;
+      void* fP;
       TString* fName;
       TString fClassName;
       TString fDataClassName;
@@ -144,7 +143,7 @@ protected:
                                 const char* description,
                                 TString& parameter,
                                 const TString& defaultParam,
-                                void*** p = NULL,
+                                void* p = NULL,
                                 TString inputclass = "",
                                 TString dataclass = "") {
       RegisterProcessorParameter(name,description,parameter,
@@ -158,7 +157,7 @@ protected:
                                  const char* description,
                                  TString& parameter,
                                  const TString& defaultParam,
-                                 void ** p = NULL,
+                                 void * p = NULL,
                                  TString outputclass = "",
                                  TString dataclass = "") {
       RegisterProcessorParameter(name,description,parameter,
