@@ -2,7 +2,7 @@
 /**
  * @file   TProcessor.h
  * @date   Created : Jul 10, 2013 17:10:49 JST
- *   Last Modified : May 22, 2014 22:35:28 JST
+ *   Last Modified : May 27, 2014 19:28:48 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -102,24 +102,15 @@ protected:
    // cannot use set title directly
    virtual void SetTitle(const char* title = "") { TNamed::SetTitle(title); }
 
-   class InputCollection {
+   class IOCollection {
    public:
-      InputCollection(void* p,TString* name, TString className, TString dataClassName)
+      IOCollection(void* p,TString* name, TString className, TString dataClassName)
          : fP(p), fName(name),fClassName(className),fDataClassName(dataClassName) {;}
       void* fP; 
       TString *fName; 
       TString fClassName;
       TString fDataClassName;
    } ;
-   class OutputCollection {
-   public:
-      OutputCollection(void* p,TString* name, TString className, TString dataClassName)
-         : fP(p), fName(name),fClassName(className),fDataClassName(dataClassName) {;}
-      void* fP;
-      TString* fName;
-      TString fClassName;
-      TString fDataClassName;
-   };
       
    // register processor parameter
    template<class T>
@@ -149,7 +140,7 @@ protected:
       RegisterProcessorParameter(name,description,parameter,
                                  defaultParam);
       if (p) {
-         fInputs.push_back(InputCollection(p, &parameter,inputclass,dataclass));
+         fInputs.push_back(IOCollection(p, &parameter,inputclass,dataclass));
       }
    }                                               
 
@@ -163,7 +154,7 @@ protected:
       RegisterProcessorParameter(name,description,parameter,
                                   defaultParam);
       if (p) {
-         fOutputs.push_back(OutputCollection(p, &parameter,outputclass,dataclass));
+         fOutputs.push_back(IOCollection(p, &parameter,outputclass,dataclass));
       }
    }                                               
 
@@ -175,14 +166,16 @@ protected:
       fParamMap[TString(name)] = new TParameter_t<T>(name,description,parameter,
                                                defaultParam,true);
    }
-#if 0
-   template<class T>
+
    void RegisterInputInfo(const char* name, const char* description,
                           TString &parameter, const TString& defaultParam,
-                          void **p = NULL,
-                          TString infoclass = "");
-
-#endif
+                          void *p = NULL,
+                          TString infoclass = "", TString dataclass = "") {
+      RegisterProcessorParameter(name,description,parameter,defaultParam);
+      if (p) {
+         fInputInfo.push_back(IOCollection(p, &parameter,infoclass,dataclass));
+      }
+   }                                               
    
    // protected members
    
@@ -190,8 +183,9 @@ protected:
    TConditionBit **fCondition; // condition bit to control loop
    TParameterStrings *fParameters; // parameter strings
    Int_t  fVerboseLevel; // verbose level
-   std::vector<InputCollection> fInputs;//!
-   std::vector<OutputCollection> fOutputs;//!
+   std::vector<IOCollection> fInputs;//!
+   std::vector<IOCollection> fOutputs;//!
+   std::vector<IOCollection> fInputInfo; //!
 
 private:
    // parameter map to hold the processor parameters

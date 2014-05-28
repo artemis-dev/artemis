@@ -2,7 +2,7 @@
 /**
  * @file   TProcessor.cc
  * @date   Created : Jul 10, 2013 17:10:19 JST
- *   Last Modified : May 22, 2014 23:28:56 JST
+ *   Last Modified : May 28, 2014 15:18:53 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *
@@ -46,7 +46,7 @@ void art::TProcessor::InitProc(TEventCollection *col)
    Int_t nInputs = fInputs.size();
    Int_t iInput = 0;
    for (iInput = 0; iInput != nInputs; iInput++)  {
-      InputCollection &input = fInputs[iInput];
+      IOCollection &input = fInputs[iInput];
       *(void***)input.fP = NULL;
       TString inputname = *input.fName;
       printf("%s\n",inputname.Data());
@@ -84,7 +84,7 @@ void art::TProcessor::InitProc(TEventCollection *col)
    Int_t nOutputs = fOutputs.size();
    Int_t iOutput = 0;
    for (iOutput = 0; iOutput != nOutputs; iOutput++) {
-      OutputCollection &output = fOutputs[iOutput];
+      IOCollection &output = fOutputs[iOutput];
       TClass *cls = TClass::GetClass(output.fClassName);
 
       // check output class exists
@@ -114,6 +114,42 @@ void art::TProcessor::InitProc(TEventCollection *col)
       }
       col->Add(*output.fName,(TObject*)*(void**)output.fP,fOutputIsTransparent);
    }
+
+   Int_t nInputInfo = fInputInfo.size();
+   for (Int_t iInfo = 0; iInfo != nInputInfo; iInfo++) {
+      IOCollection &info = fInputInfo[iInfo];
+      TClass *cls = TClass::GetClass(info.fClassName);
+      TString infoname = *info.fName;
+      // get registered information
+      if (!((*(void**)info.fP) = col->GetInfo(infoname))) {
+         SetStateError(TString::Format(ErrMsgFmt::INVALID_INPUT_COLLECTION,infoname.Data()));
+         return;
+      }
+      // object should be casted 
+      TObject *obj = *(TObject**)((void**)info.fP);
+
+      // check if the info class match
+      if (!obj->IsA()->InheritsFrom(info.fClassName)) {
+         SetStateError(TString::Format(ErrMsgFmt::INPUT_CLASS_MISSMATCH,info.fClassName.Data(),obj->IsA()->GetName()));
+         return;
+      }
+
+      // check if the info data class for TClonesArray matches
+      if (TClass::GetClass(info.fClassName)->InheritsFrom("TClonesArray")) {
+         TClonesArray *arr = static_cast<TClonesArray*>(obj);
+         // check the pointer null
+         if (!arr->GetClass()) {
+            SetStateError(TString::Format(ErrMsgFmt::INPUT_DATA_CLASS_MISSMATCH,info.fDataClassName.Data(),"nil"));
+            return;
+         }
+         // check the class inherits from the required data
+         if (!arr->GetClass()->InheritsFrom(info.fDataClassName)) {
+            SetStateError(TString::Format(ErrMsgFmt::INPUT_DATA_CLASS_MISSMATCH,info.fDataClassName.Data(),arr->GetClass()->GetName()));
+            return;
+         }
+      }
+   }         
+      
 
    // call user defined initialization function
    Init(col);
