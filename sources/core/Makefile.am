@@ -31,7 +31,7 @@ include_HEADERS = $(SUBHDR) $(SUBHDRF) $(OPTHDR)
 
 lib_LTLIBRARIES = libcatcore.la
 libcatcore_la_SOURCES = $(SUBSRC) $(DICTSRC)
-libcatcore_la_DEPENDENCIES = header
+libcatcore_la_DEPENDENCIES = .header
 # libcatcore_la_LIBADD = $(SUBOBJ)
 libcatcore_la_LDFLAGS = $(LDFLAGS)
 
@@ -39,10 +39,11 @@ $(DICTSRC): $(SUBHDR) catcore_linkdef.h
 	@echo Making $(DICTSRC) ...
 	rootcint -f $@ -c $(DEFAULT_INCLUDES) $(MYINCLUDES) $^
 
-header: $(include_HEADERS)
+.header: $(include_HEADERS)
 	@echo Installing header to $(INCDIR)
 	@mkdir -p $(INCDIR)
 	@cp -a $(include_HEADERS) $(INCDIR)
+	@touch .header
 
 
 .cc.o:
@@ -55,4 +56,4 @@ clean-local:
 	rm -f *dict*
 
 clean: clean-local
-	rm -rf $(SUBOBJ) .libs *.lo
+	rm -rf $(SUBOBJ) .libs *.lo .header

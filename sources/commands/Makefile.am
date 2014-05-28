@@ -55,7 +55,7 @@ include_HEADERS = $(SUBHDR) $(SUBHDRF) $(OPTHDR)
 
 lib_LTLIBRARIES = libcatcmd.la
 libcatcmd_la_SOURCES = $(SUBSRC) $(DICTSRC)
-libcatcmd_la_DEPENDENCIES = header
+libcatcmd_la_DEPENDENCIES = .header
 libcatcmd_la_LDFLAGS = $(LDFLAGS)
 
 $(DICTSRC): $(SUBHDR) catcmd_linkdef.h
@@ -64,11 +64,11 @@ $(DICTSRC): $(SUBHDR) catcmd_linkdef.h
 	@echo
 	rootcint -f $@ -c $(DEFAULT_INCLUDES) $(INCLUDES) $^
 
-header: $(include_HEADERS)
+.header: $(include_HEADERS)
 	@echo Install header files to $(INCDIR)
 	@mkdir -p $(INCDIR)
 	@cp -a $(include_HEADERS) $(INCDIR)
-	@touch header
+	@touch .header
 
 .cc.o:
 
@@ -80,4 +80,4 @@ clean-local:
 	rm -f *dict*
 
 clean: clean-local
-	rm -rf $(SUBOBJ) .libs *.lo
+	rm -rf $(SUBOBJ) .libs *.lo .header
