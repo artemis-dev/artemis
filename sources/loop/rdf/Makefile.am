@@ -23,9 +23,9 @@ LDFLAGS+= @YAML_CPP_LIB@
 
 include_HEADERS = $(SUBHDR) $(SUBHDRF) $(OPTHDR)
 
-noinst_LTLIBRARIES = libartrdf.la
+lib_LTLIBRARIES = libartrdf.la
 libartrdf_la_SOURCES = $(SUBSRC) $(DICTSRC)
-libartrdf_la_DEPENDENCIES = header
+libartrdf_la_DEPENDENCIES = .header
 # libartrdf_la_LIBADD = $(SUBOBJ)
 libartrdf_la_LDFLAGS = $(LDFLAGS)
 
@@ -34,10 +34,11 @@ $(DICTSRC): $(SUBHDR) artrdf_linkdef.h
 	@echo Making $(DICTSRC) ...
 	rootcint -f $@ -c $(CXXFLAGS)  $^
 
-header: $(include_HEADERS)
+.header: $(include_HEADERS)
 	@echo Installing header to $(INCDIR)
 	@mkdir -p $(INCDIR)
 	@cp -a $(include_HEADERS) $(INCDIR)
+	@touch .header
 
 
 .cc.o:
@@ -50,4 +51,4 @@ clean-local:
 	rm -f *dict*
 
 clean: clean-local
-	rm -rf $(SUBOBJ) .libs *.lo
+	rm -rf $(SUBOBJ) .libs *.lo .header

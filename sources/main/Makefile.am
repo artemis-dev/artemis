@@ -18,6 +18,7 @@ LDFLAGS = -O -L../commands/.libs -lcatcmd \
 	-L../loop/hist/.libs -larthist \
 	-L../loop/param/.libs -lartparam   \
 	-L../loop/ridf/.libs -lartridf \
+	-L../loop/rdf/.libs -lartrdf \
 	-L../loop/decoder/.libs -lartdecoder  \
 	-L../loop/.libs -lcatloop \
 	-L../core/.libs -lcatcore \
