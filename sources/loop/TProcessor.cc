@@ -2,7 +2,7 @@
 /**
  * @file   TProcessor.cc
  * @date   Created : Jul 10, 2013 17:10:19 JST
- *   Last Modified : May 28, 2014 15:18:53 JST
+ *   Last Modified : Jun 12, 2014 23:05:01 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *
@@ -49,12 +49,10 @@ void art::TProcessor::InitProc(TEventCollection *col)
       IOCollection &input = fInputs[iInput];
       *(void***)input.fP = NULL;
       TString inputname = *input.fName;
-      printf("%s\n",inputname.Data());
       if (!(col->GetObjectRef(inputname))) {
          SetStateError(TString::Format(ErrMsgFmt::INVALID_INPUT_COLLECTION,inputname.Data()));
          return;
       }
-      printf("*input.fName = %s\n",inputname.Data());
       // initialize input collection
       *(void***)input.fP = (void**) col->GetObjectRef(inputname);
       TObject *obj = **((TObject***)(void***)input.fP);
@@ -108,9 +106,9 @@ void art::TProcessor::InitProc(TEventCollection *col)
       *(void**)output.fP = (void*) cls->New();
       if (cls == TClonesArray::Class()) {
          TClonesArray *arr = static_cast<TClonesArray*>(*(void**)output.fP);
-         printf("setting %s%p\n",output.fDataClassName.Data(),TClass::GetClass(output.fDataClassName));
+         // printf("setting %s%p\n",output.fDataClassName.Data(),TClass::GetClass(output.fDataClassName));
          arr->SetClass(TClass::GetClass(output.fDataClassName));
-         printf("set\n");
+         // printf("set\n");
       }
       col->Add(*output.fName,(TObject*)*(void**)output.fP,fOutputIsTransparent);
    }

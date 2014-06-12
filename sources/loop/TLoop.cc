@@ -2,7 +2,7 @@
 /**
  * @file   TLoop.cc
  * @date   Created : Apr 26, 2012 20:26:47 JST
- *   Last Modified : May 09, 2014 20:04:06 JST
+ *   Last Modified : Jun 12, 2014 23:03:54 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -109,7 +109,7 @@ Bool_t art::TLoop::Init()
       TProcessor *proc = (*itr);
       proc->InitProc(fEventCollection);
       if (proc->IsError()) {
-         Error("Init","%s (%s) %s",proc->GetName(),proc->GetTitle(),proc->GetErrorMessage());
+         Error("Init","\n\n Process '%s' (%s) %s\n",proc->GetName(),proc->GetTitle(),proc->GetErrorMessage());
          return kFALSE;
       }
    }

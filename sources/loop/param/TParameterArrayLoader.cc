@@ -3,7 +3,7 @@
  * @brief  parameter array loader
  *
  * @date   Created       : 2014-03-03 11:11:54 JST
- *         Last Modified : Apr 29, 2014 13:22:55 JST
+ *         Last Modified : Jun 12, 2014 23:00:33 JST
  * @author KAWASE Shoichiro <kawase@cns.s.u-tokyo.ac.jp>, Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 KAWASE Shoichiro
@@ -67,7 +67,6 @@ void TParameterArrayLoader::Init(TEventCollection *col) {
    } else if (fFileFormat == FORMAT_YAML) {
       if (LoadYAML()) succeeded = kTRUE;
    }
-   
    if (!succeeded) {
       Error("Init","No parameter loaded from %s", fFileName.Data());
       delete fParameterArray;
@@ -119,7 +118,7 @@ Bool_t TParameterArrayLoader::LoadYAML()
 {
    ifstream fin(fFileName.Data());
    if (!fin.is_open()){
-      Error("LoadYAML","Cannot open file: %s",fFileName.Data());
+      SetStateError(TString::Format("Cannot open file: %s",fFileName.Data()));
       return kFALSE;
    }
    YAML::Node doc;
@@ -127,22 +126,24 @@ Bool_t TParameterArrayLoader::LoadYAML()
       YAML::Parser parser(fin);
       parser.GetNextDocument(doc);
       std::string name;
-
+      const YAML::Node *contents = doc.FindValue("Contents");
+      if (!contents) {
+         contents = &doc;
+      }
       // parse first document
-      for (YAML::Iterator it = doc.begin(); it != doc.end(); it++) {
+      for (YAML::Iterator it = contents->begin(); it != contents->end(); it++) {
          it.first() >> name;
          TParameterObject *prm = static_cast<TParameterObject*>(fParameterArray->ConstructedAt(fParameterArray->GetEntriesFast()));
          prm->SetName(name.c_str());
          if (!prm->LoadYAMLNode(it.second())) {
             fParameterArray->Delete();
-            Error("LoadYAML","Error while parsing YAML for %s\n",name.c_str());
+            SetStateError(TString::Format("Error while parsing YAML for %s\n",name.c_str()));
             return kFALSE;
          }
-         printf("%s\n",name.c_str());
       }
    } catch (YAML::Exception& e) {
-      Error("LoadYAML","Error occurred while parsing YAML file: %s",fFileName.Data());
-      fprintf(stderr,"%s\n",e.what());
+      SetStateError(TString::Format("Error occurred while parsing YAML file: %s\n%s",
+                                    fFileName.Data(),e.what()));
       return kFALSE;
    }
    if (!fParameterArray->GetEntriesFast()) return kFALSE;
