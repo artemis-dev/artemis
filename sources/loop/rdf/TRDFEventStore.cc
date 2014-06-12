@@ -3,7 +3,7 @@
  * @brief  RDF Event Store
  *
  * @date   Created       : 2014-03-30 10:56:06 JST
- *         Last Modified : Jun 01, 2014 22:13:54 JST
+ *         Last Modified : Jun 05, 2014 23:35:17 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -79,7 +79,7 @@ void TRDFEventStore::Init(TEventCollection *col)
    for (Int_t iSeg = 0; nSeg != iSeg; iSeg++) {
       TSegmentInfo *segment = (TSegmentInfo*) fSegmentInfoArray->At(iSeg);
 //      printf("%p\n",segment);
-      Int_t segid = segment->GetID() ;
+      Int_t segid = (segment->GetSegID()) ;
 //      printf("%d\n",segid);
 //      printf("%s\n",segment->GetModuleType().Data());
       TModuleType *modtype = (TModuleType*) fModuleTypeArray->FindObject(segment->GetModuleType());

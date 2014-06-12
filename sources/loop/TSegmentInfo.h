@@ -3,7 +3,7 @@
  * @brief  segment information
  *
  * @date   Created       : 2014-05-17 09:13:41 JST
- *         Last Modified : May 29, 2014 21:44:38 JST
+ *         Last Modified : Jun 05, 2014 23:30:32 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -34,6 +34,11 @@ public:
    virtual Int_t GetNumModules() { return fModules.size(); }
    virtual TModuleInfo* GetModule(Int_t idx) { return fModules[idx]; }
    virtual Int_t GetID(Int_t idx = 0) { return fID[idx]; }
+   virtual Int_t GetSegID() {
+      if (fgFormatType == RDF) return fID[0];
+      if (fgFormatType == RIDF) return (((fID[0]&0x3f)<<20) | ((fID[1]&0x3f)<<14) |((fID[2]&0x3f)<<8));
+      return -1;
+   }
    virtual void Print(Option_t *opt) const;
    virtual TString GetModuleType() { return fModuleType; }
    static void SetFormatType(FormatType_t type) { fgFormatType = type; }

@@ -3,7 +3,7 @@
  * @brief  segment checking processor
  *
  * @date   Created       : 2014-05-18 14:13:24 JST
- *         Last Modified : Jun 01, 2014 18:43:03 JST
+ *         Last Modified : Jun 05, 2014 23:28:57 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -48,7 +48,7 @@ protected:
 
    TSegmentedData **fSegmentedData;//!
    TString fSegmentedDataName;
-   std::vector<Int_t> fIgnore; //! list of ignored segment
+   StringVec_t fIgnore; //! list of ignored segment
    std::map<Int_t, std::vector<TModuleInfo*> > fSegments; //!
 
 private:

@@ -3,7 +3,7 @@
  * @brief  segment check
  *
  * @date   Created       : 2014-05-18 14:16:52 JST
- *         Last Modified : Jun 02, 2014 13:29:18 JST
+ *         Last Modified : Jun 05, 2014 23:33:46 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -28,7 +28,7 @@ ClassImp(TSegmentCheckProcessor)
 TSegmentCheckProcessor::TSegmentCheckProcessor()
 : fSegmentInfo(NULL)
 {
-   IntVec_t defaultignore; defaultignore.push_back(-1);
+   StringVec_t defaultignore; defaultignore.push_back("");
    RegisterInputCollection("SegmentedDataName","name of the segmented data",
                            fSegmentedDataName,TString("segdata"),
                            &fSegmentedData,"art::TSegmentedData");
@@ -73,10 +73,10 @@ void TSegmentCheckProcessor::Init(TEventCollection *col)
       Int_t nMod = seg->GetNumModules();
       // skip if no module registered
       if (!nMod) continue;
-      if (fIgnore.end() != std::find(fIgnore.begin(),fIgnore.end(),seg->GetID())) continue;
+      if (fIgnore.end() != std::find(fIgnore.begin(),fIgnore.end(),seg->GetName())) continue;
 
       std::pair<int, std::vector<TModuleInfo*> > segment;
-      segment.first = seg->GetID();
+      segment.first = seg->GetSegID();
       std::vector<TModuleInfo*> &modules = fSegments.insert(segment).first->second;
       
       TDirectory *segdir = fHistDir->mkdir(seg->GetName());
@@ -100,9 +100,9 @@ void TSegmentCheckProcessor::Init(TEventCollection *col)
    }
    save->cd();
 
-   for (std::vector<Int_t>::iterator it = fIgnore.begin();
+   for (std::vector<TString>::iterator it = fIgnore.begin();
         it != fIgnore.end(); it++) {
-      printf("%d will be ignored\n",*it);
+      printf("%s will be ignored\n",(*it).Data());
    }
 }
 

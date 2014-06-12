@@ -1,4 +1,4 @@
-SUBDIRS = decoder ridf rdf param hist 
+SUBDIRS = param decoder ridf rdf hist 
 
 SUBSRC =
 SUBSRC+=TCategorizedData.cc 
@@ -28,6 +28,7 @@ SUBSRC+=TRawDataSimple.cc
 SUBSRC+=TRawTiming.cc 
 SUBSRC+=TRawTimingWithEdge.cc 
 SUBSRC+=TRunInfo.cc
+SUBSRC+=TSegmentCheckProcessor.cc
 SUBSRC+=TSegmentedData.cc
 SUBSRC+=TSegmentInfo.cc
 SUBSRC+=TSharedMemoryDataSource.cc
