@@ -13,9 +13,14 @@
 #define TPARAMETEROBJECT_H
 
 #include <list>
+#include <map>
 
 #include <TSystem.h>
 #include <TNamed.h>
+
+#include "TProcessorParameter.h"
+#include "TParameterStrings.h"
+
 
 namespace art {
    class TParameterObject;
@@ -42,13 +47,37 @@ public:
    virtual Bool_t Loaded(const FileStat_t& fstat) const;
 
    virtual void Clear(Option_t *opt="");
+   virtual const char* GetCurrentFile() { return fCurrentFile.Data(); }
+
+   virtual void Print(Option_t *opt = "") const;
 
 protected:
    Bool_t LoadYAMLFile(const TString& filename);
    virtual Bool_t LoadTextFile(istream& /* stream */);
-
    std::list<FileStat_t> *fLoadedFileStat; //!filestat of loaded file(s) for current parameter
    Bool_t fLoaded; // loaded flag
+   TString fCurrentFile; //! current file name
+
+
+   // autoload functional
+   template <class T>
+   void RegisterParameter(const char* name, const char* description,
+                          T& parameter, const T& defaultParameter, Int_t size) {
+      fParameterMap[TString(name)] =
+         new TParameter_t<T>(name,description,parameter,defaultParameter,false,size);
+   }
+
+   template <class T>
+   void RegisterOptionalParameter(const char* name, const char* description,
+                          T& parameter, const T& defaultParameter, Int_t size) {
+      fParameterMap[TString(name)] =
+         new TParameter_t<T>(name,description,parameter,defaultParameter,true,size);
+   }
+
+   typedef std::map<TString,TProcessorParameter*> ParameterMap_t;
+   ParameterMap_t fParameterMap;
+   TParameterStrings fParameterStrings; //!
+   
 
    ClassDef(TParameterObject,1) // The basis for an artemis parameter object
 };
