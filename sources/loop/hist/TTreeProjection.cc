@@ -3,7 +3,7 @@
  * @brief  Tree projection definitions
  *
  * @date   Created       : 2014-03-05 10:15:05 JST
- *         Last Modified : Mar 10, 2014 12:54:05 JST
+ *         Last Modified : Jun 15, 2014 12:47:04 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -88,11 +88,15 @@ Bool_t TTreeProjection::LoadYAMLNode(const YAML::Node &node)
    const YAML::Node *includeNode = node.FindValue(kNodeKeyInclude);
 
    Info(kMethodName,"loading tree projection");
-   if (!groupNode) {
-      Error(kMethodName,"At least one group should be contained");
-      return kFALSE;
+   if (fBaseDir.IsNull()) {
+      fBaseDir = gSystem->DirName(fCurrentFile);
    }
 
+   if (!groupNode && !includeNode) {
+      Error(kMethodName,"At least one group or include node should be contained");
+      return kFALSE;
+   }
+   
    //======================================================================
    // include node
    //======================================================================
@@ -102,7 +106,9 @@ Bool_t TTreeProjection::LoadYAMLNode(const YAML::Node &node)
          for (YAML::Iterator it = includeNode->begin(); it != includeNode->end(); it++) {
             std::string name;
             (*it) >> name;
-            TString filename = name.c_str();
+            TString filename = gSystem->ConcatFileName(fBaseDir,name.c_str());
+            TString dirsaved = fBaseDir;
+            
 //            gSystem->FindFile(fSearchPath,filename);
             if (filename.IsNull()) {
                Warning(kMethodName,"File '%s' in include node does not exist",name.c_str());
@@ -110,7 +116,11 @@ Bool_t TTreeProjection::LoadYAMLNode(const YAML::Node &node)
             }
             if (LoadYAMLFile(filename)) {
                fIncludes->Add(new TObjString(filename));
+            } else {
+               Error("LoadYAMLNode","Error while loading file '%s'",filename.Data());
+               return kFALSE;
             }
+            fBaseDir = dirsaved;
          }
       } catch (YAML::Exception &e){
          Error(kMethodName,"%s",e.what());
@@ -133,7 +143,7 @@ Bool_t TTreeProjection::LoadYAMLNode(const YAML::Node &node)
          }
       }
    }
-
+   if (!groupNode) return kTRUE;
    //======================================================================
    // group node
    //======================================================================

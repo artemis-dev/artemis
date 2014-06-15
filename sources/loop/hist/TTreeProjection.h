@@ -3,7 +3,7 @@
  * @brief  Tree projection definition
  *
  * @date   Created       : 2014-03-05 10:07:22 JST
- *         Last Modified : Mar 06, 2014 19:30:31 JST
+ *         Last Modified : Jun 15, 2014 11:29:15 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -48,6 +48,8 @@ protected:
    TObjArray *fIncludes;
    TObjArray *fAliases;
    std::vector<TAttTreeProj*> fProjections;    //! helper container for fill the projections
+
+   TString fBaseDir;
 
 private:
 

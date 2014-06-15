@@ -3,7 +3,7 @@
  * @brief  tree projection
  *
  * @date   Created       : 2014-03-05 22:30:06 JST
- *         Last Modified : Mar 16, 2014 04:48:55 JST
+ *         Last Modified : Jun 15, 2014 11:11:57 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -44,6 +44,7 @@ TTreeProjectionProcessor& TTreeProjectionProcessor::operator=(const TTreeProject
 void TTreeProjectionProcessor::Init(TEventCollection *col)
 {
    TParameterLoader::Init(col);
+   if (IsError()) return;
    fTreeProj = static_cast<art::TTreeProjection*>(fParameter);
    
 
