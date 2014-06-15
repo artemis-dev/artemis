@@ -59,6 +59,7 @@ void TParameterLoader::Init(TEventCollection *col) {
       fParameter->Print();
       col->AddInfo(fParameterName,fParameter,fOutputIsTransparent);
    } else {
+      SetStateError(TString::Format("Could not load file %s",fFileName.Data()));
       delete fParameter;
       fParameter = NULL;
    }
