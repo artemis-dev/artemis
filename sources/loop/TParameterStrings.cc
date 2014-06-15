@@ -2,7 +2,7 @@
 /**
  * @file   TParameterStrings.cc
  * @date   Created : May 18, 2012 14:18:07 JST
- *   Last Modified : 2014-04-12 18:01:04 JST (kawase)
+ *   Last Modified : Jun 14, 2014 16:07:52 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *
@@ -112,7 +112,7 @@ Bool_t art::TParameterStrings::IsSet(const char* name)
    return fParamMap[key].size() > 0;
 }
 
-void operator >> (const YAML::Node &node, art::TParameterStrings *&str) {
+void operator >> (const YAML::Node &node, art::TParameterStrings *str) {
    std::string name,value;
    for (YAML::Iterator it = node.begin(); it != node.end(); ++it) {
       std::vector <TString> prm;
