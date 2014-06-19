@@ -2,7 +2,7 @@
 /**
  * @file   TProcessor.h
  * @date   Created : Jul 10, 2013 17:10:49 JST
- *   Last Modified : May 27, 2014 19:28:48 JST
+ *   Last Modified : Jun 19, 2014 16:56:03 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -104,12 +104,13 @@ protected:
 
    class IOCollection {
    public:
-      IOCollection(void* p,TString* name, TString className, TString dataClassName)
-         : fP(p), fName(name),fClassName(className),fDataClassName(dataClassName) {;}
+      IOCollection(void* p,TString* name, TString className, TString dataClassName,TString prmname = "" )
+         : fP(p), fName(name),fClassName(className),fDataClassName(dataClassName),fPrmName(prmname) {;}
       void* fP; 
       TString *fName; 
       TString fClassName;
       TString fDataClassName;
+      TString fPrmName;
    } ;
       
    // register processor parameter
@@ -140,7 +141,7 @@ protected:
       RegisterProcessorParameter(name,description,parameter,
                                  defaultParam);
       if (p) {
-         fInputs.push_back(IOCollection(p, &parameter,inputclass,dataclass));
+         fInputs.push_back(IOCollection(p, &parameter,inputclass,dataclass,name));
       }
    }                                               
 
@@ -154,7 +155,7 @@ protected:
       RegisterProcessorParameter(name,description,parameter,
                                   defaultParam);
       if (p) {
-         fOutputs.push_back(IOCollection(p, &parameter,outputclass,dataclass));
+         fOutputs.push_back(IOCollection(p, &parameter,outputclass,dataclass,name));
       }
    }                                               
 
@@ -173,7 +174,16 @@ protected:
                           TString infoclass = "", TString dataclass = "") {
       RegisterProcessorParameter(name,description,parameter,defaultParam);
       if (p) {
-         fInputInfo.push_back(IOCollection(p, &parameter,infoclass,dataclass));
+         fInputInfo.push_back(IOCollection(p, &parameter,infoclass,dataclass,name));
+      }
+   }                                               
+   void RegisterOptionalInputInfo(const char* name, const char* description,
+                          TString &parameter, const TString& defaultParam,
+                          void *p = NULL,
+                          TString infoclass = "", TString dataclass = "") {
+      RegisterOptionalParameter(name,description,parameter,defaultParam);
+      if (p) {
+         fInputInfo.push_back(IOCollection(p, &parameter,infoclass,dataclass,name));
       }
    }                                               
    

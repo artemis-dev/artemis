@@ -2,7 +2,7 @@
 /**
  * @file   TProcessor.cc
  * @date   Created : Jul 10, 2013 17:10:19 JST
- *   Last Modified : Jun 19, 2014 16:33:53 JST
+ *   Last Modified : Jun 19, 2014 16:53:29 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *
@@ -118,8 +118,12 @@ void art::TProcessor::InitProc(TEventCollection *col)
       IOCollection &info = fInputInfo[iInfo];
       TClass *cls = TClass::GetClass(info.fClassName);
       TString infoname = *info.fName;
+      if (!fParamMap[info.fPrmName]) {
+         SetStateError(TString::Format(ErrMsgFmt::INVALID_INPUT_COLLECTION,info.fPrmName.Data()));
+         return;
+      }
       // get registered information
-      if (!((*(void***)info.fP) = (void**)col->GetInfoRef(infoname))) {
+      if (!((*(void***)info.fP) = (void**)col->GetInfoRef(infoname)) && !fParamMap[info.fPrmName]->IsOptional()) {
          SetStateError(TString::Format(ErrMsgFmt::INVALID_INPUT_COLLECTION,infoname.Data()));
          return;
       }
