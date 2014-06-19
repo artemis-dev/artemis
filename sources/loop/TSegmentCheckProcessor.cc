@@ -3,7 +3,7 @@
  * @brief  segment check
  *
  * @date   Created       : 2014-05-18 14:16:52 JST
- *         Last Modified : Jun 05, 2014 23:33:46 JST
+ *         Last Modified : Jun 19, 2014 16:27:09 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -65,11 +65,11 @@ void TSegmentCheckProcessor::Init(TEventCollection *col)
 {
    TDirectory *save = gDirectory;
    fHistDir = gDirectory->mkdir(GetName(),GetTitle());
-   Int_t nSeg = fSegmentList->GetEntriesFast();
+   Int_t nSeg = (*fSegmentList)->GetEntriesFast();
    Info("Init","nSeg = %d",nSeg);
    
    for (Int_t iSeg=0; iSeg!=nSeg; iSeg++) {
-      TSegmentInfo *seg = (TSegmentInfo*) fSegmentList->At(iSeg);
+      TSegmentInfo *seg = (TSegmentInfo*) (*fSegmentList)->At(iSeg);
       Int_t nMod = seg->GetNumModules();
       // skip if no module registered
       if (!nMod) continue;
@@ -88,7 +88,7 @@ void TSegmentCheckProcessor::Init(TEventCollection *col)
          printf("geo = %d\n",id);
          if (modules.size() < (unsigned int) id+1) modules.resize(id+1);
          modules.at(id) = mod;
-         TModuleType *type = (TModuleType*)fModuleList->FindObject(seg->GetModuleType());
+         TModuleType *type = (TModuleType*)(*fModuleList)->FindObject(seg->GetModuleType());
          Int_t nCh = type->GetNch();
          Int_t nVal = type->GetNumValues();
          for (Int_t iVal = 0; iVal != nVal; iVal++) {

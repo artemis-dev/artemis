@@ -2,7 +2,7 @@
 /**
  * @file   TEventCollection.cc
  * @date   Created : Jul 10, 2013 17:10:20 JST
- *   Last Modified : May 11, 2014 11:54:08 JST
+ *   Last Modified : Jun 19, 2014 16:36:56 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -54,6 +54,13 @@ TObject* TEventCollection::GetInfo(const char *name) {
       return NULL;
    }
    return *(TObject**)((TEventObject*)obj)->GetObjectRef();
+}   
+void** TEventCollection::GetInfoRef(const char *name) {
+   TObject *obj = NULL;
+   if (!(obj = fUserInfo->FindObject(name))) {
+      return NULL;
+   }
+   return (void**)((TEventObject*)obj)->GetObjectRef();
 }   
 
 

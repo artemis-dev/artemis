@@ -2,7 +2,7 @@
 /**
  * @file   TEventCollection.h
  * @date   Created : Apr 26, 2012 23:26:19 JST
- *   Last Modified : Nov 22, 2013 18:05:24 JST
+ *   Last Modified : Jun 19, 2014 16:33:26 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -37,6 +37,8 @@ public:
    virtual void** GetObjectRef(const char *name);
    // get an information object
    virtual TObject* GetInfo(const char *name);
+   // get an information object
+   virtual void** GetInfoRef(const char *name);
    // get the iterator of event objects
    virtual TIter* GetIter() { return new TIter(fObjects); }
    // get the list of information objects

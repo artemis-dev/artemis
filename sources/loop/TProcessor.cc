@@ -2,7 +2,7 @@
 /**
  * @file   TProcessor.cc
  * @date   Created : Jul 10, 2013 17:10:19 JST
- *   Last Modified : Jun 12, 2014 23:05:01 JST
+ *   Last Modified : Jun 19, 2014 16:33:53 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *
@@ -119,12 +119,12 @@ void art::TProcessor::InitProc(TEventCollection *col)
       TClass *cls = TClass::GetClass(info.fClassName);
       TString infoname = *info.fName;
       // get registered information
-      if (!((*(void**)info.fP) = col->GetInfo(infoname))) {
+      if (!((*(void***)info.fP) = (void**)col->GetInfoRef(infoname))) {
          SetStateError(TString::Format(ErrMsgFmt::INVALID_INPUT_COLLECTION,infoname.Data()));
          return;
       }
       // object should be casted 
-      TObject *obj = *(TObject**)((void**)info.fP);
+      TObject *obj = **(TObject***)((void***)info.fP);
 
       // check if the info class match
       if (!obj->IsA()->InheritsFrom(info.fClassName)) {
