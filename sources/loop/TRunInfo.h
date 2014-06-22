@@ -2,7 +2,7 @@
 /**
  * @file   TRunInfo.h
  * @date   Created : Nov 19, 2013 17:19:35 JST
- *   Last Modified : Nov 20, 2013 14:36:26 JST
+ *   Last Modified : Jun 22, 2014 17:11:49 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -39,6 +39,10 @@ public:
    virtual void SetHeader(const char* comment) { fHeader = comment; }
    // set ender comment
    virtual void SetEnder(const char* comment) { fEnder = comment; }
+   // set total size
+   virtual void SetTotalSize(ULong64_t size) { fTotalSize = size; }
+   // set total size
+   virtual void AddAnalyzedSize(ULong64_t size) { fAnalyzedSize += size; }
    
    // get run name
    virtual TString GetRunName() { return fRunName; }
@@ -66,6 +70,8 @@ protected:
    TString  fHeader;
    TString  fEnder;
    Long_t   fEventNumber;
+   ULong64_t fTotalSize;
+   ULong64_t fAnalyzedSize;
 
 
    ClassDef(TRunInfo,1);

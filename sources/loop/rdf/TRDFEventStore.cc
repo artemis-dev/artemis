@@ -3,7 +3,7 @@
  * @brief  RDF Event Store
  *
  * @date   Created       : 2014-03-30 10:56:06 JST
- *         Last Modified : Jun 19, 2014 16:26:00 JST
+ *         Last Modified : Jun 22, 2014 17:26:29 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -18,6 +18,10 @@
 #include <TSegmentInfo.h>
 #include <TModuleType.h>
 #include <TSegmentedData.h>
+#include <TRunInfo.h>
+#include <TEventHeader.h>
+#include <TTimeStamp.h>
+#include <map>
 
 using art::TRDFEventStore;
 
@@ -46,6 +50,8 @@ TRDFEventStore::TRDFEventStore()
    fDecoderFactory = TModuleDecoderFactory::Instance()->CloneInstance();
    fDecoders = new TObjArray;
    fSegmentedData = new TSegmentedData;
+   fRunHeaders = new TList;
+   fEventHeader = new TEventHeader;
 }
 
 TRDFEventStore::~TRDFEventStore()
@@ -54,6 +60,8 @@ TRDFEventStore::~TRDFEventStore()
    delete fDecoderFactory;
    delete fDecoders;
    delete fSegmentedData;
+   delete fEventHeader;
+   delete fRunHeaders;
 }
 
 TRDFEventStore::TRDFEventStore(const TRDFEventStore& rhs)
@@ -74,16 +82,12 @@ void TRDFEventStore::Init(TEventCollection *col)
    for (Int_t i=0; i!= n; i++) {
       printf("file = %s\n",fFileName[i].Data());
    }
+   // check segment configuration
    Int_t nSeg = (*fSegmentInfoArray)->GetEntriesFast();
-//   printf("%d segments are configured\n",nSeg);
    for (Int_t iSeg = 0; nSeg != iSeg; iSeg++) {
       TSegmentInfo *segment = (TSegmentInfo*) (*fSegmentInfoArray)->At(iSeg);
-//      printf("%p\n",segment);
       Int_t segid = (segment->GetSegID()) ;
-//      printf("%d\n",segid);
-//      printf("%s\n",segment->GetModuleType().Data());
       TModuleType *modtype = (TModuleType*) (*fModuleTypeArray)->FindObject(segment->GetModuleType());
-//      printf("%p\n",modtype);
       if (!modtype) {
          // error
          SetStateError(TString::Format("Unknown module '%s'",segment->GetModuleType().Data()));
@@ -97,6 +101,11 @@ void TRDFEventStore::Init(TEventCollection *col)
          return;
       }
    }
+
+   // prepare run header information
+   fRunHeaders->SetName(fNameRunHeaders);
+   col->AddInfo(fNameRunHeaders,fRunHeaders);
+   col->Add(fNameEventHeader,fEventHeader,kFALSE);
 }
 
 void TRDFEventStore::Process()
@@ -176,6 +185,89 @@ Bool_t TRDFEventStore::Open() {
          Error("Open","Cannot open file %s",filename.Data());
          return kFALSE;
       }
+
+      // if data source is ready, read comment block
+      std::map<TString,Int_t> month;
+      month.insert(std::map<TString,Int_t>::value_type(TString("Jan"),1));
+      month.insert(std::map<TString,Int_t>::value_type(TString("Feb"),2));
+      month.insert(std::map<TString,Int_t>::value_type(TString("Mar"),3));
+      month.insert(std::map<TString,Int_t>::value_type(TString("Apr"),4));
+      month.insert(std::map<TString,Int_t>::value_type(TString("May"),5));
+      month.insert(std::map<TString,Int_t>::value_type(TString("Jun"),6));
+      month.insert(std::map<TString,Int_t>::value_type(TString("Jul"),7));
+      month.insert(std::map<TString,Int_t>::value_type(TString("Aug"),8));
+      month.insert(std::map<TString,Int_t>::value_type(TString("Sep"),9));
+      month.insert(std::map<TString,Int_t>::value_type(TString("Oct"),10));
+      month.insert(std::map<TString,Int_t>::value_type(TString("Nov"),11));
+      month.insert(std::map<TString,Int_t>::value_type(TString("Dec"),12));
+      {
+         struct stat fsta;
+         stat(filename,&fsta);
+         char runnumber[9]; runnumber[8] = 0;
+         char starttime[19]; starttime[18] =0;
+         char stoptime[19]; stoptime[18] = 0;
+         char stadate[11]; stadate[10] = 0;
+         char stodate[11]; stodate[10] = 0;
+         char header[81]; header[80] = 0;
+         char ender[81]; ender[80] = 0;
+
+         // read first comment block
+         fDataSource->Seek(0,0);
+         fDataSource->Read(fBuffer,kBlockSize);
+         if (fBuffer[0] != 1) {
+            SetStateError("Unexpected comment block\n");
+            return kFALSE;
+         }
+         memcpy(runnumber,fBuffer+20,8);
+         memcpy(starttime,fBuffer+30,18);
+         memcpy(stadate,fBuffer+86,10);
+         memcpy(header,fBuffer+100,80);
+         fDataSource->Seek(fsta.st_size-kBlockSize,0);
+         fDataSource->Read(fBuffer,kBlockSize);
+         memcpy(stoptime,fBuffer+48,18);
+         memcpy(stodate,fBuffer+86,10);
+         memcpy(ender,fBuffer+100,80);
+         if (strcmp(header,ender) == 0) memcpy(ender,fBuffer+180,80);
+         fDataSource->Seek(kBlockSize,0);
+         TString runName = "run";
+         TString runNumber = &runnumber[4];
+         TString startTime = starttime;
+         TString stopTime = stoptime;
+         TString staDate = stadate;
+         TString stoDate = stodate;
+         TString fHeader = header;
+         TString fEnder = ender;
+#if 0         
+         printf("siez      : %d\n",fsta.st_size);
+         printf("runnumber : %s\n",runnumber);
+         printf("starttime : %s\n",starttime);
+         printf("stoptime  : %s\n",stoptime);
+         printf("stadate   : %s\n",stadate);
+         printf("stodate   : %s\n",stodate);
+#endif         
+         TRunInfo *runinfo = new TRunInfo(runName+runNumber,runName+runNumber);         
+         TTimeStamp start(2000+TString(staDate(8,2)).Atoi(),month[TString(staDate(4,3))],TString(staDate(1,2)).Atoi(),
+                          TString(startTime(9,2)).Atoi(),TString(startTime(12,2)).Atoi(),TString(startTime(15,2)).Atoi(),
+                          0,kFALSE);
+         TTimeStamp stop(2000+TString(stoDate(8,2)).Atoi(),month[TString(stoDate(4,3))],TString(stoDate(1,2)).Atoi(),
+                         TString(stopTime(9,2)).Atoi(),TString(stopTime(12,2)).Atoi(),TString(stopTime(15,2)).Atoi(),
+                         0,kFALSE);
+         if (start.GetSec() > stop.GetSec()) {
+            stop.SetSec(stop.GetSec()+86400);
+         }
+         runinfo->SetRunName(runName.Data());
+         runinfo->SetRunNumber(runNumber.Atoll());
+         runinfo->SetStartTime(start.GetSec());
+         runinfo->SetStopTime(stop.GetSec());
+         runinfo->SetHeader(fHeader);
+         runinfo->SetEnder(fEnder);
+         runinfo->SetTotalSize(fsta.st_size);
+
+         fRunHeaders->Add(runinfo);
+         fEventHeader->SetRunName(runName.Data());
+         fEventHeader->SetRunNumber(runNumber.Atoll());
+      }
+      
       return kTRUE;
    }
 
@@ -219,6 +311,7 @@ Bool_t TRDFEventStore::GetNextBlock()
       fDataSource = NULL;
       return kFALSE;
    }
+   ((TRunInfo*)fRunHeaders->Last())->AddAnalyzedSize(kBlockSize);
    // block was read
    fIsEOB = kFALSE;
    fOffset = 0;
@@ -251,6 +344,8 @@ Bool_t TRDFEventStore::GetNextEvent()
       // event block
       if ((bufp[offset] & 0xf000) == 0x8000 && (bufp[offset + 1]  == 0x0001)) {
          // check if data size is correct
+         fEventHeader->IncrementEventNumber();
+         ((TRunInfo*)fRunHeaders->Last())->IncrementEventNumber();
          Int_t eventsize = (bufp[offset] & 0x0fff);
          Int_t evtoffset = offset + 3;
 //         printf("%x %x %x %x\n",bufp[offset],bufp[offset+1],bufp[offset+2],bufp[offset+3]);
@@ -282,6 +377,7 @@ Bool_t TRDFEventStore::GetNextEvent()
 //            continue;
 //         } 
          // else do analysis and return
+         
          return kTRUE;
       } else if (bufp[offset] == 0xffff && bufp[offset + 1] == 0xffff) {
          // end of block

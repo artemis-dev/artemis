@@ -3,7 +3,7 @@
  * @brief  RDF Event store
  *
  * @date   Created       : 2014-03-30 09:26:04 JST
- *         Last Modified : Jun 19, 2014 16:26:20 JST
+ *         Last Modified : Jun 22, 2014 16:11:35 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -20,6 +20,7 @@ namespace art {
    class TDataSource;
    class TModuleDecoderFactory;
    class TSegmentedData;
+   class TEventHeader;
 }
 
 class art::TRDFEventStore : public TProcessor {
@@ -73,7 +74,8 @@ private:
    TClonesArray **fModuleTypeArray; //-> module information
 
    TSegmentedData *fSegmentedData; //! segmented data
-   
+   TEventHeader   *fEventHeader; //! event header
+   TList *fRunHeaders;
 
    ClassDef(TRDFEventStore,1) // RDF Event store
 };

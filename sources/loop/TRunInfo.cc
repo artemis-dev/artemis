@@ -2,7 +2,7 @@
 /**
  * @file   TRunInfo.cc
  * @date   Created : Nov 19, 2013 17:19:20 JST
- *   Last Modified : Nov 20, 2013 15:23:50 JST
+ *   Last Modified : Jun 22, 2014 17:14:09 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -18,13 +18,13 @@ using art::TRunInfo;
 ClassImp(TRunInfo);
 
 TRunInfo::TRunInfo()
-   : fRunName(),fRunNumber(0),fStartTime(0),fStopTime(0),fHeader(),fEnder(), fEventNumber(0)
+   : fRunName(),fRunNumber(0),fStartTime(0),fStopTime(0),fHeader(),fEnder(), fEventNumber(0), fTotalSize(0), fAnalyzedSize(0)
 {
 }
 
 TRunInfo::TRunInfo(const char *name, const char *title)
    : TNamed(name, title),
-     fRunName(),fRunNumber(0),fStartTime(0),fStopTime(0),fHeader(),fEnder(), fEventNumber(0)
+     fRunName(),fRunNumber(0),fStartTime(0),fStopTime(0),fHeader(),fEnder(), fEventNumber(0), fTotalSize(0), fAnalyzedSize(0)
 {
 }
 TRunInfo::~TRunInfo()
@@ -41,10 +41,12 @@ void TRunInfo::Print(Option_t *) const
       indent += " ";
    }
    printf("TRunInfo name='%s', title='%s'\n",GetName(),GetTitle());
+   printf("%s Size  : %.2f MB\n",indent.Data(),(fTotalSize/1024./1024.));
    printf("%s Run   : %s%04d\n",indent.Data(),fRunName.Data(),fRunNumber);
    printf("%s Start : %s\n",indent.Data(),startTime.AsString("s"));
    printf("%s Stop  : %s\n",indent.Data(),stopTime.AsString("s"));
    printf("%s Header: %s\n",indent.Data(),fHeader.Data());
    printf("%s Ender : %s\n",indent.Data(),fEnder.Data());
    printf("%s %d events analyzed\n",indent.Data(),fEventNumber);
+   printf("%s %.2f MB analyzed \n",indent.Data(),(fAnalyzedSize/1024./1024.));
 }
