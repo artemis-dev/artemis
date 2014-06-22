@@ -35,4 +35,4 @@ ARTEMIS depends on [YAML-CPP](https://code.google.com/p/yaml-cpp/) for loading s
 
 Licence
 -------
-Copyright 2013-2014 Shinsuke Ota <<ota@cns.s.u-tokyo.acjp>> and ARTEMIS develop team
+Copyright 2013-2014 Shinsuke Ota <<ota@cns.s.u-tokyo.ac.jp>> and ARTEMIS develop team
