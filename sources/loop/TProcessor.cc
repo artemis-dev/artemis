@@ -2,7 +2,7 @@
 /**
  * @file   TProcessor.cc
  * @date   Created : Jul 10, 2013 17:10:19 JST
- *   Last Modified : Jun 19, 2014 16:53:29 JST
+ *   Last Modified : Jun 22, 2014 21:46:59 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *
@@ -279,6 +279,7 @@ void operator >> (const YAML::Node &node, art::TProcessor *&proc)
    }
    TClass *cls = TClass::GetClass(type.data());
    if (!cls) {
+
       std::cout << "  no such processor, or processor is not register in dictionary" << std::endl;
       std::cout << "  " << name << " " << type  << std::endl;
       return;

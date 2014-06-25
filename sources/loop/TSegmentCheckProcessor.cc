@@ -3,7 +3,7 @@
  * @brief  segment check
  *
  * @date   Created       : 2014-05-18 14:16:52 JST
- *         Last Modified : Jun 19, 2014 16:27:09 JST
+ *         Last Modified : Jun 22, 2014 21:46:14 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -26,7 +26,8 @@ using art::TSegmentCheckProcessor;
 ClassImp(TSegmentCheckProcessor)
 
 TSegmentCheckProcessor::TSegmentCheckProcessor()
-: fSegmentInfo(NULL)
+: fFolder(NULL), fHistDir(NULL), fSegmentList(NULL), fModuleList(NULL),
+   fSegmentedData(NULL)
 {
    StringVec_t defaultignore; defaultignore.push_back("");
    RegisterInputCollection("SegmentedDataName","name of the segmented data",
@@ -45,7 +46,13 @@ TSegmentCheckProcessor::~TSegmentCheckProcessor()
    if (fHistDir) {
       fHistDir->Delete();
       delete fHistDir;
+      fHistDir = NULL;
    }
+   // input processors are deleted elsewhere
+   fSegmentedData = NULL;
+   fSegmentList = NULL;
+   fModuleList = NULL;
+   
 }
 
 TSegmentCheckProcessor::TSegmentCheckProcessor(const TSegmentCheckProcessor& rhs)

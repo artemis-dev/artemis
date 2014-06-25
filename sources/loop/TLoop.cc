@@ -2,7 +2,7 @@
 /**
  * @file   TLoop.cc
  * @date   Created : Apr 26, 2012 20:26:47 JST
- *   Last Modified : Jun 12, 2014 23:03:54 JST
+ *   Last Modified : Jun 24, 2014 12:40:56 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -42,7 +42,7 @@ art::TLoop::~TLoop()
    for (itr = itrBegin; itr != itrEnd; itr++) {
       delete *itr;
    }
-   fEventCollection->Delete();
+//   fEventCollection->Delete();
    delete fEventCollection;
    delete fCondition;
 }
@@ -60,16 +60,16 @@ Bool_t art::TLoop::Load(const char* dirname, const char* basename, std::list<Lon
       }
    }
 
-   std::ifstream fin(filename);
-   YAML::Parser parser(fin);
-   YAML::Node doc;
-   std::string name, type, value;
-
-   loaded->push_back(fstat.fIno);
-
-   parser.GetNextDocument(doc);
-   fin.close();
    try {
+      std::ifstream fin(filename);
+      YAML::Parser parser(fin);
+      YAML::Node doc;
+      std::string name, type, value;
+      
+      loaded->push_back(fstat.fIno);
+      
+      parser.GetNextDocument(doc);
+      fin.close();
       const YAML::Node &node = doc["Processor"];
       // iterate for all the processors
       for (YAML::Iterator it = node.begin(); it != node.end(); it++) {
@@ -87,8 +87,9 @@ Bool_t art::TLoop::Load(const char* dirname, const char* basename, std::list<Lon
       }
    } catch (YAML::KeyNotFound& e) {
       std::cout << e.what() << std::endl;
+      return kFALSE;
    } catch (YAML::Exception &e) {
-      std::cout << "Error Occured" << std::endl;
+      std::cout << "Error Occured while loading " << filename << std::endl;
       std::cout << e.what() << std::endl;
       return kFALSE;
    }

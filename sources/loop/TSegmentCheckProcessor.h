@@ -3,7 +3,7 @@
  * @brief  segment checking processor
  *
  * @date   Created       : 2014-05-18 14:13:24 JST
- *         Last Modified : Jun 19, 2014 16:26:36 JST
+ *         Last Modified : Jun 22, 2014 21:46:50 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -40,7 +40,6 @@ public:
 protected:
    TFolder *fFolder; //!
    TDirectory *fHistDir; //!
-   TSegmentInfo *fSegmentInfo; //!
    TString fSegmentListName;
    TString fModuleListName;
    TClonesArray **fSegmentList; //!
