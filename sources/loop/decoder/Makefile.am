@@ -8,6 +8,7 @@ SUBSRC = \
 	TModuleDecoderV767.cc \
 	TModuleDecoderV7XX.cc \
 	TModuleDecoderFixed.cc \
+	TModuleDecoderV1290.cc \
 	TRawDataFadc.cc 
 
 

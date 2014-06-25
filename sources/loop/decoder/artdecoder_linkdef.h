@@ -2,7 +2,7 @@
 /**
  * @file   artdecoder_linkdef.h
  * @date   Created : Jul 07, 2013 22:48:06 JST
- *   Last Modified : May 16, 2014 00:50:00 JST
+ *   Last Modified : Jun 25, 2014 19:20:28 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -32,6 +32,7 @@
 #pragma link C++ class art::TModuleDecoderFixed<UInt_t>;
 #pragma link C++ class art::TModuleDecoderFixed<ULong64_t>;
 #pragma link C++ class art::TModuleDecoderV1190;
+#pragma link C++ class art::TModuleDecoderV1290;
 
 #endif /* __CINT__ */
 
