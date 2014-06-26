@@ -37,6 +37,7 @@
 #pragma link C++ class TCatCmdSly;
 #pragma link C++ class TCatCmdXval;
 #pragma link C++ class TCatCmdZone;
+#pragma link C++ class art::TCmdUpdateCanvas;
 
 
 #pragma link C++ class TCatCmdFactory+;
