@@ -2,7 +2,7 @@
 /**
  * @file   TProcessor.cc
  * @date   Created : Jul 10, 2013 17:10:19 JST
- *   Last Modified : Jun 22, 2014 21:46:59 JST
+ *   Last Modified : Jun 30, 2014 16:07:10 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *
@@ -123,8 +123,10 @@ void art::TProcessor::InitProc(TEventCollection *col)
          return;
       }
       // get registered information
-      if (!((*(void***)info.fP) = (void**)col->GetInfoRef(infoname)) && !fParamMap[info.fPrmName]->IsOptional()) {
-         SetStateError(TString::Format(ErrMsgFmt::INVALID_INPUT_COLLECTION,infoname.Data()));
+      if (!((*(void***)info.fP) = (void**)col->GetInfoRef(infoname))) {
+         if (!fParamMap[info.fPrmName]->IsOptional()) {
+            SetStateError(TString::Format(ErrMsgFmt::INVALID_INPUT_COLLECTION,infoname.Data()));
+         }
          return;
       }
       // object should be casted 
