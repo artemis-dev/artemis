@@ -2,7 +2,7 @@
 /**
  * @file   TRunInfo.h
  * @date   Created : Nov 19, 2013 17:19:35 JST
- *   Last Modified : 2016-04-19 04:26:29 JST (nil)
+ *   Last Modified : 2016-08-17 14:52:48 JST (kawase)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -45,17 +45,17 @@ public:
    virtual void AddAnalyzedSize(ULong64_t size) { fAnalyzedSize += size; }
    
    // get run name
-   virtual TString GetRunName() { return fRunName; }
+   virtual TString GetRunName() const { return fRunName; }
    // get run number
-   virtual Int_t GetRunNumber() { return fRunNumber; }
+   virtual Int_t GetRunNumber() const { return fRunNumber; }
    // get start time
-   virtual Long64_t GetStartTime() { return fStartTime; }
+   virtual Long64_t GetStartTime() const { return fStartTime; }
    // get stop time
-   virtual Long64_t GetStopTime() { return fStopTime; }
+   virtual Long64_t GetStopTime() const { return fStopTime; }
    // get header
-   virtual TString GetHeader() { return fHeader; }
+   virtual TString GetHeader() const { return fHeader; }
    // get ender
-   virtual TString GetEnder() { return fEnder; }
+   virtual TString GetEnder() const { return fEnder; }
    // increment event number
    virtual void IncrementEventNumber() { fEventNumber++; }
    // get eventnumber
