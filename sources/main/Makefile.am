@@ -31,6 +31,8 @@ artemis_SOURCES = $(SUBSRC) main.cc
 artemis_DEPENDENCIES = $(LIBCATCORE) $(LIBCATCMD)
 artemis_LDFLAGS = $(LDFLAGS)
 
+bin_SCRIPTS = artemis-config
+
 .cc.o:
 
 .f.o:
@@ -41,4 +43,4 @@ clean-local:
 	rm -f *dict*
 
 clean: clean-local
-	rm -rf $(SUBOBJ) .libs *.lo artemis
+	rm -rf $(SUBOBJ) .libs *.lo artemis artemis-config
