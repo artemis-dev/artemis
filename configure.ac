@@ -72,5 +72,6 @@ AC_CONFIG_FILES([Makefile
                  sources/loop/hist/Makefile
                  sources/loop/param/Makefile
                  sources/main/Makefile
+                 sources/main/artemis-config
                  sources/mc/Makefile])
 AC_OUTPUT
