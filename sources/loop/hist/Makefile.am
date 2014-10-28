@@ -43,7 +43,7 @@ libarthist_la_LDFLAGS = $(LDFLAGS)
 
 $(DICTSRC): $(SUBHDR) arthist_linkdef.h
 	@echo Making $(DICTSRC) ...
-	rootcint -f $@ -c $(CXXFLAGS)  $^
+	rootcint -f $@ -c -I.. -I$(INCDIR)  $^
 
 .header: $(include_HEADERS)
 	@echo Installing header to $(INCDIR)

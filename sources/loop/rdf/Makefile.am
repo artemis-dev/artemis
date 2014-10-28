@@ -32,8 +32,8 @@ libartrdf_la_LDFLAGS = $(LDFLAGS)
 
 $(DICTSRC): $(SUBHDR) artrdf_linkdef.h
 	@echo Making $(DICTSRC) ...
-	rootcint -f $@ -c $(CXXFLAGS)  $^
-
+	rootcint -f $@ -c -I.. -I$(INCDIR)  $^
+#	rootcint -f $@ -c $(CXXFLAGS)  $^
 .header: $(include_HEADERS)
 	@echo Installing header to $(INCDIR)
 	@mkdir -p $(INCDIR)
