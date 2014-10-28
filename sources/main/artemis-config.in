@@ -56,9 +56,14 @@ for artemis_incdir in ${includedirs} ; do
 done
 
 libs="-lcatcmd \
--lcatcore \
 -lcatloop \
+-lcatcore \
 -lcatmc \
+-lartdecoder \
+-lartridf \
+-lartrdf \
+-larthist \
+-lartparam \
 -lyaml-cpp"
 
 
