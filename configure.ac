@@ -33,6 +33,7 @@ AC_SUBST([YAML_CPP_LIB],[-lyaml-cpp])
 else
  echo
 AC_DEFINE([HAVE_YAML_CPP],[1],[Define to 1 if you have the yaml-cpp library])
+AC_SUBST([YAML_CPP_INCLUDE_DIR],["$WITH_YAML_CPP/include"])
 AC_SUBST([YAML_CPP_INCLUDE],["-I$WITH_YAML_CPP/include"])
 AC_SUBST([YAML_CPP_LIB],["-L$WITH_YAML_CPP/lib -lyaml-cpp"])
 fi
@@ -65,6 +66,7 @@ AC_CONFIG_FILES([Makefile
                  sources/Makefile
                  sources/commands/Makefile
                  sources/core/Makefile
+                 sources/cont/Makefile
                  sources/loop/Makefile
                  sources/loop/decoder/Makefile
                  sources/loop/ridf/Makefile

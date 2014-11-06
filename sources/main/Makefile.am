@@ -21,6 +21,7 @@ LDFLAGS = -O -L../commands/.libs -lcatcmd \
 	-L../loop/rdf/.libs -lartrdf \
 	-L../loop/decoder/.libs -lartdecoder  \
 	-L../loop/.libs -lcatloop \
+	-L../cont/.libs -lartcont \
 	-L../core/.libs -lcatcore \
 	-L../mc/.libs -lcatmc $(shell root-config --glibs) -lTreePlayer -lyaml-cpp 
 

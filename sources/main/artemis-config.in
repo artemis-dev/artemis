@@ -45,7 +45,7 @@ version=@VERSION@
 prefix=@prefix@
 exec_prefix=@exec_prefix@
 libdir=@libdir@
-includedirs="@includedir@ @YAML_CPP_INCLUDE@"
+includedirs="@includedir@ @YAML_CPP_INCLUDE_DIR@"
 
 name=${package}
 description="ARTEMIS - A RooT Extension with Modular processors for Instant Swiching"
@@ -58,6 +58,7 @@ done
 libs="-lcatcmd \
 -lcatloop \
 -lcatcore \
+-lartcont \
 -lcatmc \
 -lartdecoder \
 -lartridf \
