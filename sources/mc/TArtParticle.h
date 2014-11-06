@@ -2,7 +2,7 @@
 /**
  * @file   TArtParticle.h
  * @date   Created : Jan 25, 2011 21:25:48 JST
- *   Last Modified : Aug 30, 2011 18:38:20 JST
+ *   Last Modified : Oct 28, 2014 14:46:19 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -21,6 +21,10 @@ private:
    Double_t fDaughterMass[2];
    TArtParticle *fDaughter[2];
    TArtParticle *fDaughterAtRest[2];
+   Int_t fMassNumber; // mass number
+   Int_t fAtomicNumber; // atomic number
+   Int_t fCharge; // charge value for geant4 simulation
+   
 
 public:
    TArtParticle();
@@ -37,6 +41,12 @@ public:
    void SetAngle(const Double_t &theta, const Double_t &phi);
    void SetKineticEnergy(const Double_t &kin, const Double_t &mass = 0.);
    void SetTwoBodyDecay(Double_t m1, Double_t m2, Bool_t isRandom = kTRUE);
+   void SetMassNumber(Int_t massNumber) { fMassNumber = massNumber; }
+   void SetAtomicNumber(Int_t atomicNumber) { fAtomicNumber = atomicNumber; }
+   void SetCharge(Int_t charge) { fCharge = charge; }
+   Int_t MassNumber() const { return fMassNumber; }
+   Int_t AtomicNumber() const { return fAtomicNumber; }
+   Int_t Charge() const { return fCharge; }
    TArtParticle *GetDaughter(const Int_t &i) ;
    TArtParticle *GetDaughterAtRest(const Int_t &i) ;
    Double_t ThetaX(void) const  { return Pz()?TMath::ATan(Px()/Pz()):0.; }

@@ -2,7 +2,7 @@
 /**
  * @file   LinkDefArtMC.h
  * @date   Created : Jan 25, 2011 21:25:03 JST
- *   Last Modified : Aug 21, 2013 18:39:47 JST
+ *   Last Modified : Oct 28, 2014 15:11:39 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -23,6 +23,7 @@
 #pragma link C++ class art::TBinaryReactionGenerator;
 #pragma link C++ global gAtomicMassTable;
 #pragma link C++ namespace TArtSystemOfUnit;
+#pragma link C++ class art::TTrackG4;
 
 
 #endif // end of #ifdef LINKDEFARTMC_H
