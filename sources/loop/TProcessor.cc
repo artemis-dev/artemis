@@ -2,7 +2,7 @@
 /**
  * @file   TProcessor.cc
  * @date   Created : Jul 10, 2013 17:10:19 JST
- *   Last Modified : Jun 30, 2014 16:46:05 JST
+ *   Last Modified : Nov 12, 2014 13:34:21 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *
@@ -40,7 +40,9 @@ art::TProcessor::~TProcessor()
 
 void art::TProcessor::InitProc(TEventCollection *col)
 {
-   Info("InitProc","Initilizing ...");
+   if (fVerboseLevel>0) {
+      Info("InitProc","Initilizing ...");
+   }
    fCondition = (TConditionBit**)(col->Get(TLoop::kConditionName)->GetObjectRef());
    // obtain input collection
    Int_t nInputs = fInputs.size();
@@ -164,7 +166,9 @@ void art::TProcessor::InitProc(TEventCollection *col)
       // initializaed correctly
       SetStateReady();
    }
-   Info("InitProc","Done");
+   if (fVerboseLevel > 0) {
+      Info("InitProc","Done");
+   }
 }   
 
 
