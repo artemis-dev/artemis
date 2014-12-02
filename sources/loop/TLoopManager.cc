@@ -2,7 +2,7 @@
 /**
  * @file   TLoopManager.cc
  * @date   Created : Jul 10, 2013 17:10:36 JST
- *   Last Modified : Jun 22, 2014 21:05:25 JST
+ *   Last Modified : Dec 02, 2014 14:34:00 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -79,9 +79,14 @@ Int_t art::TLoopManager::Suspend(Int_t i)
 {
    TLoop* l =  (TLoop*) fLoops->At(i);
    if (l) {
-      TLoopControl *task = new TLoopControl;
-      task->Suspend();
-      fLoopControl->PushTask(*task,l);
+      if (l->IsRunning()) {
+         TLoopControl *task = new TLoopControl;
+         task->Suspend();
+         fLoopControl->PushTask(*task,l);
+      } else {
+//         printf("no loop is running\n");
+      }
+         
    } else {
       printf("No loop is ready\n");
    }
