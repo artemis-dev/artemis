@@ -75,6 +75,7 @@ help()
 Usage: artemis-config [OPTION...]
   --prefix                output installation prefix of ARTEMIS
   --version               output version for ARTEMIS
+  --incdir                output all linker flags
   --libs                  output all linker flags
   --cflags                output all preprocessor
                           and compiler flags
@@ -89,7 +90,7 @@ EOF
 usage()
 {
   cat<<EOF
-Usage: artemis-config [--prefix] [--version] [--libs] [--cflags]
+Usage: artemis-config [--prefix] [--version] [--libs] [--cflags] [--incdir]
 EOF
   exit 1
 }
@@ -126,6 +127,10 @@ while test $# -gt 0 ; do
       echo ${cflags}
       ;;
 
+    --incdir)
+      echo ${includedirs}
+      ;;
+      
     -?)
       help
       ;;
