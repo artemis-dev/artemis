@@ -2,7 +2,7 @@
 /**
  * @file   TDataObject.h
  * @date   Created : Jan 07, 2014 10:07:51 JST
- *   Last Modified : Feb 10, 2014 18:14:25 JST
+ *   Last Modified : Jan 21, 2015 14:30:51 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -47,6 +47,8 @@ public:
    virtual Int_t TestQualityBits(UInt_t bit) const { return (Int_t)(fQuality & bit); }
 
    virtual Bool_t IsValid() const { return !TestQualityBit(kInvalid); }
+   virtual void Validate() { ResetQualityBit(kInvalid); }
+   virtual void Invalidate() { SetQualityBit(kInvalid); }
 
    virtual Bool_t IsSortable() const { return kTRUE; }
    virtual Int_t  Compare(const TObject* obj) const {
