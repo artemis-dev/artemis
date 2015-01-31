@@ -2,7 +2,7 @@
 /**
  * @file   TOutputTreeProcessor.cc
  * @date   Created : Jul 11, 2013 17:11:41 JST
- *   Last Modified : May 09, 2014 20:10:42 JST
+ *   Last Modified : Feb 01, 2015 03:44:30 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -37,7 +37,17 @@ void art::TOutputTreeProcessor::Init(TEventCollection *col)
    TEventObject *obj;
    while ((obj = (TEventObject*)iter->Next())) {
       if (obj->IsPassive()) continue;
-      fTree->Branch(obj->GetName(),obj->GetClass()->GetName(),obj->GetObjectRef(),3200000,0);
+      printf("%s %p\n",obj->GetName(),obj->GetClass());
+      if (obj->GetClass() == NULL) {
+         // native class
+         if (obj->IsDouble()) {
+            fTree->Branch(obj->GetName(),*(Double_t**)obj->GetObjectRef(),
+                          TString::Format("%s/%s",obj->GetName(),obj->GetType()));
+            printf("%p\n",*(Double_t**)obj->GetObjectRef());
+         }
+      } else {
+         fTree->Branch(obj->GetName(),obj->GetClass()->GetName(),obj->GetObjectRef(),3200000,0);
+      }
       fObjects->Add(obj);
    }
 
@@ -63,7 +73,11 @@ void art::TOutputTreeProcessor::PreLoop()
          // something is wrong...
          continue;
       }
-      ((TBranch*)br)->SetAddress(obj->GetObjectRef());
+      if (obj->IsDouble()) {
+         ((TBranch*)br)->SetAddress(*(Double_t**)obj->GetObjectRef());
+      } else {
+         ((TBranch*)br)->SetAddress(obj->GetObjectRef());
+      }
    }
 }
 void art::TOutputTreeProcessor::PostLoop()

@@ -2,7 +2,7 @@
 /**
  * @file   TEventCollection.h
  * @date   Created : Apr 26, 2012 23:26:19 JST
- *   Last Modified : Jun 19, 2014 16:33:26 JST
+ *   Last Modified : Jan 31, 2015 20:08:43 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -29,6 +29,7 @@ public:
 
    // add an event object
    virtual void Add(const char* name, TObject* obj, Bool_t isPassive = kTRUE);
+   virtual void Add(TEventObject *obj) { fObjects->Add(obj); }
    // add a information object
    virtual void AddInfo(const char *name, TObject *obj, Bool_t isPassive = kFALSE);
    // get an event object by name

@@ -2,7 +2,7 @@
 /**
  * @file   TProcessor.cc
  * @date   Created : Jul 10, 2013 17:10:19 JST
- *   Last Modified : Nov 12, 2014 13:34:21 JST
+ *   Last Modified : Feb 01, 2015 03:55:28 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *
@@ -86,6 +86,18 @@ void art::TProcessor::InitProc(TEventCollection *col)
    for (iOutput = 0; iOutput != nOutputs; iOutput++) {
       IOCollection &output = fOutputs[iOutput];
       TClass *cls = TClass::GetClass(output.fClassName);
+
+      if (output.fClassName == "D") {
+         // double
+         col->Add(new TEventObject(*output.fName,(Double_t*)*(void**)output.fP,fOutputIsTransparent));
+         continue;
+      } else if (output.fClassName == "F") {
+         col->Add(new TEventObject(*output.fName,(Float_t*)*(void**)output.fP,fOutputIsTransparent));
+         continue;
+      } else if (output.fClassName == "I") {
+         col->Add(new TEventObject(*output.fName,(Int_t*)*(void**)output.fP,fOutputIsTransparent));
+         continue;
+      }
 
       // check output class exists
       if (!cls) {
