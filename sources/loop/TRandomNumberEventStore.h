@@ -2,7 +2,7 @@
 /**
  * @file   TRandomNumberEventStore.h
  * @date   Created : Jul 11, 2013 18:11:07 JST
- *   Last Modified : 
+ *   Last Modified : Feb 01, 2015 03:33:47 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -32,13 +32,13 @@ public:
    virtual void Process();
    
 private:
+   Int_t           fNumLoop; //! local variable
    Int_t           fMaxLoop;
    Float_t        fMin;
    Float_t        fMax;
    TSimpleData    *fData;
    TString         fOutputColName;
 
-   Int_t           fNumLoop; //! local variable
 
    ClassDef(TRandomNumberEventStore,1);
 };

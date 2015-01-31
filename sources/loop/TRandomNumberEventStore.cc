@@ -2,7 +2,7 @@
 /**
  * @file   TRandomNumberEventStore.cc
  * @date   Created : Jul 11, 2013 18:11:52 JST
- *   Last Modified : 
+ *   Last Modified : Feb 01, 2015 03:37:49 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -17,6 +17,7 @@
 ClassImp(art::TRandomNumberEventStore);
 
 art::TRandomNumberEventStore::TRandomNumberEventStore()
+   : fNumLoop(0)
 {
    RegisterOutputCollection("OutputCollection","output name of random values",fOutputColName,TString("random"));
    RegisterProcessorParameter("MaxLoop","the maximum number of loop",fMaxLoop,100);
@@ -30,6 +31,7 @@ art::TRandomNumberEventStore::~TRandomNumberEventStore()
 
 void art::TRandomNumberEventStore::Init(TEventCollection *col)
 {
+   fNumLoop = 0;
    fData = new TSimpleData;
    col->Add(fOutputColName,fData,fOutputIsTransparent);
 }
