@@ -2,7 +2,7 @@
 /**
  * @file   TProcessor.h
  * @date   Created : Jul 10, 2013 17:10:49 JST
- *   Last Modified : Jun 19, 2014 16:56:03 JST
+ *   Last Modified : Feb 05, 2015 15:20:05 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -104,13 +104,18 @@ protected:
 
    class IOCollection {
    public:
-      IOCollection(void* p,TString* name, TString className, TString dataClassName,TString prmname = "" )
-         : fP(p), fName(name),fClassName(className),fDataClassName(dataClassName),fPrmName(prmname) {;}
+      IOCollection(void* p,TString* name, TString className, TString dataClassName,TString prmname = "")
+         : fP(p), fName(name),fClassName(className),fDataClassName(dataClassName),fPrmName(prmname),fCapacity(1),fIsObject(kTRUE) {;}
+      IOCollection(void* p,TString* name, TString type, Int_t capacity, TString *length) 
+         : fP(p), fName(name),fClassName(type),fDataClassName(""),fPrmName(""),fCapacity(capacity),fIsObject(kFALSE),fLength(length) {;}
       void* fP; 
       TString *fName; 
       TString fClassName;
       TString fDataClassName;
       TString fPrmName;
+      Int_t fCapacity;
+      Bool_t fIsObject;
+      TString *fLength;
    } ;
       
    // register processor parameter
@@ -159,7 +164,23 @@ protected:
       }
    }                                               
 
-   template<class T>
+   // register output collection for primitive class
+   void RegisterOutputCollection(const char* name,
+                                 const char* description,
+                                 TString& parameter,
+                                 const TString& defaultParam,
+                                 TString type,
+                                 void* p,
+                                 Int_t capacity = 1,
+                                 TString *length = NULL) {
+      RegisterProcessorParameter(name,description,parameter,
+                                 defaultParam);
+      if (p) {
+         fOutputs.push_back(IOCollection(p, &parameter,type,capacity,length));
+      }
+   }                                               
+
+template<class T>
    void RegisterOptionalParameter(const TString& name,
                                   const TString& description,
                                   T& parameter,

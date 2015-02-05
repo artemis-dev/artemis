@@ -2,7 +2,7 @@
 /**
  * @file   TEventObject.h
  * @date   Created : Jul 10, 2013 14:10:50 JST
- *   Last Modified : Feb 01, 2015 02:30:41 JST
+ *   Last Modified : Feb 06, 2015 05:33:17 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -33,9 +33,8 @@ public:
     *
     */
    TEventObject(const char* name,TObject *obj, Bool_t isPassive = kTRUE);
-   TEventObject(const char* name,Int_t *iobj, Bool_t isPassive = kTRUE);
-   TEventObject(const char* name,Double_t *dobj, Bool_t isPassive = kTRUE);
-   TEventObject(const char* name,Float_t *obj, Bool_t isPassive = kTRUE);
+   // constructor to hold primitive type
+   TEventObject(const char* name,void* obj, TString type, TString *length, Bool_t isPassive = kTRUE);
 
    ~TEventObject();
 
@@ -44,6 +43,10 @@ public:
    TClass *GetClass() { return fClass; }
    const char*  GetType() { return fType.Data(); }
    Bool_t IsDouble() { return (fType == "D"); }
+   Bool_t IsFloat() { return (fType == "F"); }
+   Bool_t IsInt() { return (fType == "I"); }
+   TString GetLength() { return (fLength)?*fLength:TString(""); }
+   Bool_t IsObject() { return fIsObject; }
       
 
 private:
@@ -51,6 +54,9 @@ private:
    Bool_t  fIsPassive;
    TClass *fClass;
    TString fType;
+   TString *fLength;
+   Bool_t fIsObject;
+
 
    ClassDef(TEventObject,1);
 };
