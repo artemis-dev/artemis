@@ -2,7 +2,7 @@
 /**
  * @file   TTreeEventStore.cc
  * @date   Created : Jul 11, 2013 21:11:20 JST
- *   Last Modified : Dec 02, 2014 12:52:08 JST
+ *   Last Modified : Feb 10, 2015 05:29:51 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -15,6 +15,7 @@
 #include <TProcessor.h>
 #include <TLoop.h>
 #include <TConditionBit.h>
+#include <TLeaf.h>
 
 ClassImp(art::TTreeEventStore);
 
@@ -60,9 +61,44 @@ void art::TTreeEventStore::Init(TEventCollection *col)
    TIter next(fTree->GetListOfBranches());
    TBranch *br = NULL;
    while ((br =(TBranch*)next())) {
-      col->Add(br->GetName(),(TObject*)TClass::GetClass(br->GetClassName())->New(),kTRUE);
-      printf("branch : %s\n",br->GetName());
-      fTree->SetBranchAddress(br->GetName(),(TObject**)col->Get(br->GetName())->GetObjectRef());
+      TClass *cls = NULL;
+      EDataType type;;
+      if (br->GetExpectedType(cls,type)) {
+         Warning("Init","Unresolved type for branch '%s'",br->GetName());
+         continue;
+      } else if (!cls) {
+         // primitive types
+         void *input = NULL;
+         Int_t counter = 0;
+         // get dimension
+         TLeaf *leaf = br->GetLeaf(br->GetName())->GetLeafCounter(counter);
+         if (leaf) counter = leaf->GetMaximum();
+         switch (type) {
+         case kInt_t:
+            input = (void*) new Int_t[counter];
+            break;
+         case kFloat_t:
+            input = (void*) new Float_t[counter];
+            break;
+         case kDouble_t:
+            input = (void*) new Double_t[counter];
+            break;
+         default:
+            break;
+         }
+         if (!input) {
+            SetStateError(TString::Format("branch: %s is unsupported type %s",br->GetName(),TDataType::GetTypeName(type)));
+            return;
+         }
+         col->Add(new TEventObject(br->GetName(),input,TString(TDataType::GetTypeName(type)),NULL));
+         fTree->SetBranchAddress(br->GetName(),*col->Get(br->GetName())->GetObjectRef());
+         printf("branch : %s (%s) %p\n",br->GetName(),TDataType::GetTypeName(type),*col->Get(br->GetName())->GetObjectRef());
+      } else {
+         // object known by ROOT
+         col->Add(br->GetName(),(TObject*)cls->New(),kTRUE);
+         fTree->SetBranchAddress(br->GetName(),col->Get(br->GetName())->GetObjectRef());
+         printf("branch : %s\n",br->GetName());
+      }
    }
    TIter nextinfo(fTree->GetUserInfo());
    TObject *obj = NULL;

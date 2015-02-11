@@ -2,7 +2,7 @@
 /**
  * @file   TProcessor.cc
  * @date   Created : Jul 10, 2013 17:10:19 JST
- *   Last Modified : Feb 06, 2015 05:19:01 JST
+ *   Last Modified : Feb 12, 2015 04:51:55 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *
@@ -56,7 +56,15 @@ void art::TProcessor::InitProc(TEventCollection *col)
          return;
       }
       // initialize input collection
-      *(void***)input.fP = (void**) col->GetObjectRef(inputname);
+      TEventObject *evtObj = col->Get(inputname);
+      *(void***)input.fP = col->GetObjectRef(inputname);
+      if (!evtObj->IsObject()) {
+         // printf("%s %p %p\n",inputname.Data(),*(void***)input.fP, **(void***)input.fP);
+         // get event object and check if the event object inherits from
+         // TObject, then branch on condition
+         continue;
+      }
+      
       TObject *obj = **((TObject***)(void***)input.fP);
 
       // check if the input class match
