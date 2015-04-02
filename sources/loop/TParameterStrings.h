@@ -2,7 +2,7 @@
 /**
  * @file   TParameterStrings.h
  * @date   Created : May 18, 2012 14:18:49 JST
- *   Last Modified : May 19, 2012 17:52:34 JST
+ *   Last Modified : Jun 14, 2014 16:07:28 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -24,11 +24,12 @@ namespace YAML {
    class Node;
 }
 
-void operator >> (const YAML::Node &node, art::TParameterStrings *&str);
+void operator >> (const YAML::Node &node, art::TParameterStrings *str);
 
 class art::TParameterStrings : public TObject {
 
 public:
+   typedef std::map<TString, std::vector<TString> > map_t;
    TParameterStrings();
    ~TParameterStrings();
 
@@ -49,6 +50,8 @@ public:
 
    Bool_t IsSet(const char* name);
 
+   map_t::const_iterator Begin() { return (map_t::const_iterator) fParamMap.begin(); }
+   map_t::const_iterator End() { return (map_t::const_iterator) fParamMap.end(); }
 
 protected:
    std::map<TString, std::vector<TString> > fParamMap;

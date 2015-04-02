@@ -1,32 +1,12 @@
 SUBSRC  =
+SUBSRC += TArtemisObject.cc
+SUBSRC += TDataObject.cc
 SUBSRC += TCatParameterTable.cc 
 SUBSRC += TCatHistManager.cc
 SUBSRC += TCatPadManager.cc
 SUBSRC += TConfigFile.cc
 SUBSRC += TSharedMemory.cc
 SUBSRC += TSemaphoreObject.cc
-
-
-#        TArtFadcRawDataObject.cc \
-#	TArtDecoderV1740.cc \
-#	TArtDecoderSIS3610.cc \
-#	TArtDecoderSIS3820.cc \
-#	TCatDecoderV1190.cc \
-#        TCatRawDataV1190.cc \
-#	TArtKbhit.cc \
-#	TCatObject.cc \
-#	TCatSimpleData.cc \
-#	TCatHitV1190.cc \
-#	TCatSortable.cc \
-#	TCatDetectorArray.cc \
-#	TCatRawDataCategorized.cc \
-#	TCatStreamBuf.cc \
-#	TCatOstream.cc \
-#	TCatObjRefArray.cc\
-#	TCatParameter.cc \
-#	TCatParameterStrings.cc \
-#	TCatParameterTable.cc \
-#
 
 SUBOBJ = $(SUBSRC:.cc=.o)
 SUBHDR = $(SUBSRC:.cc=.h)
@@ -42,8 +22,8 @@ INCDIR = ../../include
 
 AUTOMAKE_OPTIONS = foreign
 
-INCLUDES = -I$(INCDIR) -I$(ROOTSYS)/include 
-CXXFLAGS = -fPIC  $(shell root-config --cflags) -I$(INCDIR) -Wall -O2
+MYINCLUDES = -I$(INCDIR) -I$(ROOTSYS)/include 
+CXXFLAGS = -fPIC  -I$(INCDIR) $(shell root-config --cflags) -Wall -O2
 #CXXFLAGS += -pg
 LDFLAGS = $(shell root-config --glibs) 
 
@@ -51,18 +31,19 @@ include_HEADERS = $(SUBHDR) $(SUBHDRF) $(OPTHDR)
 
 lib_LTLIBRARIES = libcatcore.la
 libcatcore_la_SOURCES = $(SUBSRC) $(DICTSRC)
-libcatcore_la_DEPENDENCIES = header
+libcatcore_la_DEPENDENCIES = .header
 # libcatcore_la_LIBADD = $(SUBOBJ)
 libcatcore_la_LDFLAGS = $(LDFLAGS)
 
 $(DICTSRC): $(SUBHDR) catcore_linkdef.h
 	@echo Making $(DICTSRC) ...
-	rootcint -f $@ -c $(DEFAULT_INCLUDES) $(INCLUDES) $^
+	rootcint -f $@ -c $(DEFAULT_INCLUDES) $(MYINCLUDES) $^
 
-header: $(include_HEADERS)
+.header: $(include_HEADERS)
 	@echo Installing header to $(INCDIR)
 	@mkdir -p $(INCDIR)
 	@cp -a $(include_HEADERS) $(INCDIR)
+	@touch .header
 
 
 .cc.o:
@@ -75,4 +56,4 @@ clean-local:
 	rm -f *dict*
 
 clean: clean-local
-	rm -rf $(SUBOBJ) .libs *.lo
+	rm -rf $(SUBOBJ) .libs *.lo .header

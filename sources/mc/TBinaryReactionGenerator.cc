@@ -2,7 +2,7 @@
 /**
  * @file   TBinaryReactionGenerator.cc
  * @date   Created : Aug 18, 2013 12:18:37 JST
- *   Last Modified : Aug 22, 2013 15:50:14 JST
+ *   Last Modified : Nov 05, 2014 16:55:07 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -37,7 +37,7 @@ art::TBinaryReactionGenerator::TBinaryReactionGenerator()
    angRangeDefault.push_back(0.);
    angRangeDefault.push_back(10.);
    
-   RegisterOutputCollection("OutputCollection","output name of particle array",fOutputColName,TString("recoiled"));
+   RegisterOutputCollection("OutputCollection","output name of particle array",fOutputColName,TString("recoil"));
    RegisterOutputCollection("MCTruthCollection","output name of MC truth",fMCTruthColName,TString("mctruth"));
    RegisterProcessorParameter("MaxLoop","the maximum number of loop",fMaxLoop,(Int_t)1E6);
    RegisterProcessorParameter("Particle1","mass and atomic number for particle1",fP1,p);
@@ -95,7 +95,8 @@ void art::TBinaryReactionGenerator::Init(TEventCollection *col)
    if (fAngDistFile.IsNull()) {
       TF1 *fun = NULL;
       switch (fAngMom) {
-      case -1: // flat distribution
+      case -2:
+      case -1: // flat distribution in cos angle
          fun = new TF1("funL0","1",0.,100);
          break;
       case 0:
@@ -124,7 +125,9 @@ void art::TBinaryReactionGenerator::Init(TEventCollection *col)
             fKinematics->SetTheta(theta*deg);
             ampl = fun->Eval(fKinematics->GetDq()/197.*R);
             ampl *= ampl;
-            ampl *= stepAng*deg*sin(theta*deg);
+            if (fAngMom != -2) {
+               ampl *= stepAng*deg*sin(theta*deg);
+            }
             if (fExFun) ampl*=fExFun->Eval(ex);
             fExAngDistribution->Fill(ex,theta,ampl);
          }

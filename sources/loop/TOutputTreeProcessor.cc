@@ -2,7 +2,7 @@
 /**
  * @file   TOutputTreeProcessor.cc
  * @date   Created : Jul 11, 2013 17:11:41 JST
- *   Last Modified : Nov 21, 2013 11:22:48 JST
+ *   Last Modified : Feb 06, 2015 05:20:36 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -23,7 +23,7 @@ art::TOutputTreeProcessor::TOutputTreeProcessor()
 }
 art::TOutputTreeProcessor::~TOutputTreeProcessor()
 {
-   fTree->GetUserInfo()->Clear();
+   if (fTree) fTree->GetUserInfo()->Clear();
    if (fFile) fFile->Close();
    delete fObjects;
 }
@@ -37,7 +37,19 @@ void art::TOutputTreeProcessor::Init(TEventCollection *col)
    TEventObject *obj;
    while ((obj = (TEventObject*)iter->Next())) {
       if (obj->IsPassive()) continue;
-      fTree->Branch(obj->GetName(),obj->GetClass()->GetName(),obj->GetObjectRef(),3200000,0);
+      if (!obj->IsObject()) {
+         // primitivee class
+         TString brNme = obj->GetName();
+         TString leaflist;
+         if (obj->GetLength().IsNull()) {
+            leaflist = TString::Format("%s/%s",obj->GetName(),obj->GetType());
+         } else {
+            leaflist = TString::Format("%s[%s]/%s",obj->GetName(),obj->GetLength().Data(),obj->GetType());
+         }
+         fTree->Branch(obj->GetName(),*obj->GetObjectRef(),leaflist);
+      } else {
+         fTree->Branch(obj->GetName(),obj->GetClass()->GetName(),obj->GetObjectRef(),3200000,0);
+      }
       fObjects->Add(obj);
    }
 
@@ -63,7 +75,11 @@ void art::TOutputTreeProcessor::PreLoop()
          // something is wrong...
          continue;
       }
-      ((TBranch*)br)->SetAddress(obj->GetObjectRef());
+      if (!obj->IsObject()) {
+         ((TBranch*)br)->SetAddress(*(void**)obj->GetObjectRef());
+      } else {
+         ((TBranch*)br)->SetAddress(obj->GetObjectRef());
+      }
    }
 }
 void art::TOutputTreeProcessor::PostLoop()

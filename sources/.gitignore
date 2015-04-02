@@ -13,6 +13,10 @@
 !*.cc
 !*.h
 !Makefile.am
+!*.in
+
+# except for Makefile.in since it is made from Makefile.am
+Makefile.in
 
 # additional exception
 *_dict.*

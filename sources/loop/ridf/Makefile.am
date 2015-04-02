@@ -23,21 +23,22 @@ LDFLAGS+= @YAML_CPP_LIB@
 
 include_HEADERS = $(SUBHDR) $(SUBHDRF) $(OPTHDR)
 
-noinst_LTLIBRARIES = libartridf.la
+lib_LTLIBRARIES = libartridf.la
 libartridf_la_SOURCES = $(SUBSRC) $(DICTSRC)
-libartridf_la_DEPENDENCIES = header
+libartridf_la_DEPENDENCIES = .header
 # libartridf_la_LIBADD = $(SUBOBJ)
 libartridf_la_LDFLAGS = $(LDFLAGS)
 
 
 $(DICTSRC): $(SUBHDR) artridf_linkdef.h
 	@echo Making $(DICTSRC) ...
-	rootcint -f $@ -c $(CXXFLAGS)  $^
+	rootcint -f $@ -c -I.. -I$(INCDIR) $^
 
-header: $(include_HEADERS)
+.header: $(include_HEADERS)
 	@echo Installing header to $(INCDIR)
 	@mkdir -p $(INCDIR)
 	@cp -a $(include_HEADERS) $(INCDIR)
+	@touch .header
 
 
 .cc.o:
@@ -50,4 +51,4 @@ clean-local:
 	rm -f *dict*
 
 clean: clean-local
-	rm -rf $(SUBOBJ) .libs *.lo
+	rm -rf $(SUBOBJ) .libs *.lo .header

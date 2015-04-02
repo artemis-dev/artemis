@@ -2,7 +2,7 @@
 /**
  * @file   TRIDFEventStore.cc
  * @date   Created : Jul 12, 2013 17:12:35 JST
- *   Last Modified : Nov 30, 2013 01:00:18 JST
+ *   Last Modified : Apr 25, 2014 23:12:42 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -43,6 +43,7 @@ art::TRIDFEventStore::TRIDFEventStore()
    fRIDFData.fRunHeaders = new TList;
    fRIDFData.fEventHeader = new TEventHeader;
    fRIDFData.fVerboseLevel = &fVerboseLevel;
+   fRIDFData.fDecoderFactory = TModuleDecoderFactory::Instance()->CloneInstance();
    fIsOnline = kFALSE;
    fIsEOB = kTRUE;
    fBuffer = new Char_t[fMaxBufSize];
@@ -199,7 +200,7 @@ void art::TRIDFEventStore::ClassDecoder04(Char_t *buf, Int_t& offset, struct RID
    UInt_t mapsegid = segid.Get();
    TObjArray *seg = ridfdata->fSegmentedData->FindSegmentByID(mapsegid);
    if (!seg) seg = ridfdata->fSegmentedData->NewSegment(mapsegid);
-   TModuleDecoder *decoder = TModuleDecoderFactory::Instance()->Get(segid.Module());
+   TModuleDecoder *decoder = ridfdata->fDecoderFactory->Get(segid.Module());
    if (decoder) {
       decoder->Decode(&buf[index],size,seg);
    } else {
@@ -422,7 +423,7 @@ Bool_t art::TRIDFEventStore::GetNextEvent()
    if (fIsEOB) return kFALSE;
    // parse data if available
    while (1) {
-      TModuleDecoderFactory::Instance()->Clear();
+      fRIDFData.fDecoderFactory->Clear();
       memcpy(&fHeader,fBuffer+fOffset,sizeof(fHeader));
       if (fClassDecoder[fHeader.ClassID()]) {
          fClassDecoder[fHeader.ClassID()](fBuffer,fOffset,&fRIDFData);

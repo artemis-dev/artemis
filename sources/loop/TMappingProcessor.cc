@@ -2,7 +2,7 @@
 /**
  * @file   TMappingProcessor.cc
  * @date   Created : Nov 22, 2013 17:22:19 JST
- *   Last Modified : Nov 23, 2013 01:55:46 JST
+ *   Last Modified : Jan 02, 2015 11:14:48 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -40,10 +40,13 @@ TMappingProcessor::~TMappingProcessor()
 void TMappingProcessor::Init(TEventCollection *col)
 {
    // get object reference
-   fSegmentedData = reinterpret_cast<TSegmentedData**>(col->GetObjectRef(fInputColName[0]));
-   if (!fSegmentedData) {
-      Error("Init","No such input collection '%s' (TSegementedData)\n",fInputColName[0].Data());
-      return;
+   for (Int_t i=0; i!=fInputColName.size(); i++) {
+      fSegmentedData = reinterpret_cast<TSegmentedData**>(col->GetObjectRef(fInputColName[i]));
+      if (!fSegmentedData) {
+         SetStateError(Form("No such input collection '%s' (TSegementedData)\n",fInputColName[i].Data()));
+         return;
+      }
+      fSegmentedDataArray.push_back(fSegmentedData);
    }
 
    // do nothing if MapConfig is null 
@@ -98,29 +101,28 @@ void TMappingProcessor::Init(TEventCollection *col)
 
 void TMappingProcessor::Process()
 {
-   if (!fSegmentedData) {
-      Error("Process","SegmentedData is not initialized correctly\n");
-      sleep(1);
-      return;
-   }
    if (!fMapTable) {
       Error("Process","MapConfig is not loaded correctly\n");
       sleep(1);
       return;
    }
    fCategorizedData->Clear("C");
-   const Int_t nSeg = (*fSegmentedData)->GetEntriesFast();
-   for (Int_t iSeg = 0; iSeg != nSeg; iSeg++) {
-      TObjArray *seg = (TObjArray*)(*fSegmentedData)->UncheckedAt(iSeg);
-      const Int_t nData = seg->GetEntriesFast();
-      for (Int_t i=0; i!=nData; i++) {
-         TRawDataObject *obj = (TRawDataObject*) seg->At(i);
-         if (obj->GetCatID() != TRawDataObject::kInvalid) {
-            // already mapped
-            continue;
+   Int_t nSegData = fSegmentedDataArray.size();
+   for (Int_t iSegData = 0; iSegData != nSegData; iSegData++) {
+      fSegmentedData = fSegmentedDataArray[iSegData];
+      const Int_t nSeg = (*fSegmentedData)->GetEntriesFast();
+      for (Int_t iSeg = 0; iSeg != nSeg; iSeg++) {
+         TObjArray *seg = (TObjArray*)(*fSegmentedData)->UncheckedAt(iSeg);
+         const Int_t nData = seg->GetEntriesFast();
+         for (Int_t i=0; i!=nData; i++) {
+            TRawDataObject *obj = (TRawDataObject*) seg->At(i);
+            if (obj->GetCatID() != TRawDataObject::kInvalid) {
+               // already mapped
+               continue;
+            }
+            fMapTable->Map(obj);
+            fCategorizedData->Add(obj);
          }
-         fMapTable->Map(obj);
-         fCategorizedData->Add(obj);
       }
    }
 }

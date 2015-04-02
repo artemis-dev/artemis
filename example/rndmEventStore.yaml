@@ -2,10 +2,15 @@ Processor:
   - name: random
     type: art::TRandomNumberEventStore
     parameter:
-      - name: MaxLoop
-        value: 1000
+      MaxLoop: 1000
   - name: timer
     type: art::TTimerProcessor
   - name: outputtree
     type: art::TOutputTreeProcessor
+  - name: proj
+    type: art::TTreeProjectionProcessor
+    parameter:
+      FileName: histdef.yaml
+      Name: proj
+      Type: art::TTreeProjection
 

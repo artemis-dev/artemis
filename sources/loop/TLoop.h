@@ -3,7 +3,7 @@
 /**
  * @file   TLoop.h
  * @date   Created : Apr 26, 2012 19:26:12 JST
- *   Last Modified : Oct 21, 2013 16:36:39 JST
+ *   Last Modified : Dec 02, 2014 14:29:19 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -39,17 +39,22 @@ public:
 
    Bool_t Init();
    Bool_t Resume();
+   void SetID(Int_t id) { fID = id;}
+   Int_t GetID() { return fID; }
 
    virtual void        Clear(Option_t * /*option*/ ="") { }
 
    Bool_t Load(const char* dirname, const char* basename, std::list<Long_t> *loaded);
    TConditionBit *GetCondition() { return fCondition; }
 
+   Bool_t IsRunning() { return fCondition->IsSet(kRunning); }
+
 private:
    TConditionBit *fCondition;
    
    TEventCollection   *fEventCollection;
    std::list<TProcessor*>   fProcessors;
+   Int_t fID;
 
    ClassDef(TLoop,1);
 };

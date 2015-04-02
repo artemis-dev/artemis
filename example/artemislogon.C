@@ -52,7 +52,7 @@
 // mod ID 23 : V767
       df->Register(new art::TModuleDecoderV767);
 // mod ID 24 : V1190
-      df->Register(new art::TModuleDecoderV1190Mod);
+      df->Register(new art::TModuleDecoderV1190);
 // mod ID 26 : V1190C
       df->Register(new art::TModuleDecoderSkip(26));
 // mod ID 63 : V1740

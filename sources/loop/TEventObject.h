@@ -2,7 +2,7 @@
 /**
  * @file   TEventObject.h
  * @date   Created : Jul 10, 2013 14:10:50 JST
- *   Last Modified : 
+ *   Last Modified : Feb 06, 2015 05:33:17 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -12,7 +12,7 @@
 #define ART_TEVENTOBJECT_H
 
 #include <TNamed.h>
-
+#include <TClass.h>
 namespace art {
    class TEventObject;
 }
@@ -33,15 +33,30 @@ public:
     *
     */
    TEventObject(const char* name,TObject *obj, Bool_t isPassive = kTRUE);
+   // constructor to hold primitive type
+   TEventObject(const char* name,void* obj, TString type, TString *length, Bool_t isPassive = kTRUE);
+
    ~TEventObject();
 
    void**  GetObjectRef() { return &fP; }
    Bool_t  IsPassive() { return fIsPassive; }
    TClass *GetClass() { return fClass; }
+   const char*  GetType() { return fType.Data(); }
+   Bool_t IsDouble() { return (fType == "D"); }
+   Bool_t IsFloat() { return (fType == "F"); }
+   Bool_t IsInt() { return (fType == "I"); }
+   TString GetLength() { return (fLength)?*fLength:TString(""); }
+   Bool_t IsObject() { return fIsObject; }
+      
+
 private:
    void   *fP;
    Bool_t  fIsPassive;
    TClass *fClass;
+   TString fType;
+   TString *fLength;
+   Bool_t fIsObject;
+
 
    ClassDef(TEventObject,1);
 };

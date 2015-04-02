@@ -2,7 +2,7 @@
 /**
  * @file   TLoopManager.cc
  * @date   Created : Jul 10, 2013 17:10:36 JST
- *   Last Modified : Mar 16, 2014 04:53:13 JST
+ *   Last Modified : Dec 02, 2014 14:34:00 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -44,6 +44,13 @@ art::TLoop* art::TLoopManager::Add(const char *filename)
 
    TLoop *loop = new TLoop;
    std::list <Long_t> loaded;
+
+   if (!loop->Load(dirname, basename, &loaded) ||  !loop->Init()) {
+      loop->Clear("C");
+      delete loop;
+      loop = NULL;
+      return NULL;
+   } 
    TFolder *topfolder = (TFolder*)gROOT->FindObject("/artemis");
    TFolder *folder = (TFolder*)topfolder->FindObject("loops");
    if (!folder) {
@@ -51,10 +58,8 @@ art::TLoop* art::TLoopManager::Add(const char *filename)
    }
    TString name = TString::Format("loop%d",fLoops->GetEntries());
    folder->AddFolder(name,filename);
-
+   loop->SetID(fLoops->GetEntries());
    fLoops->Add(loop);
-   loop->Load(dirname, basename, &loaded);
-   loop->Init();
    return loop;
 }
 
@@ -74,9 +79,14 @@ Int_t art::TLoopManager::Suspend(Int_t i)
 {
    TLoop* l =  (TLoop*) fLoops->At(i);
    if (l) {
-      TLoopControl *task = new TLoopControl;
-      task->Suspend();
-      fLoopControl->PushTask(*task,l);
+      if (l->IsRunning()) {
+         TLoopControl *task = new TLoopControl;
+         task->Suspend();
+         fLoopControl->PushTask(*task,l);
+      } else {
+//         printf("no loop is running\n");
+      }
+         
    } else {
       printf("No loop is ready\n");
    }
@@ -86,6 +96,7 @@ Int_t art::TLoopManager::Suspend(Int_t i)
 Int_t art::TLoopManager::Terminate(Int_t i)
 {
    TLoop * obj = (TLoop*) fLoops->At(i);
+   if (!obj) return kFALSE;
    Suspend(i);
    while (obj->GetCondition()->IsSet(TLoop::kRunning)) {
       gSystem->Sleep(100);

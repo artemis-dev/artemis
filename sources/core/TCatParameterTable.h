@@ -2,7 +2,7 @@
 /**
  * @file   TCatParameterTable.h
  * @date   Created : Oct 07, 2012 11:07:51 JST
- *   Last Modified : 
+ *   Last Modified : May 11, 2014 17:02:27 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -14,8 +14,11 @@
 #include <TGraph.h>
 #include <TSpline.h>
 
+namespace art {
+   class TCatParameterTable;
+}
 
-class TCatParameterTable  : public TGraph {
+class art::TCatParameterTable  : public TGraph {
 
 public:
    TCatParameterTable();

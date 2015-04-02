@@ -2,7 +2,7 @@
 /**
  * @file   TEventCollection.h
  * @date   Created : Apr 26, 2012 23:26:19 JST
- *   Last Modified : Nov 22, 2013 18:05:24 JST
+ *   Last Modified : Jan 31, 2015 20:08:43 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -29,6 +29,7 @@ public:
 
    // add an event object
    virtual void Add(const char* name, TObject* obj, Bool_t isPassive = kTRUE);
+   virtual void Add(TEventObject *obj) { fObjects->Add(obj); }
    // add a information object
    virtual void AddInfo(const char *name, TObject *obj, Bool_t isPassive = kFALSE);
    // get an event object by name
@@ -37,6 +38,8 @@ public:
    virtual void** GetObjectRef(const char *name);
    // get an information object
    virtual TObject* GetInfo(const char *name);
+   // get an information object
+   virtual void** GetInfoRef(const char *name);
    // get the iterator of event objects
    virtual TIter* GetIter() { return new TIter(fObjects); }
    // get the list of information objects

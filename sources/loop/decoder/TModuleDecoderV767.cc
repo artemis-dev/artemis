@@ -61,6 +61,8 @@ Int_t TModuleDecoderV767::Decode(char* buffer, const int &size, TObjArray *seg){
 	    break;
 
 	 case kMeasure:
+            // skip start timing data 
+            if (evtData[i] & 0x00800000) break;
 	    channel       =   (evtData[i] & kMaskChannel)  >> kShiftChannel;
 	    isLeadingEdge = !((evtData[i] & kMaskEdgeType) >> kShiftEdgeType);
 	    measure       =   (evtData[i] & kMaskMeasure)  >> kShiftMeasure;

@@ -2,7 +2,7 @@
 /**
  * @file   TModuleDecoderV1740.cc
  * @date   Created : Feb 06, 2013 15:06:29 JST
- *   Last Modified : Oct 18, 2013 16:41:02 JST
+ *   Last Modified : Feb 04, 2015 19:26:05 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -95,7 +95,7 @@ Int_t art::TModuleDecoderV1740::Decode(char* buf, const int &size, TObjArray *se
                iw  += (4 + sample);
                bufs += sample;
             } else {
-               printf("Decode" "Unknown Header 0x%08x",bufi[0]);
+               Warning("Decode","Unknown Header 0x%08x",bufi[0]);
                return 0;
             }
          }

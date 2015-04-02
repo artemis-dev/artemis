@@ -19,6 +19,7 @@ using art::TRawDataSimple;
 template <typename T> TModuleDecoderFixed<T>::TModuleDecoderFixed()
    : TModuleDecoder(0, TRawDataSimple<T>::Class())
 {
+   fHitData = new TObjArray;
 }
 
 template <typename T> TModuleDecoderFixed<T>::TModuleDecoderFixed(const Int_t id, const Int_t size)
@@ -32,12 +33,19 @@ template <typename T> TModuleDecoderFixed<T>::~TModuleDecoderFixed() {
    fHitData = NULL;
 }
 
-template <typename T> void TModuleDecoderFixed<T>::CalcMaskMeasure(const Int_t size) {
-   Int_t shiftDigit = 8 * sizeof(T) - size;
+template <typename T>
+void TModuleDecoderFixed<T>::Copy(TObject& obj) const
+{
+   TModuleDecoder::Copy(obj);
+   TModuleDecoderFixed<T> &fixed = static_cast<TModuleDecoderFixed<T>& >(obj);
+   fixed.fMaskMeasure = fMaskMeasure;
+}
 
-   fMaskMeasure = static_cast<T>(-1);
-   if(shiftDigit > 0){
-      fMaskMeasure >>= shiftDigit;
+template <typename T> void TModuleDecoderFixed<T>::CalcMaskMeasure(const Int_t size) {
+   fMaskMeasure = 0;
+   for (Int_t i=0; i!=size; i++) {
+      fMaskMeasure <<= 1;
+      fMaskMeasure |= 1;
    }
 }
 

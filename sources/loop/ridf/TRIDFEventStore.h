@@ -2,7 +2,7 @@
 /**
  * @file   TRIDFEventStore.h
  * @date   Created : Jul 12, 2013 17:12:43 JST
- *   Last Modified : Nov 30, 2013 00:13:05 JST
+ *   Last Modified : Apr 25, 2014 23:10:23 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -21,6 +21,7 @@ namespace art {
    class TCategorizedData;
    class TDataSource;
    class TEventHeader;
+   class TModuleDecoderFactory;
 }
 
 class art::TRIDFEventStore  : public TProcessor {
@@ -45,6 +46,7 @@ protected:
       TList   *fRunHeaders;
       TEventHeader *fEventHeader;
       Int_t        *fVerboseLevel;
+      TModuleDecoderFactory *fDecoderFactory;
    } fRIDFData; //!
    TDataSource      *fDataSource; //!
 

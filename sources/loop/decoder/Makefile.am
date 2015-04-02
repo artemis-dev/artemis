@@ -1,4 +1,6 @@
 SUBSRC = \
+	TModuleDecoderSIS3820.cc \
+	TModuleDecoderSIS3610.cc \
 	TModuleDecoderV1190.cc \
 	TRawDataV1190.cc \
 	TModuleDecoderV1740.cc \
@@ -6,6 +8,7 @@ SUBSRC = \
 	TModuleDecoderV767.cc \
 	TModuleDecoderV7XX.cc \
 	TModuleDecoderFixed.cc \
+	TModuleDecoderV1290.cc \
 	TRawDataFadc.cc 
 
 
@@ -32,21 +35,22 @@ LDFLAGS+= @YAML_CPP_LIB@
 
 include_HEADERS = $(SUBHDR) $(SUBHDRF) $(OPTHDR)
 
-noinst_LTLIBRARIES = libartdecoder.la
+lib_LTLIBRARIES = libartdecoder.la
 libartdecoder_la_SOURCES = $(SUBSRC) $(DICTSRC)
-libartdecoder_la_DEPENDENCIES = header
+libartdecoder_la_DEPENDENCIES = .header
 # libartdecoder_la_LIBADD = $(SUBOBJ)
 libartdecoder_la_LDFLAGS = $(LDFLAGS)
 
 
 $(DICTSRC): $(SUBHDR) artdecoder_linkdef.h
 	@echo Making $(DICTSRC) ...
-	rootcint -f $@ -c $(CXXFLAGS)  $^
+	rootcint -f $@ -c -I.. -I$(INCDIR)  $^
 
-header: $(include_HEADERS)
+.header: $(include_HEADERS)
 	@echo Installing header to $(INCDIR)
 	@mkdir -p $(INCDIR)
 	@cp -a $(include_HEADERS) $(INCDIR)
+	@touch .header
 
 
 .cc.o:
@@ -59,4 +63,4 @@ clean-local:
 	rm -f *dict*
 
 clean: clean-local
-	rm -rf $(SUBOBJ) .libs *.lo
+	rm -rf $(SUBOBJ) .libs *.lo .header
