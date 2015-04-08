@@ -2,7 +2,7 @@
 /**
  * @file   TLoop.cc
  * @date   Created : Apr 26, 2012 20:26:47 JST
- *   Last Modified : Jun 24, 2014 12:40:56 JST
+ *   Last Modified : Apr 08, 2015 17:27:03 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -52,7 +52,7 @@ Bool_t art::TLoop::Load(const char* dirname, const char* basename, std::list<Lon
    const char *filename = gSystem->ConcatFileName(dirname, basename);
    FileStat_t fstat;
    gSystem->GetPathInfo(filename, fstat);
-
+   TString dirsave = dirname;
    for (std::list<Long_t>::iterator itr = loaded->begin(); itr != loaded->end(); itr++) {
       if (*itr == fstat.fIno) {
          std::cerr << "Include loop found: " << filename << std::endl;
@@ -76,7 +76,10 @@ Bool_t art::TLoop::Load(const char* dirname, const char* basename, std::list<Lon
          if (const YAML::Node *include = (*it).FindValue("include")) {
             std::string name;
             *include >> name;
-            if (!Load(dirname, name.c_str(), loaded))
+            const char* dir = gSystem->DirName(gSystem->ConcatFileName(dirsave,name.c_str()));
+            const char* base = gSystem->BaseName(name.c_str());
+            printf("%s %s %s %s\n",dirname,name.c_str(),dir,base);
+            if (!Load(dir,base, loaded))
                return kFALSE;
             continue;
          }
