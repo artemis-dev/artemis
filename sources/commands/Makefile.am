@@ -33,7 +33,9 @@ SUBSRC = \
 	TCatCmdLoopResume.cc \
 	TCatCmdLoopSuspend.cc \
 	TCatCmdLoopTerminate.cc  \
-	TCmdUpdateCanvas.cc
+	TCmdUpdateCanvas.cc \
+	TCmdBranchInfo.cc \
+	TCmdClassInfo.cc 
 
 
 SUBOBJ = $(SUBSRC:.cc=.o)
