@@ -2,7 +2,7 @@
 /**
  * @file   TTreeEventStore.cc
  * @date   Created : Jul 11, 2013 21:11:20 JST
- *   Last Modified : Feb 10, 2015 05:29:51 JST
+ *   Last Modified : Apr 13, 2015 17:07:00 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -96,7 +96,7 @@ void art::TTreeEventStore::Init(TEventCollection *col)
       } else {
          // object known by ROOT
          col->Add(br->GetName(),(TObject*)cls->New(),kTRUE);
-         fTree->SetBranchAddress(br->GetName(),col->Get(br->GetName())->GetObjectRef());
+         fTree->SetBranchAddress(br->GetName(),(TObject**)col->Get(br->GetName())->GetObjectRef());
          printf("branch : %s\n",br->GetName());
       }
    }
