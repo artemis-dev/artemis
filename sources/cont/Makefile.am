@@ -2,6 +2,7 @@ SUBSRC  =
 SUBSRC += TCatReadoutPad.cc
 SUBSRC += TCatReadoutPadArray.cc
 SUBSRC += TCatPulseShape.cc
+SUBSRC += TSimpleData.cc
 
 SUBOBJ = $(SUBSRC:.cc=.o)
 SUBHDR = $(SUBSRC:.cc=.h)

@@ -2,7 +2,7 @@
 /**
  * @file   catloop_linkdef.h
  * @date   Created : Feb 19, 2012 11:19:06 JST
- *   Last Modified : Jun 05, 2014 21:24:53 JST
+ *   Last Modified : Apr 15, 2015 14:45:00 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -30,7 +30,6 @@
 #pragma link C++ class art::TRandomNumberEventStore;
 #pragma link C++ class art::TRandomNumberProcessor;
 #pragma link C++ class art::TTreeEventStore;
-#pragma link C++ class art::TSimpleData;
 #pragma link C++ class art::TRawDataObject;
 #pragma link C++ class art::TSegmentedData;
 #pragma link C++ class art::TCategorizedData;

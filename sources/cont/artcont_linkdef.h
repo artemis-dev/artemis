@@ -3,7 +3,7 @@
  * @brief
  *
  * @date   Created       : 2014-10-29 18:10:16 JST
- *         Last Modified : Nov 05, 2014 10:35:29 JST
+ *         Last Modified : Apr 15, 2015 14:45:17 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -20,6 +20,7 @@
 #pragma link C++ class art::TCatReadoutPad;
 #pragma link C++ class art::TCatReadoutPadArray;
 #pragma link C++ class art::TCatPulseShape;
+#pragma link C++ class art::TSimpleData;
 
 #endif /* __CINT__ */
 
