@@ -8,6 +8,7 @@ SUBSRC+=TEventCollection.cc
 SUBSRC+=TEventHeader.cc
 SUBSRC+=TEventObject.cc 
 SUBSRC+=TFileDataSource.cc 
+SUBSRC+=TFileDataSourceGZ.cc 
 SUBSRC+=TLoop.cc 
 SUBSRC+=TLoopControl.cc 
 SUBSRC+=TLoopManager.cc 
@@ -68,7 +69,7 @@ libcatloop_la_LDFLAGS = $(LDFLAGS)
 
 $(DICTSRC): $(SUBHDR) catloop_linkdef.h
 	@echo Making $(DICTSRC) ...
-	rootcint -f $@ -c -I$(INCDIR) $^
+	rootcint -f $@ -c -p -I$(INCDIR) $^
 
 .header: $(include_HEADERS)
 	@echo Installing header to $(INCDIR)

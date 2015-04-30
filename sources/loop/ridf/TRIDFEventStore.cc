@@ -2,7 +2,7 @@
 /**
  * @file   TRIDFEventStore.cc
  * @date   Created : Jul 12, 2013 17:12:35 JST
- *   Last Modified : Apr 25, 2014 23:12:42 JST
+ *   Last Modified : Apr 29, 2015 18:53:29 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -12,6 +12,7 @@
 #include <TSegmentedData.h>
 #include <TDataSource.h>
 #include <TFileDataSource.h>
+#include <TFileDataSourceGZ.h>
 #include <TSharedMemoryDataSource.h>
 #include <TRawDataObject.h>
 #include <TLoop.h>
@@ -342,7 +343,11 @@ Bool_t art::TRIDFEventStore::Open()
          // no file is available
          return kFALSE;
       }
-      fDataSource = new TFileDataSource(filename);
+      if (filename.EndsWith("gz")) {
+         fDataSource = new TFileDataSourceGZ(filename);
+      } else {
+         fDataSource = new TFileDataSource(filename);
+      }
       return kTRUE;
    }
 

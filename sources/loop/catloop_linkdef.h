@@ -2,7 +2,7 @@
 /**
  * @file   catloop_linkdef.h
  * @date   Created : Feb 19, 2012 11:19:06 JST
- *   Last Modified : Apr 15, 2015 14:45:00 JST (ota)
+ *   Last Modified : Apr 29, 2015 18:47:33 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -35,6 +35,7 @@
 #pragma link C++ class art::TCategorizedData;
 #pragma link C++ class art::TMapTable;
 #pragma link C++ class art::TFileDataSource-;
+#pragma link C++ class art::TFileDataSourceGZ;
 #pragma link C++ class art::TModuleDecoder;
 #pragma link C++ class art::TModuleDecoderFactory;
 #pragma link C++ class art::TRawDataSimple<UChar_t>;
