@@ -40,6 +40,7 @@
 #pragma link C++ class art::TCmdUpdateCanvas;
 #pragma link C++ class art::TCmdBranchInfo;
 #pragma link C++ class art::TCmdClassInfo;
+#pragma link C++ class art::TCmdHdel;
 
 #pragma link C++ class TCatCmdFactory+;
 

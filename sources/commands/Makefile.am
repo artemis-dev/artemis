@@ -35,8 +35,8 @@ SUBSRC = \
 	TCatCmdLoopTerminate.cc  \
 	TCmdUpdateCanvas.cc \
 	TCmdBranchInfo.cc \
-	TCmdClassInfo.cc 
-
+	TCmdClassInfo.cc \
+	TCmdHdel.cc 
 
 SUBOBJ = $(SUBSRC:.cc=.o)
 SUBHDR = $(SUBSRC:.cc=.h) 
