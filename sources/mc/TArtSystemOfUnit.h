@@ -2,7 +2,7 @@
 /**
  * @file   TArtSystemOfUnit.h
  * @date   Created : Feb 18, 2011 18:18:18 JST
- *   Last Modified : Aug 30, 2011 17:33:37 JST
+ *   Last Modified : 2015-05-30 06:44:35 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -28,6 +28,7 @@ namespace TArtSystemOfUnit {
    const double mrad = 1.E-3;
    const double deg  = 3.1415926535 / 180.;
 // energy : base unit = MeV (megaelectronvolt);
+   const double  eV = 1.E-6;
    const double keV = 1.E-3;
    const double MeV = 1.;
    const double GeV = 1.E+3;
