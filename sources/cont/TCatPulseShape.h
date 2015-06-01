@@ -2,7 +2,7 @@
 /**
  * @file   TCatPulseShape.h
  * @date   Created : Mar 10, 2013 18:10:59 JST
- *   Last Modified : Mar 29, 2014 23:50:22 JST
+ *   Last Modified : 2015-05-12 10:08:14 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -12,6 +12,7 @@
 #define TCATPULSESHAPE_H
 
 #include <TDataObject.h>
+#include <ICharge.h>
 #include <vector>
 
 #define VEC
@@ -20,7 +21,7 @@ namespace art {
    class TCatPulseShape;
 }
 
-class art::TCatPulseShape  : public TDataObject {
+class art::TCatPulseShape  : public TDataObject, public ICharge {
 
 public:
    static const UInt_t kWrongBitCorrected = 1<<16;
@@ -54,6 +55,7 @@ public:
    void SetCh(Int_t ch) { fCh = ch; }
    void SetTime(Double_t time) { fTime = time; }
    void SetOffset(Float_t offset) { fOffset = offset; }
+   void SetCharge(const ICharge &obj) { SetCharge(obj.GetCharge()); }
    void SetCharge(Double_t charge) { fCharge = charge; }
    void SetRiseTime(Float_t risetime) { fRiseTime = risetime; }
    void SetNumSample(Int_t n) { fNumSample = n; }
