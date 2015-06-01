@@ -2,7 +2,7 @@
 /**
  * @file   TCatPulseShape.cc
  * @date   Created : Mar 10, 2013 23:10:50 JST
- *   Last Modified : Mar 30, 2014 01:54:00 JST
+ *   Last Modified : 2015-06-01 21:39:25 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -17,7 +17,7 @@ ClassImp(TCatPulseShape);
 TCatPulseShape::ESortType TCatPulseShape::fgSortType = TCatPulseShape::kID;
 Int_t TCatPulseShape::fgSortOrder = TCatPulseShape::kTiming;
 TCatPulseShape::TCatPulseShape()
-   : fCh(-1),fGeo(-1),fTime(0.),fCharge(0.),fOffset(0.),fNumSample(0)
+   : fCh(-1),fGeo(-1),fTime(0.),fCharge(0.),fRiseTime(0.),fOffset(0.),fNumSample(0)
 #ifndef VEC
    , fSample(NULL), fClock(NULL)
 #endif 
