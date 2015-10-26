@@ -1,8 +1,8 @@
 /* $Id:$ */
 /**
- * @file   TTypes.h
+ * @file   TArtTypes.h
  * @date   Created : May 18, 2012 14:18:02 JST
- *   Last Modified : May 18, 2012 14:37:14 JST
+ *   Last Modified : Oct 26, 2015 17:29:32 EDT
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  

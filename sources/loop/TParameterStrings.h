@@ -2,7 +2,7 @@
 /**
  * @file   TParameterStrings.h
  * @date   Created : May 18, 2012 14:18:49 JST
- *   Last Modified : Jun 14, 2014 16:07:28 JST
+ *   Last Modified : Oct 26, 2015 17:30:17 EDT
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -15,7 +15,7 @@
 #include <TString.h>
 #include <TObject.h>
 
-#include <TTypes.h>
+#include <TArtTypes.h>
 
 namespace art {
    class TParameterStrings;

@@ -46,7 +46,7 @@ DICTSRC = catloop_dict.cc
 DICTOBJ = $(DICTSRC:.cc=.o)
 DICTHDR = $(DICTSRC:.cc=.h)
 
-OPTHDR = TDataSource.h TTypes.h TProcessorParameter.h
+OPTHDR = TDataSource.h TArtTypes.h TProcessorParameter.h
 
 INCDIR = ../../include
 
