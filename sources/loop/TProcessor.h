@@ -2,7 +2,7 @@
 /**
  * @file   TProcessor.h
  * @date   Created : Jul 10, 2013 17:10:49 JST
- *   Last Modified : Feb 05, 2015 15:20:05 JST
+ *   Last Modified : Oct 26, 2015 06:12:34 EDT
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -27,6 +27,7 @@ namespace art {
       const char* const NOT_EXIST_DATA_CLASS = "No such data class %s for TClonesArray";
       const char* const OUTPUT_ALREADY_EXIST = "Output collection '%s' already exist";
    }
+   R__EXTERN TList *gProcessors;
 }
 
 namespace YAML {
@@ -223,6 +224,8 @@ private:
    ProcPrmMap_t fParamMap;
    State_t fState; // state of initialization
    TString fErrorMessage; // error message to be filled by user
+
+   ClassDef(TProcessor,1);
    
 };
 #endif // end of #ifdef TPROCESSOR_H

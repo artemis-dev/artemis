@@ -3,7 +3,7 @@
  * @brief  file data source with gzip compression
  *
  * @date   Created       : 2015-04-29 18:37:56 JST
- *         Last Modified : Apr 29, 2015 18:45:59 JST
+ *         Last Modified : Oct 26, 2015 06:38:02 EDT
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2015 Shinsuke OTA
@@ -13,7 +13,7 @@
 
 using art::TFileDataSourceGZ;
 
-ClassImp(TFileDataSourceGZ)
+//ClassImp(TFileDataSourceGZ)
 
 TFileDataSourceGZ::TFileDataSourceGZ(const char *filename)
 : fFile(NULL), fFilename(filename)

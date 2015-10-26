@@ -2,7 +2,7 @@
 /**
  * @file   catloop_linkdef.h
  * @date   Created : Feb 19, 2012 11:19:06 JST
- *   Last Modified : Apr 29, 2015 18:47:33 JST
+ *   Last Modified : Oct 26, 2015 06:36:40 EDT
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -24,6 +24,8 @@
 #pragma link C++ class art::TEventObject;
 #pragma link C++ class art::TEventCollection;
 #pragma link C++ class art::TProcessor;
+#pragma link C++ namespace art;
+#pragma link C++ global art::gProcessors;
 #pragma link C++ class art::TTimerProcessor;
 #pragma link C++ class art::TOutputTreeProcessor;
 #pragma link C++ class art::TCounterEventStore;
@@ -34,8 +36,8 @@
 #pragma link C++ class art::TSegmentedData;
 #pragma link C++ class art::TCategorizedData;
 #pragma link C++ class art::TMapTable;
-#pragma link C++ class art::TFileDataSource-;
-#pragma link C++ class art::TFileDataSourceGZ;
+//#pragma link C++ class art::TFileDataSource-;
+//#pragma link C++ class art::TFileDataSourceGZ;
 #pragma link C++ class art::TModuleDecoder;
 #pragma link C++ class art::TModuleDecoderFactory;
 #pragma link C++ class art::TRawDataSimple<UChar_t>;
@@ -48,7 +50,7 @@
 #pragma link C++ class art::TRunInfo;
 #pragma link C++ class art::TEventHeader;
 #pragma link C++ class art::TMappingProcessor;
-#pragma link C++ class art::TSharedMemoryDataSource;
+//#pragma link C++ class art::TSharedMemoryDataSource;
 #pragma link C++ class art::TSegmentInfo;
 #pragma link C++ class art::TSegmentCheckProcessor;
 #pragma link C++ class art::TModuleInfo;

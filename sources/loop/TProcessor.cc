@@ -2,7 +2,7 @@
 /**
  * @file   TProcessor.cc
  * @date   Created : Jul 10, 2013 17:10:19 JST
- *   Last Modified : Feb 12, 2015 04:51:55 JST
+ *   Last Modified : Oct 26, 2015 06:12:45 EDT
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *
@@ -13,6 +13,10 @@
 #include <yaml-cpp/yaml.h>
 #include <iostream>
 #include <TClonesArray.h>
+
+TList* art::gProcessors = new TList;
+
+ClassImp(art::TProcessor)
 
 art::TProcessor::TProcessor()
    :   fParameters(NULL), fState(INIT), fErrorMessage("")

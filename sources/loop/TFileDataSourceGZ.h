@@ -3,7 +3,7 @@
  * @brief  file data source with gzip compression
  *
  * @date   Created       : 2015-04-29 18:32:57 JST
- *         Last Modified : Apr 29, 2015 18:43:16 JST
+ *         Last Modified : Oct 26, 2015 06:37:56 EDT
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2015 Shinsuke OTA
@@ -39,7 +39,7 @@ protected:
    TString fFilename; // filename
 private:
 
-   ClassDef(TFileDataSourceGZ,0) // file data source with gzip compression
+//   ClassDef(TFileDataSourceGZ,0) // file data source with gzip compression
 };
 
 #endif // INCLUDE_GUARD_UUID_CB07EBDF_7787_4F57_9726_3AB250737A0C
