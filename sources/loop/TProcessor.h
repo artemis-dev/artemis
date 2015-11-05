@@ -97,6 +97,7 @@ public:
 
    virtual void Clear(Option_t* /* opt */);
 
+   static void ListProcessors();
 protected:
    // user defined initialization
    virtual void Init (TEventCollection *) {;}

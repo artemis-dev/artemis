@@ -13,6 +13,7 @@
 #include <yaml-cpp/yaml.h>
 #include <iostream>
 #include <TClonesArray.h>
+#include <TClassTable.h>
 
 TList* art::gProcessors = new TList;
 
@@ -298,6 +299,30 @@ void art::TProcessor::PrintDescriptionYAML()
    out << YAML::EndMap;
    std::cout << out.c_str() << std::endl;
 
+}
+
+void art::TProcessor::ListProcessors()
+{
+   // generate list of processors
+   gClassTable->Init();
+   Int_t nCls = gClassTable->Classes();
+   for (Int_t iCls = 0; iCls != nCls; ++iCls) {
+      TString name(gClassTable->Next());
+      if (name.BeginsWith("vector")) continue;
+      if (name.BeginsWith("pair")) continue;
+      if (name.BeginsWith("reverse")) continue;
+      if (name.BeginsWith("map")) continue;
+      if (name.BeginsWith("list")) continue;
+      if (name.EndsWith("Iter")) continue;
+      TClass *cls = TClass::GetClass(name);
+      // printf("cls : %s %d\n",name.Data(),cls->InheritsFrom(TProcessor::Class_Name()));
+      if (cls && cls->IsLoaded() &&
+          cls->InheritsFrom(TProcessor::Class_Name()) &&
+          cls != TProcessor::Class()
+         ) {
+         gProcessors->Add(cls);
+      }
+   }
 }
 
 void operator >> (const YAML::Node &node, art::TProcessor *&proc)
