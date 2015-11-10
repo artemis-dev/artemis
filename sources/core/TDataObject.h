@@ -2,7 +2,7 @@
 /**
  * @file   TDataObject.h
  * @date   Created : Jan 07, 2014 10:07:51 JST
- *   Last Modified : Jan 21, 2015 14:30:51 JST
+ *   Last Modified : Nov 10, 2015 16:11:34 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -40,6 +40,9 @@ public:
    virtual void SetAuxID(Int_t auxid) { fAuxID = auxid; }
    virtual Int_t GetAuxID() const { return fAuxID; }
 
+   virtual void SetTimestamp(Double_t time) { fTimestamp = time; }
+   virtual Double_t GetTimestamp() { return fTimestamp; }
+
    virtual void SetQualityBit(UInt_t quality, Bool_t set);
    virtual void SetQualityBit(UInt_t quality) { fQuality |= quality; }
    virtual void ResetQualityBit(UInt_t quality) { fQuality &= (~quality); }
@@ -62,7 +65,8 @@ public:
 private:
    Int_t fID; // identifier of this object artemis never use this id
    Int_t fAuxID; // auxiliary identifier of this object
-   UInt_t fQuality; // quality bit 
+   UInt_t fQuality; // quality bit
+   Double_t fTimestamp; // timestamp
    
    ClassDef(TDataObject,1); // base class for data object
 };

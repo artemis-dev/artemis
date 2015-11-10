@@ -2,7 +2,7 @@
 /**
  * @file   TDataObject.cc
  * @date   Created : Jan 07, 2014 10:07:26 JST
- *   Last Modified : Jan 08, 2014 14:00:17 JST
+ *   Last Modified : Nov 10, 2015 16:12:31 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -17,12 +17,12 @@ ClassImp(art::TDataObject);
 using art::TDataObject;
 
 TDataObject::TDataObject()
-   : fID(0),fAuxID(0), fQuality(kInvalid)
+   : fID(0),fAuxID(0), fQuality(kInvalid), fTimestamp(0.)
 {
 }
 
 TDataObject::TDataObject(const TDataObject &obj)
-   : TArtemisObject(obj), fID(obj.fID), fAuxID(obj.fAuxID), fQuality(obj.fQuality)
+   : TArtemisObject(obj), fID(obj.fID), fAuxID(obj.fAuxID), fQuality(obj.fQuality), fTimestamp(obj.fTimestamp)
 {
 }
 
@@ -33,6 +33,7 @@ TDataObject::~TDataObject()
 void TDataObject::Clear(Option_t *option)
 {
    fID = fAuxID = 0;
+   fTimestamp = 0.;
    fQuality = kInvalid;
    TObject::Clear(option);
 }
@@ -43,6 +44,7 @@ void TDataObject::Copy(TObject &object) const
    obj.fID = fID;
    obj.fAuxID = fAuxID;
    obj.fQuality = fQuality;
+   obj.fTimestamp = fTimestamp;
    TObject::Copy(obj);
 }
 
@@ -58,6 +60,7 @@ TDataObject& TDataObject::operator=(const TDataObject &rhs)
       fID = obj.fID;
       fAuxID = obj.fAuxID;
       fQuality = obj.fQuality;
+      fTimestamp = obj.fTimestamp;
    }
    return *this;
 }
