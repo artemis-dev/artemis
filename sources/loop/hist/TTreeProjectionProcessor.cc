@@ -3,7 +3,7 @@
  * @brief  tree projection
  *
  * @date   Created       : 2014-03-05 22:30:06 JST
- *         Last Modified : Jun 15, 2014 11:11:57 JST
+ *         Last Modified : 2016-03-28 21:28:38 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -54,7 +54,16 @@ void TTreeProjectionProcessor::Init(TEventCollection *col)
    TIter *iter = col->GetIter();
    TEventObject *obj;
    while ((obj = (TEventObject*)iter->Next())) {
-      fTree->Branch(obj->GetName(),obj->GetClass()->GetName(),obj->GetObjectRef(),3200000,0);
+      if (obj->IsObject()) {
+         fTree->Branch(obj->GetName(),obj->GetClass()->GetName(),obj->GetObjectRef(),3200000,0);
+      } else {
+         TString leaflist = obj->GetName();
+         if (obj->GetLength() != "") {
+            leaflist.Append(TString::Format("[%s]",obj->GetLength().Data()));
+         }
+         leaflist.Append(TString::Format("/%s",obj->GetType()));
+         fTree->Branch(obj->GetName(),*obj->GetObjectRef(),leaflist.Data());
+      }
    }
    fTree->SetCircular(1);
 
