@@ -3,7 +3,7 @@
  * @brief  display branches
  *
  * @date   Created       : 2015-04-09 14:37:54 JST
- *         Last Modified : Apr 10, 2015 18:28:29 JST
+ *         Last Modified : 2016-03-28 20:29:13 JST (ota)
  * @author  Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  * branchinfo 
@@ -87,13 +87,26 @@ Long_t TCmdBranchInfo::Run(TTree *tree)
    while (TBranch *br = (TBranch*)it->Next()) {
       Bool_t isClonesArray = kFALSE;
       TClass *cls = GetConcreteClass(tree,br,&isClonesArray);
-      if (!cls) continue;
-      TString clsname = cls->GetName();
-      if (isClonesArray) {
-         clsname = TString(TClonesArray::Class_Name());
-         clsname.Append("(").Append(cls->GetName()).Append(")");
+      if (cls) {
+         TString clsname = cls->GetName();
+         if (isClonesArray) {
+            clsname = TString(TClonesArray::Class_Name());
+            clsname.Append("(").Append(cls->GetName()).Append(")");
+         }
+         printf("%-20s %-20s\n",br->GetName(),clsname.Data());
+      } else {
+         TClass *cls = NULL;
+         EDataType type;;
+         br->GetExpectedType(cls,type);
+         TString title = br->GetTitle();
+         if (title.Contains("[")) {
+            TString num = title.Data()[title.First("[")+1];
+            TString name = Form("%s[%d]",TDataType::GetTypeName(type),num.Atoi());
+            printf("%-20s %-20s\n",br->GetName(),name.Data());
+         } else {
+            printf("%-20s %-20s\n",br->GetName(),TDataType::GetTypeName(type));
+         }
       }
-      printf("%-20s %-20s\n",br->GetName(),clsname.Data());
    }
 
    return 1;
@@ -147,6 +160,7 @@ TClass* TCmdBranchInfo::GetConcreteClass(TTree* tree, TBranch*br, Bool_t* isClon
       Warning("Init","Unresolved type for branch '%s'",br->GetName());
       return NULL;
    }
+   if (!cls) return NULL;
    TString clsname = cls->GetName();
    if (cls == TClonesArray::Class()) {
       TClonesArray *arr = NULL;
