@@ -2,7 +2,7 @@
 /**
  * @file   TCatPadManager.h
  * @date   Created : Feb 06, 2012 18:06:59 JST
- *   Last Modified : Feb 24, 2014 17:27:31 JST
+ *   Last Modified : 2016-04-16 06:54:34 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -13,6 +13,8 @@
 
 #include <TCanvas.h>
 
+class TPaveLabel;
+
 class TCatPadManager  {
 protected:
    TCatPadManager();
@@ -22,7 +24,7 @@ public:
    TVirtualPad *Next();
    TVirtualPad *Current();
    TVirtualPad *Get(Int_t idx);
-   TCanvas *GetCanvas();
+   TVirtualPad *GetCanvas();
    void Closed();
    Bool_t HasChild();
    Int_t GetNumChild();
@@ -30,9 +32,13 @@ public:
    void Divide(Int_t nx, Int_t ny, 
                  Float_t xmargin = 0.01, Float_t ymargin = 0.01);
 
-   TCanvas *fCurrent;
+   TCanvas *fCanvas;
+   TPad    *fMainPad;
    Int_t    fCurrentPadId;
    Int_t    fNumSubPads;
+
+   TPaveLabel *fTitleLabel;
+   TPaveLabel *fDateLabel;
 
    ClassDef(TCatPadManager,0); // pad manager
 };
