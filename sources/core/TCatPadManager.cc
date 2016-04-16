@@ -2,7 +2,7 @@
 /**
  * @file   TCatPadManager.cc
  * @date   Created : Feb 06, 2012 19:06:29 JST
- *   Last Modified : 2016-04-16 08:33:29 JST (ota)
+ *   Last Modified : 2016-04-17 05:56:35 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -43,6 +43,7 @@ void TCatPadManager::CreateCanvas()
    fTitleLabel->Draw();
    fMainPad = new TPad("graphs","graphs",0.05,0.05,0.95,0.95);
    fMainPad->Draw();
+   fMainPad->cd();
    fCurrentPadId = 0;
    fNumSubPads = 0;
 }
