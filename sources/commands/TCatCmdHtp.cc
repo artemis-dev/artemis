@@ -2,7 +2,7 @@
 /**
  * @file   TCatCmdHtp.cc
  * @date   Created : Feb 07, 2012 18:07:09 JST
- *   Last Modified : Feb 07, 2012 19:05:24 JST
+ *   Last Modified : 2016-04-17 06:03:47 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -10,6 +10,7 @@
  */
 #include "TCatCmdHtp.h"
 
+#include <TCatPadManager.h>
 #include <TCatHistManager.h>
 
 TCatCmdHtp::TCatCmdHtp()
@@ -35,6 +36,7 @@ Long_t TCatCmdHtp::Cmd(vector<TString> args)
 
 Long_t TCatCmdHtp::Run(TString &opt)
 {
+   TCatPadManager::Instance()->Current();
    TCatHistManager::Instance()->DrawCurrent(opt);
    return 1;
 }
