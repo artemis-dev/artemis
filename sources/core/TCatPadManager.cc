@@ -2,7 +2,7 @@
 /**
  * @file   TCatPadManager.cc
  * @date   Created : Feb 06, 2012 19:06:29 JST
- *   Last Modified : 2016-04-17 06:03:17 JST (ota)
+ *   Last Modified : 2016-04-17 07:03:23 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -99,7 +99,7 @@ TVirtualPad *TCatPadManager::GetCanvas()
    fCanvas->Modified();
    fCanvas->Update();
       
-   return fMainPad;
+   return fCanvas;
 }
 
 
