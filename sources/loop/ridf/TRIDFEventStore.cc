@@ -2,7 +2,7 @@
 /**
  * @file   TRIDFEventStore.cc
  * @date   Created : Jul 12, 2013 17:12:35 JST
- *   Last Modified : 2016-04-16 08:51:24 JST (ota)
+ *   Last Modified : 2016-04-17 00:24:38 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -346,7 +346,7 @@ Bool_t art::TRIDFEventStore::Open()
          // no file is available
          return kFALSE;
       }
-      TString runname = filename(TRegexp("[a-zA-Z]+[0-9]+"));
+      TString runname = filename(TRegexp("[a-zA-Z]+[0-9]*[0-9][0-9][0-9][0-9]"));
       TCatPadManager::SetTitle(runname);
       if (filename.EndsWith("gz")) {
          fDataSource = new TFileDataSourceGZ(filename);
