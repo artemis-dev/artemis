@@ -2,7 +2,7 @@
 /**
  * @file   TCatPadManager.cc
  * @date   Created : Feb 06, 2012 19:06:29 JST
- *   Last Modified : 2016-04-16 07:02:05 JST (ota)
+ *   Last Modified : 2016-04-16 08:33:29 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -14,11 +14,17 @@
 #include <TDatime.h>
 
 TCatPadManager::TCatPadManager()
+   : fCanvas(NULL), fMainPad(NULL), fCurrentPadId(0), fNumSubPads(0), fTitleLabel(NULL), fDateLabel(NULL)
 {
-   CreateCanvas();
+   //CreateCanvas();
+   fTitleLabel = new TPaveLabel(0.1,0.96,0.9,0.99,"");
+   fDateLabel  = new TPaveLabel(0.7,0.01,0.9,0.03,"");
 }
 TCatPadManager::~TCatPadManager()
 {
+   if (fTitleLabel) delete fTitleLabel;
+   if (fDateLabel) delete fDateLabel;
+   
 }
 
 TCatPadManager* TCatPadManager::Instance()
@@ -30,16 +36,24 @@ TCatPadManager* TCatPadManager::Instance()
 void TCatPadManager::CreateCanvas()
 {
    TDatime now;
+   TString name = "";
    fCanvas = new TCanvas("artcanvas","canvas",800,800);
    fCanvas->Connect("Closed()","TCatPadManager",this,"Closed()");
-//   fTitleLabel = new TPaveLabel(0.1,0.96,0.9,0.99,name);
-   fDateLabel  = new TPaveLabel(0.7,0.01,0.9,0.03,now.AsString());
    fDateLabel->Draw();
-//   fTitleLabel->Draw();
+   fTitleLabel->Draw();
    fMainPad = new TPad("graphs","graphs",0.05,0.05,0.95,0.95);
    fMainPad->Draw();
    fCurrentPadId = 0;
    fNumSubPads = 0;
+}
+
+void TCatPadManager::SetTitle(const char* title)
+{
+   Instance()->GetTitleLabel()->SetLabel(title);
+}
+void TCatPadManager::SetComment(const char* comment)
+{
+//   Instance()->GetTitleLabel()->SetLabel(title);
 }
 
 Int_t TCatPadManager::GetNumChild()
@@ -92,6 +106,8 @@ void TCatPadManager::Closed()
 {
    fCanvas = 0;
    fMainPad = 0;
+   fTitleLabel = 0;
+   fDateLabel = 0;
    fCurrentPadId = 0;
    fNumSubPads = 0;
 }

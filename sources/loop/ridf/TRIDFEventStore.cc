@@ -2,7 +2,7 @@
 /**
  * @file   TRIDFEventStore.cc
  * @date   Created : Jul 12, 2013 17:12:35 JST
- *   Last Modified : Apr 29, 2015 18:53:29 JST
+ *   Last Modified : 2016-04-16 08:51:24 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -22,6 +22,8 @@
 #include <TTimeStamp.h>
 #include <TEventHeader.h>
 #include <TSystem.h>
+#include <TCatPadManager.h>
+#include <TRegexp.h>
 
 #include <map>
 
@@ -327,6 +329,7 @@ Bool_t art::TRIDFEventStore::Open()
       fRIDFData.fRunHeaders->Add(runinfo);
       fRIDFData.fEventHeader->SetRunName("Online");
       fRIDFData.fEventHeader->SetRunNumber(0);
+      TCatPadManager::SetTitle("Online");
       return kTRUE;
    } else {
       TString filename;
@@ -343,6 +346,8 @@ Bool_t art::TRIDFEventStore::Open()
          // no file is available
          return kFALSE;
       }
+      TString runname = filename(TRegexp("[a-zA-Z]+[0-9]+"));
+      TCatPadManager::SetTitle(runname);
       if (filename.EndsWith("gz")) {
          fDataSource = new TFileDataSourceGZ(filename);
       } else {
