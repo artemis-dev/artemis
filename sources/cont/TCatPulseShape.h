@@ -2,7 +2,7 @@
 /**
  * @file   TCatPulseShape.h
  * @date   Created : Mar 10, 2013 18:10:59 JST
- *   Last Modified : 2015-05-12 10:08:14 JST (ota)
+ *   Last Modified : 2016-04-17 11:50:24 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -14,6 +14,7 @@
 #include <TDataObject.h>
 #include <ICharge.h>
 #include <vector>
+#include <TVector3.h>
 
 #define VEC
 
@@ -44,9 +45,10 @@ public:
    Float_t GetRiseTime() const { return fRiseTime; }
    std::vector<Float_t>& GetSample() { return fSample; }
    std::vector<Float_t>& GetClock() { return fClock; }
-   Double_t GetX() const { return fX; }
-   Double_t GetZ() const { return fZ; }
-   
+   Double_t GetX() const { return fPos.X(); }
+   Double_t GetY() const { return fPos.Y(); }
+   Double_t GetZ() const { return fPos.Z(); }
+   TVector3& GetPos() { return fPos; }
    
    Float_t &operator[] (Int_t idx) { return fSample[idx]; }
    Float_t &operator() (Int_t idx) { return fClock[idx]; }
@@ -59,7 +61,9 @@ public:
    void SetCharge(Double_t charge) { fCharge = charge; }
    void SetRiseTime(Float_t risetime) { fRiseTime = risetime; }
    void SetNumSample(Int_t n) { fNumSample = n; }
-   void SetXZ(Double_t x, Double_t z) { fX = x; fZ = z; }
+   // will be obsoluted
+   void SetXZ(Double_t x, Double_t z) { fPos.SetX(x); fPos.SetZ(z); }
+
    
    void AddSample(Float_t sample,Float_t clock = -1) {
 #ifndef VEC
@@ -103,8 +107,7 @@ protected:
    Float_t fRiseTime;
    Float_t fOffset;
    Int_t fNumSample;
-   Double_t fX;
-   Double_t fZ;
+   TVector3 fPos;
 #ifndef VEC   
    Float_t *fSample; //[fNumSample]
    Float_t *fClock; //[fNumSample]
@@ -113,6 +116,6 @@ protected:
    std::vector<Float_t> fClock;
 #endif
 
-   ClassDef(TCatPulseShape,1);
+   ClassDef(TCatPulseShape,2);
 };
 #endif // end of #ifdef TCATPULSESHAPE_H

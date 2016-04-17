@@ -2,7 +2,7 @@
 /**
  * @file   TCatPulseShape.cc
  * @date   Created : Mar 10, 2013 23:10:50 JST
- *   Last Modified : 2015-06-01 21:39:25 JST (ota)
+ *   Last Modified : 2016-04-17 11:50:41 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -48,8 +48,7 @@ void TCatPulseShape::Copy(TObject &obj) const
    pulse.fOffset = fOffset;
    pulse.fNumSample = fNumSample;
    pulse.fRiseTime = fRiseTime;
-   pulse.fX = fX;
-   pulse.fZ = fZ;
+   fPos.Copy(pulse.fPos);
    TDataObject::Copy(obj);
 }
 
@@ -57,6 +56,7 @@ void TCatPulseShape::Clear(Option_t *option)
 {
    fNumSample = 0;
    fTime = fCharge = fOffset = 0.;
+   fPos.SetXYZ(0.,0.,0.);
    TDataObject::Clear(option);
 #ifdef VEC
    fSample.clear();
@@ -68,7 +68,6 @@ Int_t TCatPulseShape::Compare (const TObject *obj) const
 {
    Int_t ret = 1;
    const TCatPulseShape *pulse = (const TCatPulseShape*)obj;
-
    Double_t value = 0;
    Double_t myValue = 0;
    switch (fgSortType) {
