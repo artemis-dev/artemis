@@ -2,7 +2,7 @@
 /**
  * @file   TCatPulseShape.cc
  * @date   Created : Mar 10, 2013 23:10:50 JST
- *   Last Modified : 2016-04-17 11:50:41 JST (ota)
+ *   Last Modified : 2016-04-17 12:18:03 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -49,6 +49,7 @@ void TCatPulseShape::Copy(TObject &obj) const
    pulse.fNumSample = fNumSample;
    pulse.fRiseTime = fRiseTime;
    fPos.Copy(pulse.fPos);
+   pulse.fPos = fPos;
    TDataObject::Copy(obj);
 }
 
