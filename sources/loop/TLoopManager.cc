@@ -2,7 +2,7 @@
 /**
  * @file   TLoopManager.cc
  * @date   Created : Jul 10, 2013 17:10:36 JST
- *   Last Modified : Dec 02, 2014 14:34:00 JST
+ *   Last Modified : 2016-04-19 00:54:59 JST (nil)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -44,20 +44,21 @@ art::TLoop* art::TLoopManager::Add(const char *filename)
 
    TLoop *loop = new TLoop;
    std::list <Long_t> loaded;
-
-   if (!loop->Load(dirname, basename, &loaded) ||  !loop->Init()) {
-      loop->Clear("C");
-      delete loop;
-      loop = NULL;
-      return NULL;
-   } 
    TFolder *topfolder = (TFolder*)gROOT->FindObject("/artemis");
    TFolder *folder = (TFolder*)topfolder->FindObject("loops");
    if (!folder) {
       folder = topfolder->AddFolder("loops","container for loops");
    }
    TString name = TString::Format("loop%d",fLoops->GetEntries());
-   folder->AddFolder(name,filename);
+   TFolder *myfolder = folder->AddFolder(name,filename);
+
+   if (!loop->Load(dirname, basename, &loaded) ||  !loop->Init()) {
+      loop->Clear("C");
+      folder->Remove(folder);
+      delete loop;
+      loop = NULL;
+      return NULL;
+   } 
    loop->SetID(fLoops->GetEntries());
    fLoops->Add(loop);
    return loop;

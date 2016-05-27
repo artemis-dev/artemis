@@ -2,7 +2,7 @@
 /**
  * @file   TRIDFEventStore.cc
  * @date   Created : Jul 12, 2013 17:12:35 JST
- *   Last Modified : 2016-04-17 00:24:38 JST (ota)
+ *   Last Modified : 2016-04-19 01:22:19 JST (nil)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -248,7 +248,7 @@ void art::TRIDFEventStore::ClassDecoder05(Char_t *buf, Int_t& offset, struct RID
       TString date = info.fDate;
       TString fHeader = info.fHeader;
       TString fEnder = info.fEnder;
-      TRunInfo *runinfo = new TRunInfo(runName+runNumber,runName+runNumber);
+      TRunInfo *runinfo = (TRunInfo*) ridfdata->fRunHeaders->Last();
       TTimeStamp start(2000+TString(date(7,2)).Atoi(),month[TString(date(3,3))],TString(date(0,2)).Atoi(),
                        TString(startTime(9,2)).Atoi(),TString(startTime(12,2)).Atoi(),TString(startTime(15,2)).Atoi(),
                        0,kFALSE);
@@ -258,15 +258,17 @@ void art::TRIDFEventStore::ClassDecoder05(Char_t *buf, Int_t& offset, struct RID
       if (start.GetSec() > stop.GetSec()) {
          stop.SetSec(stop.GetSec()+86400);
       }
-      runinfo->SetRunName(runName.Data());
-      runinfo->SetRunNumber(runNumber.Atoll());
-      runinfo->SetStartTime(start.GetSec());
-      runinfo->SetStopTime(stop.GetSec());
-      runinfo->SetHeader(fHeader);
-      runinfo->SetEnder(fEnder);
-      ridfdata->fRunHeaders->Add(runinfo);
-      ridfdata->fEventHeader->SetRunName(runName.Data());
-      ridfdata->fEventHeader->SetRunNumber(runNumber.Atoll());
+      if (!runName.IsNull()) {
+         runinfo->SetRunName(runName.Data());
+         runinfo->SetRunNumber(runNumber.Atoll());
+         runinfo->SetStartTime(start.GetSec());
+         runinfo->SetStopTime(stop.GetSec());
+         runinfo->SetHeader(fHeader);
+         runinfo->SetEnder(fEnder);
+         ridfdata->fRunHeaders->Add(runinfo);
+         ridfdata->fEventHeader->SetRunName(runName.Data());
+         ridfdata->fEventHeader->SetRunNumber(runNumber.Atoll());
+      }
    }
 }
 
@@ -329,7 +331,6 @@ Bool_t art::TRIDFEventStore::Open()
       fRIDFData.fRunHeaders->Add(runinfo);
       fRIDFData.fEventHeader->SetRunName("Online");
       fRIDFData.fEventHeader->SetRunNumber(0);
-      TCatPadManager::SetTitle("Online");
       return kTRUE;
    } else {
       TString filename;
@@ -347,7 +348,14 @@ Bool_t art::TRIDFEventStore::Open()
          return kFALSE;
       }
       TString runname = filename(TRegexp("[a-zA-Z]+[0-9]*[0-9][0-9][0-9][0-9]"));
-      TCatPadManager::SetTitle(runname);
+      TString runnum = runname.Data() + runname.Length() - 4;
+      runname.Resize(runname.Length() - 4);
+      TRunInfo *info = new TRunInfo(runname+runnum,runname+runnum);
+      info->SetRunName(runname);
+      info->SetRunNumber(runnum.Atoi());
+      fRIDFData.fRunHeaders->Add(info);
+      fRIDFData.fEventHeader->SetRunName(runname);
+      fRIDFData.fEventHeader->SetRunNumber(runnum.Atoi());
       if (filename.EndsWith("gz")) {
          fDataSource = new TFileDataSourceGZ(filename);
       } else {

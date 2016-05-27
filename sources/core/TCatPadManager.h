@@ -2,7 +2,7 @@
 /**
  * @file   TCatPadManager.h
  * @date   Created : Feb 06, 2012 18:06:59 JST
- *   Last Modified : 2016-04-16 08:21:41 JST (ota)
+ *   Last Modified : 2016-04-19 04:23:25 JST (nil)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -28,6 +28,7 @@ public:
    TVirtualPad *Get(Int_t idx);
    TVirtualPad *GetCanvas();
    void Closed();
+   void MainPadClosed();
    Bool_t HasChild();
    Int_t GetNumChild();
    void CreateCanvas();
@@ -48,6 +49,7 @@ public:
 
    TPaveLabel *fTitleLabel;
    TPaveLabel *fDateLabel;
+
 
    ClassDef(TCatPadManager,0); // pad manager
 };

@@ -2,7 +2,7 @@
 /**
  * @file   TRunInfo.h
  * @date   Created : Nov 19, 2013 17:19:35 JST
- *   Last Modified : Jun 22, 2014 17:11:49 JST
+ *   Last Modified : 2016-04-19 04:26:29 JST (nil)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -58,6 +58,8 @@ public:
    virtual TString GetEnder() { return fEnder; }
    // increment event number
    virtual void IncrementEventNumber() { fEventNumber++; }
+   // get eventnumber
+   virtual Long_t GetEventNumber() { return fEventNumber; }
 
    // print
    virtual void Print(Option_t *opt = "") const;
