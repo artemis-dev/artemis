@@ -2,7 +2,7 @@
 /**
  * @file   TCatHistManager.cc
  * @date   Created : Feb 06, 2012 11:06:39 JST
- *   Last Modified : Jul 22, 2013 14:13:44 JST
+ *   Last Modified : 2016-01-18 11:39:41 JST (kawase)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -82,7 +82,9 @@ void TCatHistManager::ls(Option_t *opt) const
    printf(" %s\n",gDirectory->GetName());
    for (Int_t i=0; i<n; i++) {
       TObject *obj = fObjs->At(i);
-      printf("%5d %4s %-15s %-10s\n",i,
+      printf("%c%4d %4s %-15s %-10s\n",
+	     i == fCurrentID ? '>' : ' ',
+	     i,
              obj->IsA()->GetName(),
              obj->GetName(),
              obj->GetTitle());
