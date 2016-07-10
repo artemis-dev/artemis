@@ -2,7 +2,7 @@
 /**
  * @file   TCatCmdPr.cc
  * @date   Created : Feb 07, 2012 22:07:36 JST
- *   Last Modified : Jul 22, 2013 14:15:46 JST
+ *   Last Modified : 2016-01-18 14:15:31 JST (kawase)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -15,68 +15,73 @@
 #include <TH2.h>
 #include <TH3.h>
 
-TCatCmdPr::TCatCmdPr(const EAxis& axis)
-   : fAxis(axis)
+TCatCmdPr::TCatCmdPr(const EAxis& axis, Bool_t isProjection)
+   : fAxis(axis), fIsProjection(isProjection)
 {
+   const TString op = isProjection ? "projection" : "profile";
+   const Char_t  rf = isProjection ? 'r' : 'f';
+   fAxisLabel = (axis == kX) ? 'x' :
+                (axis == kY) ? 'y' :
+                'z';
+
+   SetName(TString::Format("p%c%c",rf,fAxisLabel));
+   SetTitle(TString::Format("%s to %c axis",op.Data(),fAxisLabel));
 }
+
 TCatCmdPr::~TCatCmdPr()
 {
 }
 
 Long_t TCatCmdPr::Cmd(vector<TString> args)
 {
-   Int_t id1,id2;
-   id1 = id2 = -1;
-   if (args.size()>1) GetRange(args[1],id1,id2);
-   return Run(id1,id2);
+   const TString range = args.size() > 1 ? args[1] : TCatCmd::kRangeDefault;
+   const TString opt = args.size() > 2 ? args[2] : "";
+
+   Int_t id1 = -1;
+   Int_t id2 = -1;
+   GetRange(range,id1,id2);
+   Run(id1,id2,opt);
+
+   return 1;
 }
 
-Long_t TCatCmdPr::Run(Int_t id1,Int_t id2)
+Long_t TCatCmdPr::Run(Int_t id1,Int_t id2, Option_t *opt)
 {
-   Int_t n = id2 - id1 + 1;
-   if (id1 == -1 && id2 == -1) {
-      TObject *obj = TCatHistManager::Instance()->GetCurrent();
-      if (!obj) return 1;
-      if (!obj->InheritsFrom(TH2::Class())) {
-         // TArtCore::Info("TCatCmdPr::Run","%s is not 2D histogram",
-         // obj->GetName());
-         return 1;
-      }
-      Run((TH2*)obj);
-      return 1;
-   }
-   if (id1 < 0) return 1;
-   
-   for (Int_t i=0; i<n; i++) {
-      TObject *obj = TCatHistManager::Instance()->GetObject(id1+i);
+   if (id1 < 0 || id1 > id2) return 1;
+   ++id2;
+   for (Int_t id=id1; id != id2; id++) {
+      TObject *obj = TCatHistManager::Instance()->GetObject(id);
       if (!obj) continue;
       if (!obj->InheritsFrom(TH2::Class())) {
          // TArtCore::Info("TCatCmdPr::Run","%s is not 2D histogram",
          //               obj->GetName());
          continue;
-      } 
-      Run((TH2*) obj);
+      }
+      Run((TH2*) obj, opt);
    }
    return 1;
 }
 
-TH1* TCatCmdPr::Run(TH2 *h2)
+TH1* TCatCmdPr::Run(TH2 *h2, Option_t *opt)
 {
    TH1 *hnew = NULL;
-   TString namesuffix, titlesuffix;
+
+   const TString &namesuffix =
+      TString::Format("p%s%c",fIsProjection ? "" : "f", fAxisLabel);
+   const TString &namearg =
+      TString::Format("_%s",namesuffix.Data());
+   const TString &titlesuffix =
+      TString::Format(" (p%c%c)",fIsProjection ? 'r' : 'f', fAxisLabel);
+
    switch (fAxis) {
-   case kX:
-      hnew = h2->ProjectionX();
-      namesuffix = "px";
-      titlesuffix = " (prx)";
-      break;
-   case kY:
-      hnew = h2->ProjectionY();
-      namesuffix = "py";
-      titlesuffix = " (pry)";
-      break;
-   default:
-      break;
+      case kX:
+	 hnew = fIsProjection ? (TH1*)h2->ProjectionX(namearg,0,-1,opt) : (TH1*)h2->ProfileX(namearg,0,-1,opt);
+	 break;
+      case kY:
+	 hnew = fIsProjection ? (TH1*)h2->ProjectionY(namearg,0,-1,opt) : (TH1*)h2->ProfileY(namearg,0,-1,opt);
+	 break;
+      default:
+	 break;
    }
    if (hnew) {
       hnew->SetName(TString(h2->GetName()) + namesuffix);

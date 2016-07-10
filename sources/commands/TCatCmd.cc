@@ -2,7 +2,7 @@
 /**
  * @file   TCatCmd.cc
  * @date   Created : Feb 06, 2012 10:06:48 JST
- *   Last Modified : Feb 10, 2012 20:22:15 JST
+ *   Last Modified : 2016-01-18 12:11:11 JST (kawase)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -13,7 +13,11 @@
 #include <TObjArray.h>
 #include <TObjString.h>
 
+#include "TCatHistManager.h"
+
 ClassImp(TCatCmd);
+
+const TString TCatCmd::kRangeDefault = ".";
 
 TCatCmd::TCatCmd()
    : TNamed("TCatCmdAbc","TCatCmd Abstract Class") 
@@ -37,8 +41,14 @@ Long_t TCatCmd::Exec(TString &line)
    return Cmd(tokens);
 }
 
-void TCatCmd::GetRange(TString &arg, Int_t &id1, Int_t &id2, TString delim)
+void TCatCmd::GetRange(const TString &arg, Int_t &id1, Int_t &id2, TString delim)
 {
+   if (!arg.CompareTo(kRangeDefault)) {
+      const Int_t id = TCatHistManager::Instance()->GetId();
+      id1 = id2 = id;
+      return;
+   }
+
    TObjArray *ids = arg.Tokenize(delim);
    if (ids->GetEntries() == 1) {
       id1 = id2 = arg.Atoi();
