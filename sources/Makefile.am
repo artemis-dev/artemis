@@ -1,2 +1,2 @@
-SUBDIRS = core cont loop commands mc main 
+SUBDIRS = cont loop core commands mc main 
 
