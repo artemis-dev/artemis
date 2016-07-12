@@ -28,7 +28,6 @@ SUBSRC+=TRawDataPair.cc
 SUBSRC+=TRawDataSimple.cc 
 SUBSRC+=TRawTiming.cc 
 SUBSRC+=TRawTimingWithEdge.cc 
-SUBSRC+=TRunInfo.cc
 SUBSRC+=TSegmentCheckProcessor.cc
 SUBSRC+=TSegmentedData.cc
 SUBSRC+=TSegmentInfo.cc
@@ -85,7 +84,7 @@ $(DICTSRC): $(SUBHDR) catloop_linkdef.h
 .c.o:
 
 clean-local:
-	rm -f *dict*
+	rm -f *dict* .header
 
 clean: clean-local
 	rm -rf $(SUBOBJ) .libs *.lo .header

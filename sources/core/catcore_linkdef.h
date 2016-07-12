@@ -6,6 +6,7 @@
 #pragma link C++ class art::TArtemisObject;
 #pragma link C++ class art::TDataObject;
 #pragma link C++ class art::TCatParameterTable;
+#pragma link C++ class art::TRunInfo+;
 #pragma link C++ class TCatHistManager+;
 #pragma link C++ class TCatPadManager;
 #pragma link C++ class art::TConfigFile;
