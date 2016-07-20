@@ -2,7 +2,7 @@
 /**
  * @file   TLoop.cc
  * @date   Created : Apr 26, 2012 20:26:47 JST
- *   Last Modified : Apr 08, 2015 17:27:03 JST
+ *   Last Modified : 2016-01-08 23:16:31 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -29,6 +29,7 @@ const char* art::TLoop::kConditionName = "condition";
 ClassImp(art::TLoop);
 
 art::TLoop::TLoop()
+   : fCondition(NULL), fEventCollection(NULL), fProcessors(NULL), fID(0)
 {
    fEventCollection = new TEventCollection;
    fCondition       = new TConditionBit;
