@@ -2,7 +2,7 @@
 /**
  * @file   TOutputTreeProcessor.cc
  * @date   Created : Jul 11, 2013 17:11:41 JST
- *   Last Modified : Feb 06, 2015 05:20:36 JST
+ *   Last Modified : 2016-07-15 10:55:14 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -37,6 +37,8 @@ void art::TOutputTreeProcessor::Init(TEventCollection *col)
    TEventObject *obj;
    while ((obj = (TEventObject*)iter->Next())) {
       if (obj->IsPassive()) continue;
+      obj->SetBranch(fTree);
+#if 0      
       if (!obj->IsObject()) {
          // primitivee class
          TString brNme = obj->GetName();
@@ -50,6 +52,7 @@ void art::TOutputTreeProcessor::Init(TEventCollection *col)
       } else {
          fTree->Branch(obj->GetName(),obj->GetClass()->GetName(),obj->GetObjectRef(),3200000,0);
       }
+#endif   
       fObjects->Add(obj);
    }
 

@@ -2,7 +2,7 @@
 /**
  * @file   TEventObject.h
  * @date   Created : Jul 10, 2013 14:10:50 JST
- *   Last Modified : Feb 06, 2015 05:33:17 JST
+ *   Last Modified : 2016-07-15 10:50:46 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -16,6 +16,8 @@
 namespace art {
    class TEventObject;
 }
+
+class TTree;
 
 class art::TEventObject  : public TNamed {
 
@@ -47,6 +49,8 @@ public:
    Bool_t IsInt() { return (fType == "I"); }
    TString GetLength() { return (fLength)?*fLength:TString(""); }
    Bool_t IsObject() { return fIsObject; }
+
+   Bool_t SetBranch(TTree *tree);
       
 
 private:
