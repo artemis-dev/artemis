@@ -2,7 +2,7 @@
 /**
  * @file   TProcessor.h
  * @date   Created : Jul 10, 2013 17:10:49 JST
- *   Last Modified : Oct 26, 2015 06:12:34 EDT
+ *   Last Modified : 2016-07-13 15:46:48 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -98,7 +98,7 @@ public:
    virtual void Clear(Option_t* /* opt */);
 
    static void ListProcessors();
-protected:
+
    // user defined initialization
    virtual void Init (TEventCollection *) {;}
    // cannot use set title directly
@@ -212,6 +212,7 @@ template<class T>
    
    // protected members
    
+protected:
    Bool_t fOutputIsTransparent;    // output transparency
    TConditionBit **fCondition; // condition bit to control loop
    TParameterStrings *fParameters; // parameter strings
