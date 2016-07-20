@@ -3,7 +3,7 @@
  * @brief
  *
  * @date   Created       : 2014-10-29 18:10:16 JST
- *         Last Modified : 2016-07-20 15:01:03 JST (ota)
+ *         Last Modified : 2016-07-20 15:08:03 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -24,6 +24,7 @@
 #pragma link C++ class art::ICharge;
 #pragma link C++ class art::ITiming;
 #pragma link C++ class art::TNArray+;
+#pragma link C++ class art::TNArray::Variable+;
 
 #endif /* __CINT__ */
 
