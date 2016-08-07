@@ -2,7 +2,7 @@
 /**
  * @file   TProcessor.cc
  * @date   Created : Jul 10, 2013 17:10:19 JST
- *   Last Modified : Oct 26, 2015 06:12:45 EDT
+ *   Last Modified : 2016-07-21 23:16:51 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *
@@ -14,6 +14,7 @@
 #include <iostream>
 #include <TClonesArray.h>
 #include <TClassTable.h>
+#include <IProcessorHelper.h>
 
 TList* art::gProcessors = new TList;
 
@@ -187,6 +188,9 @@ void art::TProcessor::InitProc(TEventCollection *col)
       
 
    // call user defined initialization function
+   for (std::vector<IProcessorHelper*>::iterator it = fHelpers.begin(), itend = fHelpers.end(); it != itend; ++it) {
+      (*it)->Init(col);
+   }
    Init(col);
    if (IsError()) {
       return;
@@ -200,9 +204,11 @@ void art::TProcessor::InitProc(TEventCollection *col)
 }   
 
 
-void art::TProcessor::Clear(Option_t *)
+void art::TProcessor::Clear(Option_t *opt)
 {
-
+   for (std::vector<IProcessorHelper*>::iterator it = fHelpers.begin(), itend = fHelpers.end(); it != itend; ++it) {
+      (*it)->Clear(opt);
+   }
 }
 
 
@@ -324,6 +330,13 @@ void art::TProcessor::ListProcessors()
       }
    }
 }
+
+void art::TProcessor::RegisterHelper(IProcessorHelper *helper)
+{
+   helper->Register(this);
+   fHelpers.push_back(helper);
+}
+
 
 void operator >> (const YAML::Node &node, art::TProcessor *&proc)
 {

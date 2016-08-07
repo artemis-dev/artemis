@@ -2,7 +2,7 @@
 /**
  * @file   TProcessor.h
  * @date   Created : Jul 10, 2013 17:10:49 JST
- *   Last Modified : 2016-07-13 15:46:48 JST (ota)
+ *   Last Modified : 2016-07-21 23:17:20 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -18,6 +18,7 @@
 
 namespace art {
    class TProcessor;
+   class IProcessorHelper;
    namespace ErrMsgFmt {
       const char* const INVALID_INPUT_COLLECTION = "No such input collection %s";
       const char* const INPUT_CLASS_MISSMATCH = "Input class %s required while %s is found";
@@ -208,7 +209,9 @@ template<class T>
       if (p) {
          fInputInfo.push_back(IOCollection(p, &parameter,infoclass,dataclass,name));
       }
-   }                                               
+   }
+
+   void RegisterHelper(IProcessorHelper *helper);
    
    // protected members
    
@@ -220,6 +223,7 @@ protected:
    std::vector<IOCollection> fInputs;//!
    std::vector<IOCollection> fOutputs;//!
    std::vector<IOCollection> fInputInfo; //!
+   std::vector<IProcessorHelper*> fHelpers; //!
 
 private:
    // parameter map to hold the processor parameters

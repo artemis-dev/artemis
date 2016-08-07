@@ -2,7 +2,7 @@
 /**
  * @file   TParameterStrings.cc
  * @date   Created : May 18, 2012 14:18:07 JST
- *   Last Modified : Jun 14, 2014 16:07:52 JST
+ *   Last Modified : 2016-07-22 08:38:50 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *
@@ -59,6 +59,16 @@ void art::TParameterStrings::GetValue(const char* name, FloatVec_t& param)
    }
 }
 
+void art::TParameterStrings::GetValue(const char* name, DoubleVec_t& param)
+{
+   std::vector<TString>::iterator it;
+   TString key(name);
+   param.clear();
+   for (it = fParamMap[key].begin(); it != fParamMap[key].end(); it++) {
+      param.push_back((*it).Atof());
+   }
+}
+
 void art::TParameterStrings::GetValue(const char* name, StringVec_t& param)
 {
    std::vector<TString>::iterator it;
@@ -82,6 +92,12 @@ void art::TParameterStrings::GetValue(const char* name, Long_t& param)
 }
 
 void art::TParameterStrings::GetValue(const char* name, Float_t& param)
+{
+   if (fParamMap[name].size()==0) return;
+   param = fParamMap[name][0].Atof();
+}
+
+void art::TParameterStrings::GetValue(const char* name, Double_t& param)
 {
    if (fParamMap[name].size()==0) return;
    param = fParamMap[name][0].Atof();

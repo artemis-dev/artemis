@@ -2,7 +2,7 @@
 /**
  * @file   TCatPulseShape.h
  * @date   Created : Mar 10, 2013 18:10:59 JST
- *   Last Modified : 2016-04-17 11:50:24 JST (ota)
+ *   Last Modified : 2016-07-22 08:24:41 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -49,6 +49,7 @@ public:
    Double_t GetY() const { return fPos.Y(); }
    Double_t GetZ() const { return fPos.Z(); }
    TVector3& GetPos() { return fPos; }
+   const TVector3& GetPos() const { return fPos; }
    
    Float_t &operator[] (Int_t idx) { return fSample[idx]; }
    Float_t &operator() (Int_t idx) { return fClock[idx]; }

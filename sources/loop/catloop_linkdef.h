@@ -2,7 +2,7 @@
 /**
  * @file   catloop_linkdef.h
  * @date   Created : Feb 19, 2012 11:19:06 JST
- *   Last Modified : 2016-07-12 13:12:57 JST (ota)
+ *   Last Modified : 2016-07-21 23:23:35 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -54,7 +54,7 @@
 #pragma link C++ class art::TSegmentCheckProcessor;
 #pragma link C++ class art::TModuleInfo;
 #pragma link C++ class art::TModuleType;
-
+#pragma link C++ class art::IProcessorHelper;
 #endif /* __CINT__ */
 
 #endif // end of #ifdef CATLOOP_LINKDEF_H

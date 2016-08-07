@@ -2,7 +2,7 @@
 /**
  * @file   TArtTypes.h
  * @date   Created : May 18, 2012 14:18:02 JST
- *   Last Modified : Oct 26, 2015 17:29:32 EDT
+ *   Last Modified : 2016-07-22 08:39:35 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -15,6 +15,7 @@
 class TString;
 namespace art {
    typedef std::vector<TString> StringVec_t;
+   typedef std::vector<double>   DoubleVec_t;
    typedef std::vector<float>   FloatVec_t;
    typedef std::vector<int>     IntVec_t;
 }

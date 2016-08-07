@@ -2,7 +2,7 @@
 /**
  * @file   TCatReadoutPad.cc
  * @date   Created : Nov 30, 2013 20:30:25 JST
- *   Last Modified : Apr 17, 2014 22:38:50 JST
+ *   Last Modified : 2016-07-29 16:03:31 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -10,6 +10,7 @@
  */
 #include "TCatReadoutPad.h"
 #include <TMath.h>
+#include <TClonesArray.h>
 
 ClassImp(art::TCatReadoutPad);
 
@@ -17,7 +18,7 @@ using art::TCatReadoutPad;
 
 TCatReadoutPad::TCatReadoutPad()
    : fID(0), fNumPoints(0), fNumNeighbors(0),fX(0.), fY(0.),
-     fVertexX(NULL), fVertexY(NULL), fNeighbor(NULL)
+     fVertexX(NULL), fVertexY(NULL), fNeighbor(NULL), fIntersection(NULL)
 {
 }
 
@@ -25,11 +26,12 @@ TCatReadoutPad::TCatReadoutPad(Int_t id, Int_t numPoints, Double_t x, Double_t y
                                Double_t *vertexX, Double_t *vertexY,
                                Double_t side, Int_t numNeighbors, Int_t *neighbor)
    : fID(id), fNumPoints(numPoints), fNumNeighbors(numNeighbors), fSide(side),fX(x), fY(y),
-     fVertexX(NULL), fVertexY(NULL), fNeighbor(NULL)
+     fVertexX(NULL), fVertexY(NULL), fNeighbor(NULL), fIntersection(NULL)
 {
    fVertexX  = new Double_t[kMaxNumPoints];
    fVertexY  = new Double_t[kMaxNumPoints];
    fNeighbor = new Int_t[kMaxNumPoints];
+   fIntersection = new TVector3[kMaxNumPoints];
 
    for (Int_t i=0; i!=fNumPoints; i++) {
       fVertexX[i] = vertexX[i];
@@ -48,11 +50,13 @@ TCatReadoutPad::TCatReadoutPad(const TCatReadoutPad& obj)
    fVertexX  = new Double_t[kMaxNumPoints];
    fVertexY  = new Double_t[kMaxNumPoints];
    fNeighbor = new Int_t[kMaxNumPoints];
+   fIntersection = new TVector3[kMaxNumPoints];
 
    for (Int_t i=0; i!=fNumPoints; i++) {
       fVertexX[i] = obj.fVertexX[i];
       fVertexY[i] = obj.fVertexY[i];
       fNeighbor[i] = obj.fNeighbor[i];
+      fIntersection[i] = obj.fIntersection[i];
    }
 
       
@@ -64,6 +68,7 @@ TCatReadoutPad::~TCatReadoutPad()
    if (fVertexX) delete [] fVertexX;
    if (fVertexY) delete [] fVertexY;
    if (fNeighbor) delete [] fNeighbor;
+   if (fIntersection) delete [] fIntersection;
 }
 
 void TCatReadoutPad::Clear(Option_t *opt)
@@ -84,11 +89,14 @@ void TCatReadoutPad::Copy(TObject &obj) const
    pad.fVertexX  = new Double_t[kMaxNumPoints];
    pad.fVertexY  = new Double_t[kMaxNumPoints];
    pad.fNeighbor = new Int_t[kMaxNumPoints];
+   pad.fIntersection = new TVector3[kMaxNumPoints];
+   
 
    for (Int_t i=0; i!=fNumPoints; i++) {
       pad.fVertexX[i] = fVertexX[i];
       pad.fVertexY[i] = fVertexY[i];
       pad.fNeighbor[i] = fNeighbor[i];
+      pad.fIntersection[i] = fIntersection[i];
    }
 }
 
@@ -115,4 +123,30 @@ void TCatReadoutPad::CalculatePosition(const TVector3 &direction,
 //   pos.Print();
    x = pos.X();
    z = pos.Y();
+}
+
+void TCatReadoutPad::GetIntersection(const TVector3 &a1, const TVector3 &a2, Int_t &num, TVector3 *&output) const
+{
+   const Double_t EPS = TMath::Limits<Double_t>::Epsilon();
+   TVector3 va = a2 - a1;
+   num = 0;
+   for (Int_t iP = 0; iP != fNumPoints - 1; ++iP) {
+      TVector3 b1(fVertexX[iP],0,fVertexY[iP]);
+      TVector3 b2(fVertexX[iP+1],0,fVertexY[iP+1]);
+      TVector3 vb = b2 - b1;
+
+      if (!(va.Cross(b1-a1).Y() * va.Cross(b2-a1).Y() < EPS)  || 
+          !(vb.Cross(a1-b1).Y() * vb.Cross(a2-b1).Y() < EPS)) {
+         // two line segments do not cross each other
+         continue;
+      }
+      
+      Double_t d1 = TMath::Abs(vb.Cross(a1-b1).Y());
+      Double_t d2 = TMath::Abs(vb.Cross(a2-b1).Y());
+      Double_t t = d1/(d1+d2);
+      TVector3 p = a1 + t * va;
+      fIntersection[num] = p;
+      ++num;
+   }
+   output = fIntersection;
 }

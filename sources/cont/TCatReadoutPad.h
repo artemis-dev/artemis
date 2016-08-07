@@ -2,7 +2,7 @@
 /**
  * @file   TCatReadoutPad.h
  * @date   Created : Nov 30, 2013 20:30:06 JST
- *   Last Modified : Mar 30, 2014 01:14:08 JST
+ *   Last Modified : 2016-07-29 16:00:03 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -13,6 +13,7 @@
 
 #include <TObject.h>
 #include <TVector3.h>
+#include <TMath.h>
 namespace art {
    class TCatReadoutPad;
    
@@ -32,19 +33,27 @@ public:
    virtual void Clear(Option_t *opt = "");
    virtual void Copy(TObject& obj) const;
 
-   Int_t GetID() { return fID; }
-   Int_t GetNumPoints() { return fNumPoints; }
-   Double_t X() { return fX; }
-   Double_t Y() { return fY; }
-   Double_t* VertexX() { return fVertexX; }
-   Double_t* VertexY() { return fVertexY; }
-   Int_t*    Neighbor() { return fNeighbor; }
-   Bool_t   IsNeighbor(Int_t id) {
+   Int_t GetID() const { return fID; }
+   Int_t GetNumPoints() const { return fNumPoints; }
+   Double_t X() const { return fX; }
+   Double_t Y() const { return fY; }
+   Double_t* VertexX() const { return fVertexX; }
+   Double_t* VertexY() const { return fVertexY; }
+   Int_t*    Neighbor() const { return fNeighbor; }
+   Bool_t   IsNeighbor(Int_t id) const {
       for (Int_t i = 0; i!=fNumNeighbors; i++) {
          if (fNeighbor[i] == id) return kTRUE;
       }
       return kFALSE;
    }
+
+   virtual Bool_t IsInside(Double_t x, Double_t y) const {
+      return TMath::IsInside(x,y,fNumPoints,fVertexX,fVertexY);
+   }
+      
+
+   virtual void GetIntersection(const TVector3 &a1, const TVector3 &a2, Int_t &num, TVector3*& output) const;
+   
    void CalculatePosition(const TVector3 &direction,
                           TCatReadoutPad*  pad,Double_t charge1, Double_t charge2,
                           Double_t &x, Double_t &z);
@@ -61,6 +70,7 @@ protected:
    Double_t *fVertexX; //[fNumPoints]
    Double_t *fVertexY; //[fNumPoints]
    Int_t *fNeighbor; //[fNumNeighbors]
+   TVector3 *fIntersection; //! helper container to calculate intersection
 
    ClassDef(TCatReadoutPad,1); // information on readout pad
 };

@@ -34,7 +34,7 @@ SUBSRC+=TSegmentInfo.cc
 SUBSRC+=TSharedMemoryDataSource.cc
 SUBSRC+=TTimerProcessor.cc 
 SUBSRC+=TTreeEventStore.cc 
-
+SUBSRC+=IProcessorHelper.cc
 
 
 SUBOBJ = $(SUBSRC:.cc=.o)
