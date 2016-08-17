@@ -2,7 +2,7 @@
 /**
  * @file   TCatCmdFactory.h
  * @date   Created : Feb 06, 2012 10:06:51 JST
- *   Last Modified : Feb 14, 2014 18:44:39 JST
+ *   Last Modified : 2016-08-17 17:16:48 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -11,10 +11,9 @@
 #ifndef TCATCMDFACTORY_H
 #define TCATCMDFACTORY_H
 
-#include <TNamed.h>
-#include <TCatCmd.h>
+#include <TCmdGroup.h>
 
-class TCatCmdFactory  : public TNamed {
+class TCatCmdFactory  : public art::TCmdGroup {
 
 protected:
    TCatCmdFactory();
@@ -26,16 +25,10 @@ public:
 
    virtual Long_t ProcessLine(TString line);
 
-   virtual void Register(TCatCmd *cmd, Bool_t replace = kFALSE);
-
    virtual void Help(TString cmd = "");
 
-   virtual void SetOptExactName(Bool_t flag) { fFlagExactName = flag; }
 
 private:
-   TObjArray *fCmds;
-
-   Bool_t fFlagExactName;
 
    
    ClassDef(TCatCmdFactory,1);

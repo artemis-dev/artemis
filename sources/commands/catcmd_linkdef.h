@@ -43,5 +43,6 @@
 #pragma link C++ class art::TCmdHdel;
 
 #pragma link C++ class TCatCmdFactory+;
+#pragma link C++ class art::TCmdGroup+;
 
 #endif /* __CINT__ */
