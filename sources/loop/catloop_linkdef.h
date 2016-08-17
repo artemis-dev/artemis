@@ -2,7 +2,7 @@
 /**
  * @file   catloop_linkdef.h
  * @date   Created : Feb 19, 2012 11:19:06 JST
- *   Last Modified : 2016-07-21 23:23:35 JST (ota)
+ *   Last Modified : 2016-08-17 15:17:47 JST (kawase)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -46,7 +46,6 @@
 #pragma link C++ class art::TRawDataSimple<ULong64_t>;
 #pragma link C++ class art::TRawTiming;
 #pragma link C++ class art::TRawTimingWithEdge;
-#pragma link C++ class art::TRawDataPair;
 #pragma link C++ class art::TEventHeader;
 #pragma link C++ class art::TMappingProcessor;
 //#pragma link C++ class art::TSharedMemoryDataSource;

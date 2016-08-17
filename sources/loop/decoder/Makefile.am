@@ -2,7 +2,6 @@ SUBSRC = \
 	TModuleDecoderSIS3820.cc \
 	TModuleDecoderSIS3610.cc \
 	TModuleDecoderV1190.cc \
-	TRawDataV1190.cc \
 	TModuleDecoderV1740.cc \
 	TModuleDecoderSkip.cc \
 	TModuleDecoderV767.cc \
@@ -10,8 +9,6 @@ SUBSRC = \
 	TModuleDecoderFixed.cc \
 	TModuleDecoderV1290.cc \
 	TRawDataFadc.cc 
-
-
 
 SUBOBJ = $(SUBSRC:.cc=.o)
 SUBHDR = $(SUBSRC:.cc=.h) 
