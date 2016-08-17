@@ -13,6 +13,7 @@
 #define TRAWTIMING_H
 
 #include <TRawDataSimple.h>
+#include <TMath.h>
 
 namespace art{
 
@@ -29,6 +30,20 @@ public:
 
    virtual UInt_t GetReference() const {return fReference;}
    virtual void SetReference(Int_t val) {fReference = val;}
+
+   virtual Double_t GetValue(Int_t idx = 0) const {
+      switch (idx) {
+      case 0:
+         return GetTiming();
+         break;
+      case 1:
+         return GetRawTiming();
+         break;
+      default:
+         return TMath::QuietNaN();
+      }
+   }
+   virtual Int_t GetNumValues() const { return 2; }
 
    virtual void Clear(Option_t *opt="") {
       TRawDataSimple<UInt_t>::Clear(opt);

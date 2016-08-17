@@ -2,7 +2,7 @@
 /**
  * @file   TRawDataSimple.h
  * @date   Created : Jul 22, 2013 18:22:01 JST
- *   Last Modified : Jun 01, 2014 22:23:42 JST
+ *   Last Modified : 2016-08-17 14:47:06 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -25,7 +25,7 @@ public:
    T Get() const { return fValue; }
 
    virtual Int_t GetNumValues() const { return 1; }
-   virtual Double_t GetValue(Int_t /* idx */) const { return (Double_t)Get(); }
+   virtual Double_t GetValue(Int_t /* idx */ = 0) const { return (Double_t)Get(); }
 
    void Clear(Option_t *opt="") {
       TRawDataObject::Clear(opt);

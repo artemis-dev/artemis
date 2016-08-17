@@ -2,7 +2,7 @@
 /**
  * @file   TRawDataObject.h
  * @date   Created : Jul 16, 2013 17:16:51 JST
- *   Last Modified : Jun 01, 2014 21:56:41 JST
+ *   Last Modified : 2016-08-17 14:41:38 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -34,7 +34,7 @@ public:
    virtual Int_t GetDetID() const { return fDetID; }
    virtual Int_t GetType() const { return fType; }
 
-   virtual Double_t GetValue(Int_t /* idx */) const { return 0; }
+   virtual Double_t GetValue(Int_t /* idx */ = 0) const { return 0; }
    virtual Int_t GetNumValues() const { return 0; }
          
 
