@@ -2,7 +2,7 @@
 /**
  * @file   TCatCmdFactory.h
  * @date   Created : Feb 06, 2012 10:06:51 JST
- *   Last Modified : 2016-08-17 17:16:48 JST (ota)
+ *   Last Modified : 2016-08-18 14:24:51 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -24,8 +24,6 @@ public:
    static TCatCmdFactory* Instance();
 
    virtual Long_t ProcessLine(TString line);
-
-   virtual void Help(TString cmd = "");
 
 
 private:

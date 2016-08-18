@@ -3,7 +3,7 @@
  * @brief  command group
  *
  * @date   Created       : 2016-08-17 16:52:50 JST
- *         Last Modified : 2016-08-17 17:17:34 JST (ota)
+ *         Last Modified : 2016-08-18 15:22:12 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2016 Shinsuke OTA
@@ -33,8 +33,13 @@ public:
 
    virtual void Register(TCatCmd *cmd, const char *name = NULL, Bool_t replace = kFALSE);
 
-   virtual void SetOptExactName(Bool_t flag) { fFlagExactName = flag; }   
+   virtual void SetOptExactName(Bool_t flag) { fFlagExactName = flag; }
 
+   virtual void Help();
+
+   virtual void CmdHelp(TString cmd = "");
+
+   
 protected:
 
    TObjArray *fCmds;

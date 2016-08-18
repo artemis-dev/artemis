@@ -3,7 +3,7 @@
  * @brief  command group
  *
  * @date   Created       : 2016-08-17 16:54:40 JST
- *         Last Modified : 2016-08-17 17:30:32 JST (ota)
+ *         Last Modified : 2016-08-18 16:04:36 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2016 Shinsuke OTA
@@ -13,6 +13,8 @@
 #include <TObjArray.h>
 #include <TObjString.h>
 #include <numeric>
+#include <TList.h>
+#include <TClass.h>
 
 using art::TCmdGroup;
  
@@ -31,14 +33,11 @@ namespace {
 
 TCmdGroup::TCmdGroup()
 {
-   fCmds = new TObjArray;
    fFlagExactName = kFALSE;
 }
 
 TCmdGroup::~TCmdGroup()
 {
-   delete fCmds;
-   
 }
 
 TCmdGroup::TCmdGroup(const TCmdGroup& rhs)
@@ -55,7 +54,6 @@ TCmdGroup& TCmdGroup::operator=(const TCmdGroup& rhs)
 
 Long_t TCmdGroup::Cmd(vector<TString> tokens)
 {
-   
    TString com = tokens[0];
    TObjArray *arr = com.Tokenize("/");
    TIter it(arr);
@@ -64,10 +62,11 @@ Long_t TCmdGroup::Cmd(vector<TString> tokens)
    while ((str = (TObjString*)it.Next())) {
       cmds.push_back(str->GetString());
    }
-   delete arr;
+   if (arr) delete arr;
    
    com = cmds[0];
-   TIterator *itr = fCmds->MakeIterator();
+   
+   TIterator *itr = GetListOfFolders()->MakeIterator();
    TObjArray list;
    TCatCmd *cmd;
    while ((cmd=(TCatCmd*)itr->Next())!=NULL) {
@@ -103,14 +102,37 @@ void TCmdGroup::Register(TCatCmd *cmd, const char* name, Bool_t replace)
    if (name != NULL) {
       cmd->SetName(name);
    }
-   TObject *obj = fCmds->FindObject(cmd->GetName());
+   TObject *obj = FindObjectAny(cmd->GetName());
    if (!obj) {
-//      cmd->Print();
-      fCmds->Add(cmd);
+      Add(cmd);
    } else if (replace) {
-      fCmds->Remove(obj);
+      Remove(obj);
       delete obj;
-      fCmds->Add(cmd);
+      Add(cmd);
    }
-   fCmds->Sort();
+   ((TList*)GetListOfFolders())->Sort();
+}
+
+void TCmdGroup::Help()
+{
+   printf("Subcommands for %s:\n",GetName());
+   CmdHelp();
+}
+
+
+void TCmdGroup::CmdHelp(TString cmd)
+{
+   TObject *obj;
+   if (!cmd.IsNull() && (obj = FindObjectAny(cmd))) {
+      printf("\n");
+      printf("Command : %s\n",obj->GetName());
+      printf("Summary : %s\n",obj->GetTitle());
+      printf("\n");
+      ((TCatCmd*)obj)->Help();
+   } else {
+      TIter it(GetListOfFolders());
+      while ((obj = it.Next())) {
+         printf("   %-10s %s\n",obj->GetName(),obj->GetTitle());
+      }
+   }
 }

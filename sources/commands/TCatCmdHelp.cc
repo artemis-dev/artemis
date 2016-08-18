@@ -2,7 +2,7 @@
 /**
  * @file   TCatCmdHelp.cc
  * @date   Created : Feb 10, 2012 20:10:39 JST
- *   Last Modified : Feb 10, 2012 20:48:04 JST
+ *   Last Modified : 2016-08-18 13:53:51 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -30,9 +30,9 @@ TCatCmdHelp* TCatCmdHelp::Instance()
 Long_t TCatCmdHelp::Cmd(vector<TString> args) 
 {
    if (args.size() > 1) {
-      TCatCmdFactory::Instance()->Help(args[1]);
+      TCatCmdFactory::Instance()->CmdHelp(args[1]);
    } else {
-      TCatCmdFactory::Instance()->Help();
+      TCatCmdFactory::Instance()->CmdHelp();
    }
    return 1;
 }

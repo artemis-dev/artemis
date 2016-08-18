@@ -2,7 +2,7 @@
 /**
  * @file   TCatCmd.h
  * @date   Created : Feb 06, 2012 10:06:33 JST
- *   Last Modified : 2016-01-18 12:10:54 JST (kawase)
+ *   Last Modified : 2016-08-18 15:29:54 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -11,11 +11,11 @@
 #ifndef TCATCMD_H
 #define TCATCMD_H
 
-#include <TNamed.h>
+#include <TFolder.h>
 #include <vector>
 using namespace std;
 
-class TCatCmd : public TNamed{
+class TCatCmd : public TFolder {
 protected:
    TCatCmd();
 public:
