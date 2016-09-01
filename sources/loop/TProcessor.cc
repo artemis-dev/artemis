@@ -1,9 +1,12 @@
 /* $Id:$ */
-/**
- * @file   TProcessor.cc
+/** @class art::TProcessor
+ * Base class for the user processors
+ 
  * @date   Created : Jul 10, 2013 17:10:19 JST
- *   Last Modified : 2016-07-21 23:16:51 JST (ota)
+ *   Last Modified : 2016-08-23 17:03:04 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
+ *
+ *
  *
  *
  *    Copyright (C)2013

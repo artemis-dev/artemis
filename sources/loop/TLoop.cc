@@ -1,12 +1,15 @@
-/* $Id:$ */
-/**
- * @file   TLoop.cc
+/** @class art::TLoop
+ * A event loop
+ *
+ * Usually a loop is instantiate by the loop manger
+ * (art::TLoopManager::Add) usually invoking the TCatLoopAdd command (add).
+ *
+ *
  * @date   Created : Apr 26, 2012 20:26:47 JST
- *   Last Modified : 2016-01-08 23:16:31 JST (ota)
+ *   Last Modified : 2016-08-23 17:02:06 JST (ota)
+ *
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
- *  
- *  
- *    Copyright (C)2012
+ *    Copyright (C) 2012 
  */
 #include "TLoop.h"
 
@@ -48,6 +51,16 @@ art::TLoop::~TLoop()
    delete fCondition;
 }
 
+
+//////////////////////////////////////////////////////////////////////
+/// Load yaml file (for internal use)
+///
+/// \param[in] dirname the directory name of the file
+/// \param[in] basename the base name of the file
+/// \param[out] loaded contains if the file is already loaded to avoid the loop
+///
+/// Load yaml file at [dirname]/[basename]. 
+///
 Bool_t art::TLoop::Load(const char* dirname, const char* basename, std::list<Long_t> *loaded)
 {
    const char *filename = gSystem->ConcatFileName(dirname, basename);
@@ -100,6 +113,7 @@ Bool_t art::TLoop::Load(const char* dirname, const char* basename, std::list<Lon
 //   Init();
    return kTRUE;
 }
+
 
 Bool_t art::TLoop::Init()
 {
