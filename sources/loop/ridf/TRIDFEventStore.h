@@ -2,7 +2,7 @@
 /**
  * @file   TRIDFEventStore.h
  * @date   Created : Jul 12, 2013 17:12:43 JST
- *   Last Modified : Apr 25, 2014 23:10:23 JST
+ *   Last Modified : 2016-10-19 23:13:35 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -40,6 +40,7 @@ protected:
 
 protected:
    struct RIDFData {
+   public:
       TMapTable        *fMapTable; //!
       TSegmentedData   *fSegmentedData;
       TCategorizedData *fCategorizedData;
