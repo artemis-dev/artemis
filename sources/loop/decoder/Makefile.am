@@ -13,7 +13,7 @@ SUBSRC = \
 SUBOBJ = $(SUBSRC:.cc=.o)
 SUBHDR = $(SUBSRC:.cc=.h) 
 
-SUBHDR += TRawDataV767.h
+
 
 DICTSRC = artdecoder_dict.cc
 DICTOBJ = $(DICTSRC:.cc=.o)
