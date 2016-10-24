@@ -3,7 +3,7 @@
  * @brief
  *
  * @date   Created       : 2016-01-29 14:16:43 JST
- *         Last Modified : 2016-02-09 15:40:15 JST (ota)
+ *         Last Modified : 2016-10-24 20:16:12 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2016 Shinsuke OTA
@@ -63,10 +63,23 @@ Double_t TNArray::Eval(Double_t *x)
       }
       baseIndex += fVars[i].IndexI(x[i]) * fTotalNumVals[i];
    }
+#if 0
+   printf("baseIndex = %d\n",baseIndex);
+#endif   
    Double_t reference = retval  = fValues[baseIndex];
    for (Int_t i = 0; i!=fNumVars; ++i) {
       if (baseIndex + fTotalNumVals[i] < fTotalNumVals[0] * fVars[0].GetNumVals()) {
-         retval += (fValues[baseIndex + fTotalNumVals[i]] - reference) * fVars[i].Derivative(x[i]);
+         Double_t diff = (fValues[baseIndex + fTotalNumVals[i]] - reference) * fVars[i].Derivative(x[i]);
+         retval += diff;
+#if 0
+         printf("diff[%d] = %f %f %f @ idx=%d\n",i,diff,fVars[i].Derivative(x[i]),fValues[baseIndex+fTotalNumVals[i]],baseIndex+fTotalNumVals[i]);
+         printf("   min = %g\n",fVars[i].GetMin());
+         printf("   x-min = %g step = %g\n",x[i]-fVars[i].GetMin(),fVars[i].GetStep());
+         printf("   x-min = %g\n",((x[i]-fVars[i].GetMin())*(1./fVars[i].GetStep())));
+         printf("   x-min = %d\n",(Int_t)((x[i]-fVars[i].GetMin())*(1./fVars[i].GetStep())));
+         printf(" IndexI = %d\n",fVars[i].IndexI(x[i]));
+
+#endif         
       }
    }
    return retval;
@@ -80,6 +93,7 @@ void TNArray::Load()
    Int_t nVars = GetNvar() - 1;
    Double_t *vars = GetArgs();
    Int_t index = 0;
+   std::vector<Int_t> used(nEntries,0);
    if (fNumVars != nVars) {
       Error("Load","fNumVars (%d) differes from # of vars in tree (%d)",fNumVars,nVars);
       return;
@@ -98,13 +112,23 @@ void TNArray::Load()
    Info("Load","Loading from ntuple (%.5f Mbytes)... please wait for a while",fTotalNumVals[0] * fVars[0].GetNumVals() * sizeof(Double_t) / 1024. / 1024.);
 
    fValues = new Double_t[fTotalNumVals[0] * fVars[0].GetNumVals()];
-   
+
    for (Int_t iEntry = 0; iEntry!= nEntries; ++iEntry) {
       GetEntry(iEntry);
       index = 0;
       for (Int_t iVar = 0; iVar != nVars; ++iVar) {
          index += fVars[iVar].IndexI(vars[iVar]) * fTotalNumVals[iVar];
       }
+      if (used[index]) {
+         printf("index = %d used\n",index);
+         for (Int_t iVar = 0; iVar != nVars; ++iVar) {
+            printf("iVar = %d vars[%d] = %.10g IndexI = %d\n",iVar,iVar,vars[iVar],fVars[iVar].IndexI(vars[iVar]));
+            printf(" %.20e / %.20f = %.20e => %.20e\n",vars[iVar],fVars[iVar].GetStep(),vars[iVar]/fVars[iVar].GetStep(),
+                   TMath::Floor(((Float_t)vars[iVar])/((Float_t)fVars[iVar].GetStep())));
+         }
+         return;
+      }
+      used[index] = 1;
       fValues[index] = vars[nVars];
       if (!(iEntry % modulo)) {
          char  progress[12];
@@ -120,6 +144,8 @@ void TNArray::Load()
    }
    fprintf(stderr,"\r"); fflush(stderr);
    Info("Load","loaded %d/%d",nEntries,nEntries);
+
+   
 }
 
 TNArray::Variable::Variable(const char* name, Double_t step, Double_t min, Double_t max, Int_t num)
