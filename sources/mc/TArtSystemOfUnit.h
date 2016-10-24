@@ -2,7 +2,7 @@
 /**
  * @file   TArtSystemOfUnit.h
  * @date   Created : Feb 18, 2011 18:18:18 JST
- *   Last Modified : 2015-05-30 06:44:35 JST (ota)
+ *   Last Modified : 2016-09-14 20:51:15 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -10,6 +10,7 @@
  */
 #ifndef TARTSYSTEMOFUNIT_H
 #define TARTSYSTEMOFUNIT_H
+#include <TMath.h>
 
 namespace TArtSystemOfUnit {
 // length : base unit = mm (millimeter)
@@ -26,7 +27,7 @@ namespace TArtSystemOfUnit {
 // angle : base unit = rad (radian)
    const double rad = 1.;
    const double mrad = 1.E-3;
-   const double deg  = 3.1415926535 / 180.;
+   const double deg  = TMath::Pi()/ 180.;
 // energy : base unit = MeV (megaelectronvolt);
    const double  eV = 1.E-6;
    const double keV = 1.E-3;

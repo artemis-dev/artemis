@@ -4,7 +4,8 @@ SUBSRC = \
 	TArtAtomicMassTable.cc \
 	TCatTwoBodyKinematics.cc \
 	TBinaryReactionGenerator.cc \
-	TTrackG4.cc
+	TTrackG4.cc \
+	TRandomGraph.cc 
 
 SUBOBJ = $(SUBSRC:.cc=.o)
 SUBHDR = $(SUBSRC:.cc=.h) TArtSystemOfUnit.h
