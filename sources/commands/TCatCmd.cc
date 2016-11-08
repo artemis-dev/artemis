@@ -2,7 +2,7 @@
 /**
  * @file   TCatCmd.cc
  * @date   Created : Feb 06, 2012 10:06:48 JST
- *   Last Modified : 2016-08-18 16:11:47 JST (ota)
+ *   Last Modified : 2016-10-21 17:28:10 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -26,7 +26,7 @@ TCatCmd::TCatCmd()
 
 TCatCmd::~TCatCmd()
 {
-   printf("%s\n",GetName());
+
 }
 
 Long_t TCatCmd::Exec(TString &line) 

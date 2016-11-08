@@ -2,7 +2,7 @@
 /**
  * @file   TCatReadoutPad.cc
  * @date   Created : Nov 30, 2013 20:30:25 JST
- *   Last Modified : 2016-07-29 16:03:31 JST (ota)
+ *   Last Modified : 2016-10-27 19:56:55 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -149,4 +149,44 @@ void TCatReadoutPad::GetIntersection(const TVector3 &a1, const TVector3 &a2, Int
       ++num;
    }
    output = fIntersection;
+}
+
+Double_t TCatReadoutPad::GetTrackLength(const TVector3& a1, const TVector3 &a2) const
+{
+   TVector3 *intersection;
+   Int_t num;
+   Double_t trackLength = 0.;
+   GetIntersection(a1,a2,num,intersection);
+   switch (num) {
+   case 2:
+      trackLength = (intersection[0] - intersection[1]).Mag();
+      break;
+   case 1:
+      if (IsInside(a1.X(),a1.Z())) {
+         trackLength = (a1 - intersection[0]).Mag();
+      } else if (IsInside(a2.X(),a2.Z())) {
+         trackLength = (a2 - intersection[0]).Mag();
+      }
+      break;
+   case 0:
+      if (IsInside(a1.X(),a1.Z()) && IsInside(a2.X(),a2.Z())) {
+         trackLength = (a1 - a2).Mag();
+      }
+      break;
+   default:
+      break;
+   }
+   return trackLength;
+}
+
+Double_t TCatReadoutPad::GetRangeToEnd(const TVector3& start, const TVector3& end) const
+{
+   TVector2 s(start.X(),start.Z());
+   TVector2 e(end.X(),end.Z());
+   TVector2 p(fX,fY);
+   TVector2 v = (e-s).Unit();
+   TVector2 sp = p - s;
+   TVector2 x = s + (v * sp) * v;
+   return (end-start).Mag() / (end.X() - start.X()) * (e.X() - x.X());
+
 }

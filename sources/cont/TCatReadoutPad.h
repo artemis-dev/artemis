@@ -2,7 +2,7 @@
 /**
  * @file   TCatReadoutPad.h
  * @date   Created : Nov 30, 2013 20:30:06 JST
- *   Last Modified : 2016-07-29 16:00:03 JST (ota)
+ *   Last Modified : 2016-10-27 19:40:24 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -53,6 +53,8 @@ public:
       
 
    virtual void GetIntersection(const TVector3 &a1, const TVector3 &a2, Int_t &num, TVector3*& output) const;
+   Double_t GetTrackLength(const TVector3 &a1, const TVector3 &a2) const;
+   Double_t GetRangeToEnd(const TVector3& start, const TVector3& end) const   ;
    
    void CalculatePosition(const TVector3 &direction,
                           TCatReadoutPad*  pad,Double_t charge1, Double_t charge2,
