@@ -2,7 +2,7 @@
 /**
  * @file   TCatReadoutPad.h
  * @date   Created : Nov 30, 2013 20:30:06 JST
- *   Last Modified : 2016-10-27 19:40:24 JST (ota)
+ *   Last Modified : 2016-11-12 01:17:25 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -22,11 +22,16 @@ namespace art {
 class art::TCatReadoutPad  : public TObject {
 
 public:
+   typedef enum { kGood, kBad, kLowGain } EPadState_t;
+
+   
    TCatReadoutPad();
    TCatReadoutPad(Int_t id, Int_t numPoints, Double_t x, Double_t y,
                   Double_t *vertexX, Double_t *vertexY,
-                  Double_t side,
-                  Int_t numNeighbors,Int_t *neighbor);
+                  Double_t side, Int_t numNeighbors, Int_t* neighbor);
+   TCatReadoutPad(Int_t id, Int_t numPoints, Double_t x, Double_t y,
+                  Double_t *vertexX, Double_t *vertexY,
+                  Double_t side);
    TCatReadoutPad(const TCatReadoutPad& obj);
    virtual ~TCatReadoutPad();
 
@@ -35,32 +40,55 @@ public:
 
    Int_t GetID() const { return fID; }
    Int_t GetNumPoints() const { return fNumPoints; }
+   Double_t Side() const { return fSide; }
    Double_t X() const { return fX; }
    Double_t Y() const { return fY; }
-   Double_t* VertexX() const { return fVertexX; }
-   Double_t* VertexY() const { return fVertexY; }
-   Int_t*    Neighbor() const { return fNeighbor; }
-   Bool_t   IsNeighbor(Int_t id) const {
-      for (Int_t i = 0; i!=fNumNeighbors; i++) {
-         if (fNeighbor[i] == id) return kTRUE;
-      }
-      return kFALSE;
-   }
-
-   virtual Bool_t IsInside(Double_t x, Double_t y) const {
-      return TMath::IsInside(x,y,fNumPoints,fVertexX,fVertexY);
+   const Double_t* VertexX() const { return &fVertexX[0]; }
+   const Double_t* VertexY() const { return &fVertexY[0]; }
+   const Int_t*    Neighbor() const { return &fNeighbors[0]; }
+   Bool_t   IsNeighbor(Int_t id) const { return fIsNeighbor[id]; }
+   Double_t Distance(const TCatReadoutPad &pad) const {
+      return TMath::Sqrt((pad.fX - fX) * (pad.fX - fX) + (pad.fY - fY) * (pad.fY - fY));
    }
       
 
-   virtual void GetIntersection(const TVector3 &a1, const TVector3 &a2, Int_t &num, TVector3*& output) const;
+   virtual Bool_t IsInside(Double_t xp, Double_t yp) const {
+      const Int_t &np = fNumPoints;
+      const Double_t* x = &fVertexX[0];
+      const Double_t* y = &fVertexX[0];
+      Int_t i, j = np-1 ;
+      Bool_t oddNodes = kFALSE;
+      for (i=0; i<np; i++) {
+         if ((y[i]<yp && y[j]>=yp) || (y[j]<yp && y[i]>=yp)) {
+            if (x[i]+(yp-y[i])/(y[j]-y[i])*(x[j]-x[i])<xp) {
+               oddNodes = !oddNodes;
+            }
+         }
+         j=i;
+      }
+      return oddNodes;
+   }
+      
+
+   void SetNeighbors(const std::vector<Int_t> &neighbors);
+   
+   virtual void GetIntersection(const TVector3 &a1, const TVector3 &a2, std::vector<TVector3>& output) const;
    Double_t GetTrackLength(const TVector3 &a1, const TVector3 &a2) const;
    Double_t GetRangeToEnd(const TVector3& start, const TVector3& end) const   ;
+
+   EPadState_t GetStatus() const { return fStatus; }
+   void SetStatus (EPadState_t state) { fStatus = state; }
+   Bool_t IsGood() const { return (fStatus == kGood); }
+   Bool_t IsBad() const { return (fStatus == kBad); }
+   Bool_t IsLowGain() const{ return (fStatus == kLowGain); }
    
    void CalculatePosition(const TVector3 &direction,
                           TCatReadoutPad*  pad,Double_t charge1, Double_t charge2,
                           Double_t &x, Double_t &z);
    
    static const Int_t kMaxNumPoints = 10;
+
+   static void ListOfStatus();
    
 protected:
    Int_t fID; // id of this pad
@@ -69,10 +97,11 @@ protected:
    Double_t fSide; // length of side
    Double_t fX; // x position of center
    Double_t fY; // y position of center
-   Double_t *fVertexX; //[fNumPoints]
-   Double_t *fVertexY; //[fNumPoints]
-   Int_t *fNeighbor; //[fNumNeighbors]
-   TVector3 *fIntersection; //! helper container to calculate intersection
+   std::vector<Double_t> fVertexX; //
+   std::vector<Double_t> fVertexY; //
+   std::vector<Int_t> fNeighbors; // list of id of neighboring pads
+   std::vector<Int_t> fIsNeighbor; // if the id is neighbor
+   EPadState_t fStatus; // status of channel
 
    ClassDef(TCatReadoutPad,1); // information on readout pad
 };

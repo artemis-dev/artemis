@@ -2,7 +2,7 @@
 /**
  * @file   TCatReadoutPadArray.cc
  * @date   Created : Dec 01, 2013 01:01:31 JST
- *   Last Modified : Dec 01, 2013 02:33:06 JST
+ *   Last Modified : 2016-11-11 18:07:09 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -42,3 +42,16 @@ TH2Poly *TCatReadoutPadArray::CreateHist(const char *name, const char *title,
    }
    return hist;
 }
+
+void TCatReadoutPadArray::SetBads(const std::vector<Int_t>& bads)
+{
+   std::copy(bads.begin(),bads.end(),back_inserter(fBads));
+}
+
+void TCatReadoutPadArray::SetLowGains(const std::vector<Int_t>& lowGains)
+{
+   std::copy(lowGains.begin(),lowGains.end(),back_inserter(fLowGains));
+}
+
+
+      

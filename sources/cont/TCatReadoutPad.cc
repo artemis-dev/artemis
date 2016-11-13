@@ -2,7 +2,7 @@
 /**
  * @file   TCatReadoutPad.cc
  * @date   Created : Nov 30, 2013 20:30:25 JST
- *   Last Modified : 2016-10-27 19:56:55 JST (ota)
+ *   Last Modified : 2016-11-12 01:21:38 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -17,28 +17,36 @@ ClassImp(art::TCatReadoutPad);
 using art::TCatReadoutPad;
 
 TCatReadoutPad::TCatReadoutPad()
-   : fID(0), fNumPoints(0), fNumNeighbors(0),fX(0.), fY(0.),
-     fVertexX(NULL), fVertexY(NULL), fNeighbor(NULL), fIntersection(NULL)
+   : fID(0), fNumPoints(0), fNumNeighbors(0),fX(0.), fY(0.), fStatus(kGood)
 {
 }
 
 TCatReadoutPad::TCatReadoutPad(Int_t id, Int_t numPoints, Double_t x, Double_t y,
                                Double_t *vertexX, Double_t *vertexY,
                                Double_t side, Int_t numNeighbors, Int_t *neighbor)
-   : fID(id), fNumPoints(numPoints), fNumNeighbors(numNeighbors), fSide(side),fX(x), fY(y),
-     fVertexX(NULL), fVertexY(NULL), fNeighbor(NULL), fIntersection(NULL)
+   : fID(id), fNumPoints(numPoints), fNumNeighbors(numNeighbors), fSide(side),fX(x), fY(y), fStatus(kGood)
 {
-   fVertexX  = new Double_t[kMaxNumPoints];
-   fVertexY  = new Double_t[kMaxNumPoints];
-   fNeighbor = new Int_t[kMaxNumPoints];
-   fIntersection = new TVector3[kMaxNumPoints];
+   for (Int_t i = 0; i < numPoints; ++i) {
+      fVertexX.push_back(vertexX[i]);
+      fVertexY.push_back(vertexY[i]);
+   }
+   for (Int_t i = 0; i < numNeighbors; ++i) {
+      fNeighbors.push_back(neighbor[i]);
+   }
 
-   for (Int_t i=0; i!=fNumPoints; i++) {
-      fVertexX[i] = vertexX[i];
-      fVertexY[i] = vertexY[i];
-      fNeighbor[i] = neighbor[i];
+}
+
+TCatReadoutPad::TCatReadoutPad(Int_t id, Int_t numPoints, Double_t x, Double_t y,
+                               Double_t *vertexX, Double_t *vertexY,
+                               Double_t side)
+   : fID(id), fNumPoints(numPoints),fSide(side),fX(x), fY(y)
+{
+   for (Int_t i = 0; i < numPoints; ++i) {
+      fVertexX.push_back(vertexX[i]);
+      fVertexY.push_back(vertexY[i]);
    }
 }
+
 
 TCatReadoutPad::TCatReadoutPad(const TCatReadoutPad& obj)
    : TObject(obj)
@@ -47,28 +55,20 @@ TCatReadoutPad::TCatReadoutPad(const TCatReadoutPad& obj)
    fNumPoints = obj.fNumPoints;
    fX         = obj.fX;
    fY         = obj.fY;
-   fVertexX  = new Double_t[kMaxNumPoints];
-   fVertexY  = new Double_t[kMaxNumPoints];
-   fNeighbor = new Int_t[kMaxNumPoints];
-   fIntersection = new TVector3[kMaxNumPoints];
+   fVertexX.resize(obj.fVertexX.size());
+   fVertexY.resize(obj.fVertexY.size());
+   fNeighbors.resize(obj.fNeighbors.size());
 
    for (Int_t i=0; i!=fNumPoints; i++) {
       fVertexX[i] = obj.fVertexX[i];
       fVertexY[i] = obj.fVertexY[i];
-      fNeighbor[i] = obj.fNeighbor[i];
-      fIntersection[i] = obj.fIntersection[i];
+      fNeighbors[i] = obj.fNeighbors[i];
    }
-
-      
 }
 
 
 TCatReadoutPad::~TCatReadoutPad()
 {
-   if (fVertexX) delete [] fVertexX;
-   if (fVertexY) delete [] fVertexY;
-   if (fNeighbor) delete [] fNeighbor;
-   if (fIntersection) delete [] fIntersection;
 }
 
 void TCatReadoutPad::Clear(Option_t *opt)
@@ -77,6 +77,9 @@ void TCatReadoutPad::Clear(Option_t *opt)
    fID = 0;
    fX = 0.;
    fY =0.;
+   fVertexX.clear();
+   fVertexY.clear();
+   fNeighbors.clear();
 }
 
 void TCatReadoutPad::Copy(TObject &obj) const
@@ -86,17 +89,14 @@ void TCatReadoutPad::Copy(TObject &obj) const
    pad.fNumPoints = fNumPoints;
    pad.fX         = fX;
    pad.fY         = fY;
-   pad.fVertexX  = new Double_t[kMaxNumPoints];
-   pad.fVertexY  = new Double_t[kMaxNumPoints];
-   pad.fNeighbor = new Int_t[kMaxNumPoints];
-   pad.fIntersection = new TVector3[kMaxNumPoints];
+   pad.fVertexX.resize(fVertexX.size());
+   pad.fVertexY.resize(fVertexY.size());
+   pad.fNeighbors.resize(fNeighbors.size());
    
-
    for (Int_t i=0; i!=fNumPoints; i++) {
       pad.fVertexX[i] = fVertexX[i];
       pad.fVertexY[i] = fVertexY[i];
-      pad.fNeighbor[i] = fNeighbor[i];
-      pad.fIntersection[i] = fIntersection[i];
+      pad.fNeighbors[i] = fNeighbors[i];
    }
 }
 
@@ -125,11 +125,10 @@ void TCatReadoutPad::CalculatePosition(const TVector3 &direction,
    z = pos.Y();
 }
 
-void TCatReadoutPad::GetIntersection(const TVector3 &a1, const TVector3 &a2, Int_t &num, TVector3 *&output) const
+void TCatReadoutPad::GetIntersection(const TVector3 &a1, const TVector3 &a2, std::vector<TVector3>& output) const
 {
    const Double_t EPS = TMath::Limits<Double_t>::Epsilon();
    TVector3 va = a2 - a1;
-   num = 0;
    for (Int_t iP = 0; iP != fNumPoints - 1; ++iP) {
       TVector3 b1(fVertexX[iP],0,fVertexY[iP]);
       TVector3 b2(fVertexX[iP+1],0,fVertexY[iP+1]);
@@ -145,18 +144,17 @@ void TCatReadoutPad::GetIntersection(const TVector3 &a1, const TVector3 &a2, Int
       Double_t d2 = TMath::Abs(vb.Cross(a2-b1).Y());
       Double_t t = d1/(d1+d2);
       TVector3 p = a1 + t * va;
-      fIntersection[num] = p;
-      ++num;
+      output.push_back(p);
    }
-   output = fIntersection;
 }
 
 Double_t TCatReadoutPad::GetTrackLength(const TVector3& a1, const TVector3 &a2) const
 {
-   TVector3 *intersection;
+   std::vector<TVector3> intersection;
    Int_t num;
    Double_t trackLength = 0.;
-   GetIntersection(a1,a2,num,intersection);
+   GetIntersection(a1,a2,intersection);
+   num = intersection.size();
    switch (num) {
    case 2:
       trackLength = (intersection[0] - intersection[1]).Mag();
@@ -189,4 +187,30 @@ Double_t TCatReadoutPad::GetRangeToEnd(const TVector3& start, const TVector3& en
    TVector2 x = s + (v * sp) * v;
    return (end-start).Mag() / (end.X() - start.X()) * (e.X() - x.X());
 
+}
+
+void TCatReadoutPad::ListOfStatus() {
+   std::vector<const char*> name(3);
+   std::vector<const char*> description(3);
+
+   name[kBad] = "kBad";
+   name[kGood] = "kGood";
+   name[kLowGain] = "kLowGain";
+   description[kBad] = "Bad channel with no signal";
+   description[kGood] =    "Good channel";
+   description[kLowGain] =    "Low gain channel with relatively small ammount of hits";
+
+#if 0   
+   const char* name[] = {"kBad","kGood","kLowGain"};
+   const char* description[] = {
+   };
+#endif   
+   for (Int_t i = 0; i < 3; i++) {
+      printf("%-10s%-50s\n",name[i],description[i]);
+   }
+}
+
+void TCatReadoutPad::SetNeighbors(const std::vector<Int_t> &neighbor)
+{
+   std::copy(neighbor.begin(),neighbor.end(),back_inserter(fNeighbors));
 }
