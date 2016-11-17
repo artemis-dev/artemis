@@ -41,6 +41,11 @@
 #pragma link C++ class art::TCmdBranchInfo;
 #pragma link C++ class art::TCmdClassInfo;
 #pragma link C++ class art::TCmdHdel;
+#pragma link C++ class art::TCmdFileCd;
+#pragma link C++ class art::TCmdFileLs;
+#pragma link C++ class art::TCmdFipo;
+#pragma link C++ class art::TCmdUnZoom;
+#pragma link C++ class art::TCmdRg;
 
 #pragma link C++ class TCatCmdFactory+;
 #pragma link C++ class art::TCmdGroup+;
