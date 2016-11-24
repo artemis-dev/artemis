@@ -24,6 +24,17 @@ AC_ARG_WITH([yaml-cpp],
 	AC_HELP_STRING([--with-yaml-cpp@<:@=PATH@:>@],
 		       [PATH is path to yaml-cpp home (without lib/include)]),
         [WITH_YAML_CPP=$withval],[WITH_YAML_CPP=yes])
+AC_ARG_ENABLE([mpi],
+	AC_HELP_STRING([--enable-mpi],[Use MPI (default is no)]),
+	[],[enable_mpi=no])
+
+if test "$enable_mpi" != "no" ; then
+echo TEST MPI
+AC_CHECK_HEADERS([mpi.h])
+AC_DEFINE([USE_MPI], [1], [mpi support])
+AC_PROG_CXX([mpiicpc])
+fi
+
 
 if test "$WITH_YAML_CPP" = "yes" ; then
 echo setting
@@ -43,6 +54,7 @@ AC_SUBST(ROOTLIBS)
 
 # Checks for header files.
 AC_CHECK_HEADERS([termios.h unistd.h])
+
 
 AC_PATH_XTRA
 

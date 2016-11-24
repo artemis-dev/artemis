@@ -2,7 +2,7 @@
 /**
  * @file   TRIDFEventStore.cc
  * @date   Created : Jul 12, 2013 17:12:35 JST
- *   Last Modified : 2016-04-19 01:22:19 JST (nil)
+ *   Last Modified : 2016-11-24 12:05:45 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -25,6 +25,14 @@
 #include <TCatPadManager.h>
 #include <TRegexp.h>
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#ifdef HAVE_MPI_H
+#include <mpi.h>
+#endif
+
 #include <map>
 
 art::TRIDFEventStore::TRIDFEventStore()
@@ -39,6 +47,7 @@ art::TRIDFEventStore::TRIDFEventStore()
                             fNameRunHeaders,TString("runheader"));
    RegisterOutputCollection("EventHeaderName","the name of event header",
                             fNameEventHeader,TString("eventheader"));
+   RegisterProcessorParameter("MaxEventNum","maximum number of event (no limit if 0)",fMaxEventNum,0);
    RegisterProcessorParameter("SHMID","Shared memory id (default : 0)",fSHMID,0);
    
 
@@ -109,6 +118,12 @@ void art::TRIDFEventStore::Init(TEventCollection *col)
 
 void art::TRIDFEventStore::Process()
 {
+  if (fMaxEventNum > 0 && fRIDFData.fEventHeader->GetEventNumber() > fMaxEventNum) {
+    SetStopEvent();
+    SetStopLoop();
+    SetEndOfRun();
+    return;
+  }
    // try to prepare data source
    fRIDFData.fSegmentedData->Clear("C");
    // try to get next event
@@ -452,6 +467,23 @@ Bool_t art::TRIDFEventStore::GetNextEvent()
       if (fOffset >= fBlockSize)  {
          fIsEOB = kTRUE;
       }
+#ifdef USE_MPI
+      { 
+	int useMPI;
+	MPI_Initialized(&useMPI);
+ 
+	if (useMPI) {
+	  int myrank, npe;
+	  MPI_Comm_size(MPI_COMM_WORLD, &npe);
+	  MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
+	  if ((fRIDFData.fEventHeader->GetEventNumber() % npe) != myrank) {
+	    if (fIsEOB) return kFALSE;
+	    continue;
+	  }
+	}
+      }
+
+#endif
       // TClassDecoder::Decode(fBuffer,fOffset,fNext,something?)
       // if the data is available or not
       if (fRIDFData.fSegmentedData->GetEntriesFast()) {

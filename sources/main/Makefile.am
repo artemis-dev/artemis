@@ -1,8 +1,10 @@
 SUBSRC = \
-	TArtRint.cc
+	TArtRint.cc \
+	main.cc
+
 
 SUBOBJ = $(SUBSRC:.cc=.o)
-SUBHDR = $(SUBSRC:.cc=.h) 
+SUBHDR = $(filter-out main.h, $(SUBSRC:.cc=.h)) 
 
 
 AUTOMAKE_OPTIONS = foreign
@@ -13,7 +15,9 @@ LIBCATCMD = ../commands/.libs/libcatcmd.$(SOEXT)
 INCDIR = ../../include
 
 
-CXXFLAGS = -Iinclude -I$(INCDIR)  $(shell root-config --cflags) 
+CXXFLAGS = $(DEFS) -I../..
+CXXFLAGS+= -Iinclude -I$(INCDIR)  $(shell root-config --cflags) 
+
 LDFLAGS = -O \
 	-L../mc/.libs -lcatmc \
         -L../commands/.libs -lcatcmd \
@@ -29,8 +33,8 @@ LDFLAGS = -O \
 
 
 include_HEADERS = $(SUBHDR) $(SUBHDRF)
-bin_PROGRAMS = artemis
-artemis_SOURCES = $(SUBSRC) main.cc 
+bin_PROGRAMS = artemis 
+artemis_SOURCES = $(SUBSRC) 
 artemis_DEPENDENCIES = $(LIBCATCORE) $(LIBCATCMD)
 artemis_LDFLAGS = $(LDFLAGS)
 
@@ -46,4 +50,4 @@ clean-local:
 	rm -f *dict*
 
 clean: clean-local
-	rm -rf $(SUBOBJ) .libs *.lo artemis artemis-config
+	rm -rf $(SUBOBJ) .libs *.lo artemis artemis-config 

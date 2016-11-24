@@ -63,7 +63,7 @@ protected:
    TString           fSourceName;
    TString           fSearchPath;
 
-   Long_t   fMaxEventNum;
+   Int_t   fMaxEventNum;
    Long_t   fEventNum; //! local Event number
    Long_t   fEventNumTotal; //! total event number
 

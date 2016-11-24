@@ -45,16 +45,19 @@ art::TLoop* art::TLoopManager::Add(const char *filename)
    TLoop *loop = new TLoop;
    std::list <Long_t> loaded;
    TFolder *topfolder = (TFolder*)gROOT->FindObject("/artemis");
-   TFolder *folder = (TFolder*)topfolder->FindObject("loops");
-   if (!folder) {
-      folder = topfolder->AddFolder("loops","container for loops");
+   TFolder *folder = NULL;
+   if (topfolder) {
+     folder = (TFolder*)topfolder->FindObject("loops");
+     if (!folder) {
+       folder = topfolder->AddFolder("loops","container for loops");
+     }
+     TString name = TString::Format("loop%d",fLoops->GetEntries());
+     TFolder *myfolder = folder->AddFolder(name,filename);
    }
-   TString name = TString::Format("loop%d",fLoops->GetEntries());
-   TFolder *myfolder = folder->AddFolder(name,filename);
 
    if (!loop->Load(dirname, basename, &loaded) ||  !loop->Init()) {
       loop->Clear("C");
-      folder->Remove(folder);
+      if (folder)       folder->Remove(folder);
       delete loop;
       loop = NULL;
       return NULL;

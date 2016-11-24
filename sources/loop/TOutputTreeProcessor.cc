@@ -13,6 +13,15 @@
 #include <TDirectory.h>
 #include <TROOT.h>
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#ifdef HAVE_MPI_H
+#include <mpi.h>
+#endif
+
+
 ClassImp(art::TOutputTreeProcessor);
 
 art::TOutputTreeProcessor::TOutputTreeProcessor()
@@ -30,6 +39,13 @@ art::TOutputTreeProcessor::~TOutputTreeProcessor()
 
 void art::TOutputTreeProcessor::Init(TEventCollection *col)
 {
+#ifdef USE_MPI
+  int myrank, npe;
+  MPI_Comm_size(MPI_COMM_WORLD, &npe);
+  MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
+  printf("myrank = %d\n",myrank);
+  fFileName.Append(Form("%d",myrank));
+#endif
    fFile = TFile::Open(fFileName,"RECREATE");
    fTree = new TTree(fTreeName,fTreeName);
    // assume all of the objects inherit from TObject
@@ -97,4 +113,7 @@ void art::TOutputTreeProcessor::PostLoop()
    fFile->cd();
    fTree->Write(0,TFile::kOverwrite);
    saved->cd();
+#ifdef USE_MPI
+   MPI_Barrier(MPI_COMM_WORLD);
+#endif
 }
