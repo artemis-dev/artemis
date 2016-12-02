@@ -3,7 +3,7 @@
  * @brief
  *
  * @date   Created       : 2016-01-29 14:16:43 JST
- *         Last Modified : 2016-10-24 20:16:12 JST (ota)
+ *         Last Modified : 2016-11-28 12:12:16 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2016 Shinsuke OTA
@@ -58,10 +58,15 @@ Double_t TNArray::Eval(Double_t *x)
    Double_t retval = 0.;
    std::vector<Double_t> deltaEnergy(fNumVars,0.);
    for (Int_t i = 0; i!=fNumVars; ++i) {
-      if (!fVars[i].CheckBounce(x[i])) {
-         return TMath::QuietNaN();
+      Int_t idx;
+      if (x[i] < fVars[i].GetMin()) {
+         idx = 0;
+      } else if (fVars[i].GetMax() < x[i]) {
+         idx = fVars[i].IndexI(fVars[i].GetMax() - TMath::Limits<Double_t>::Epsilon()) - 1.;
+      } else {
+         idx = fVars[i].IndexI(x[i]);
       }
-      baseIndex += fVars[i].IndexI(x[i]) * fTotalNumVals[i];
+      baseIndex += idx * fTotalNumVals[i];
    }
 #if 0
    printf("baseIndex = %d\n",baseIndex);
