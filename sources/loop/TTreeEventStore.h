@@ -2,7 +2,7 @@
 /**
  * @file   TTreeEventStore.h
  * @date   Created : Jul 11, 2013 21:11:30 JST
- *   Last Modified : 
+ *   Last Modified : 2016-12-15 16:53:51 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -12,6 +12,15 @@
 #define TTREEEVENTSTORE_H
 
 #include <TProcessor.h>
+
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#ifdef HAVE_MPI_H
+#include <mpi.h>
+#endif
+
 
 namespace art {
    class TTreeEventStore;
@@ -42,6 +51,13 @@ private:
    TList   *fObjects;
    Long_t   fEventNum;
    Long_t   fMaxEventNum;
+
+#ifdef USE_MPI   
+   Int_t fRankID; //!
+   Int_t fNPE; //! number of pe
+#endif   
+   
+   
    ClassDef(TTreeEventStore,1);
 };
 #endif // end of #ifdef TTREEEVENTSTORE_H

@@ -2,7 +2,7 @@
 /**
  * @file   TTreeEventStore.cc
  * @date   Created : Jul 11, 2013 21:11:20 JST
- *   Last Modified : Apr 13, 2015 17:07:00 JST
+ *   Last Modified : 2016-12-15 16:55:29 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -40,6 +40,16 @@ art::TTreeEventStore::~TTreeEventStore()
 
 void art::TTreeEventStore::Init(TEventCollection *col)
 {
+#if USE_MPI
+   int useMPI;
+   MPI_Initialized(&useMPI);
+   if (useMPI) {
+      MPI_Comm_size(MPI_COMM_WORLD, &fNPE);
+      MPI_Comm_rank(MPI_COMM_WORLD, &fRankID);
+   }
+   fFileName.Append(Form("%d",fRankID));
+#endif
+   
    fEventNum = 0;
    fCondition = (TConditionBit**)(col->Get(TLoop::kConditionName)->GetObjectRef());
    Info("Init","Input file = %s",fFileName.Data());

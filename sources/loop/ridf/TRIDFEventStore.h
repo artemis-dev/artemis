@@ -2,7 +2,7 @@
 /**
  * @file   TRIDFEventStore.h
  * @date   Created : Jul 12, 2013 17:12:43 JST
- *   Last Modified : 2016-10-19 23:13:35 JST (ota)
+ *   Last Modified : 2016-12-15 20:30:18 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -10,6 +10,15 @@
  */
 #ifndef TRIDFEVENTSTORE_H
 #define TRIDFEVENTSTORE_H
+
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#ifdef HAVE_MPI_H
+#include <mpi.h>
+#endif
+
 
 #include <TProcessor.h>
 
@@ -39,6 +48,11 @@ protected:
    Bool_t GetNextEvent();
 
 protected:
+#if USE_MPI
+   Int_t fNPE;//!
+   Int_t fRankID;//!
+   Int_t fUseMPI;//!
+#endif   
    struct RIDFData {
    public:
       TMapTable        *fMapTable; //!

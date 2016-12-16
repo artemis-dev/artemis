@@ -2,7 +2,7 @@
 /**
  * @file   TRIDFEventStore.cc
  * @date   Created : Jul 12, 2013 17:12:35 JST
- *   Last Modified : 2016-11-24 12:05:45 JST (ota)
+ *   Last Modified : 2016-12-15 20:29:50 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -112,6 +112,13 @@ void art::TRIDFEventStore::Init(TEventCollection *col)
    col->Add(fNameEventHeader,fRIDFData.fEventHeader,kFALSE);
    col->AddInfo(fNameRunHeaders,fRIDFData.fRunHeaders,kFALSE);
    fRIDFData.fRunHeaders->SetName(fNameRunHeaders);
+
+#if USE_MPI
+   MPI_Initialized(&fUseMPI);
+   MPI_Comm_size(MPI_COMM_WORLD, &fNPE);
+   MPI_Comm_rank(MPI_COMM_WORLD, &fRankID);
+#endif 
+   
 
 }
 
@@ -469,14 +476,8 @@ Bool_t art::TRIDFEventStore::GetNextEvent()
       }
 #ifdef USE_MPI
       { 
-	int useMPI;
-	MPI_Initialized(&useMPI);
- 
-	if (useMPI) {
-	  int myrank, npe;
-	  MPI_Comm_size(MPI_COMM_WORLD, &npe);
-	  MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
-	  if ((fRIDFData.fEventHeader->GetEventNumber() % npe) != myrank) {
+	if (fUseMPI) {
+	  if ((fRIDFData.fEventHeader->GetEventNumber() % fNPE) != fRankID) {
 	    if (fIsEOB) return kFALSE;
 	    continue;
 	  }

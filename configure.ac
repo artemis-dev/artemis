@@ -8,9 +8,21 @@ AC_CONFIG_SRCDIR([sources/main/main.cc])
 AC_CONFIG_HEADERS([config.h])
 
 # Checks for programs.
+AC_ARG_ENABLE([mpi],
+	AC_HELP_STRING([--enable-mpi],[Use MPI (default is no)]),
+	[],[enable_mpi=no])
+
+if test "$enable_mpi" != "no" ; then
+echo TEST MPI
+CXX=mpiicpc
+AC_PROG_CXX([mpiicpc])
+AC_CHECK_HEADERS([mpi.h])
+AC_DEFINE([USE_MPI], [1], [mpi support])
+else
 AC_PROG_CXX([clang++ g++ g++34])
 AC_PROG_CC([clang gcc gcc34])
 AC_PROG_LIBTOOL
+fi
 
 AC_CONFIG_MACRO_DIR([m4])
 
@@ -24,16 +36,6 @@ AC_ARG_WITH([yaml-cpp],
 	AC_HELP_STRING([--with-yaml-cpp@<:@=PATH@:>@],
 		       [PATH is path to yaml-cpp home (without lib/include)]),
         [WITH_YAML_CPP=$withval],[WITH_YAML_CPP=yes])
-AC_ARG_ENABLE([mpi],
-	AC_HELP_STRING([--enable-mpi],[Use MPI (default is no)]),
-	[],[enable_mpi=no])
-
-if test "$enable_mpi" != "no" ; then
-echo TEST MPI
-AC_CHECK_HEADERS([mpi.h])
-AC_DEFINE([USE_MPI], [1], [mpi support])
-AC_PROG_CXX([mpiicpc])
-fi
 
 
 if test "$WITH_YAML_CPP" = "yes" ; then
