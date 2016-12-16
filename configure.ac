@@ -21,8 +21,9 @@ AC_DEFINE([USE_MPI], [1], [mpi support])
 else
 AC_PROG_CXX([clang++ g++ g++34])
 AC_PROG_CC([clang gcc gcc34])
-AC_PROG_LIBTOOL
 fi
+
+AC_PROG_LIBTOOL
 
 AC_CONFIG_MACRO_DIR([m4])
 
