@@ -3,7 +3,7 @@
  * @brief  tree projection
  *
  * @date   Created       : 2014-03-05 22:30:06 JST
- *         Last Modified : 2016-12-04 10:43:27 JST (ota)
+ *         Last Modified : 2016-12-22 11:17:18 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -103,17 +103,19 @@ void TTreeProjectionProcessor::Process()
 void TTreeProjectionProcessor::PostLoop()
 {
    if (fOutputFilename.IsNull()) return;
+   TString filename = fOutputFilename;
 #ifdef USE_MPI
   int myrank, npe;
   MPI_Comm_size(MPI_COMM_WORLD, &npe);
   MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
+  filename = Form("%s%d",fOutputFilename.Data(),myrank);
 #endif
 
    
    TDirectory *saved = gDirectory;
    fDirectory->cd();
    TCatCmdHstore hstore;
-   hstore.Run(Form("%s%d",fOutputFilename.Data(),myrank),"recreate");
+   hstore.Run(filename,"recreate");
    saved->cd();
 #ifdef USE_MPI
    MPI_Barrier(MPI_COMM_WORLD);   
