@@ -12,16 +12,22 @@ AC_ARG_ENABLE([mpi],
 	AC_HELP_STRING([--enable-mpi],[Use MPI (default is no)]),
 	[],[enable_mpi=no])
 
-if test "$enable_mpi" != "no" ; then
-echo TEST MPI
-CXX=mpiicpc
-AC_PROG_CXX([mpiicpc])
-AC_CHECK_HEADERS([mpi.h])
-AC_DEFINE([USE_MPI], [1], [mpi support])
-else
-AC_PROG_CXX([clang++ g++ g++34])
-AC_PROG_CC([clang gcc gcc34])
+ if test "$enable_mpi" != "no" ; then
+ echo TEST MPI
+ progxx="[mpiicpc clang++ g++ g++34]"
+ progcc="[mpiicc clang gcc gcc34]"
+ else
+ echo non-MPI 
+ progxx="[clang++ g++ g++34]"
+ progcc="[clang gcc gcc34]"
 fi
+
+AC_PROG_CXX($progxx)
+AC_PROG_CC($progcc)
+AC_CHECK_HEADERS([mpi.h],AS_IF([test "$enable_mpi" != "no"],[AC_DEFINE([USE_MPI], [1], [mpi support])]))
+
+
+
 
 AC_PROG_LIBTOOL
 
