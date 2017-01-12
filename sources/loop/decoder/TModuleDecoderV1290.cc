@@ -1,7 +1,7 @@
 /*
  * @file TModuleDecoderV1290.cc
  * @date  Created : 2008/11/26 21:34:03 JST<BR>
- *  Last Modified : 2014-03-17 13:31:50 JST (kawase)
+ *  Last Modified : 2017-01-12 14:30:26 JST (ota)
  *--------------------------------------------------------
  *    Comment :
  *              copied from anapaw source and renamed
@@ -44,6 +44,7 @@ Int_t TModuleDecoderV1290::Decode(char* buf, const int &size, TObjArray *seg)
    V1290Raw_t *data;
    Int_t measure;
    ghf = thf = 0;
+   igeo = -1;
 
    // clear old hits
    fHitData->Clear();
@@ -60,13 +61,18 @@ Int_t TModuleDecoderV1290::Decode(char* buf, const int &size, TObjArray *seg)
             break;
          case kTDCHeader:
             if (ghf!=1) return 0;
+            thf = 1;
             bncid = (evtdata[i]&kMaskBunchID)>>kShiftBunchID;
             evtid = (evtdata[i]&kMaskEventCounter)>>kShiftEventCounter;
             break;
          case kTDCMeasurement:
+            if (!ghf || !thf) continue;
             ich = (evtdata[i]&kMaskChannel) >> kShiftChannel;
             edge = (evtdata[i]&kMaskEdgeType) >> kShiftEdgeType;
             idx = igeo * 32 + ich;
+            if (idx < 0) {
+               printf("[%03d] igeo = %d, ich = %d\n",i,igeo,ich);
+            }
             measure = (evtdata[i]&kMaskMeasure) >> kShiftMeasure;
             // check if the data object exists.
             if (fHitData->GetEntriesFast() <= idx || !fHitData->At(idx)) {
@@ -85,9 +91,13 @@ Int_t TModuleDecoderV1290::Decode(char* buf, const int &size, TObjArray *seg)
             
             break;
          case kTDCTrailer:
+            thf = 0;
             break;
          case kTDCError:
-            printf("V1290 [TDC Error    ] : 0x%08x\n", evtdata[i]);
+            ghf = thf = 0;
+            if (kWarning>=fVerboseLevel) {
+               Warning("Decode",Form("V1290 [TDC Error    ] : 0x%08x", evtdata[i]));
+            }
             break;
          }
       }

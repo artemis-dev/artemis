@@ -23,7 +23,7 @@ OPTHDR =
 INCDIR = ../../../include
 
 AUTOMAKE_OPTIONS = foreign
-CXXFLAGS = -fPIC -I.. -I$(INCDIR) $(shell root-config --cflags)  -Wall -O2
+CXXFLAGS = -fPIC -I.. -I$(INCDIR) $(shell root-config --cflags)  -Wall -O2 -g
 LDFLAGS = $(shell root-config --glibs)
 
 CXXFLAGS+= @YAML_CPP_INCLUDE@

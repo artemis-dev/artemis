@@ -2,7 +2,7 @@
 /**
  * @file   TModuleDecoder.cc
  * @date   Created : Jul 20, 2013 11:20:55 JST
- *   Last Modified : May 12, 2014 23:25:54 JST
+ *   Last Modified : 2017-01-12 14:35:32 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -17,12 +17,12 @@
 ClassImp(art::TModuleDecoder)
 
 art::TModuleDecoder::TModuleDecoder()
-: fID(0), fHits(NULL)
+: fID(0), fHits(NULL), fVerboseLevel(kWarning)
 {
 }
 
 art::TModuleDecoder::TModuleDecoder(Int_t id, TClass *dataClass)
-   : fID(id), fHits(NULL)
+   : fID(id), fHits(NULL), fVerboseLevel(kWarning)
 {
    SetClass(dataClass);
 }
@@ -48,4 +48,5 @@ void art::TModuleDecoder::Copy(TObject& obj) const
 {
    TModuleDecoder &decoder = static_cast<TModuleDecoder&>(obj);
    decoder.fID = fID;
+   decoder.fVerboseLevel = fVerboseLevel;
 }
