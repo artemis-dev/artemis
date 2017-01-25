@@ -3,7 +3,7 @@
  * @brief  Tree projection definitions
  *
  * @date   Created       : 2014-03-05 10:15:05 JST
- *         Last Modified : Jun 15, 2014 12:47:04 JST
+ *         Last Modified : 2017-01-24 16:17:27 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -352,14 +352,28 @@ Bool_t TTreeProjection::Sync(TTreeProjGroup *group, TTree *tree, TCut cut)
          for (Int_t i=0; i!=nDim; i++) {
             TAxisTreeProj* axis = proj->GetAxisDef(i);
             TCut totalcut = axis->GetCut() + proj->GetCut() + cut;
-            axis->SetVariableFormula(new TTreeFormula(TString::Format("V%c",'x'+i),axis->GetTitle(),tree));
+            TTreeFormula *axisFormula =new TTreeFormula(TString::Format("V%c",'x'+i),axis->GetTitle(),tree);
+            if (axisFormula->GetNdim() == 0) {
+               axisFormula->Delete();
+               proj = NULL;
+               break;
+            }
+            axis->SetVariableFormula(axisFormula);
             if (totalcut != "") {
-               axis->SetSelectionFormula(new TTreeFormula(TString::Format("S%c",'x'+i),
-                                                          axis->GetCut()+proj->GetCut()+cut,tree));
+               TTreeFormula *cutFormula = new TTreeFormula(TString::Format("S%c",'x'+i),
+                                                           axis->GetCut()+proj->GetCut()+cut,tree);
+               if (cutFormula->GetNdim() == 0) {
+                  cutFormula->Delete();
+                  proj = NULL;
+                  break;
+               }
+               axis->SetSelectionFormula(cutFormula);
             }
          }
-         proj->Sync();
-         fProjections.push_back(proj);
+         if (proj) {
+            proj->Sync();
+            fProjections.push_back(proj);
+         }
       }
    }
    return kTRUE;
