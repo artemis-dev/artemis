@@ -3,7 +3,7 @@
  * @brief
  *
  * @date   Created       : 2014-10-29 18:10:16 JST
- *         Last Modified : 2016-07-20 15:08:03 JST (ota)
+ *         Last Modified : 2017-01-30 17:04:16 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -19,7 +19,7 @@
 
 #pragma link C++ class art::TCatReadoutPad;
 #pragma link C++ class art::TCatReadoutPadArray;
-#pragma link C++ class art::TCatPulseShape;
+#pragma link C++ class art::TCatPulseShape-;
 #pragma link C++ class art::TSimpleData;
 #pragma link C++ class art::ICharge;
 #pragma link C++ class art::ITiming;

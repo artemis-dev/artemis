@@ -2,7 +2,7 @@
 /**
  * @file   TCatPulseShape.h
  * @date   Created : Mar 10, 2013 18:10:59 JST
- *   Last Modified : 2016-07-22 08:24:41 JST (ota)
+ *   Last Modified : 2017-01-30 17:27:52 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -15,12 +15,13 @@
 #include <ICharge.h>
 #include <vector>
 #include <TVector3.h>
-
-#define VEC
+#include <TMath.h>
 
 namespace art {
    class TCatPulseShape;
 }
+
+class TBuffer;
 
 class art::TCatPulseShape  : public TDataObject, public ICharge {
 
@@ -67,20 +68,9 @@ public:
 
    
    void AddSample(Float_t sample,Float_t clock = -1) {
-#ifndef VEC
-      fSample[fNumSample] = sample;
-      if (clock == -1) {
-         fClock[fNumSample] = fNumSample;
-      } else {
-         fClock[fNumSample] = clock;
-      }
-      fNumSample++;
-#else
       fSample.push_back(sample);
       fClock.push_back((clock!=-1)?clock:fNumSample);
       fNumSample++;
-#endif
-                       
    }
 
    virtual void Clear(Option_t *);
@@ -96,6 +86,25 @@ public:
       fgSortOrder = (order == kASC) ? 1 : -1; 
    }
 
+   // for version > 2
+   void SetMaxSample(Double_t max) { fMaxSample = max; }
+   void SetMaxSampleOffset(Double_t offset) { fMaxSampleOffset = offset; }
+   void SetBaseline(Double_t baseline) { fBaseline = baseline; }
+   void SetBaselineRMS(Double_t rms) { fBaselineRMS = rms; }
+   void SetLeadingEdgeOffset(Double_t offset) { fLeadingEdgeOffset = offset; }
+   void AddMoment(Double_t moment) {
+      fMoment.push_back(moment);
+      fNumMoment = fMoment.size();
+   }
+
+   virtual Double_t GetMaxSample() const { return fMaxSample; }
+   virtual Double_t GetMaxSampleOffset() const { return fMaxSampleOffset; }
+   virtual Double_t GetBaseline() const { return fBaseline; }
+   virtual Double_t GetBaselineRMS() const { return fBaselineRMS; }
+   virtual Double_t GetLeadingEdgeOffset() const { return fLeadingEdgeOffset; }
+   virtual Double_t GetMoment(Int_t i) const { return  (i < fNumMoment) ? fMoment[i] : TMath::QuietNaN(); }
+       
+
 
 protected:
    static ESortType fgSortType;
@@ -109,14 +118,20 @@ protected:
    Float_t fOffset;
    Int_t fNumSample;
    TVector3 fPos;
-#ifndef VEC   
-   Float_t *fSample; //[fNumSample]
-   Float_t *fClock; //[fNumSample]
-#else
+
    std::vector<Float_t> fSample;
    std::vector<Float_t> fClock;
-#endif
 
-   ClassDef(TCatPulseShape,2);
+   // information for the version above 3
+   Double_t fMaxSample;
+   Double_t fMaxSampleOffset;
+   Double_t fBaseline;
+   Double_t fBaselineRMS;
+   Double_t fLeadingEdgeOffset;
+   Int_t    fNumMoment;
+   std::vector<Double_t> fMoment;
+   
+
+   ClassDef(TCatPulseShape,3)
 };
 #endif // end of #ifdef TCATPULSESHAPE_H
