@@ -2,7 +2,7 @@
 /**
  * @file   catloop_linkdef.h
  * @date   Created : Feb 19, 2012 11:19:06 JST
- *   Last Modified : 2016-08-17 15:17:47 JST (kawase)
+ *   Last Modified : 2017-03-01 09:35:11 JST (kawase)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -54,6 +54,7 @@
 #pragma link C++ class art::TModuleInfo;
 #pragma link C++ class art::TModuleType;
 #pragma link C++ class art::IProcessorHelper;
+#pragma link C++ class art::TScalerData+;
 #endif /* __CINT__ */
 
 #endif // end of #ifdef CATLOOP_LINKDEF_H

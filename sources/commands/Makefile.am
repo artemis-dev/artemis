@@ -37,7 +37,12 @@ SUBSRC = \
 	TCmdBranchInfo.cc \
 	TCmdClassInfo.cc \
 	TCmdHdel.cc \
-	TCmdGroup.cc
+	TCmdGroup.cc \
+	TCmdFileCd.cc \
+	TCmdFileLs.cc \
+	TCmdFipo.cc \
+	TCmdUnZoom.cc \
+	TCmdRg.cc
 
 SUBOBJ = $(SUBSRC:.cc=.o)
 SUBHDR = $(SUBSRC:.cc=.h) 

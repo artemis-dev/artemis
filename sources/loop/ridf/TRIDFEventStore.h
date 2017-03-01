@@ -2,10 +2,10 @@
 /**
  * @file   TRIDFEventStore.h
  * @date   Created : Jul 12, 2013 17:12:43 JST
- *   Last Modified : 2016-12-15 20:30:18 JST (ota)
+ *   Last Modified : 2017-03-01 14:10:58 JST (kawase)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
- *  
- *  
+ *
+ *
  *    Copyright (C)2013
  */
 #ifndef TRIDFEVENTSTORE_H
@@ -31,15 +31,18 @@ namespace art {
    class TDataSource;
    class TEventHeader;
    class TModuleDecoderFactory;
+   class TScalerData;
 }
 
+class THashList;
+
 class art::TRIDFEventStore  : public TProcessor {
-   
+
 public:
    static const Int_t kMaxBufSize = 1024*1024; // default size is 1 MB
    TRIDFEventStore();
    virtual ~TRIDFEventStore();
-   
+
    virtual void Init(TEventCollection *col);
    virtual void Process();
 protected:
@@ -62,12 +65,13 @@ protected:
       TEventHeader *fEventHeader;
       Int_t        *fVerboseLevel;
       TModuleDecoderFactory *fDecoderFactory;
+      THashList *fScalerList; //!
    } fRIDFData; //!
    TDataSource      *fDataSource; //!
 
    Bool_t fIsOnline;
    Int_t  fIsEOB;
-   
+
    StringVec_t       fFileName;
    TString           fNameSegmented;
    TString           fNameCategorized;;
@@ -109,6 +113,8 @@ protected:
    static void ClassDecoder05(Char_t *buf, Int_t& offset, struct RIDFData* ridfdata);
    // decode the time stamp event header
    static void ClassDecoder06(Char_t *buf, Int_t& offset, struct RIDFData* ridfdata);
+   // decode the scaler data
+   static void ClassDecoderScaler(Char_t *buf, Int_t& offset, struct RIDFData* ridfdata);
 
    /*----------------------------------------
     * Structure for header 
@@ -155,7 +161,7 @@ protected:
          printf(" Ender : %s\n",fEnder);
       }
    };
-      
+
    /*----------------------------------------
     * Structure for event segment header 
     *
@@ -171,7 +177,7 @@ protected:
    private:
       unsigned int fSegID;
    };
-      
+
    ClassDef(TRIDFEventStore,1); // Event store for ridf format files
 };
 #endif // end of #ifdef TRIDFEVENTSTORE_H

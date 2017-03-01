@@ -2,7 +2,7 @@
 /**
  * @file   TRIDFEventStore.cc
  * @date   Created : Jul 12, 2013 17:12:35 JST
- *   Last Modified : 2016-12-15 20:29:50 JST (ota)
+ *   Last Modified : 2017-03-01 14:12:48 JST (kawase)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -34,6 +34,8 @@
 #endif
 
 #include <map>
+#include <TScalerData.h>
+#include <THashList.h>
 
 art::TRIDFEventStore::TRIDFEventStore()
    : fMaxEventNum(0),fEventNum(0),fEventNumTotal(0), fMaxBufSize(kMaxBufSize),
@@ -49,13 +51,14 @@ art::TRIDFEventStore::TRIDFEventStore()
                             fNameEventHeader,TString("eventheader"));
    RegisterProcessorParameter("MaxEventNum","maximum number of event (no limit if 0)",fMaxEventNum,0);
    RegisterProcessorParameter("SHMID","Shared memory id (default : 0)",fSHMID,0);
-   
 
    fRIDFData.fSegmentedData = new TSegmentedData;
    fRIDFData.fRunHeaders = new TList;
    fRIDFData.fEventHeader = new TEventHeader;
    fRIDFData.fVerboseLevel = &fVerboseLevel;
    fRIDFData.fDecoderFactory = TModuleDecoderFactory::Instance()->CloneInstance();
+   fRIDFData.fScalerList = new THashList;
+   fRIDFData.fScalerList->SetOwner(kTRUE);
    fIsOnline = kFALSE;
    fIsEOB = kTRUE;
    fBuffer = new Char_t[fMaxBufSize];
@@ -79,14 +82,14 @@ art::TRIDFEventStore::TRIDFEventStore()
    fClassDecoder[8] = ClassDecoderSkip;
    // Class 9 : 
    fClassDecoder[9] = ClassDecoderSkip;
-   // Class 11 : Scaler
-   fClassDecoder[11] = ClassDecoderSkip;
-   // Class 11 : Scaler
-   fClassDecoder[12] = ClassDecoderSkip;
-   // Class 11 : Scaler
-   fClassDecoder[13] = ClassDecoderSkip;
-
+   // Class 11 : Scaler (24 bit no clear)
+   fClassDecoder[11] = ClassDecoderScaler;
+   // Class 12 : Scaler (24 bit clear every buffer)
+   fClassDecoder[12] = ClassDecoderScaler;
+   // Class 13 : Scaler (32 bit no clear)
+   fClassDecoder[13] = ClassDecoderScaler;
 }
+
 art::TRIDFEventStore::~TRIDFEventStore()
 {
    if (fRIDFData.fSegmentedData) delete fRIDFData.fSegmentedData;
@@ -94,8 +97,8 @@ art::TRIDFEventStore::~TRIDFEventStore()
    if (fRIDFData.fEventHeader) delete fRIDFData.fEventHeader;
    if (fBuffer) delete [] fBuffer;
    if (fDataSource) delete fDataSource;
+   delete fRIDFData.fScalerList;
 }
-
 
 void art::TRIDFEventStore::Init(TEventCollection *col)
 {
@@ -117,9 +120,10 @@ void art::TRIDFEventStore::Init(TEventCollection *col)
    MPI_Initialized(&fUseMPI);
    MPI_Comm_size(MPI_COMM_WORLD, &fNPE);
    MPI_Comm_rank(MPI_COMM_WORLD, &fRankID);
-#endif 
-   
+#endif
 
+   col->AddInfo("scaler",fRIDFData.fScalerList,fOutputIsTransparent);
+   fRIDFData.fScalerList->SetName("scaler");
 }
 
 
@@ -158,7 +162,7 @@ void art::TRIDFEventStore::Process()
 //----------------------------------------
 // Class : any (to be skip)
 // dummy decoder to skip the data for debug
-void art::TRIDFEventStore::ClassDecoderSkip(Char_t *buf, Int_t& offset, struct RIDFData* ridfdata)
+void art::TRIDFEventStore::ClassDecoderSkip(Char_t *buf, Int_t& offset, struct RIDFData* /*ridfdata*/)
 {
    RIDFHeader header;
    memcpy(&header,buf+offset,sizeof(header));
@@ -321,6 +325,46 @@ void art::TRIDFEventStore::ClassDecoder06(Char_t *buf, Int_t& offset, struct RID
 }
 
 //----------------------------------------
+// Class : 11--13
+// decode the scaler data
+void art::TRIDFEventStore::ClassDecoderScaler(Char_t *buf, Int_t& offset, struct RIDFData* ridfdata)
+{
+   RIDFHeader header;
+   memcpy(&header,buf+offset,sizeof(header));
+   const Int_t last = offset + header.Size();
+   offset += sizeof(header);
+   const time_t date = *(int*)(buf+offset);
+   offset += sizeof(int);
+   const size_t scalerID = *(int*)(buf+offset);
+   offset += sizeof(int);
+   const size_t numChannel = (last - offset) / sizeof(int);
+
+   // it is more effective to hold pointers to scalerdata by using std::map ...
+   // this will be implemented
+
+   const TString scalername = TString::Format("scaler_%lu",scalerID);
+   TList *const scalerlist = ridfdata->fScalerList;
+
+   TScalerData *scaler =
+      static_cast<TScalerData*>(scalerlist->FindObject(scalername));
+   if (!scaler) {
+      // if scaler id is not registered in list, add one
+      scaler = new TScalerData(numChannel);
+      scaler->SetName(scalername);
+      scalerlist->Add(scaler);
+      printf("new scaler found: id = %lu, efn = %d\n",
+	     scalerID,header.Address());
+   }
+
+   scaler->SetDate(date);
+   for (size_t i = 0; i != numChannel; ++i) {
+      const UInt_t data = *(UInt_t*)(buf+offset);
+      scaler->SetValue(i,data);
+      offset += sizeof(int);
+   }
+}
+
+//----------------------------------------
 // Open
 Bool_t art::TRIDFEventStore::Open()
 {
@@ -338,7 +382,7 @@ Bool_t art::TRIDFEventStore::Open()
       Int_t semkey = kSEMKEY_BASE + 2 * fSHMID;
       Int_t size = kSHM_BUFF_SIZE + 4;
       fDataSource = new TSharedMemoryDataSource(shmid,semkey,size);
-      
+
       if (!fDataSource->IsPrepared()) {
          Error("Open","Catnnot prepare shared memory data source with shmid = %d",fSHMID);
          return kFALSE;

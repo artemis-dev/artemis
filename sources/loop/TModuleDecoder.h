@@ -2,7 +2,7 @@
 /**
  * @file   TModuleDecoder.h
  * @date   Created : Jul 20, 2013 10:20:00 JST
- *   Last Modified : 2017-01-12 14:25:27 JST (ota)
+ *   Last Modified : 2017-03-01 14:10:11 JST (kawase)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -40,7 +40,7 @@ public:
 
 protected:
    virtual TObject* New() { return (fHits)?fHits->ConstructedAt(fHits->GetEntriesFast()):NULL; }
-   virtual void     Clear(const Option_t *opt=NULL) { if (fHits) fHits->Clear("C"); }
+   virtual void     Clear(const Option_t */*opt=NULL*/) { if (fHits) fHits->Clear("C"); }
 
 protected:
    Int_t fID;
