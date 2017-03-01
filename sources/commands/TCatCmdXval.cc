@@ -63,23 +63,21 @@ Long_t TCatCmdXval::Cmd(vector<TString> tokens)
 Long_t TCatCmdXval::Run(TPad *pad, Double_t *x, Double_t *y) 
 {
    if(pad==NULL) return 0;
-   
-   pad->AddExec("ex_xval","TCatCmdXval::Instance()->GetEvent()");
-   pad->WaitPrimitive();
-   TObject *obj = pad->GetListOfPrimitives()->Last();
-   if (obj->IsA() != TLatex::Class()) {
+   pad->cd();
+
+   gPad->AddExec("ex_xval","TCatCmdXval::Instance()->GetEvent()");
+   gPad->WaitPrimitive();
+   TObject *obj = gPad->GetListOfPrimitives()->Last();
+   if (!obj || strcmp(obj->GetName(),"xval")) {
       fX = fY = 0;
       return 0;
    }
-   TLatex *latex = (TLatex*) obj;
-   pad->GetListOfPrimitives()->RemoveLast();
-   fX = latex->GetX();
-   fY = latex->GetY();
-   delete latex;
+   gPad->GetListOfPrimitives()->RemoveLast();
+   delete (TNamed*)obj;
 
    Bool_t display = x==NULL && y==NULL;
    if(display){
-     printf("[xval] X: %f, Y: %f\n",fX,fY);     
+     printf("[xval] X: %f, Y: %f\n",fX,fY);
    }
 
    if(x!=NULL) *x = fX;
@@ -88,39 +86,15 @@ Long_t TCatCmdXval::Run(TPad *pad, Double_t *x, Double_t *y)
    return 1;
 }
 
-Long_t TCatCmdXval::Run(Double_t *x, Double_t *y) 
+Long_t TCatCmdXval::Run(Double_t *x, Double_t *y)
 {
-   TPad *pad = (TPad*) gPad;
-   if(pad==NULL) return 0;
-   
-   pad->AddExec("ex_xval","TCatCmdXval::Instance()->GetEvent()");
-   pad->WaitPrimitive();
-   TObject *obj = pad->GetListOfPrimitives()->Last();
-   if (obj->IsA() != TLatex::Class()) {
-      fX = fY = 0;
-      return 0;
-   }
-   TLatex *latex = (TLatex*) obj;
-   pad->GetListOfPrimitives()->RemoveLast();
-   fX = latex->GetX();
-   fY = latex->GetY();
-   delete latex;
-
-   Bool_t display = x==NULL && y==NULL;
-   if(display){
-     printf("[xval] X: %f, Y: %f\n",fX,fY);     
-   }
-
-   if(x!=NULL) *x = fX;
-   if(y!=NULL) *y = fY;
-
-   return 1;
+   return Run((TPad*)gPad,x,y);
 }
 
 void TCatCmdXval::GetEvent()
 {
    int event = gPad->GetEvent();
-   if (event != 11) return;
+   if (event != kButton1Up) return;
    gPad->DeleteExec("ex_xval");
    Int_t px = gPad->GetEventX();
    Double_t xx = gPad->AbsPixeltoX(px);
@@ -129,5 +103,7 @@ void TCatCmdXval::GetEvent()
    Double_t yy = gPad->AbsPixeltoY(py);
    Double_t y = gPad->PadtoY(yy);
 
-   gPad->GetListOfPrimitives()->AddLast(new TLatex(x,y,""));
+   fX = x;
+   fY = y;
+   gPad->GetListOfPrimitives()->AddLast(new TNamed("xval","xval"));
 }
