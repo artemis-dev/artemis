@@ -2,7 +2,7 @@
 /**
  * @file   TDataObject.cc
  * @date   Created : Jan 07, 2014 10:07:26 JST
- *   Last Modified : Nov 10, 2015 16:12:31 JST
+ *   Last Modified : 2016-08-19 10:33:09 JST (kawase)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -12,7 +12,7 @@
 #include <TClass.h>
 #include <iostream>
 
-ClassImp(art::TDataObject);
+ClassImp(art::TDataObject)
 
 using art::TDataObject;
 
