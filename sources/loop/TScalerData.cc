@@ -2,7 +2,7 @@
 /**
  * @file   TScalerData.cc
  * @date   Created : Feb 13, 2013 20:13:31 JST
- *   Last Modified : 2017-03-01 13:37:53 JST (kawase)
+ *   Last Modified : 2017-03-01 15:51:09 JST (kawase)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *
@@ -32,7 +32,7 @@ void art::TScalerData::SetNumChannel(Int_t nCh)
    if(nCh < 0) {
       return;
    } else if(nCh != fNumChannel && fData != NULL) {
-      delete fData;
+      delete [] fData;
    }
    fNumChannel = nCh;
    fData = new UInt_t[fNumChannel];
@@ -57,3 +57,21 @@ void art::TScalerData::Print(Option_t * /*opt*/) const
    }
 }
 
+void art::TScalerData::Copy(TObject &obj) const
+{
+   TNamed::Copy(obj);
+   TScalerData &cobj = (TScalerData&)obj;
+   if (cobj.fNumChannel != fNumChannel) {
+      cobj.SetNumChannel(fNumChannel);
+   }
+   cobj.fDate = fDate;
+   std::copy(fData,fData+fNumChannel,cobj.fData);
+}
+
+art::TScalerData& art::TScalerData::operator=(const TScalerData& rhs)
+{
+   if (this != &rhs) {
+      ((TScalerData&)rhs).Copy(*this);
+   }
+   return *this;
+}

@@ -2,7 +2,7 @@
 /**
  * @file   TScalerData.h
  * @date   Created : Feb 12, 2013 05:12:04 JST
- *   Last Modified : 2017-03-01 13:37:19 JST (kawase)
+ *   Last Modified : 2017-03-01 15:32:05 JST (kawase)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    Imported and renamed from TCatScalerData
@@ -36,6 +36,10 @@ public:
    }
    virtual void Clear(Option_t *opt = "");
    virtual void Print(Option_t*) const;
+
+   virtual void Copy(TObject &obj) const;
+
+   virtual TScalerData& operator=(const TScalerData& rhs);
 
 private:
    Int_t    fNumChannel;
