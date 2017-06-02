@@ -2,7 +2,7 @@
 /**
  * @file   TCatReadoutPadArray.cc
  * @date   Created : Dec 01, 2013 01:01:31 JST
- *   Last Modified : 2016-11-11 18:07:09 JST (ota)
+ *   Last Modified : 2017-04-21 13:07:47 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -26,7 +26,7 @@ TCatReadoutPadArray::~TCatReadoutPadArray()
 TH2Poly *TCatReadoutPadArray::CreateHist(const char *name, const char *title,
                                          Double_t xmin, Double_t xmax,
                                          Double_t ymin, Double_t ymax,
-                                         Bool_t doFillID)
+                                         Bool_t doFillID) const
 {
    TH2Poly* hist = new TH2Poly(name,title,xmin,xmax,ymin,ymax);
    Int_t nPads = GetEntriesFast();

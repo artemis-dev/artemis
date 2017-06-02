@@ -2,7 +2,7 @@
 /**
  * @file   TCatReadoutPadArray.h
  * @date   Created : Dec 01, 2013 01:01:03 JST
- *   Last Modified : 2016-11-11 18:02:50 JST (ota)
+ *   Last Modified : 2017-04-21 13:07:36 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -30,7 +30,7 @@ public:
    TH2Poly *CreateHist(const char *name, const char *title,
                        Double_t xmin, Double_t xmax,
                        Double_t ymin, Double_t ymax,
-                       Bool_t doFillID = kFALSE);
+                       Bool_t doFillID = kFALSE) const;
 
    virtual void SetBads(const std::vector<Int_t> &bads);
    virtual void SetLowGains(const std::vector<Int_t> &lowGains);
