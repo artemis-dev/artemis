@@ -2,7 +2,7 @@
 /**
  * @file   TScalerData.h
  * @date   Created : Feb 12, 2013 05:12:04 JST
- *   Last Modified : 2017-03-01 15:32:05 JST (kawase)
+ *   Last Modified : 2017-06-06 23:09:22 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    Imported and renamed from TCatScalerData
@@ -14,6 +14,8 @@
 #define INCLUDE_GUARD_UUID_5EB690BC_EC5E_4FEE_B01A_D289A162DB8A
 
 #include <TNamed.h>
+#include <time.h>
+
 
 namespace art {
   class TScalerData;
