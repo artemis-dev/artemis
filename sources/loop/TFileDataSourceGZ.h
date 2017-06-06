@@ -3,7 +3,7 @@
  * @brief  file data source with gzip compression
  *
  * @date   Created       : 2015-04-29 18:32:57 JST
- *         Last Modified : Oct 26, 2015 06:37:56 EDT
+ *         Last Modified : 2017-06-06 22:13:47 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2015 Shinsuke OTA
@@ -11,6 +11,9 @@
 
 #ifndef INCLUDE_GUARD_UUID_CB07EBDF_7787_4F57_9726_3AB250737A0C
 #define INCLUDE_GUARD_UUID_CB07EBDF_7787_4F57_9726_3AB250737A0C
+#if defined (__CINT__)
+#define _SYS_TYPES_H_
+#endif
 
 #include "TDataSource.h"
 #include <zlib.h>

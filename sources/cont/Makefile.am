@@ -36,7 +36,7 @@ libartcont_la_LDFLAGS = $(LDFLAGS)
 
 $(DICTSRC): $(SUBHDR) artcont_linkdef.h
 	@echo Making $(DICTSRC) ...
-	rootcint -f $@ -c $(DEFAULT_INCLUDES) $(MYINCLUDES) $^
+	rootcint -f $@ -c -p $(DEFAULT_INCLUDES) $(MYINCLUDES) $^
 
 .header: $(include_HEADERS)
 	@echo Installing header to $(INCDIR)

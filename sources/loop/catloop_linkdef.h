@@ -2,7 +2,7 @@
 /**
  * @file   catloop_linkdef.h
  * @date   Created : Feb 19, 2012 11:19:06 JST
- *   Last Modified : 2017-03-01 09:35:11 JST (kawase)
+ *   Last Modified : 2017-06-06 22:14:03 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -12,6 +12,9 @@
 #define CATLOOP_LINKDEF_H
 
 #ifdef __CINT__
+#define _SYS_TYPES_H_
+
+
 #pragma link off all globals;
 #pragma link off all classes;
 #pragma link off all functions;
