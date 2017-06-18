@@ -8,6 +8,7 @@ SUBSRC = \
 	TModuleDecoderV7XX.cc \
 	TModuleDecoderFixed.cc \
 	TModuleDecoderV1290.cc \
+	TModuleDecoderMXDC32.cc \
 	TRawDataFadc.cc 
 
 SUBOBJ = $(SUBSRC:.cc=.o)

@@ -29,6 +29,7 @@
 #pragma link C++ class art::TModuleDecoderFixed<ULong64_t>;
 #pragma link C++ class art::TModuleDecoderV1190;
 #pragma link C++ class art::TModuleDecoderV1290;
+#pragma link C++ class art::TModuleDecoderMXDC32;
 
 #endif /* __CINT__ */
 
