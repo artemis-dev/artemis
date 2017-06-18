@@ -24,6 +24,7 @@ public:
    ~TCatPadManager();
    static TCatPadManager *Instance();
    TVirtualPad *Next();
+   TVirtualPad *Previous();
    TVirtualPad *Current();
    TVirtualPad *Get(Int_t idx);
    TVirtualPad *GetCanvas();

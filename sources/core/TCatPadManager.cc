@@ -90,10 +90,23 @@ TVirtualPad *TCatPadManager::Next()
       fCurrentPadId = 0;
       return fMainPad->cd(0);
    } else if (fCurrentPadId + 1 <= GetNumChild()) {
-      fCurrentPadId++;
-      return fMainPad->cd(fCurrentPadId);
+      return fMainPad->cd(++fCurrentPadId);
    } else {
       return fMainPad->cd((fCurrentPadId=1));
+   }
+}
+
+TVirtualPad *TCatPadManager::Previous()
+{
+   GetCanvas();
+   if (!HasChild()) {
+      fCurrentPadId = 0;
+      return fMainPad->cd(0);
+   } else if (fCurrentPadId <= 1) {
+      // fCurrentPadId is 0 or 1
+      fMainPad->cd((fCurrentPadId=GetNumChild()));
+   } else {
+      return fMainPad->cd(--fCurrentPadId);
    }
 }
 
