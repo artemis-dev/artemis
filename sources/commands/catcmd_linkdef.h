@@ -50,6 +50,8 @@
 #pragma link C++ class art::TCmdComment;
 #pragma link C++ class art::TCmdMpol;
 #pragma link C++ class art::TCmdSlope;
+#pragma link C++ class art::TCmdPb;
+#pragma link C++ class art::TCmdPn;
 
 #pragma link C++ class TCatCmdFactory+;
 #pragma link C++ class art::TCmdGroup+;

@@ -44,6 +44,8 @@ SUBSRC = \
 	TCmdUnZoom.cc \
 	TCmdRg.cc \
 	TCmdPcd.cc \
+	TCmdPb.cc \
+	TCmdPn.cc \
 	TCmdComment.cc \
 	TCmdMpol.cc \
 	TCmdSlope.cc
