@@ -42,7 +42,9 @@ SUBSRC = \
 	TCmdFileLs.cc \
 	TCmdFipo.cc \
 	TCmdUnZoom.cc \
-	TCmdRg.cc
+	TCmdRg.cc \
+	TCmdPcd.cc \
+	TCmdComment.cc
 
 SUBOBJ = $(SUBSRC:.cc=.o)
 SUBHDR = $(SUBSRC:.cc=.h) 

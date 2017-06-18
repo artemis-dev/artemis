@@ -46,6 +46,8 @@
 #pragma link C++ class art::TCmdFipo;
 #pragma link C++ class art::TCmdUnZoom;
 #pragma link C++ class art::TCmdRg;
+#pragma link C++ class art::TCmdPcd;
+#pragma link C++ class art::TCmdComment;
 
 #pragma link C++ class TCatCmdFactory+;
 #pragma link C++ class art::TCmdGroup+;
