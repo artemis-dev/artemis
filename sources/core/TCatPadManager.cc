@@ -160,3 +160,9 @@ void TCatPadManager::Divide(Int_t nx, Int_t ny,
    fCurrentPadId = 0;
    fNumSubPads = nx * ny;
 }
+
+void TCatPadManager::SetCurrentPadId(Int_t id)
+{
+   if (id < 1 || id > GetNumChild()) return;
+   fCurrentPadId = id;
+}

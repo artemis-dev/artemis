@@ -36,8 +36,7 @@ public:
    static void SetTitle(const char* title);
    static void SetComment(const char* comment);
 
-
-   
+   void SetCurrentPadId(Int_t id);
    
    void Divide(Int_t nx, Int_t ny, 
                  Float_t xmargin = 0.01, Float_t ymargin = 0.01);
