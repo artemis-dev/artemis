@@ -27,6 +27,12 @@ TCmdPcd::~TCmdPcd()
 {
 }
 
+TCmdPcd *TCmdPcd::Instance()
+{
+   static TCmdPcd instance;
+   return &instance;
+}
+
 Long_t TCmdPcd::Cmd(vector<TString> tokens)
 {
    if (tokens.size() == 1) {

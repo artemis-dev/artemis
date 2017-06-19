@@ -21,6 +21,7 @@ namespace art {
 class art::TCmdPcd : public TCatCmd {
 public:
    TCmdPcd();
+   static TCmdPcd* Instance();
    virtual ~TCmdPcd();
 
    Long_t Cmd(vector<TString> tokens);
@@ -30,6 +31,7 @@ public:
 protected:
 
 private:
+
    TCmdPcd(const TCmdPcd&); // prohibited
    TCmdPcd& operator=(const TCmdPcd& ); // prohibited
 
