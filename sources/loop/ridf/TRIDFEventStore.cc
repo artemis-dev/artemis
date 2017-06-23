@@ -88,6 +88,7 @@ art::TRIDFEventStore::TRIDFEventStore()
    fClassDecoder[12] = ClassDecoderScaler;
    // Class 13 : Scaler (32 bit no clear)
    fClassDecoder[13] = ClassDecoderScaler;
+   fClassDecoder[21] = ClassDecoderSkip;
 }
 
 art::TRIDFEventStore::~TRIDFEventStore()
@@ -198,6 +199,8 @@ void art::TRIDFEventStore::ClassDecoder03(Char_t *buf, Int_t& offset, struct RID
       memcpy(&header,buf+offset,sizeof(header));
       if (header.ClassID() == 4) {
          ClassDecoder04(buf,offset,ridfdata);
+      } else if (header.ClassID() == 0) {
+	offset = last;
       } else {
          printf("offset = %d, last = %d\n",offset,last);
          ClassDecoderUnknown(buf,offset,ridfdata);
@@ -509,6 +512,10 @@ Bool_t art::TRIDFEventStore::GetNextEvent()
    while (1) {
       fRIDFData.fDecoderFactory->Clear();
       memcpy(&fHeader,fBuffer+fOffset,sizeof(fHeader));
+      if (fHeader.ClassID() == 0) {
+	fIsEOB = kTRUE;
+	return kFALSE;
+      } 
       if (fClassDecoder[fHeader.ClassID()]) {
          fClassDecoder[fHeader.ClassID()](fBuffer,fOffset,&fRIDFData);
       } else {
