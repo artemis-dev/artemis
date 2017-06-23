@@ -16,7 +16,8 @@
 #include <TLoop.h>
 #include <TConditionBit.h>
 #include <TLeaf.h>
-
+#include <TROOT.h>
+#include <TClonesArray.h>
 ClassImp(art::TTreeEventStore);
 
 
@@ -61,6 +62,7 @@ void art::TTreeEventStore::Init(TEventCollection *col)
       return ;
    }
    Info("Init","Input tree = %s",fTreeName.Data());
+   std::vector<TBranch*> useBranch;
    fTree = (TTree*)fFile->Get(fTreeName);
    if (!fTree) {
       Error("Init","Input tree '%s' does not exist in '%s'",fTreeName.Data(),
@@ -93,27 +95,53 @@ void art::TTreeEventStore::Init(TEventCollection *col)
          case kDouble_t:
             input = (void*) new Double_t[counter];
             break;
+         case kULong64_t:
+//            input = (void*) new ULong64_t[counter];
+            break;
          default:
             break;
          }
          if (!input) {
-            SetStateError(TString::Format("branch: %s is unsupported type %s",br->GetName(),TDataType::GetTypeName(type)));
-            return;
+//            SetStateError(TString::Format("branch: %s is unsupported type %s",br->GetName(),TDataType::GetTypeName(type)));
+//            return;
+         } else {
+            useBranch.push_back(br);
+            col->Add(new TEventObject(br->GetName(),input,TString(TDataType::GetTypeName(type)),NULL));
+            fTree->SetBranchAddress(br->GetName(),*col->Get(br->GetName())->GetObjectRef());
+            printf("branch : %s (%s) %p\n",br->GetName(),TDataType::GetTypeName(type),*col->Get(br->GetName())->GetObjectRef());
          }
-         col->Add(new TEventObject(br->GetName(),input,TString(TDataType::GetTypeName(type)),NULL));
-         fTree->SetBranchAddress(br->GetName(),*col->Get(br->GetName())->GetObjectRef());
-         printf("branch : %s (%s) %p\n",br->GetName(),TDataType::GetTypeName(type),*col->Get(br->GetName())->GetObjectRef());
       } else {
-         // object known by ROOT
-         col->Add(br->GetName(),(TObject*)cls->New(),kTRUE);
-         fTree->SetBranchAddress(br->GetName(),(TObject**)col->Get(br->GetName())->GetObjectRef());
-         printf("branch : %s\n",br->GetName());
+#if 1
+         if (cls == TClonesArray::Class()) {
+            TClonesArray *arr = NULL;
+            fTree->SetBranchStatus("*",0);
+            fTree->SetBranchStatus(br->GetName());
+            fTree->SetBranchAddress(br->GetName(),&arr);
+            fTree->GetEntry(0);
+            TClass *realcls = arr->GetClass();
+            if (!realcls->GetNew()) {
+               cls = 0;
+            }
+            br->ResetAddress();
+         }
+#endif         
+         if (cls) {
+            useBranch.push_back(br);
+            // object known by ROOT
+            col->Add(br->GetName(),(TObject*)cls->New(),kTRUE);
+            fTree->SetBranchAddress(br->GetName(),(TObject**)col->Get(br->GetName())->GetObjectRef());
+            printf("branch : %s\n",br->GetName());
+         }
       }
    }
    TIter nextinfo(fTree->GetUserInfo());
    TObject *obj = NULL;
    while ((obj = nextinfo()) != NULL) {
       col->AddInfo(obj->GetName(),obj,kTRUE);
+   }
+   fTree->SetBranchStatus("*",0);
+   for (Int_t i = 0, n = useBranch.size(); i < n; ++i) {
+      fTree->SetBranchStatus(useBranch[i]->GetName());
    }
    fTree->LoadTree(0);
    fTree->GetEntry(0);
