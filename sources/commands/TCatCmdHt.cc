@@ -38,6 +38,7 @@ Long_t TCatCmdHt::Cmd(vector<TString> tokens)
    Int_t id2 = -1;
    TString opt("");
    Int_t n = tokens.size();
+   TObject *obj = NULL;
    if (n==1) {
       TCatHistManager::Instance()->DrawCurrent();
       return 1;
@@ -47,6 +48,9 @@ Long_t TCatCmdHt::Cmd(vector<TString> tokens)
       switch (i) {
       case 1: // should be id or id1:id2
          GetRange(token,id1,id2);
+         if (id1 == -1) {
+            obj = TCatHistManager::Instance()->GetObject(token);
+         }
          break;
       case 2: // should be draw option
          opt = token;
@@ -55,6 +59,15 @@ Long_t TCatCmdHt::Cmd(vector<TString> tokens)
          // do nothing
          break;
       }
+   }
+   if (id1 == -1) {
+      if (!TCatPadManager::Instance()->Next()) {
+         // TArtCore::Info("TCatCmdHt","Not enough pads to draw");
+         return 1;
+      } else if (obj) {
+         obj->Draw(opt);
+      }
+      return 1;
    }
    return Run(id1,id2,opt);
 }

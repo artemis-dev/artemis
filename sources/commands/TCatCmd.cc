@@ -51,6 +51,10 @@ void TCatCmd::GetRange(const TString &arg, Int_t &id1, Int_t &id2, TString delim
    }
 
    TObjArray *ids = arg.Tokenize(delim);
+   if (!((TObjString*)ids->At(0))->GetString().IsDec()) {
+      id1 = id2 = -1;
+      return;
+   }
    if (ids->GetEntries() == 1) {
       id1 = id2 = arg.Atoi();
    } else {
