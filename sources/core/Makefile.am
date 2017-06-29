@@ -8,6 +8,7 @@ SUBSRC += TCatPadManager.cc
 SUBSRC += TConfigFile.cc
 SUBSRC += TSharedMemory.cc
 SUBSRC += TSemaphoreObject.cc
+SUBSRC += TArtCanvas.cc
 
 SUBOBJ = $(SUBSRC:.cc=.o)
 SUBHDR = $(SUBSRC:.cc=.h)
@@ -24,7 +25,7 @@ INCDIR = ../../include
 AUTOMAKE_OPTIONS = foreign
 
 MYINCLUDES = -I$(INCDIR) -I$(ROOTSYS)/include 
-CXXFLAGS = -fPIC  -I$(INCDIR) $(shell root-config --cflags) -Wall -O2
+CXXFLAGS = -fPIC  -I$(INCDIR) $(shell root-config --cflags) -Wall -O2 -g
 #CXXFLAGS += -pg
 LDFLAGS = $(shell root-config --glibs) 
 

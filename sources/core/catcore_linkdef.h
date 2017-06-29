@@ -12,5 +12,6 @@
 #pragma link C++ class art::TConfigFile;
 #pragma link C++ class art::TSharedMemory;
 #pragma link C++ class art::TSemaphoreObject;
+#pragma link C++ class art::TArtCanvas;
 
 #endif /* __CINT__ */
