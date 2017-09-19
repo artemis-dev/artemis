@@ -1,9 +1,10 @@
+
 /**
  * @file   TTreeProjectionProcessor.cc
  * @brief  tree projection
  *
  * @date   Created       : 2014-03-05 22:30:06 JST
- *         Last Modified : 2016-12-22 11:17:18 JST (ota)
+ *         Last Modified : 2017-01-26 09:14:13 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -126,6 +127,7 @@ void TTreeProjectionProcessor::PostLoop()
       }
       gSystem->Exec(Form("hadd -f %s %s",fOutputFilename.Data(),files.Data()));
    }
+   MPI_Barrier(MPI_COMM_WORLD);   
 #endif
    
 }

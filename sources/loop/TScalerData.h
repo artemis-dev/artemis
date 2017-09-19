@@ -2,7 +2,7 @@
 /**
  * @file   TScalerData.h
  * @date   Created : Feb 12, 2013 05:12:04 JST
- *   Last Modified : 2017-06-06 23:09:22 JST (ota)
+ *   Last Modified : 2017-09-19 19:26:11 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    Imported and renamed from TCatScalerData
@@ -15,7 +15,6 @@
 
 #include <TNamed.h>
 #include <time.h>
-
 
 namespace art {
   class TScalerData;
