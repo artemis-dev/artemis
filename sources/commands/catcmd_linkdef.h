@@ -52,6 +52,9 @@
 #pragma link C++ class art::TCmdSlope;
 #pragma link C++ class art::TCmdPb;
 #pragma link C++ class art::TCmdPn;
+#pragma link C++ class art::TCmdSave;
+#pragma link C++ class art::TCmdPrint;
+#pragma link C++ class art::TCmdPadZoom;
 
 #pragma link C++ class TCatCmdFactory+;
 #pragma link C++ class art::TCmdGroup+;

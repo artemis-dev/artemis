@@ -2,7 +2,7 @@
 /**
  * @file   TOutputTreeProcessor.cc
  * @date   Created : Jul 11, 2013 17:11:41 JST
- *   Last Modified : 2016-07-15 10:55:14 JST (ota)
+ *   Last Modified : 2017-12-26 20:27:42 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -40,11 +40,14 @@ art::TOutputTreeProcessor::~TOutputTreeProcessor()
 void art::TOutputTreeProcessor::Init(TEventCollection *col)
 {
 #ifdef USE_MPI
-  int myrank, npe;
-  MPI_Comm_size(MPI_COMM_WORLD, &npe);
-  MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
-  printf("myrank = %d\n",myrank);
-  fFileName.Append(Form("%d",myrank));
+   int myrank, npe, useMPI;
+   MPI_Initialized(&useMPI);
+   if (useMPI) {
+      MPI_Comm_size(MPI_COMM_WORLD, &npe);
+      MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
+      printf("myrank = %d\n",myrank);
+      fFileName.Append(Form("%d",myrank));
+   }
 #endif
    fFile = TFile::Open(fFileName,"RECREATE");
    fTree = new TTree(fTreeName,fTreeName);
@@ -114,6 +117,10 @@ void art::TOutputTreeProcessor::PostLoop()
    fTree->Write(0,TFile::kOverwrite);
    saved->cd();
 #ifdef USE_MPI
-   MPI_Barrier(MPI_COMM_WORLD);
+   Int_t useMPI;
+   MPI_Initialized(&useMPI);
+   if (useMPI) {
+      MPI_Barrier(MPI_COMM_WORLD);
+   }
 #endif
 }

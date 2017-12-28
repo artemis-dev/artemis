@@ -4,7 +4,7 @@
  * @brief  tree projection
  *
  * @date   Created       : 2014-03-05 22:30:06 JST
- *         Last Modified : 2017-01-26 09:14:13 JST (ota)
+ *         Last Modified : 2017-12-26 20:26:26 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -106,10 +106,13 @@ void TTreeProjectionProcessor::PostLoop()
    if (fOutputFilename.IsNull()) return;
    TString filename = fOutputFilename;
 #ifdef USE_MPI
-  int myrank, npe;
-  MPI_Comm_size(MPI_COMM_WORLD, &npe);
-  MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
-  filename = Form("%s%d",fOutputFilename.Data(),myrank);
+   int myrank, npe,useMPI;
+   MPI_Initialized(&useMPI);
+   if (useMPI) {
+      MPI_Comm_size(MPI_COMM_WORLD, &npe);
+      MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
+      filename = Form("%s%d",fOutputFilename.Data(),myrank);
+   }
 #endif
 
    
@@ -119,15 +122,17 @@ void TTreeProjectionProcessor::PostLoop()
    hstore.Run(filename,"recreate");
    saved->cd();
 #ifdef USE_MPI
-   MPI_Barrier(MPI_COMM_WORLD);   
-   if (npe > 0 && myrank == 0) {
-      TString files;
-      for (Int_t i = 0; i < npe; ++i) {
-         files.Append(Form("%s%d ",fOutputFilename.Data(),i));
+   if (useMPI) {
+      MPI_Barrier(MPI_COMM_WORLD);   
+      if (npe > 0 && myrank == 0) {
+         TString files;
+         for (Int_t i = 0; i < npe; ++i) {
+            files.Append(Form("%s%d ",fOutputFilename.Data(),i));
+         }
+         gSystem->Exec(Form("hadd -f %s %s",fOutputFilename.Data(),files.Data()));
       }
-      gSystem->Exec(Form("hadd -f %s %s",fOutputFilename.Data(),files.Data()));
+      MPI_Barrier(MPI_COMM_WORLD);   
    }
-   MPI_Barrier(MPI_COMM_WORLD);   
 #endif
    
 }

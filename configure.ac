@@ -14,8 +14,8 @@ AC_ARG_ENABLE([mpi],
 
  if test "$enable_mpi" != "no" ; then
  echo TEST MPI
- progxx="[mpiicpc clang++ g++ g++34]"
- progcc="[mpiicc clang gcc gcc34]"
+ progxx="[mpic++ mpiicpc clang++ g++ g++34]"
+ progcc="[mpicc mpiicc clang gcc gcc34]"
  else
  echo non-MPI 
  progxx="[clang++ g++ g++34]"
@@ -92,6 +92,7 @@ AC_CONFIG_FILES([Makefile
                  sources/loop/decoder/Makefile
                  sources/loop/ridf/Makefile
                  sources/loop/rdf/Makefile
+                 sources/loop/get/Makefile
                  sources/loop/hist/Makefile
                  sources/loop/param/Makefile
                  sources/main/Makefile

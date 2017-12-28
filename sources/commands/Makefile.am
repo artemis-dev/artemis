@@ -48,7 +48,11 @@ SUBSRC = \
 	TCmdPn.cc \
 	TCmdComment.cc \
 	TCmdMpol.cc \
-	TCmdSlope.cc
+	TCmdSlope.cc \
+	TCmdSave.cc \
+	TCmdPrint.cc \
+	TCmdPadZoom.cc
+
 
 SUBOBJ = $(SUBSRC:.cc=.o)
 SUBHDR = $(SUBSRC:.cc=.h) 

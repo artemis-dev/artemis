@@ -1,4 +1,4 @@
-SUBDIRS = param decoder ridf rdf hist 
+SUBDIRS = param decoder ridf rdf get hist
 
 SUBSRC =
 SUBSRC+=TCategorizedData.cc 

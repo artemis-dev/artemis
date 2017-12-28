@@ -13,7 +13,7 @@
 using art::TCatPulseShape;
 using std::vector;
 
-ClassImp(TCatPulseShape);
+ClassImp(TCatPulseShape)
 
 TCatPulseShape::ESortType TCatPulseShape::fgSortType = TCatPulseShape::kID;
 Int_t TCatPulseShape::fgSortOrder = TCatPulseShape::kTiming;

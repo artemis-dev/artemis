@@ -3,7 +3,7 @@
  * @brief  segment information
  *
  * @date   Created       : 2014-05-17 09:13:41 JST
- *         Last Modified : Jun 05, 2014 23:30:32 JST
+ *         Last Modified : 2017-12-21 03:49:21 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -22,7 +22,26 @@ namespace art {
 
 class art::TSegmentInfo : public TParameterObject {
 public:
-   typedef enum { RIDF, RDF } FormatType_t;
+
+   class SegID {
+   public:
+      Int_t Module() { return (fSegID & 0xff); }
+      Int_t Detector() { return ((fSegID >> 8) & 0x3f); }
+      Int_t FP() { return ((fSegID >> 14) & 0x3f); }
+      Int_t Device() { return ((fSegID>>20) & 0x3f); }
+      // return segid but module id is removed
+      UInt_t Get() { return (fSegID & 0xffffff00); }
+      static Int_t Build(Int_t dev, Int_t fp, Int_t det, Int_t mod) {
+         return ((dev << 20) | (fp << 14) | (det << 8) | mod);
+      }
+
+      void Set(Int_t id) { fSegID = id; }
+
+   private:
+      unsigned int fSegID;
+   };
+
+   typedef enum { RIDF, RDF, GET } FormatType_t;
    TSegmentInfo();
    virtual ~TSegmentInfo();
 
@@ -37,6 +56,7 @@ public:
    virtual Int_t GetSegID() {
       if (fgFormatType == RDF) return fID[0];
       if (fgFormatType == RIDF) return (((fID[0]&0x3f)<<20) | ((fID[1]&0x3f)<<14) |((fID[2]&0x3f)<<8));
+      if (fgFormatType == GET) return (((fID[0]&0x3f)<<20) | ((fID[1]&0x3f)<<14) |((fID[2]&0x3f)<<8));
       return -1;
    }
    virtual void Print(Option_t *opt) const;

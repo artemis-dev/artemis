@@ -1,11 +1,11 @@
 /* $Id:$ */
 /**
- * @file   TCatCmdSave.h
+ * @file   TCmdSave.h
  * @date   Created : Oct 01, 2012 13:01:07 JST
- *   Last Modified : 2017-12-26 20:39:51 JST (ota)
+ *   Last Modified : May 03, 2015 17:43:41 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
- * TCatCmdSave
+ * TCmdSave
  * 
  * save [filename]
  *
@@ -16,7 +16,7 @@
  * epoch.
  * In order to enable this feature, please call the functions as indicated below.
  *
-   TCatCmdSave * cmdsave = TCatCmdSave::Instance();
+   TCmdSave * cmdsave = TCmdSave::Instance();
    // set default directory
    cmdsave->SetDefaultDirectory("figs");
    // set flag to add the date directory to the default directory
@@ -34,20 +34,23 @@
  *  
  *    Copyright (C)2012
  */
-#ifndef TCMDSAVE_H
-#define TCMDSAVE_H
+#ifndef TCATCMDSAVE_H
+#define TCATCMDSAVE_H
 
 #include <TCatCmd.h>
 
+namespace art {
+  class TCmdSave;
+}
 
-class TCatCmdSave  : public TCatCmd {
+class art::TCmdSave  : public TCatCmd {
 
 public:
    
-   TCatCmdSave();
-   ~TCatCmdSave();
+   TCmdSave();
+   ~TCmdSave();
 
-   static TCatCmdSave* Instance();
+   static TCmdSave* Instance();
    virtual Long_t Cmd(vector<TString> tokens);
    virtual Long_t Run(const char* filename = "");
 
@@ -62,9 +65,11 @@ public:
    virtual void SetAutoName(Bool_t autosave = kTRUE) { fAutoName = autosave; }
    virtual Bool_t GetAutoName() { return fAutoName; }
 
-   virtual void AddFormat(const char* suffix) { fFormat.push_back(TString(suffix)); }
-   virtual void PrintFileFormat() {;}
-      
+   virtual void AddFormat(const char* suffix, Bool_t isPrintFormat = kFALSE);
+
+   virtual const char* GetPrintFileName() {
+     return fLastPrintFile.IsNull() ? NULL : fLastPrintFile.Data();
+   }
 
 protected:
    TString fDefaultDirectory; // Directory to save
@@ -72,9 +77,10 @@ protected:
    Bool_t  fHasDateFormat; // 1 if the default directory has date format
    Bool_t  fAutoName; // flag for automatic naming
    std::vector<TString> fFormat; // list of file format
-   
+   Int_t fPrintFormat; // file format for printing
+   TString fLastPrintFile; // last filename for printing
 
-   ClassDef(TCatCmdSave,1); // save current canvas
+   ClassDef(TCmdSave,1); // save current canvas
 
 };
 #endif // end of #ifdef TCATCMDSAVE_H
