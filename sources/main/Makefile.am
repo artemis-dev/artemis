@@ -17,7 +17,6 @@ INCDIR = ../../include
 
 CXXFLAGS = $(DEFS) -I../..
 CXXFLAGS+= -Iinclude -I$(INCDIR)  $(shell root-config --cflags) 
-
 LDFLAGS = -O \
 	-L../mc/.libs -lcatmc \
         -L../commands/.libs -lcatcmd \
@@ -25,7 +24,7 @@ LDFLAGS = -O \
 	-L../loop/hist/.libs -larthist \
 	-L../loop/rdf/.libs -lartrdf \
 	-L../loop/ridf/.libs -lartridf \
-	-L../loop/get/.libs -lartget \
+	$(shell if [ "@HAVE_GET@" == "1"]; then echo -L../loop/get/.libs -lartget fi) \
 	-L../loop/decoder/.libs -lartdecoder  \
 	-L../loop/param/.libs -lartparam   \
 	-L../cont/.libs -lartcont \

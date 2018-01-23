@@ -1,4 +1,7 @@
-SUBDIRS = param decoder ridf rdf get hist
+
+
+
+SUBDIRS = @LOOP_SUB_DIR@
 
 SUBSRC =
 SUBSRC+=TCategorizedData.cc 

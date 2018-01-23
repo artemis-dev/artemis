@@ -44,7 +44,6 @@ AC_ARG_WITH([yaml-cpp],
 		       [PATH is path to yaml-cpp home (without lib/include)]),
         [WITH_YAML_CPP=$withval],[WITH_YAML_CPP=yes])
 
-
 if test "$WITH_YAML_CPP" = "yes" ; then
 echo setting
 AC_CHECK_LIB(yaml-cpp,main,[AC_DEFINE([HAVE_YAML_CPP],[1],[Define to 1 if you have the yaml-cpp library])],[AC_MSG_ERROR(*** yaml-cpp package is not installed or path is not correct ***)])
@@ -60,6 +59,28 @@ fi
 
 ROOTLIBS="`$ROOTSYS/bin/root-config --glibs`"
 AC_SUBST(ROOTLIBS)
+
+# check for get decoder
+AC_ARG_WITH([get-decoder],
+	AC_HELP_STRING([--with-get-decoder@<:@=PATH@:>@],
+		       [PATH is path to get decoder home (without lib/include)]),
+        [WITH_GET_DECODER=$withval],[WITH_GET_DECODER=no])
+if test "$WITH_GET_DECODER" = "no"; then
+# do nothing
+echo HAVE_GET = 0
+AC_SUBST([HAVE_GET],["0"])
+AC_SUBST([LOOP_SUB_DIR],["param decoder ridf rdf hist"])
+else
+echo HAVE_GET = 1
+AC_DEFINE([HAVE_GET_DECODER],[1],[Define to 1 if you have the get decoder])
+AC_SUBST([HAVE_GET],["1"])
+AC_SUBST([LOOP_SUB_DIR],["param decoder ridf rdf get hist"])
+AC_SUBST([GET_DECODER_INCLUDE_DIR],["$WITH_GET_DECODER/include"])
+AC_SUBST([GET_DECODER_INCLUDE],["-I$WITH_GET_DECODER/include"])
+AC_SUBST([GET_DECODER_LIB],["-L$WITH_GET_DECODER/lib -lGETDecoder"])
+fi
+
+
 
 # Checks for header files.
 AC_CHECK_HEADERS([termios.h unistd.h])
