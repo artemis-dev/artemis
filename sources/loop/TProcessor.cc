@@ -3,7 +3,7 @@
  * Base class for the user processors
  
  * @date   Created : Jul 10, 2013 17:10:19 JST
- *   Last Modified : 2016-08-23 17:03:04 JST (ota)
+ *   Last Modified : 2018-01-24 04:59:51 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *
@@ -52,6 +52,39 @@ void art::TProcessor::InitProc(TEventCollection *col)
    if (fVerboseLevel>0) {
       Info("InitProc","Initilizing ...");
    }
+
+   // check if parameter key is registered
+   Bool_t existsUnknownKey = kFALSE;
+   std::vector<TString> unknownKeys;
+   for (art::TParameterStrings::map_t::const_iterator it = fParameters->Begin(),
+           itend = fParameters->End(); it != itend; ++it) {
+      Bool_t exists = kFALSE;
+      TString key = it->first;
+      for (ProcPrmMap_t::iterator it2 = fParamMap.begin(),
+              itend2 = fParamMap.end(); it2 != itend2; ++it2) {
+      TString key2 = it2->first;
+         if (key == key2) {
+            exists = kTRUE;
+            break;
+         }
+      }
+      if (!exists) {
+         existsUnknownKey = kTRUE;
+         unknownKeys.push_back(key);
+      }
+   }
+   if (existsUnknownKey) {
+      TString message = "Unknown parameter listed below exists.\n";
+      for (std::vector<TString>::iterator it = unknownKeys.begin(), itend = unknownKeys.end();
+           it != itend; ++it) {
+         message += TString::Format("     - %s\n",(*it).Data());
+      }
+      SetStateError(message.Data());
+      PrintDescriptionYAML();
+      return;
+   }
+
+   
    fCondition = (TConditionBit**)(col->Get(TLoop::kConditionName)->GetObjectRef());
    // obtain input collection
    Int_t nInputs = fInputs.size();
@@ -350,6 +383,7 @@ void operator >> (const YAML::Node &node, art::TProcessor *&proc)
       node["type"] >> type;
    } catch (YAML::KeyNotFound& e) {
       std::cout << e.what() << std::endl;
+      proc->SetStateError("name and/or type is not defined");
       return;
    }
    TClass *cls = TClass::GetClass(type.data());
@@ -365,7 +399,8 @@ void operator >> (const YAML::Node &node, art::TProcessor *&proc)
       node["parameter"] >> str;
    } catch (YAML::KeyNotFound& e) {
       // nothing to do with no paramter for now
-      // std::cout << e.what() << std::endl;
+       std::cout << e.what() << std::endl;
+      proc->SetStateError("prameter is not defined");
    }
    proc->SetParameters(str);
    proc->SetName(name.data());

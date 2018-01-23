@@ -2,7 +2,7 @@
 /**
  * @file   TRIDFEventStore.cc
  * @date   Created : Jul 12, 2013 17:12:35 JST
- *   Last Modified : 2017-03-01 14:12:48 JST (kawase)
+ *   Last Modified : 2018-01-24 03:34:56 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -38,9 +38,10 @@
 #include <THashList.h>
 
 art::TRIDFEventStore::TRIDFEventStore()
-   : fMaxEventNum(0),fEventNum(0),fEventNumTotal(0), fMaxBufSize(kMaxBufSize),
+: fMaxEventNum(0),fEventNum(0),fEventNumTotal(0), fMaxBufSize(kMaxBufSize),
      fSHMID(0), fBlockNumber(0)
 {
+   fDataSource = NULL;
    StringVec_t dummy;
    RegisterInputCollection("InputFiles","The names of input files",fFileName,dummy);
    RegisterOutputCollection("SegmentedData","The name of output array for segmented data",
