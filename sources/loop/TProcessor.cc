@@ -3,7 +3,7 @@
  * Base class for the user processors
  
  * @date   Created : Jul 10, 2013 17:10:19 JST
- *   Last Modified : 2018-01-24 04:59:51 JST (ota)
+ *   Last Modified : 2018-01-25 21:52:46 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *
@@ -399,9 +399,31 @@ void operator >> (const YAML::Node &node, art::TProcessor *&proc)
       node["parameter"] >> str;
    } catch (YAML::KeyNotFound& e) {
       // nothing to do with no paramter for now
-       std::cout << e.what() << std::endl;
-      proc->SetStateError("prameter is not defined");
    }
    proc->SetParameters(str);
    proc->SetName(name.data());
+
+   std::vector<TString> unknownKeyNames;
+   for (YAML::Iterator it = node.begin(), itend = node.end(); it != itend; ++it) {
+      std::string name;
+      it.first() >> name;
+      TString keyname = name;
+      if (keyname != "name" &&
+          keyname != "type" &&
+          keyname != "parameter") {
+         // unknown map keyname
+         unknownKeyNames.push_back(keyname);
+
+      }
+   }
+   
+
+   if (unknownKeyNames.size() != 0) {
+      TString message = "unknown key exists\n";
+      for (std::vector<TString>::iterator it = unknownKeyNames.begin(),
+              itend = unknownKeyNames.end(); it != itend; ++it) {
+         message += TString::Format("%10s- %s","",(*it).Data());
+      }
+      proc->SetStateError(message);
+   }
 }
