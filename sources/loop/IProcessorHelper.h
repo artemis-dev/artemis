@@ -3,7 +3,7 @@
  * @brief  interface class of the helper for processors
  *
  * @date   Created       : 2016-07-21 23:00:51 JST
- *         Last Modified : 2018-01-28 22:53:52 JST (ota)
+ *         Last Modified : 2018-02-04 06:50:19 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2016 Shinsuke OTA
@@ -38,7 +38,7 @@ public:
    // call TProcessor::RegisterXXX
    virtual void Register(TProcessor *proc) = 0;
 
-   virtual TProcessor* GetParent() return fParent;
+   virtual TProcessor* GetParent() {return fParent;}
 
 protected:
    TProcessor *fParent; //!
