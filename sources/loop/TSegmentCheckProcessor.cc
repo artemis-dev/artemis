@@ -3,7 +3,7 @@
  * @brief  segment check
  *
  * @date   Created       : 2014-05-18 14:16:52 JST
- *         Last Modified : Jun 22, 2014 21:46:14 JST
+ *         Last Modified : 2016-10-02 19:52:10 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -20,7 +20,7 @@
 #include <algorithm>
 #include <TRawDataObject.h>
 #include <TClass.h>
-
+#include <TSystem.h>
 using art::TSegmentCheckProcessor;
 
 ClassImp(TSegmentCheckProcessor)
@@ -131,15 +131,20 @@ void TSegmentCheckProcessor::Process()
 //      printf("size = %u\n",modules.size());
       for (Int_t iHit = 0; iHit != nHit; iHit++) {
          TRawDataObject *data = (TRawDataObject*) arr->UncheckedAt(iHit);
-         Int_t geo = data->GetGeo();
+          Int_t geo = data->GetGeo();
          Int_t ch = data->GetCh();
          Int_t nVal = data->GetNumValues();
 //         printf("Data = %s geo = %d ch = %d nVal = %d\n",data->IsA()->GetName(),geo,ch,nVal);
          for (Int_t iVal = 0; iVal != nVal; iVal++) {
             if (modules.size() > geo && modules[geo] != NULL) {
                TH2F* hist = (TH2F*)  modules[geo]->GetHist(iVal);
-//            printf("%p\n",hist);
-               hist->Fill(ch,data->GetValue(iVal));
+               // printf("ival = %d %p\n",iVal,hist);
+               if (!hist) {
+                  Warning("Process","No hist of iVal#% 3d of %3d for module %s",iVal,nVal,modules[geo]->GetModuleType().Data());
+                  gSystem->Sleep(10);
+               } else {
+                  hist->Fill(ch,data->GetValue(iVal));
+               }
             }
          }
       }

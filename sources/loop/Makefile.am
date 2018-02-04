@@ -1,4 +1,7 @@
-SUBDIRS = param decoder ridf rdf hist 
+
+
+
+SUBDIRS = @LOOP_SUB_DIR@
 
 SUBSRC =
 SUBSRC+=TCategorizedData.cc 
@@ -8,6 +11,7 @@ SUBSRC+=TEventCollection.cc
 SUBSRC+=TEventHeader.cc
 SUBSRC+=TEventObject.cc 
 SUBSRC+=TFileDataSource.cc 
+SUBSRC+=TFileDataSourceGZ.cc 
 SUBSRC+=TLoop.cc 
 SUBSRC+=TLoopControl.cc 
 SUBSRC+=TLoopManager.cc 
@@ -23,18 +27,17 @@ SUBSRC+=TProcessor.cc
 SUBSRC+=TRandomNumberEventStore.cc 
 SUBSRC+=TRandomNumberProcessor.cc 
 SUBSRC+=TRawDataObject.cc 
-SUBSRC+=TRawDataPair.cc 
 SUBSRC+=TRawDataSimple.cc 
 SUBSRC+=TRawTiming.cc 
 SUBSRC+=TRawTimingWithEdge.cc 
-SUBSRC+=TRunInfo.cc
 SUBSRC+=TSegmentCheckProcessor.cc
 SUBSRC+=TSegmentedData.cc
 SUBSRC+=TSegmentInfo.cc
 SUBSRC+=TSharedMemoryDataSource.cc
 SUBSRC+=TTimerProcessor.cc 
 SUBSRC+=TTreeEventStore.cc 
-
+SUBSRC+=IProcessorHelper.cc
+SUBSRC+=TScalerData.cc
 
 
 SUBOBJ = $(SUBSRC:.cc=.o)
@@ -45,7 +48,7 @@ DICTSRC = catloop_dict.cc
 DICTOBJ = $(DICTSRC:.cc=.o)
 DICTHDR = $(DICTSRC:.cc=.h)
 
-OPTHDR = TDataSource.h TTypes.h TProcessorParameter.h
+OPTHDR = TDataSource.h TArtTypes.h TProcessorParameter.h
 
 INCDIR = ../../include
 
@@ -68,7 +71,7 @@ libcatloop_la_LDFLAGS = $(LDFLAGS)
 
 $(DICTSRC): $(SUBHDR) catloop_linkdef.h
 	@echo Making $(DICTSRC) ...
-	rootcint -f $@ -c -I$(INCDIR) $^
+	rootcint -f $@ -c -p -I$(INCDIR) $^
 
 .header: $(include_HEADERS)
 	@echo Installing header to $(INCDIR)
@@ -84,7 +87,7 @@ $(DICTSRC): $(SUBHDR) catloop_linkdef.h
 .c.o:
 
 clean-local:
-	rm -f *dict*
+	rm -f *dict* .header
 
 clean: clean-local
 	rm -rf $(SUBOBJ) .libs *.lo .header

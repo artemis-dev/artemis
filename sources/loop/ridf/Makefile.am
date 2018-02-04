@@ -48,7 +48,7 @@ $(DICTSRC): $(SUBHDR) artridf_linkdef.h
 .c.o:
 
 clean-local:
-	rm -f *dict*
+	rm -f *dict* .header
 
 clean: clean-local
 	rm -rf $(SUBOBJ) .libs *.lo .header

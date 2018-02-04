@@ -2,6 +2,10 @@ SUBSRC  =
 SUBSRC += TCatReadoutPad.cc
 SUBSRC += TCatReadoutPadArray.cc
 SUBSRC += TCatPulseShape.cc
+SUBSRC += TSimpleData.cc
+SUBSRC += ICharge.cc
+SUBSRC += ITiming.cc
+SUBSRC += TNArray.cc
 
 SUBOBJ = $(SUBSRC:.cc=.o)
 SUBHDR = $(SUBSRC:.cc=.h)
@@ -32,7 +36,7 @@ libartcont_la_LDFLAGS = $(LDFLAGS)
 
 $(DICTSRC): $(SUBHDR) artcont_linkdef.h
 	@echo Making $(DICTSRC) ...
-	rootcint -f $@ -c $(DEFAULT_INCLUDES) $(MYINCLUDES) $^
+	rootcint -f $@ -c -p $(DEFAULT_INCLUDES) $(MYINCLUDES) $^
 
 .header: $(include_HEADERS)
 	@echo Installing header to $(INCDIR)

@@ -38,8 +38,26 @@
 #pragma link C++ class TCatCmdXval;
 #pragma link C++ class TCatCmdZone;
 #pragma link C++ class art::TCmdUpdateCanvas;
-
+#pragma link C++ class art::TCmdBranchInfo;
+#pragma link C++ class art::TCmdClassInfo;
+#pragma link C++ class art::TCmdHdel;
+#pragma link C++ class art::TCmdFileCd;
+#pragma link C++ class art::TCmdFileLs;
+#pragma link C++ class art::TCmdFipo;
+#pragma link C++ class art::TCmdUnZoom;
+#pragma link C++ class art::TCmdRg;
+#pragma link C++ class art::TCmdPcd;
+#pragma link C++ class art::TCmdComment;
+#pragma link C++ class art::TCmdMpol;
+#pragma link C++ class art::TCmdSlope;
+#pragma link C++ class art::TCmdPb;
+#pragma link C++ class art::TCmdPn;
+#pragma link C++ class art::TCmdSave;
+#pragma link C++ class art::TCmdPrint;
+#pragma link C++ class art::TCmdPadZoom;
 
 #pragma link C++ class TCatCmdFactory+;
+#pragma link C++ class art::TCmdGroup+;
+#pragma link C++ class art::TCmdProcessorDescription+;
 
 #endif /* __CINT__ */

@@ -3,7 +3,7 @@
  * @brief  Tree projection definitions
  *
  * @date   Created       : 2014-03-05 10:15:05 JST
- *         Last Modified : Jun 15, 2014 12:47:04 JST
+ *         Last Modified : 2018-01-28 12:13:15 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -218,7 +218,7 @@ Bool_t TTreeProjection::LoadYAMLNode(const YAML::Node &node)
          Int_t nDim = 0;
          const YAML::Node *axisnode[3] = {(*itcont).FindValue(kNodeKeyX),
                                           (*itcont).FindValue(kNodeKeyY),
-                                          (*itcont).FindValue(kNodeKeyZ)};         
+                                          (*itcont).FindValue(kNodeKeyZ)};
          try {
             hname = (*itcont)["name"].to<std::string>().c_str();
             htitle = (*itcont)["title"].to<std::string>().c_str();
@@ -251,6 +251,16 @@ Bool_t TTreeProjection::LoadYAMLNode(const YAML::Node &node)
                continue;
             }
          } else {
+            // check if axisnode has enough number of inputs
+            for (Int_t i = 0; i < 3; ++i) {
+               if (axisnode[i] && axisnode[i]->size() < 4) {
+                  // insufficient number of input for axis
+                  Error("LoadYAMLNode",TString::Format("\n    histgram '%s': insufficient number of axis input for '%c' (size = %d)\n",
+                                                       hname.Data(),'x'+i,axisnode[i]->size()));
+                  return kFALSE;
+               }
+            }
+         
             if (axisnode[2]) {
                // three dimensional not implimented yet
                if (!axisnode[0] || ! axisnode[1]) {
@@ -352,14 +362,28 @@ Bool_t TTreeProjection::Sync(TTreeProjGroup *group, TTree *tree, TCut cut)
          for (Int_t i=0; i!=nDim; i++) {
             TAxisTreeProj* axis = proj->GetAxisDef(i);
             TCut totalcut = axis->GetCut() + proj->GetCut() + cut;
-            axis->SetVariableFormula(new TTreeFormula(TString::Format("V%c",'x'+i),axis->GetTitle(),tree));
+            TTreeFormula *axisFormula =new TTreeFormula(TString::Format("V%c",'x'+i),axis->GetTitle(),tree);
+            if (axisFormula->GetNdim() == 0) {
+               axisFormula->Delete();
+               proj = NULL;
+               break;
+            }
+            axis->SetVariableFormula(axisFormula);
             if (totalcut != "") {
-               axis->SetSelectionFormula(new TTreeFormula(TString::Format("S%c",'x'+i),
-                                                          axis->GetCut()+proj->GetCut()+cut,tree));
+               TTreeFormula *cutFormula = new TTreeFormula(TString::Format("S%c",'x'+i),
+                                                           axis->GetCut()+proj->GetCut()+cut,tree);
+               if (cutFormula->GetNdim() == 0) {
+                  cutFormula->Delete();
+                  proj = NULL;
+                  break;
+               }
+               axis->SetSelectionFormula(cutFormula);
             }
          }
-         proj->Sync();
-         fProjections.push_back(proj);
+         if (proj) {
+            proj->Sync();
+            fProjections.push_back(proj);
+         }
       }
    }
    return kTRUE;

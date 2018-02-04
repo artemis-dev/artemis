@@ -33,7 +33,26 @@ SUBSRC = \
 	TCatCmdLoopResume.cc \
 	TCatCmdLoopSuspend.cc \
 	TCatCmdLoopTerminate.cc  \
-	TCmdUpdateCanvas.cc
+	TCmdUpdateCanvas.cc \
+	TCmdBranchInfo.cc \
+	TCmdClassInfo.cc \
+	TCmdHdel.cc \
+	TCmdGroup.cc \
+	TCmdFileCd.cc \
+	TCmdFileLs.cc \
+	TCmdFipo.cc \
+	TCmdUnZoom.cc \
+	TCmdRg.cc \
+	TCmdPcd.cc \
+	TCmdPb.cc \
+	TCmdPn.cc \
+	TCmdComment.cc \
+	TCmdMpol.cc \
+	TCmdSlope.cc \
+	TCmdSave.cc \
+	TCmdPrint.cc \
+	TCmdPadZoom.cc\
+	TCmdProcessorDescription.cc
 
 
 SUBOBJ = $(SUBSRC:.cc=.o)

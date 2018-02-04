@@ -3,7 +3,7 @@
  * @brief  processor for tree projection
  *
  * @date   Created       : 2014-03-05 22:22:59 JST
- *         Last Modified : Mar 05, 2014 22:43:17 JST
+ *         Last Modified : 2016-11-25 21:11:44 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -20,6 +20,7 @@ namespace art {
 }
 
 class TTree;
+class TDirectory;
 
 class art::TTreeProjectionProcessor : public TParameterLoader {
 public:
@@ -31,12 +32,15 @@ public:
 
    virtual void Init(TEventCollection *col);
    virtual void Process();
-
+   virtual void PostLoop();
 
 
 protected:
    TTree *fTree; //! ttree for projection
    TTreeProjection *fTreeProj; // tree projection definition
+
+   TString fOutputFilename; // output filename
+   TDirectory *fDirectory; //!
 private:
 
    ClassDef(TTreeProjectionProcessor,1) // processor for tree projection

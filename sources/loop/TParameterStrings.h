@@ -2,7 +2,7 @@
 /**
  * @file   TParameterStrings.h
  * @date   Created : May 18, 2012 14:18:49 JST
- *   Last Modified : Jun 14, 2014 16:07:28 JST
+ *   Last Modified : 2016-07-22 08:39:05 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -15,7 +15,7 @@
 #include <TString.h>
 #include <TObject.h>
 
-#include <TTypes.h>
+#include <TArtTypes.h>
 
 namespace art {
    class TParameterStrings;
@@ -40,11 +40,13 @@ public:
 
    void GetValue(const char* name, IntVec_t& param);
    void GetValue(const char* name, FloatVec_t& param);
+   void GetValue(const char* name, DoubleVec_t& param);
    void GetValue(const char* name, StringVec_t& param);
 
    void GetValue(const char* name, Int_t& param);
    void GetValue(const char* name, Long_t& param);
    void GetValue(const char* name, Float_t& param);
+   void GetValue(const char* name, Double_t& param);
    void GetValue(const char* name, Bool_t& param);
    void GetValue(const char* name, TString& param);
 

@@ -1,12 +1,15 @@
-/* $Id:$ */
-/**
- * @file   TLoop.cc
+/** @class art::TLoop
+ * A event loop
+ *
+ * Usually a loop is instantiate by the loop manger
+ * (art::TLoopManager::Add) usually invoking the TCatLoopAdd command (add).
+ *
+ *
  * @date   Created : Apr 26, 2012 20:26:47 JST
- *   Last Modified : Jun 24, 2014 12:40:56 JST
+ *   Last Modified : 2016-08-23 17:02:06 JST (ota)
+ *
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
- *  
- *  
- *    Copyright (C)2012
+ *    Copyright (C) 2012 
  */
 #include "TLoop.h"
 
@@ -29,6 +32,7 @@ const char* art::TLoop::kConditionName = "condition";
 ClassImp(art::TLoop);
 
 art::TLoop::TLoop()
+   : fCondition(NULL), fEventCollection(NULL), fProcessors(NULL), fID(0)
 {
    fEventCollection = new TEventCollection;
    fCondition       = new TConditionBit;
@@ -47,12 +51,22 @@ art::TLoop::~TLoop()
    delete fCondition;
 }
 
+
+//////////////////////////////////////////////////////////////////////
+/// Load yaml file (for internal use)
+///
+/// \param[in] dirname the directory name of the file
+/// \param[in] basename the base name of the file
+/// \param[out] loaded contains if the file is already loaded to avoid the loop
+///
+/// Load yaml file at [dirname]/[basename]. 
+///
 Bool_t art::TLoop::Load(const char* dirname, const char* basename, std::list<Long_t> *loaded)
 {
    const char *filename = gSystem->ConcatFileName(dirname, basename);
    FileStat_t fstat;
    gSystem->GetPathInfo(filename, fstat);
-
+   TString dirsave = dirname;
    for (std::list<Long_t>::iterator itr = loaded->begin(); itr != loaded->end(); itr++) {
       if (*itr == fstat.fIno) {
          std::cerr << "Include loop found: " << filename << std::endl;
@@ -76,7 +90,10 @@ Bool_t art::TLoop::Load(const char* dirname, const char* basename, std::list<Lon
          if (const YAML::Node *include = (*it).FindValue("include")) {
             std::string name;
             *include >> name;
-            if (!Load(dirname, name.c_str(), loaded))
+            const char* dir = gSystem->DirName(gSystem->ConcatFileName(dirsave,name.c_str()));
+            const char* base = gSystem->BaseName(name.c_str());
+            printf("%s %s %s %s\n",dirname,name.c_str(),dir,base);
+            if (!Load(dir,base, loaded))
                return kFALSE;
             continue;
          }
@@ -96,6 +113,7 @@ Bool_t art::TLoop::Load(const char* dirname, const char* basename, std::list<Lon
 //   Init();
    return kTRUE;
 }
+
 
 Bool_t art::TLoop::Init()
 {

@@ -2,7 +2,7 @@
 /**
  * @file   TCatCmd.h
  * @date   Created : Feb 06, 2012 10:06:33 JST
- *   Last Modified : Feb 10, 2012 20:19:56 JST
+ *   Last Modified : 2016-08-18 15:29:54 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -11,11 +11,11 @@
 #ifndef TCATCMD_H
 #define TCATCMD_H
 
-#include <TNamed.h>
+#include <TFolder.h>
 #include <vector>
 using namespace std;
 
-class TCatCmd : public TNamed{
+class TCatCmd : public TFolder {
 protected:
    TCatCmd();
 public:
@@ -25,7 +25,7 @@ public:
 
    virtual Long_t Cmd(vector<TString> args) = 0;
 
-   virtual void GetRange(TString &arg, Int_t &id1, Int_t &id2, TString delim = ":");
+   virtual void GetRange(const TString &arg, Int_t &id1, Int_t &id2, TString delim = ":");
 
    virtual Bool_t IsSortable() const { return kTRUE; }
 
@@ -33,5 +33,6 @@ public:
 
    virtual void Help();
 
+   static const TString kRangeDefault; // if the range is default, the current hist will be selected
 };
 #endif // end of #ifdef TCATCMD_H

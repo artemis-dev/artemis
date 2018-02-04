@@ -2,7 +2,7 @@
 /**
  * @file   TArtRint.cc
  * @date   Created : Feb 06, 2012 00:06:18 JST
- *   Last Modified : May 05, 2014 07:09:35 JST
+ *   Last Modified : Oct 27, 2015 09:39:48 EDT
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -17,14 +17,19 @@
 #include "TCatCmdMacro.h"
 #include "TArtAtomicMassTable.h"
 #include "TEnv.h"
+#include <TClassTable.h>
+#include "TProcessor.h"
 
 using art::TArtRint;
 
 TArtRint::TArtRint(int* argc, char** argv, void* options, int numOptions, Bool_t noLogo)
    : TRint(gAppName, argc, argv, options, numOptions, noLogo)
 {
+   // load macros
+   // @TODO documantation: all the processors should be loaded in artemislogon.C
    TRint::ProcessLine(".x artemislogon.C");
-//   TCatCmdFactory::Instance()->Register(TCatCmdMacro::Instance());
+
+   TProcessor::ListProcessors();
 
    // Preparation of folder for artemis
    TFolder *top = gROOT->GetRootFolder()->AddFolder("artemis","artemis top level folders");

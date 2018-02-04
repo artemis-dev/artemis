@@ -2,7 +2,7 @@
 /**
  * @file   TCatReadoutPadArray.h
  * @date   Created : Dec 01, 2013 01:01:03 JST
- *   Last Modified : Dec 01, 2013 02:30:25 JST
+ *   Last Modified : 2017-04-21 13:07:36 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -12,6 +12,7 @@
 #define TCATREADOUTPADARRAY_H
 
 #include <TObjArray.h>
+#include <vector>
 
 class TH2Poly;
 namespace art {
@@ -29,10 +30,19 @@ public:
    TH2Poly *CreateHist(const char *name, const char *title,
                        Double_t xmin, Double_t xmax,
                        Double_t ymin, Double_t ymax,
-                       Bool_t doFillID = kFALSE);
+                       Bool_t doFillID = kFALSE) const;
+
+   virtual void SetBads(const std::vector<Int_t> &bads);
+   virtual void SetLowGains(const std::vector<Int_t> &lowGains);
+
+   virtual const std::vector<Int_t>& Bads() { return fBads; }
+   virtual const std::vector<Int_t>& LowGains() { return fLowGains; }
 
 protected:
    virtual void Add(TObject *obj) { TObjArray::Add(obj); }
+
+   std::vector<Int_t> fBads; //
+   std::vector<Int_t> fLowGains; //
 
    ClassDef(TCatReadoutPadArray,1); // an array of readout pads
 };

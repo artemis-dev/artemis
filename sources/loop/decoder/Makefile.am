@@ -2,21 +2,19 @@ SUBSRC = \
 	TModuleDecoderSIS3820.cc \
 	TModuleDecoderSIS3610.cc \
 	TModuleDecoderV1190.cc \
-	TRawDataV1190.cc \
 	TModuleDecoderV1740.cc \
 	TModuleDecoderSkip.cc \
 	TModuleDecoderV767.cc \
 	TModuleDecoderV7XX.cc \
 	TModuleDecoderFixed.cc \
 	TModuleDecoderV1290.cc \
+	TModuleDecoderMXDC32.cc \
 	TRawDataFadc.cc 
-
-
 
 SUBOBJ = $(SUBSRC:.cc=.o)
 SUBHDR = $(SUBSRC:.cc=.h) 
 
-SUBHDR += TRawDataV767.h
+
 
 DICTSRC = artdecoder_dict.cc
 DICTOBJ = $(DICTSRC:.cc=.o)
@@ -26,7 +24,7 @@ OPTHDR =
 INCDIR = ../../../include
 
 AUTOMAKE_OPTIONS = foreign
-CXXFLAGS = -fPIC -I.. -I$(INCDIR) $(shell root-config --cflags)  -Wall -O2
+CXXFLAGS = -fPIC -I.. -I$(INCDIR) $(shell root-config --cflags)  -Wall -O2 -g
 LDFLAGS = $(shell root-config --glibs)
 
 CXXFLAGS+= @YAML_CPP_INCLUDE@

@@ -1,9 +1,12 @@
 /* $Id:$ */
-/**
- * @file   TProcessor.cc
+/** @class art::TProcessor
+ * Base class for the user processors
+ 
  * @date   Created : Jul 10, 2013 17:10:19 JST
- *   Last Modified : Feb 12, 2015 04:51:55 JST
+ *   Last Modified : 2018-01-25 21:52:46 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
+ *
+ *
  *
  *
  *    Copyright (C)2013
@@ -13,6 +16,12 @@
 #include <yaml-cpp/yaml.h>
 #include <iostream>
 #include <TClonesArray.h>
+#include <TClassTable.h>
+#include <IProcessorHelper.h>
+
+TList* art::gProcessors = new TList;
+
+ClassImp(art::TProcessor)
 
 art::TProcessor::TProcessor()
    :   fParameters(NULL), fState(INIT), fErrorMessage("")
@@ -43,6 +52,39 @@ void art::TProcessor::InitProc(TEventCollection *col)
    if (fVerboseLevel>0) {
       Info("InitProc","Initilizing ...");
    }
+
+   // check if parameter key is registered
+   Bool_t existsUnknownKey = kFALSE;
+   std::vector<TString> unknownKeys;
+   for (art::TParameterStrings::map_t::const_iterator it = fParameters->Begin(),
+           itend = fParameters->End(); it != itend; ++it) {
+      Bool_t exists = kFALSE;
+      TString key = it->first;
+      for (ProcPrmMap_t::iterator it2 = fParamMap.begin(),
+              itend2 = fParamMap.end(); it2 != itend2; ++it2) {
+      TString key2 = it2->first;
+         if (key == key2) {
+            exists = kTRUE;
+            break;
+         }
+      }
+      if (!exists) {
+         existsUnknownKey = kTRUE;
+         unknownKeys.push_back(key);
+      }
+   }
+   if (existsUnknownKey) {
+      TString message = "Unknown parameter listed below exists.\n";
+      for (std::vector<TString>::iterator it = unknownKeys.begin(), itend = unknownKeys.end();
+           it != itend; ++it) {
+         message += TString::Format("     - %s\n",(*it).Data());
+      }
+      SetStateError(message.Data());
+      PrintDescriptionYAML();
+      return;
+   }
+
+   
    fCondition = (TConditionBit**)(col->Get(TLoop::kConditionName)->GetObjectRef());
    // obtain input collection
    Int_t nInputs = fInputs.size();
@@ -182,6 +224,9 @@ void art::TProcessor::InitProc(TEventCollection *col)
       
 
    // call user defined initialization function
+   for (std::vector<IProcessorHelper*>::iterator it = fHelpers.begin(), itend = fHelpers.end(); it != itend; ++it) {
+      (*it)->Init(col);
+   }
    Init(col);
    if (IsError()) {
       return;
@@ -195,9 +240,11 @@ void art::TProcessor::InitProc(TEventCollection *col)
 }   
 
 
-void art::TProcessor::Clear(Option_t *)
+void art::TProcessor::Clear(Option_t *opt)
 {
-
+   for (std::vector<IProcessorHelper*>::iterator it = fHelpers.begin(), itend = fHelpers.end(); it != itend; ++it) {
+      (*it)->Clear(opt);
+   }
 }
 
 
@@ -296,6 +343,37 @@ void art::TProcessor::PrintDescriptionYAML()
 
 }
 
+void art::TProcessor::ListProcessors()
+{
+   // generate list of processors
+   gClassTable->Init();
+   Int_t nCls = gClassTable->Classes();
+   for (Int_t iCls = 0; iCls != nCls; ++iCls) {
+      TString name(gClassTable->Next());
+      if (name.BeginsWith("vector")) continue;
+      if (name.BeginsWith("pair")) continue;
+      if (name.BeginsWith("reverse")) continue;
+      if (name.BeginsWith("map")) continue;
+      if (name.BeginsWith("list")) continue;
+      if (name.EndsWith("Iter")) continue;
+      TClass *cls = TClass::GetClass(name);
+      // printf("cls : %s %d\n",name.Data(),cls->InheritsFrom(TProcessor::Class_Name()));
+      if (cls && cls->IsLoaded() &&
+          cls->InheritsFrom(TProcessor::Class_Name()) &&
+          cls != TProcessor::Class()
+         ) {
+         gProcessors->Add(cls);
+      }
+   }
+}
+
+void art::TProcessor::RegisterHelper(IProcessorHelper *helper)
+{
+   helper->Register(this);
+   fHelpers.push_back(helper);
+}
+
+
 void operator >> (const YAML::Node &node, art::TProcessor *&proc)
 {
    std::string name, type;
@@ -305,6 +383,7 @@ void operator >> (const YAML::Node &node, art::TProcessor *&proc)
       node["type"] >> type;
    } catch (YAML::KeyNotFound& e) {
       std::cout << e.what() << std::endl;
+      proc->SetStateError("name and/or type is not defined");
       return;
    }
    TClass *cls = TClass::GetClass(type.data());
@@ -320,8 +399,31 @@ void operator >> (const YAML::Node &node, art::TProcessor *&proc)
       node["parameter"] >> str;
    } catch (YAML::KeyNotFound& e) {
       // nothing to do with no paramter for now
-      // std::cout << e.what() << std::endl;
    }
    proc->SetParameters(str);
    proc->SetName(name.data());
+
+   std::vector<TString> unknownKeyNames;
+   for (YAML::Iterator it = node.begin(), itend = node.end(); it != itend; ++it) {
+      std::string name;
+      it.first() >> name;
+      TString keyname = name;
+      if (keyname != "name" &&
+          keyname != "type" &&
+          keyname != "parameter") {
+         // unknown map keyname
+         unknownKeyNames.push_back(keyname);
+
+      }
+   }
+   
+
+   if (unknownKeyNames.size() != 0) {
+      TString message = "unknown key exists\n";
+      for (std::vector<TString>::iterator it = unknownKeyNames.begin(),
+              itend = unknownKeyNames.end(); it != itend; ++it) {
+         message += TString::Format("%10s- %s","",(*it).Data());
+      }
+      proc->SetStateError(message);
+   }
 }

@@ -2,7 +2,7 @@
 /**
  * @file   TModuleDecoder.h
  * @date   Created : Jul 20, 2013 10:20:00 JST
- *   Last Modified : May 12, 2014 23:26:04 JST
+ *   Last Modified : 2017-03-01 14:10:11 JST (kawase)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -13,6 +13,7 @@
 
 #include <TNamed.h>
 #include <TClonesArray.h>
+#include <TError.h>
 class TObjArray;
 namespace art {
    class TModuleDecoder;
@@ -35,13 +36,17 @@ public:
 
    virtual void Copy(TObject& obj) const;
 
+   virtual void SetVerboseLevel(Int_t level) { fVerboseLevel = level; };
+
 protected:
    virtual TObject* New() { return (fHits)?fHits->ConstructedAt(fHits->GetEntriesFast()):NULL; }
-   virtual void     Clear(const Option_t *opt=NULL) { if (fHits) fHits->Clear("C"); }
+   virtual void     Clear(const Option_t */*opt=NULL*/) { if (fHits) fHits->Clear("C"); }
 
 protected:
    Int_t fID;
    TClonesArray *fHits;
+
+   Int_t fVerboseLevel;
 
    ClassDef(TModuleDecoder,1); // base class of module decoder
 };

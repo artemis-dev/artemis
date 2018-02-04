@@ -16,7 +16,8 @@ ClassImp(art::TRawTiming);
 using art::TRawTiming;
 
 // Default constructor
-TRawTiming::TRawTiming() {
+TRawTiming::TRawTiming()
+   : fReference(0) {
 }
 
 TRawTiming::~TRawTiming() {

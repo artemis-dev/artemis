@@ -2,7 +2,7 @@
 /**
  * @file   TOutputTreeProcessor.cc
  * @date   Created : Jul 11, 2013 17:11:41 JST
- *   Last Modified : Feb 06, 2015 05:20:36 JST
+ *   Last Modified : 2017-12-26 20:27:42 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -12,6 +12,15 @@
 #include <TEventObject.h>
 #include <TDirectory.h>
 #include <TROOT.h>
+
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#ifdef HAVE_MPI_H
+#include <mpi.h>
+#endif
+
 
 ClassImp(art::TOutputTreeProcessor);
 
@@ -30,6 +39,16 @@ art::TOutputTreeProcessor::~TOutputTreeProcessor()
 
 void art::TOutputTreeProcessor::Init(TEventCollection *col)
 {
+#ifdef USE_MPI
+   int myrank, npe, useMPI;
+   MPI_Initialized(&useMPI);
+   if (useMPI) {
+      MPI_Comm_size(MPI_COMM_WORLD, &npe);
+      MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
+      printf("myrank = %d\n",myrank);
+      fFileName.Append(Form("%d",myrank));
+   }
+#endif
    fFile = TFile::Open(fFileName,"RECREATE");
    fTree = new TTree(fTreeName,fTreeName);
    // assume all of the objects inherit from TObject
@@ -37,6 +56,8 @@ void art::TOutputTreeProcessor::Init(TEventCollection *col)
    TEventObject *obj;
    while ((obj = (TEventObject*)iter->Next())) {
       if (obj->IsPassive()) continue;
+      obj->SetBranch(fTree);
+#if 0      
       if (!obj->IsObject()) {
          // primitivee class
          TString brNme = obj->GetName();
@@ -50,6 +71,7 @@ void art::TOutputTreeProcessor::Init(TEventCollection *col)
       } else {
          fTree->Branch(obj->GetName(),obj->GetClass()->GetName(),obj->GetObjectRef(),3200000,0);
       }
+#endif   
       fObjects->Add(obj);
    }
 
@@ -94,4 +116,11 @@ void art::TOutputTreeProcessor::PostLoop()
    fFile->cd();
    fTree->Write(0,TFile::kOverwrite);
    saved->cd();
+#ifdef USE_MPI
+   Int_t useMPI;
+   MPI_Initialized(&useMPI);
+   if (useMPI) {
+      MPI_Barrier(MPI_COMM_WORLD);
+   }
+#endif
 }

@@ -2,7 +2,7 @@
 /**
  * @file   TArtemisObject.cc
  * @date   Created : Dec 01, 2013 04:01:48 JST
- *   Last Modified : Jan 07, 2014 11:29:52 JST
+ *   Last Modified : 2016-08-19 10:33:31 JST (kawase)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -10,7 +10,7 @@
  */
 #include "TArtemisObject.h"
 
-ClassImp(art::TArtemisObject);
+ClassImp(art::TArtemisObject)
 
 using art::TArtemisObject;
 

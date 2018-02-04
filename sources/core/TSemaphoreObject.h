@@ -2,7 +2,7 @@
 /**
  * @file   TSemaphoreObject.h
  * @date   Created : Nov 29, 2013 21:29:29 JST
- *   Last Modified : Nov 29, 2013 23:50:21 JST
+ *   Last Modified : 2017-06-06 22:12:55 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -10,6 +10,10 @@
  */
 #ifndef TSEMAPHOREOBJECT_H
 #define TSEMAPHOREOBJECT_H
+#if defined (__CINT__)
+#define _SYS_TYPES_H_
+#endif
+
 #include <sys/types.h>
 #include <sys/ipc.h>
 #include <sys/sem.h>

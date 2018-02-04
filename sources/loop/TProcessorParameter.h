@@ -3,7 +3,7 @@
  * @brief  processor parameter
  *
  * @date   Created       : 2014-05-09 18:06:39 JST
- *         Last Modified : May 11, 2014 10:48:00 JST
+ *         Last Modified : 2016-07-22 09:20:05 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -140,6 +140,11 @@ public:
       return str;
    }
    static TString ToString(Float_t prm, int) {
+      TString str;
+      str += prm;
+      return str;
+   }
+   static TString ToString(Double_t prm, int) {
       TString str;
       str += prm;
       return str;

@@ -2,7 +2,7 @@
 /**
  * @file   TCatPulseShape.h
  * @date   Created : Mar 10, 2013 18:10:59 JST
- *   Last Modified : Mar 29, 2014 23:50:22 JST
+ *   Last Modified : 2017-01-30 17:27:52 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -12,15 +12,18 @@
 #define TCATPULSESHAPE_H
 
 #include <TDataObject.h>
+#include <ICharge.h>
 #include <vector>
-
-#define VEC
+#include <TVector3.h>
+#include <TMath.h>
 
 namespace art {
    class TCatPulseShape;
 }
 
-class art::TCatPulseShape  : public TDataObject {
+class TBuffer;
+
+class art::TCatPulseShape  : public TDataObject, public ICharge {
 
 public:
    static const UInt_t kWrongBitCorrected = 1<<16;
@@ -43,9 +46,11 @@ public:
    Float_t GetRiseTime() const { return fRiseTime; }
    std::vector<Float_t>& GetSample() { return fSample; }
    std::vector<Float_t>& GetClock() { return fClock; }
-   Double_t GetX() const { return fX; }
-   Double_t GetZ() const { return fZ; }
-   
+   Double_t GetX() const { return fPos.X(); }
+   Double_t GetY() const { return fPos.Y(); }
+   Double_t GetZ() const { return fPos.Z(); }
+   TVector3& GetPos() { return fPos; }
+   const TVector3& GetPos() const { return fPos; }
    
    Float_t &operator[] (Int_t idx) { return fSample[idx]; }
    Float_t &operator() (Int_t idx) { return fClock[idx]; }
@@ -54,26 +59,18 @@ public:
    void SetCh(Int_t ch) { fCh = ch; }
    void SetTime(Double_t time) { fTime = time; }
    void SetOffset(Float_t offset) { fOffset = offset; }
+   void SetCharge(const ICharge &obj) { SetCharge(obj.GetCharge()); }
    void SetCharge(Double_t charge) { fCharge = charge; }
    void SetRiseTime(Float_t risetime) { fRiseTime = risetime; }
    void SetNumSample(Int_t n) { fNumSample = n; }
-   void SetXZ(Double_t x, Double_t z) { fX = x; fZ = z; }
+   // will be obsoluted
+   void SetXZ(Double_t x, Double_t z) { fPos.SetX(x); fPos.SetZ(z); }
+
    
    void AddSample(Float_t sample,Float_t clock = -1) {
-#ifndef VEC
-      fSample[fNumSample] = sample;
-      if (clock == -1) {
-         fClock[fNumSample] = fNumSample;
-      } else {
-         fClock[fNumSample] = clock;
-      }
-      fNumSample++;
-#else
       fSample.push_back(sample);
       fClock.push_back((clock!=-1)?clock:fNumSample);
       fNumSample++;
-#endif
-                       
    }
 
    virtual void Clear(Option_t *);
@@ -89,6 +86,25 @@ public:
       fgSortOrder = (order == kASC) ? 1 : -1; 
    }
 
+   // for version > 2
+   void SetMaxSample(Double_t max) { fMaxSample = max; }
+   void SetMaxSampleOffset(Double_t offset) { fMaxSampleOffset = offset; }
+   void SetBaseline(Double_t baseline) { fBaseline = baseline; }
+   void SetBaselineRMS(Double_t rms) { fBaselineRMS = rms; }
+   void SetLeadingEdgeOffset(Double_t offset) { fLeadingEdgeOffset = offset; }
+   void AddMoment(Double_t moment) {
+      fMoment.push_back(moment);
+      fNumMoment = fMoment.size();
+   }
+
+   virtual Double_t GetMaxSample() const { return fMaxSample; }
+   virtual Double_t GetMaxSampleOffset() const { return fMaxSampleOffset; }
+   virtual Double_t GetBaseline() const { return fBaseline; }
+   virtual Double_t GetBaselineRMS() const { return fBaselineRMS; }
+   virtual Double_t GetLeadingEdgeOffset() const { return fLeadingEdgeOffset; }
+   virtual Double_t GetMoment(Int_t i) const { return  (i < fNumMoment) ? fMoment[i] : TMath::QuietNaN(); }
+       
+
 
 protected:
    static ESortType fgSortType;
@@ -101,16 +117,21 @@ protected:
    Float_t fRiseTime;
    Float_t fOffset;
    Int_t fNumSample;
-   Double_t fX;
-   Double_t fZ;
-#ifndef VEC   
-   Float_t *fSample; //[fNumSample]
-   Float_t *fClock; //[fNumSample]
-#else
+   TVector3 fPos;
+
    std::vector<Float_t> fSample;
    std::vector<Float_t> fClock;
-#endif
 
-   ClassDef(TCatPulseShape,1);
+   // information for the version above 3
+   Double_t fMaxSample;
+   Double_t fMaxSampleOffset;
+   Double_t fBaseline;
+   Double_t fBaselineRMS;
+   Double_t fLeadingEdgeOffset;
+   Int_t    fNumMoment;
+   std::vector<Double_t> fMoment;
+   
+
+   ClassDef(TCatPulseShape,3)
 };
 #endif // end of #ifdef TCATPULSESHAPE_H

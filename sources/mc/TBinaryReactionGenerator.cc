@@ -2,7 +2,7 @@
 /**
  * @file   TBinaryReactionGenerator.cc
  * @date   Created : Aug 18, 2013 12:18:37 JST
- *   Last Modified : Nov 05, 2014 16:55:07 JST
+ *   Last Modified : 2016-10-27 18:49:45 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -60,6 +60,7 @@ art::TBinaryReactionGenerator::~TBinaryReactionGenerator()
 
 void art::TBinaryReactionGenerator::Init(TEventCollection *col)
 {
+   fNumLoop = 0;
    const Int_t nEx = 100;
    const Int_t nAng = 100;
    Float_t stepEx = (fExRange[1]-fExRange[0])/nEx;

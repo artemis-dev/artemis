@@ -2,7 +2,7 @@
 /**
  * @file   TProcessor.h
  * @date   Created : Jul 10, 2013 17:10:49 JST
- *   Last Modified : Feb 05, 2015 15:20:05 JST
+ *   Last Modified : 2016-07-21 23:17:20 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -18,6 +18,7 @@
 
 namespace art {
    class TProcessor;
+   class IProcessorHelper;
    namespace ErrMsgFmt {
       const char* const INVALID_INPUT_COLLECTION = "No such input collection %s";
       const char* const INPUT_CLASS_MISSMATCH = "Input class %s required while %s is found";
@@ -27,6 +28,7 @@ namespace art {
       const char* const NOT_EXIST_DATA_CLASS = "No such data class %s for TClonesArray";
       const char* const OUTPUT_ALREADY_EXIST = "Output collection '%s' already exist";
    }
+   R__EXTERN TList *gProcessors;
 }
 
 namespace YAML {
@@ -96,7 +98,8 @@ public:
 
    virtual void Clear(Option_t* /* opt */);
 
-protected:
+   static void ListProcessors();
+
    // user defined initialization
    virtual void Init (TEventCollection *) {;}
    // cannot use set title directly
@@ -206,10 +209,13 @@ template<class T>
       if (p) {
          fInputInfo.push_back(IOCollection(p, &parameter,infoclass,dataclass,name));
       }
-   }                                               
+   }
+
+   void RegisterHelper(IProcessorHelper *helper);
    
    // protected members
    
+protected:
    Bool_t fOutputIsTransparent;    // output transparency
    TConditionBit **fCondition; // condition bit to control loop
    TParameterStrings *fParameters; // parameter strings
@@ -217,12 +223,15 @@ template<class T>
    std::vector<IOCollection> fInputs;//!
    std::vector<IOCollection> fOutputs;//!
    std::vector<IOCollection> fInputInfo; //!
+   std::vector<IProcessorHelper*> fHelpers; //!
 
 private:
    // parameter map to hold the processor parameters
    ProcPrmMap_t fParamMap;
    State_t fState; // state of initialization
    TString fErrorMessage; // error message to be filled by user
+
+   ClassDef(TProcessor,1);
    
 };
 #endif // end of #ifdef TPROCESSOR_H

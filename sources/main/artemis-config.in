@@ -44,6 +44,7 @@ package=@PACKAGE@
 version=@VERSION@
 prefix=@prefix@
 exec_prefix=@exec_prefix@
+cxx=@CXX@
 libdir=@libdir@
 includedirs="@includedir@ @YAML_CPP_INCLUDE_DIR@"
 
@@ -79,6 +80,7 @@ Usage: artemis-config [OPTION...]
   --libs                  output all linker flags
   --cflags                output all preprocessor
                           and compiler flags
+  --cxx                   Print alternative C++ compiler specified when ARTEMIS was built
 
   -?, --help              show this help message
   --usage                 display brief usage message
@@ -90,7 +92,7 @@ EOF
 usage()
 {
   cat<<EOF
-Usage: artemis-config [--prefix] [--version] [--libs] [--cflags] [--incdir]
+Usage: artemis-config [--prefix] [--version] [--libs] [--cflags] [--incdir] [--cxx]
 EOF
   exit 1
 }
@@ -130,7 +132,11 @@ while test $# -gt 0 ; do
     --incdir)
       echo ${includedirs}
       ;;
-      
+
+    --cxx)
+      echo ${cxx}
+      ;;
+
     -?)
       help
       ;;

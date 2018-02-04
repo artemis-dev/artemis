@@ -8,8 +8,27 @@ AC_CONFIG_SRCDIR([sources/main/main.cc])
 AC_CONFIG_HEADERS([config.h])
 
 # Checks for programs.
-AC_PROG_CXX([clang++ g++ g++34])
-AC_PROG_CC([clang gcc gcc34])
+AC_ARG_ENABLE([mpi],
+	AC_HELP_STRING([--enable-mpi],[Use MPI (default is no)]),
+	[],[enable_mpi=no])
+
+ if test "$enable_mpi" != "no" ; then
+ echo TEST MPI
+ progxx="[mpic++ mpiicpc clang++ g++ g++34]"
+ progcc="[mpicc mpiicc clang gcc gcc34]"
+ else
+ echo non-MPI 
+ progxx="[clang++ g++ g++34]"
+ progcc="[clang gcc gcc34]"
+fi
+
+AC_PROG_CXX($progxx)
+AC_PROG_CC($progcc)
+AC_CHECK_HEADERS([mpi.h],AS_IF([test "$enable_mpi" != "no"],[AC_DEFINE([USE_MPI], [1], [mpi support])]))
+
+
+
+
 AC_PROG_LIBTOOL
 
 AC_CONFIG_MACRO_DIR([m4])
@@ -41,8 +60,31 @@ fi
 ROOTLIBS="`$ROOTSYS/bin/root-config --glibs`"
 AC_SUBST(ROOTLIBS)
 
+# check for get decoder
+AC_ARG_WITH([get-decoder],
+	AC_HELP_STRING([--with-get-decoder@<:@=PATH@:>@],
+		       [PATH is path to get decoder home (without lib/include)]),
+        [WITH_GET_DECODER=$withval],[WITH_GET_DECODER=no])
+if test "$WITH_GET_DECODER" = "no"; then
+# do nothing
+echo HAVE_GET = 0
+AC_SUBST([HAVE_GET],["0"])
+AC_SUBST([LOOP_SUB_DIR],["param decoder ridf rdf hist"])
+else
+echo HAVE_GET = 1
+AC_DEFINE([HAVE_GET_DECODER],[1],[Define to 1 if you have the get decoder])
+AC_SUBST([HAVE_GET],["1"])
+AC_SUBST([LOOP_SUB_DIR],["param decoder ridf rdf get hist"])
+AC_SUBST([GET_DECODER_INCLUDE_DIR],["$WITH_GET_DECODER/include"])
+AC_SUBST([GET_DECODER_INCLUDE],["-I$WITH_GET_DECODER/include"])
+AC_SUBST([GET_DECODER_LIB],["-L$WITH_GET_DECODER/lib -lGETDecoder"])
+fi
+
+
+
 # Checks for header files.
 AC_CHECK_HEADERS([termios.h unistd.h])
+
 
 AC_PATH_XTRA
 
@@ -71,6 +113,7 @@ AC_CONFIG_FILES([Makefile
                  sources/loop/decoder/Makefile
                  sources/loop/ridf/Makefile
                  sources/loop/rdf/Makefile
+                 sources/loop/get/Makefile
                  sources/loop/hist/Makefile
                  sources/loop/param/Makefile
                  sources/main/Makefile

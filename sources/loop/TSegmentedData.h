@@ -2,7 +2,7 @@
 /**
  * @file   TSegmentedData.h
  * @date   Created : Jul 16, 2013 22:16:53 JST
- *   Last Modified : Nov 25, 2013 12:07:09 JST
+ *   Last Modified : 2017-03-01 09:51:29 JST (kawase)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -32,7 +32,7 @@ public:
    virtual TObjArray* FindSegmentByID(Int_t id) {
       const Int_t &n = GetEntriesFast();
       for (Int_t i=0; i!=n; i++) {
-         if (At(i)->GetUniqueID() == id) return (TObjArray*)At(i);
+         if (At(i)->GetUniqueID() == (UInt_t)id) return (TObjArray*)At(i);
       }
       return NULL;
    }

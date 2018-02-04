@@ -8,23 +8,18 @@
  *    Copyright (C)2013
  */
 
-#include <iostream>
 
 #include "TCatCmdXval.h"
-#include <TObjArray.h>
-#include <TObjString.h>
-#include <TCanvas.h>
-#include <TLatex.h>
+
+#include <TPad.h>
 #include <TROOT.h>
-
-#include <TCatHistManager.h>
-#include <TCatPadManager.h>
-
+#include <TMath.h>
+#include <TObjArray.h>
 
 using namespace std;
 
 TCatCmdXval::TCatCmdXval()
-  :fX(0),fY(0){
+  :fX(0),fY(0) {
    SetName("xval");
    SetTitle("get coordinate by mouse");
 }
@@ -40,94 +35,65 @@ TCatCmdXval* TCatCmdXval::Instance()
 
 Long_t TCatCmdXval::Cmd(vector<TString> tokens)
 {
-  Int_t n = tokens.size()-1;
-  if ( n>3 ){
-    printf("[xval] More than 3 values are ignored.\n");
-    n = 3;
-  }
-
   TString token("");
+  const Int_t MAX_TOKEN = 3;
 
-  for (Int_t i = 0; i!=n ; ++i){
-    if(i) token += ", ";
-    token += tokens[i+1];
+  for (Int_t i = 1, nToken = TMath::Min((Int_t)tokens.size(),MAX_TOKEN);
+       i != nToken ; ++i){
+     if (i != 1) token += ",";
+     token += tokens[i];
   }
 
-  TString s = TString::Format("TCatCmdXval::Instance()->Run(%s);",
-			      token.Data());
+  const TString s = TString::Format("TCatCmdXval::Instance()->Run(%s);",
+				    token.Data());
   gROOT->ProcessLineFast(s);
 
   return 1;
 }
 
-Long_t TCatCmdXval::Run(TPad *pad, Double_t *x, Double_t *y) 
+Long_t TCatCmdXval::Run(TPad *pad, Double_t *x, Double_t *y)
 {
-   if(pad==NULL) return 0;
-   
+   if(!pad) return 0;
+   pad->cd();
+
    pad->AddExec("ex_xval","TCatCmdXval::Instance()->GetEvent()");
-   pad->WaitPrimitive();
-   TObject *obj = pad->GetListOfPrimitives()->Last();
-   if (obj->IsA() != TLatex::Class()) {
+   if (TObject *const obj = gPad->WaitPrimitive("xval")) {
+      gPad->GetListOfPrimitives()->Remove(obj);
+      delete obj;
+   } else {
       fX = fY = 0;
       return 0;
    }
-   TLatex *latex = (TLatex*) obj;
-   pad->GetListOfPrimitives()->RemoveLast();
-   fX = latex->GetX();
-   fY = latex->GetY();
-   delete latex;
 
-   Bool_t display = x==NULL && y==NULL;
-   if(display){
-     printf("[xval] X: %f, Y: %f\n",fX,fY);     
+   if(!x && !y){
+      // display coordinates when both of x and y are NULL.
+      printf("[xval] X: %f, Y: %f\n",fX,fY);
+   } else {
+      if(x) *x = fX;
+      if(y) *y = fY;
    }
-
-   if(x!=NULL) *x = fX;
-   if(y!=NULL) *y = fY;
 
    return 1;
 }
 
-Long_t TCatCmdXval::Run(Double_t *x, Double_t *y) 
+Long_t TCatCmdXval::Run(Double_t *x, Double_t *y)
 {
-   TPad *pad = (TPad*) gPad;
-   if(pad==NULL) return 0;
-   
-   pad->AddExec("ex_xval","TCatCmdXval::Instance()->GetEvent()");
-   pad->WaitPrimitive();
-   TObject *obj = pad->GetListOfPrimitives()->Last();
-   if (obj->IsA() != TLatex::Class()) {
-      fX = fY = 0;
-      return 0;
-   }
-   TLatex *latex = (TLatex*) obj;
-   pad->GetListOfPrimitives()->RemoveLast();
-   fX = latex->GetX();
-   fY = latex->GetY();
-   delete latex;
-
-   Bool_t display = x==NULL && y==NULL;
-   if(display){
-     printf("[xval] X: %f, Y: %f\n",fX,fY);     
-   }
-
-   if(x!=NULL) *x = fX;
-   if(y!=NULL) *y = fY;
-
-   return 1;
+   return Run((TPad*)gPad,x,y);
 }
 
 void TCatCmdXval::GetEvent()
 {
-   int event = gPad->GetEvent();
-   if (event != 11) return;
+   const int event = gPad->GetEvent();
+   if (event != kButton1Up) return;
    gPad->DeleteExec("ex_xval");
-   Int_t px = gPad->GetEventX();
-   Double_t xx = gPad->AbsPixeltoX(px);
-   Double_t x = gPad->PadtoX(xx);
-   Int_t py = gPad->GetEventY();
-   Double_t yy = gPad->AbsPixeltoY(py);
-   Double_t y = gPad->PadtoY(yy);
+   const Int_t px = gPad->GetEventX();
+   const Double_t xx = gPad->AbsPixeltoX(px);
+   const Double_t x = gPad->PadtoX(xx);
+   const Int_t py = gPad->GetEventY();
+   const Double_t yy = gPad->AbsPixeltoY(py);
+   const Double_t y = gPad->PadtoY(yy);
 
-   gPad->GetListOfPrimitives()->AddLast(new TLatex(x,y,""));
+   fX = x;
+   fY = y;
+   gPad->GetListOfPrimitives()->AddLast(new TNamed("xval","xval"));
 }

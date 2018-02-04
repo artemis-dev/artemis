@@ -2,7 +2,7 @@
 /**
  * @file   LinkDefArtMC.h
  * @date   Created : Jan 25, 2011 21:25:03 JST
- *   Last Modified : Oct 28, 2014 15:11:39 JST
+ *   Last Modified : 2016-10-20 10:11:13 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -24,6 +24,7 @@
 #pragma link C++ global gAtomicMassTable;
 #pragma link C++ namespace TArtSystemOfUnit;
 #pragma link C++ class art::TTrackG4;
+#pragma link C++ class art::TRandomGraph;
 
 
 #endif // end of #ifdef LINKDEFARTMC_H

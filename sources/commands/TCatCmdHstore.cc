@@ -2,7 +2,7 @@
 /**
  * @file   TCatCmdHstore.cc
  * @date   Created : Jul 13, 2012 10:13:10 JST
- *   Last Modified : May 27, 2014 13:32:13 JST
+ *   Last Modified : 2016-11-28 11:11:08 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -11,6 +11,9 @@
 #include "TCatCmdHstore.h"
 
 #include <TFile.h>
+#include <TH1FTreeProj.h>
+#include <TH2FTreeProj.h>
+#include <TH3FTreeProj.h>
 
 TCatCmdHstore::TCatCmdHstore()
 {
@@ -59,7 +62,15 @@ void TCatCmdHstore::WriteRecursive(TDirectory *parent, TList *list)
       TObject *obj = list->At(i);
       parent->cd();
       if (obj->InheritsFrom("TH1")) {
-         obj->Write();
+         if (obj->InheritsFrom("art::TH1FTreeProj")) {
+            TH1F(*(art::TH1FTreeProj*)obj).Write();
+         } else if (obj->InheritsFrom("art::TH2FTreeProj")) {
+            TH2F(*(art::TH2FTreeProj*)obj).Write();
+         } else if (obj->InheritsFrom("art::TH2FTreeProj")) {
+            TH3F(*(art::TH3FTreeProj*)obj).Write();
+         } else {
+            obj->Write();
+         }
       } else if (obj->InheritsFrom("TDirectory")) {
          TDirectory *dir    = (TDirectory*)obj;
          TDirectory *newdir = parent->mkdir(dir->GetName());
