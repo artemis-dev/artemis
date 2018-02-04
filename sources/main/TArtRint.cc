@@ -2,7 +2,7 @@
 /**
  * @file   TArtRint.cc
  * @date   Created : Feb 06, 2012 00:06:18 JST
- *   Last Modified : Oct 27, 2015 09:39:48 EDT
+ *   Last Modified : 2018-02-04 13:06:40 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -58,13 +58,31 @@ TArtRint::~TArtRint()
 
 Long_t TArtRint::ProcessLine(const char* line, Bool_t sync, Int_t* error)
 {
+//   printf("%s\n",line);
    if (sync) {
       return TRint::ProcessLine(line,sync,error);
    }
-   if (TCatCmdFactory::Instance()->ProcessLine(TString(line))) {
-      return 1;
-   } else {
-      return TRint::ProcessLine(line,sync,error);
+   // prepare command line for artemis
+   {
+      TString lines(line);
+      TObjArray *arr = lines.Tokenize('\n');
+      std::vector<TString> cmds;
+      for (Int_t i = 0; i < arr->GetEntries(); ++i) {
+         TString aCmd = ((TObjString*)arr->At(i))->GetString();
+         if (!aCmd.BeginsWith("#")) {
+            cmds.push_back(aCmd);
+         }
+      }
+      TString cmdline;
+      for (Int_t i=0; i<cmds.size(); ++i) {
+         if (i>0) cmdline.Append("\n");
+         cmdline.Append(cmds[i]);
+      }
+      if (TCatCmdFactory::Instance()->ProcessLine(cmdline)) {
+         return 1;
+      } else {
+         return TRint::ProcessLine(line,sync,error);
+      }
    }
    return 0;
 }

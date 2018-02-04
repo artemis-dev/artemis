@@ -2,13 +2,14 @@
 /**
  * @file   TCatPulseShape.cc
  * @date   Created : Mar 10, 2013 23:10:50 JST
- *   Last Modified : 2017-01-31 05:35:43 JST (ota)
+ *   Last Modified : 2018-02-04 10:57:21 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
  *    Copyright (C)2013
  */
 #include "TCatPulseShape.h"
+#include <TBuffer.h>
 
 using art::TCatPulseShape;
 using std::vector;

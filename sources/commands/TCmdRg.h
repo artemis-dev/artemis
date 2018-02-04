@@ -3,7 +3,7 @@
  * @brief  command for setting axis range
  *
  * @date   Created       : 2016-10-09 13:25:34 JST
- *         Last Modified : 2016-10-10 13:46:32 JST (kawase)
+ *         Last Modified : 2018-02-04 11:23:17 JST (ota)
  * @author KAWASE Shoichiro <kawase@aees.kyushu-u.ac.jp>
  * @comment
  *
@@ -33,7 +33,7 @@ public:
    void Help();
 
 private:
-   typedef TAxis* (TH1::*AxisGetter)() const;
+   typedef TAxis* (TH1::*AxisGetter)();
    AxisGetter fGetAxis; // pointer to Getter method of axis
 
    TCmdRg(const TCmdRg&);            // undefined

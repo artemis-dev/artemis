@@ -2,7 +2,7 @@
 /**
  * @file   TProcessor.h
  * @date   Created : Jul 10, 2013 17:10:49 JST
- *   Last Modified : 2016-07-21 23:17:20 JST (ota)
+ *   Last Modified : 2018-02-04 11:03:46 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -217,7 +217,7 @@ template<class T>
    
 protected:
    Bool_t fOutputIsTransparent;    // output transparency
-   TConditionBit **fCondition; // condition bit to control loop
+   TConditionBit **fCondition; //! condition bit to control loop
    TParameterStrings *fParameters; // parameter strings
    Int_t  fVerboseLevel; // verbose level
    std::vector<IOCollection> fInputs;//!

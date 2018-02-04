@@ -2,7 +2,7 @@
 /**
  * @file   TRandomNumberProcessor.h
  * @date   Created : Jul 11, 2013 22:11:10 JST
- *   Last Modified : 
+ *   Last Modified : 2018-02-04 11:04:43 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -29,7 +29,7 @@ public:
    virtual void Process();
    
 private:
-   TSimpleData **fData;
+   TSimpleData **fData; //!
    TString fInputColName;
    TString fOutputColName;
    TSimpleData *fOutData;

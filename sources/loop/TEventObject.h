@@ -2,7 +2,7 @@
 /**
  * @file   TEventObject.h
  * @date   Created : Jul 10, 2013 14:10:50 JST
- *   Last Modified : 2016-07-15 10:50:46 JST (ota)
+ *   Last Modified : 2018-02-04 11:14:33 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -54,12 +54,12 @@ public:
       
 
 private:
-   void   *fP;
-   Bool_t  fIsPassive;
-   TClass *fClass;
-   TString fType;
-   TString *fLength;
-   Bool_t fIsObject;
+   void   *fP; //![1]
+   Bool_t  fIsPassive; //
+   TClass *fClass; //!
+   TString fType; //
+   TString *fLength; //!
+   Bool_t fIsObject; //
 
 
    ClassDef(TEventObject,1);

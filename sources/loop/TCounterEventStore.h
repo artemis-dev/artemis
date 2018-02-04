@@ -2,7 +2,7 @@
 /**
  * @file   TCounterEventStore.h
  * @date   Created : Jul 11, 2013 16:11:11 JST
- *   Last Modified : 
+ *   Last Modified : 2018-02-04 11:04:07 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -28,7 +28,7 @@ public:
    virtual void Process();
 
 private:
-   TConditionBit **fCondition;
+   TConditionBit **fCondition; //!
    Int_t           fMaxLoop;
    Int_t           fNumLoop;
 
