@@ -3,7 +3,7 @@
  * @brief  Tree projection definitions
  *
  * @date   Created       : 2014-03-05 10:15:05 JST
- *         Last Modified : 2018-02-13 16:25:50 JST (ota)
+ *         Last Modified : 2018-02-13 18:44:07 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -115,7 +115,16 @@ Bool_t TTreeProjection::LoadYAMLNode(const YAML::Node &node)
             if ((*it).Type() == YAML::NodeType::Map) {
                const YAML::Node *replaceNode = (*it).FindValue(kNodeKeyReplace);
                const YAML::Node *nameNode = (*it).FindValue(kNodeKeyName);
+               if (!nameNode) {
+                  Error("LoadFile","no 'name' node is found");
+                  return kFALSE;
+               }
                (*nameNode) >> name;
+
+               if (!replaceNode) {
+                  Warning("LoadFile","no 'replace' node is found while it is expected in '%s'",name.c_str());
+               }
+               
                filename = gSystem->ConcatFileName(fBaseDir,name.c_str());
                ifstream fin(filename.Data());
                if (!fin.is_open()) {
@@ -125,12 +134,14 @@ Bool_t TTreeProjection::LoadYAMLNode(const YAML::Node &node)
                YAML::Node doc;
                TString lines;
                lines.ReadFile(fin);
-               for (YAML::Iterator it = replaceNode->begin(), itend = replaceNode->end();
+               if (replaceNode) {
+                  for (YAML::Iterator it = replaceNode->begin(), itend = replaceNode->end();
                        it != itend; ++it) {
-                  std::string key, value;
-                  it.first() >> key;
-                  it.second() >> value;
-                  lines.ReplaceAll(TString::Format("@%s@",key.c_str()),value);
+                     std::string key, value;
+                     it.first() >> key;
+                     it.second() >> value;
+                     lines.ReplaceAll(TString::Format("@%s@",key.c_str()),value);
+                  }
                }
                std::istringstream iss(lines.Data());
                YAML::Parser parser(iss);
