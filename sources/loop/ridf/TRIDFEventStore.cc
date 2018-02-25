@@ -2,7 +2,7 @@
 /**
  * @file   TRIDFEventStore.cc
  * @date   Created : Jul 12, 2013 17:12:35 JST
- *   Last Modified : 2018-01-24 03:34:56 JST (ota)
+ *   Last Modified : 2018-02-25 12:02:11 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -120,8 +120,10 @@ void art::TRIDFEventStore::Init(TEventCollection *col)
 
 #if USE_MPI
    MPI_Initialized(&fUseMPI);
-   MPI_Comm_size(MPI_COMM_WORLD, &fNPE);
-   MPI_Comm_rank(MPI_COMM_WORLD, &fRankID);
+   if (fUseMPI) {
+      MPI_Comm_size(MPI_COMM_WORLD, &fNPE);
+      MPI_Comm_rank(MPI_COMM_WORLD, &fRankID);
+   }
 #endif
 
    col->AddInfo("scaler",fRIDFData.fScalerList,fOutputIsTransparent);

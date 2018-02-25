@@ -65,8 +65,12 @@ libs="-lcatcmd \
 -lartridf \
 -lartrdf \
 -larthist \
--lartparam \
--lyaml-cpp"
+-lartparam" 
+
+if [ "@HAVE_GET@" == "1" ]; then 
+  libs="${libs} @GET_DECODER_LIB@"
+  cflags="${cflags} -I@GET_DECODER_INCLUDE_DIR@"
+fi
 
 
 
@@ -122,7 +126,7 @@ while test $# -gt 0 ; do
       ;;
 
     --libs)
-      echo "-L${libdir}" ${libs}
+      echo "-L${libdir}" ${libs} @YAML_CPP_LIB@
       ;;
 
     --cflags)

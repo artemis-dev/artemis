@@ -3,7 +3,7 @@
  * @brief  Attribute to fill the tree projection
  *
  * @date   Created       : 2014-03-03 23:30:16 JST
- *         Last Modified : 2018-02-13 16:55:21 JST (ota)
+ *         Last Modified : 2018-02-21 20:30:38 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -78,7 +78,7 @@ void TAttTreeProj::FillTo(TH1* hist)
    const Int_t &nData = man->GetNdata();
    for (Int_t iData=0; iData!=nData; iData++) {
       if (!xaxis->EvalSelection(iData)) continue;
-      hist->Fill(xaxis->EvalVariable(iData));
+      hist->Fill(xaxis->EvalVariable(iData),xaxis->EvalSelection(iData));
    }
 }
 
@@ -92,7 +92,7 @@ void TAttTreeProj::FillTo(TH2* hist)
          if (!xaxis->EvalSelection(iData)) continue;
          if (!yaxis->EvalSelection(iData)) continue;
          hist->Fill(xaxis->EvalVariable(iData),
-                    yaxis->EvalVariable(iData));
+                    yaxis->EvalVariable(iData),xaxis->EvalSelection(iData));
       }
    } else {
       // asynchronous fill
@@ -107,7 +107,7 @@ void TAttTreeProj::FillTo(TH2* hist)
          for (Int_t iDataY = 0; iDataY != nDataY; iDataY++) {
             if (!yaxis->EvalSelection(iDataY)) continue;
             hist->Fill(xaxis->EvalVariable(iDataX),
-                       yaxis->EvalVariable(iDataY));
+                       yaxis->EvalVariable(iDataY),xaxis->EvalSelection(iDataX));
          }
       }
    }
@@ -128,7 +128,7 @@ void TAttTreeProj::FillTo(TH3* hist)
          if (!zaxis->EvalSelection(iData)) continue;
          hist->Fill(xaxis->EvalVariable(iData),
                     yaxis->EvalVariable(iData),
-                    zaxis->EvalVariable(iData));
+                    zaxis->EvalVariable(iData),xaxis->EvalSelection(iData));
       }
    } else {
       // asynchronous fill
@@ -149,7 +149,7 @@ void TAttTreeProj::FillTo(TH3* hist)
                if (!zaxis->EvalSelection(iDataZ)) continue;
                hist->Fill(xaxis->EvalVariable(iDataX),
                           yaxis->EvalVariable(iDataY),
-                          zaxis->EvalVariable(iDataZ));
+                          zaxis->EvalVariable(iDataZ),xaxis->EvalSelection(iDataX));
             }
          }
       }

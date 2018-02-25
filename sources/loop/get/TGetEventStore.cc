@@ -3,7 +3,7 @@
  * @brief  GET Event Store
  *
  * @date   Created       : 2017-12-21 00:29:39 JST
- *         Last Modified : 2017-12-28 04:11:56 JST (ota)
+ *         Last Modified : 2018-02-22 06:23:19 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2017 Shinsuke OTA
@@ -39,6 +39,7 @@ using art::TGetEventStore;
 
 ClassImp(TGetEventStore)
 
+const Int_t TGetEventStore::kFPNIDs[4] = {11, 22, 45, 56};
 TGetEventStore::TGetEventStore()
 {
    StringVec_t dummy;
@@ -49,7 +50,12 @@ TGetEventStore::TGetEventStore()
                             fNameEventHeader,TString("eventheader"),&fEventHeader,TEventHeader::Class_Name());
    RegisterProcessorParameter("RunHeadersName","the name of output array for run headers, run header will be stored once",
                             fNameRunHeaders,TString("runheader"));
+   RegisterOptionalParameter("StartEventNum","start point number of event",
+                             fStartEventNum,0);
    RegisterProcessorParameter("MaxEventNum","maximum number of event (no limit if 0)",fMaxEventNum,0);
+   RegisterProcessorParameter("RequireHitBit","require hit bit if 1 other wise all the data passed is filled",fRequireHitBit,1);
+   RegisterOptionalParameter("SubtractFPN","flag for subtraction of FPN",fSubtractFPN,kFALSE);
+   RegisterOptionalParameter("ValidBucket","range of valid time bucket",fValidBucket,IntVec_t(2,0));
 
    fUseMPI = kFALSE;
    fGetDecoder = new GETDecoder;
@@ -79,6 +85,30 @@ TGetEventStore& TGetEventStore::operator=(const TGetEventStore& rhs)
 
 void TGetEventStore::Init(TEventCollection *col) 
 {
+   if (fValidBucket.size() < 2) {
+      SetStateError(TString::Format("ValidBucket has %d size instead of 2",fValidBucket.size()));
+      return;
+   }
+
+   if (fValidBucket[0] > fValidBucket[1]) {
+      SetStateError(TString::Format("ValidBucket start is larger than end"));
+      return;
+   }
+
+   if (fValidBucket[0] < 0 || fValidBucket[1] >= 512) {
+      SetStateError(TString::Format("ValidBucket [%d,%d] out of range [0, 512]",
+                                    fValidBucket[0],fValidBucket[1]));
+      return;
+   }
+   
+   if (fValidBucket[0] == fValidBucket[1]){
+      fValidBucket[0] = 0;
+      fValidBucket[1] = 512;
+   }
+   if (fVerboseLevel > 0) {
+      Info("Init","Valid bucket [%d %d]",fValidBucket[0], fValidBucket[1]);
+   }
+
    for (StringVec_t::iterator it = fFileName.begin(), itend = fFileName.end(); it < itend; ++it) {
       TString filelist = gSystem->GetFromPipe(Form("ls -tr %s*",(*it).Data()));
       TObjArray *files = (filelist.Tokenize("\n"));
@@ -99,6 +129,19 @@ void TGetEventStore::Init(TEventCollection *col)
    // prepare run header information
    fRunHeaders->SetName(fNameRunHeaders);
 
+   // FPN ID 
+   for (Int_t i = 0; i < 68; ++i) {
+      if (i < 17) {
+         fFPNID[i] = 0;
+      } else if (i < 34) {
+         fFPNID[i] = 1;
+      } else if (i < 51) {
+         fFPNID[i] = 2; 
+      } else {
+         fFPNID[i] = 3;
+      }
+   }
+
 #if USE_MPI
    MPI_Initialized(&fUseMPI);
 
@@ -113,6 +156,8 @@ void TGetEventStore::Init(TEventCollection *col)
 
    col->AddInfo(fNameRunHeaders,fRunHeaders);
    col->Add(fNameEventHeader,fEventHeader,kFALSE);
+   fEventHeader->SetEventNumber(fStartEventNum);
+   fEventHeader->SetEventNumberTotal(fStartEventNum);
 }
 
 void TGetEventStore::Process()
@@ -163,21 +208,47 @@ void TGetEventStore::Process()
       if (!seg) seg = fSegmentedData->NewSegment(segid);
       for (Int_t iAGET = 0; iAGET < 4; ++iAGET) {
          bitset<72> hits = asad->GetHitPat(iAGET);
+
+         // calcurate FPN
+         if (fSubtractFPN) {
+            for (Int_t i = 0; i < 4; ++i) {
+               fFPN[i] = asad->GetSample(iAGET,kFPNIDs[i]);
+               if (fFPN[i] == NULL) continue;
+               Int_t ref = fFPN[i][fValidBucket[0]];
+               for (Int_t ip = 0; ip < 512; ++ip) {
+                  fFPN[i][ip] -= ref;
+               }
+            }
+         }
+
+
          for (Int_t iCh = 0; iCh < 68; iCh++) {
-            if ( hits[67-iCh] ) {
+//            printf("cobo %d asad = %d aget = %d ch = %d [%d]\n",asad->GetCoboID(),asad->GetAsadID(),iAGET,67-iCh,hits[67-iCh] == 1);
+            if ( !fRequireHitBit || hits[67-iCh] ) {
 //               printf("hits in cobo = %d, asad = %d, aget = %d, ch = %d\n",asad->GetCoboID(),asad->GetAsadID(),iAGET,iCh);
                Int_t* adc = asad->GetSample(iAGET,iCh);
-               Int_t offset = asad->GetReadOffset();
+               if (!adc) continue;
+               Int_t offset = asad->GetReadOffset() + fValidBucket[0];
                Int_t timestamp = asad->GetEventTime();
-               Int_t len = 512;
                Int_t pattern = 0;
                TRawDataFadc *data = (TRawDataFadc*) fData->ConstructedAt(fData->GetEntriesFast());
                data->Clear("C");
-               data->SetSegInfo(seg->GetUniqueID(),iAGET+4*(iAsAd+4*coboID),iCh);
+//               data->SetSegInfo(seg->GetUniqueID(),iAGET+4*(iAsAd+4*coboId),iCh);
+               data->SetSegInfo(seg->GetUniqueID(),iAGET,iCh);
+               data->SetUniqueID(iAGET+4*(iAsAd+4*coboId));
                data->SetFadcInfo(timestamp,offset,pattern);
-               for (Int_t i=0; i< len; ++i) {
-                  data->Add(adc[i]);
+               Int_t *fpn = fFPN[fFPNID[iCh]];
+               if (kFPNIDs[fFPNID[iCh]] != iCh && fSubtractFPN && fpn != NULL) {
+                  for (Int_t i=fValidBucket[0]; i<= fValidBucket[1]; ++i) {
+                     data->Add(adc[i]-fpn[i]);
+//                     data->Add(fpn[i]);
+                  }
+               } else {
+                  for (Int_t i=fValidBucket[0]; i<= fValidBucket[1]; ++i) {
+                     data->Add(adc[i]);
+                  }
                }
+
                seg->Add(data);
             }
          }

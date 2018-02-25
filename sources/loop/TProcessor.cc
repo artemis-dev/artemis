@@ -3,7 +3,7 @@
  * Base class for the user processors
  
  * @date   Created : Jul 10, 2013 17:10:19 JST
- *   Last Modified : 2018-01-25 21:52:46 JST (ota)
+ *   Last Modified : 2018-02-25 23:40:40 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *
@@ -369,7 +369,7 @@ void art::TProcessor::ListProcessors()
 
 void art::TProcessor::RegisterHelper(IProcessorHelper *helper)
 {
-   helper->Register(this);
+   helper->RegisterProcessor(this);
    fHelpers.push_back(helper);
 }
 
