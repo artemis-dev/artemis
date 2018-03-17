@@ -2,7 +2,7 @@
 /**
  * @file   TArtRint.cc
  * @date   Created : Feb 06, 2012 00:06:18 JST
- *   Last Modified : 2018-02-04 13:06:40 JST (ota)
+ *   Last Modified : 2018-03-17 13:33:32 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -19,6 +19,16 @@
 #include "TEnv.h"
 #include <TClassTable.h>
 #include "TProcessor.h"
+
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#ifdef HAVE_MPI_H
+#ifdef USE_MPI
+#include <mpi.h>
+#endif
+#endif
 
 using art::TArtRint;
 
@@ -50,6 +60,17 @@ TArtRint::TArtRint(int* argc, char** argv, void* options, int numOptions, Bool_t
       return;
    }
    gAtomicMassTable->SetMassTable(filepath,40);
+#if USE_MPI
+    int myrank, npe;
+    int usempi;
+    MPI_Initialized(&usempi);
+    if (usempi) {
+       MPI_Comm_size(MPI_COMM_WORLD, &npe);
+       MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
+       gRandom->SetSeed(myrank);
+    }
+#endif
+   
    
 }
 TArtRint::~TArtRint()
