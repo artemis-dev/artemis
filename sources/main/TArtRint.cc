@@ -2,7 +2,7 @@
 /**
  * @file   TArtRint.cc
  * @date   Created : Feb 06, 2012 00:06:18 JST
- *   Last Modified : 2018-03-17 13:33:32 JST (ota)
+ *   Last Modified : 2018-03-17 13:37:40 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -27,6 +27,7 @@
 #ifdef HAVE_MPI_H
 #ifdef USE_MPI
 #include <mpi.h>
+#include <TRandom.h>
 #endif
 #endif
 
