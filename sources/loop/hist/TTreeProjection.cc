@@ -3,7 +3,7 @@
  * @brief  Tree projection definitions
  *
  * @date   Created       : 2014-03-05 10:15:05 JST
- *         Last Modified : 2018-02-13 18:44:07 JST (ota)
+ *         Last Modified : 2018-04-02 13:35:22 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -126,7 +126,7 @@ Bool_t TTreeProjection::LoadYAMLNode(const YAML::Node &node)
                }
                
                filename = gSystem->ConcatFileName(fBaseDir,name.c_str());
-               ifstream fin(filename.Data());
+               std::ifstream fin(filename.Data());
                if (!fin.is_open()) {
                   Error("LoadFile", "Cannot open file: %s",filename.Data());
                   return kFALSE;
