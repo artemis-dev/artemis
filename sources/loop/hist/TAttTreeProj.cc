@@ -3,7 +3,7 @@
  * @brief  Attribute to fill the tree projection
  *
  * @date   Created       : 2014-03-03 23:30:16 JST
- *         Last Modified : 2018-04-02 13:34:58 JST (ota)
+ *         Last Modified : 2018-04-11 15:37:22 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -184,7 +184,6 @@ void TAttTreeProj::SetAxisDef(UInt_t i, TAxisTreeProj* a) {
 
 void TAttTreeProj::Sync()
 {
-   TAxis* (TH1::*pGetAxis[3]) ()  =  { &TH1::GetXaxis, &TH1::GetYaxis, &TH1::GetZaxis };
    if (!fNeedSync) return;
    fH->Rebuild();
    Int_t nDim = fH->GetDimension();
@@ -196,7 +195,18 @@ void TAttTreeProj::Sync()
          return;
       }
       man->Add(axis->GetVariableFormula());
-      TAxis *histaxis = (fH->*pGetAxis[i])();
+      
+      TAxis *histaxis = NULL;
+      switch (i) {
+      case 0:
+         histaxis = fH->GetXaxis();
+         break;
+      case 1:
+         histaxis = fH->GetYaxis();
+         break;
+      case 2:
+         histaxis = fH->GetZaxis();
+      }
       histaxis->SetTitle(axis->GetVariableFormula()->GetTitle());
       histaxis->SetTitleOffset(1.5);
       if (axis->GetSelectionFormula()) man->Add(axis->GetSelectionFormula());
