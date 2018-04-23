@@ -3,7 +3,7 @@
  * @brief  n-dimension array
  *
  * @date   Created       : 2016-01-29 11:34:04 JST
- *         Last Modified : 2016-10-24 20:16:04 JST (ota)
+ *         Last Modified : 2018-04-23 23:00:03 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2016 Shinsuke OTA
@@ -37,7 +37,8 @@ public:
    virtual Double_t Eval(Double_t *x);
 
    virtual const Variable& GetVar(Int_t i) { return fVars[i]; }
-   
+
+   virtual Double_t Value(Int_t i) const { return fValues[i]; }
 
 protected:
 
@@ -57,9 +58,10 @@ public:
    Variable(const char* name, Double_t step, Double_t min, Double_t max, Int_t num);
 
 //   Int_t IndexI(Double_t x) { return TMath::Nint((x-fMin)*(1./fStep)); }
-   Int_t IndexI(Double_t x) { return (Int_t)TMath::Floor(((Float_t)(x-fMin))*((Float_t)(1./fStep))); }
+//   Int_t IndexI(Double_t x) { return (Int_t)TMath::Floor(((Float_t)(x-fMin))*((Float_t)(1./fStep))); }
+   Int_t IndexI(Double_t x) { return TMath::FloorNint((x-fMin)/fStep + 0.5); }
    Bool_t CheckBounce(Double_t x) { return (fMin <= x ) && (x <= fMax); }
-   Double_t Derivative(Double_t x) { return (x-fMin)*(1/fStep) - TMath::Floor((x-fMin)*(1/fStep)); }
+   Double_t Derivative(Double_t x) { return (x-fMin)*(1/fStep) - TMath::Floor((x-fMin)*(1/fStep) + 0.5); }
 
    virtual Int_t GetNumVals() const { return fNumVals; }
    virtual Double_t GetMin() const{ return fMin; }

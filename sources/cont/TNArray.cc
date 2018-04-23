@@ -3,7 +3,7 @@
  * @brief
  *
  * @date   Created       : 2016-01-29 14:16:43 JST
- *         Last Modified : 2016-11-28 12:12:16 JST (ota)
+ *         Last Modified : 2018-04-23 23:13:31 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2016 Shinsuke OTA
@@ -56,7 +56,6 @@ Double_t TNArray::Eval(Double_t *x)
 {
    Int_t baseIndex = 0;
    Double_t retval = 0.;
-   std::vector<Double_t> deltaEnergy(fNumVars,0.);
    for (Int_t i = 0; i!=fNumVars; ++i) {
       Int_t idx;
       if (x[i] < fVars[i].GetMin()) {
@@ -71,11 +70,92 @@ Double_t TNArray::Eval(Double_t *x)
 #if 0
    printf("baseIndex = %d\n",baseIndex);
 #endif   
+#if 0
+   // calculate value and distance
+   std::vector<Double_t> values, distances;
+   const Int_t nVertex = TMath::Power(2,fNumVars);   
+#if 0   
+   std::vector<Int_t> used(fNumVars,0.);
+   const Int_t nVertex = TMath::Power(2,fNumVars);
+   Int_t idxdiff = 0;
+   idxdiff = 0;
+   idxdiff = fTotalNumVals[0];
+   idxdiff = fTotalNumVals[1];
+   idxdiff = fTotalNumVals[2];
+   idxdiff = fTotalNumVals[0] + fTotalNumVals[1];
+   idxdiff = fTotalNumVals[1] + fTotalNumVals[2];
+   idxdiff = fTotalNumVals[2] + fTotalNumVals[0];
+   idxdiff = fTotalNumVals[0] + fTotalNumVals[1] + fTotalNumVals[2];
+#endif
+   // dimension
+   Double_t value = 0;
+   Double_t weight = 0;
+   Double_t totaldiff = 0.;
+   for (Int_t i = 0; i < nVertex; ++i) {
+      std::vector<Int_t> use(fNumVars,0);
+      Int_t idxdiff = 0;
+      Double_t dist = 0.;
+      for (Int_t j = 0; j < fNumVars; ++j) {
+         if (( i & (1 << j))) {
+            idxdiff += fTotalNumVals[j];
+            use[j] = 1;
+         } 
+      }
+      if (baseIndex + idxdiff >= fTotalNumVals[0] * fVars[0].GetNumVals()) {
+//         printf("x[0] = %f, x[1] = %f, x[2] = %f, baseIndex = %d, i = %d, idxdiff = %d\n",x[0],x[1],x[2],baseIndex, i,idxdiff);
+         continue;
+      }
+#if 0      
+      for (Int_t j = 0; j < fNumVars; ++j) {
+         Double_t der = (use[j] ? 1 - fVars[j].Derivative(x[j]) : fVars[j].Derivative(x[j]));
+         dist += der * der;
+      }
+//      dist = TMath::Sqrt(dist);
+//      printf("dist = %f\n",dist);
+      if (dist < TMath::Limits<Double_t>::Epsilon()) {
+         value = fValues[baseIndex + idxdiff];
+         weight = 1;
+         break;
+      }
+      value += fValues[baseIndex + idxdiff] / dist;
+      weight += 1./dist;
+      values.push_back(fValues[baseIndex + idxdiff]);
+      distances.push_back(TMath::Sqrt(dist));
+#endif
+      Double_t multideriv = 1.;
+      for (Int_t j = 0; j < fNumVars; ++j) {
+         if (!use[j]) continue;
+         multideriv *=  fVars[j].Derivative(x[j]);
+      }
+      totaldiff += (fValues[baseIndex + idxdiff] - fValues[baseIndex]) * multideriv;
+   }
+   value /= weight;
+   value = fValues[baseIndex] + totaldiff;
+
+   return value;
+
+   printf("%f \n",value);
+#endif
+      
+   
+
    Double_t reference = retval  = fValues[baseIndex];
    for (Int_t i = 0; i!=fNumVars; ++i) {
-      if (baseIndex + fTotalNumVals[i] < fTotalNumVals[0] * fVars[0].GetNumVals()) {
-         Double_t diff = (fValues[baseIndex + fTotalNumVals[i]] - reference) * fVars[i].Derivative(x[i]);
-         retval += diff;
+       if (baseIndex + fTotalNumVals[i] < fTotalNumVals[0] * fVars[0].GetNumVals()) {
+          Double_t diff = (fValues[baseIndex + fTotalNumVals[i]] - reference) ;
+          Int_t nDiff = 1;
+#if 1          
+          if (baseIndex - fTotalNumVals[i] > 0) {
+             diff += (fValues[baseIndex] - fValues[baseIndex - fTotalNumVals[i]]);
+             nDiff ++;
+          }
+          if (baseIndex + 2* fTotalNumVals[i] < fTotalNumVals[0] * fVars[0].GetNumVals()) {
+             diff += (fValues[baseIndex + 2 * fTotalNumVals[i]] - fValues[baseIndex + fTotalNumVals[i]]);
+             nDiff ++;
+          }
+#endif          
+          diff *= fVars[i].Derivative(x[i]) / nDiff;
+          retval += diff;
 #if 0
          printf("diff[%d] = %f %f %f @ idx=%d\n",i,diff,fVars[i].Derivative(x[i]),fValues[baseIndex+fTotalNumVals[i]],baseIndex+fTotalNumVals[i]);
          printf("   min = %g\n",fVars[i].GetMin());
@@ -125,7 +205,7 @@ void TNArray::Load()
          index += fVars[iVar].IndexI(vars[iVar]) * fTotalNumVals[iVar];
       }
       if (used[index]) {
-         printf("index = %d used\n",index);
+         printf("index = %d used for entry %d\n",index,iEntry);
          for (Int_t iVar = 0; iVar != nVars; ++iVar) {
             printf("iVar = %d vars[%d] = %.10g IndexI = %d\n",iVar,iVar,vars[iVar],fVars[iVar].IndexI(vars[iVar]));
             printf(" %.20e / %.20f = %.20e => %.20e\n",vars[iVar],fVars[iVar].GetStep(),vars[iVar]/fVars[iVar].GetStep(),
