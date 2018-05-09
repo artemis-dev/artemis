@@ -2,7 +2,7 @@
 /**
  * @file   TCatPulseShape.cc
  * @date   Created : Mar 10, 2013 23:10:50 JST
- *   Last Modified : 2018-02-04 10:57:21 JST (ota)
+ *   Last Modified : 2018-03-18 23:35:14 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -40,8 +40,14 @@ void TCatPulseShape::Copy(TObject &obj) const
    pulse.fGeo = fGeo;
    pulse.fTime = fTime;
    pulse.fCharge = fCharge;
+   pulse.fRiseTime = fRiseTime;
    pulse.fOffset = fOffset;
    pulse.fNumSample = fNumSample;
+   pulse.fMaxSample = fMaxSample;
+   pulse.fMaxSampleOffset = fMaxSampleOffset;
+   pulse.fBaseline = fBaseline;
+   pulse.fBaselineRMS = fBaselineRMS;
+   pulse.fLeadingEdgeOffset = fLeadingEdgeOffset;
    pulse.fRiseTime = fRiseTime;
    fPos.Copy(pulse.fPos);
    pulse.fPos = fPos;
