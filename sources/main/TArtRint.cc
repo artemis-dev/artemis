@@ -2,7 +2,7 @@
 /**
  * @file   TArtRint.cc
  * @date   Created : Feb 06, 2012 00:06:18 JST
- *   Last Modified : 2018-03-17 13:37:40 JST (ota)
+ *   Last Modified : 2018-05-09 10:01:47 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -116,5 +116,13 @@ void   TArtRint::Terminate(Int_t status)
    for (Int_t i=0; i!=n; i++) {
       lm->Terminate(i);
    }
+#ifdef USE_MPI
+   int useMPI;
+   MPI_Initialized(&useMPI);
+   if (useMPI) {
+      MPI_Barrier(MPI_COMM_WORLD);
+      MPI_Finalize();
+   }
+#endif
    TRint::Terminate(status);
 }

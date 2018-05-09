@@ -2,7 +2,7 @@
 /**
  * @file   main.cc
  * @date   Created : Feb 06, 2012 00:06:56 JST
- *   Last Modified : May 05, 2014 07:12:46 JST
+ *   Last Modified : 2018-04-27 16:55:24 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -28,12 +28,10 @@ int main (int argc, char **argv)
   // check option
   char opt;
   bool flag;
-  TString filename;
-  while ((opt = getopt(argc,argv,"i:")) != -1) {
+  while ((opt = getopt(argc,argv,"i:qlb")) != -1) {
     switch(opt) {
     case 'i':
       flag = 1;
-      filename = optarg;
       break;
     default:
       break;
@@ -45,9 +43,10 @@ int main (int argc, char **argv)
     MPI_Comm_size(MPI_COMM_WORLD, &npe);
     MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
     art::TArtRint *theApp = new art::TArtRint(&argc, argv);
+    MPI_Barrier(MPI_COMM_WORLD);
     theApp->Run();
-    //    art::TLoopManager::Instance()->Add(filename);
-    printf("myrank = %d / %d\n",myrank,npe); 
+    printf("myrank = %d / %d\n",myrank,npe);
+    MPI_Barrier(MPI_COMM_WORLD);
     MPI_Finalize();
   } else {
     art::TArtRint *theApp = new art::TArtRint(&argc, argv);
