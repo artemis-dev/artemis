@@ -2,7 +2,7 @@
 /**
  * @file   TBinaryReactionGenerator.cc
  * @date   Created : Aug 18, 2013 12:18:37 JST
- *   Last Modified : 2016-10-27 18:49:45 JST (ota)
+ *   Last Modified : 2018-06-19 20:26:02 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -15,6 +15,7 @@
 #include <TClonesArray.h>
 #include <TF1.h>
 #include <TArtSystemOfUnit.h>
+#include <TRandom.h>
 
 using TArtSystemOfUnit::deg;
 
@@ -50,6 +51,7 @@ art::TBinaryReactionGenerator::TBinaryReactionGenerator()
    RegisterProcessorParameter("AngRange","the range of angular distribution",fAngRange,angRangeDefault);
    RegisterProcessorParameter("AngMom","angular momentum for bessel function. If -1 (default), the isotopic distribution is assumed.",fAngMom,(int)-1);
    RegisterProcessorParameter("AngDistFile","file name of the angular distribution. The format of content is '%f %f'. ",fAngDistFile,TString(""));
+   RegisterOptionalParameter("DoRandomizePhi","Flag to randomize phi direction (uniform)",fDoRandomizePhi,1);
 
 }
 art::TBinaryReactionGenerator::~TBinaryReactionGenerator()
@@ -160,6 +162,10 @@ void art::TBinaryReactionGenerator::Process()
    *out0 = *p0;
    *out1 = *p1;
    *out2 = *p2;
+   if (fDoRandomizePhi) {
+      out3->RotateZ(gRandom->Uniform(0.,2*TMath::Pi()));
+      out2->RotateZ(gRandom->Uniform(0.,2*TMath::Pi()));
+   }
    fNumLoop++;
    if (fMaxLoop<=fNumLoop) {
       SetStopLoop();

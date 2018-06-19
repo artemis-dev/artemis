@@ -2,7 +2,7 @@
 /**
  * @file   TBinaryReactionGenerator.h
  * @date   Created : Aug 18, 2013 12:18:48 JST
- *   Last Modified : Aug 22, 2013 15:45:33 JST
+ *   Last Modified : 2018-06-19 20:20:40 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -53,7 +53,7 @@ private:
    FloatVec_t fExRange;
    FloatVec_t fAngRange;
    
-   
+   Int_t fDoRandomizePhi;
 
    
    TH2F *fExAngDistribution;
