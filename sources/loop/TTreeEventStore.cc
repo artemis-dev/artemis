@@ -2,7 +2,7 @@
 /**
  * @file   TTreeEventStore.cc
  * @date   Created : Jul 11, 2013 21:11:20 JST
- *   Last Modified : 2016-12-15 16:55:29 JST (ota)
+ *   Last Modified : 2018-06-06 15:40:54 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -47,8 +47,8 @@ void art::TTreeEventStore::Init(TEventCollection *col)
    if (useMPI) {
       MPI_Comm_size(MPI_COMM_WORLD, &fNPE);
       MPI_Comm_rank(MPI_COMM_WORLD, &fRankID);
+      fFileName.Append(Form("%d",fRankID));
    }
-   fFileName.Append(Form("%d",fRankID));
 #endif
    
    fEventNum = 0;
