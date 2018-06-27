@@ -2,7 +2,7 @@
 /**
  * @file   TRIDFEventStore.h
  * @date   Created : Jul 12, 2013 17:12:43 JST
- *   Last Modified : 2017-03-01 14:10:58 JST (kawase)
+ *   Last Modified : 2018-06-27 14:15:57 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *
@@ -32,6 +32,7 @@ namespace art {
    class TEventHeader;
    class TModuleDecoderFactory;
    class TScalerData;
+   class TTimestampEventList;
 }
 
 class THashList;
@@ -96,6 +97,12 @@ protected:
    static const Int_t kSEMKEY_BASE   = 561001;
    Int_t fSHMID;
    Int_t fBlockNumber;
+
+   TString fEventListName;
+   Long64_t fEventListIndex; 
+
+   TTimestampEventList* fEventList; //! event list
+   
 
    // use function pointer array to decode classes instead of function object.
    // since the number of classes may not change so much and they are easy to be maintained.

@@ -2,7 +2,7 @@
 /**
  * @file   TRIDFEventStore.cc
  * @date   Created : Jul 12, 2013 17:12:35 JST
- *   Last Modified : 2018-02-25 12:02:11 JST (ota)
+ *   Last Modified : 2018-06-27 14:18:53 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -37,9 +37,14 @@
 #include <TScalerData.h>
 #include <THashList.h>
 
+namespace {
+   const Int_t kClassEventNoTimestamp = 3;
+   const Int_t kClassEventWithTimestamp = 6;
+}
+
 art::TRIDFEventStore::TRIDFEventStore()
 : fMaxEventNum(0),fEventNum(0),fEventNumTotal(0), fMaxBufSize(kMaxBufSize),
-     fSHMID(0), fBlockNumber(0)
+  fSHMID(0), fBlockNumber(0), fEventListIndex(0), fEventList(NULL)
 {
    fDataSource = NULL;
    StringVec_t dummy;
@@ -52,6 +57,7 @@ art::TRIDFEventStore::TRIDFEventStore()
                             fNameEventHeader,TString("eventheader"));
    RegisterProcessorParameter("MaxEventNum","maximum number of event (no limit if 0)",fMaxEventNum,0);
    RegisterProcessorParameter("SHMID","Shared memory id (default : 0)",fSHMID,0);
+   RegisterInputInfo("EventListName","name of event list",fEventListName,TString(""));
 
    fRIDFData.fSegmentedData = new TSegmentedData;
    fRIDFData.fRunHeaders = new TList;
@@ -72,13 +78,13 @@ art::TRIDFEventStore::TRIDFEventStore()
    }
    // register class decoders
    // Class 3 : event header  w/o timestamp
-   fClassDecoder[3] = ClassDecoder03;
+   fClassDecoder[kClassEventNoTimestamp] = ClassDecoder03;
    // Class 4 : event segment
    fClassDecoder[4] = ClassDecoder04;
    // Class 5 : comment block
    fClassDecoder[5] = ClassDecoder05;
    // Class 6 : event header w/ timestamp
-   fClassDecoder[6] = ClassDecoder06;
+   fClassDecoder[kClassEventWithTimestamp] = ClassDecoder06;
    // Class 8 : 
    fClassDecoder[8] = ClassDecoderSkip;
    // Class 9 : 
@@ -112,6 +118,16 @@ void art::TRIDFEventStore::Init(TEventCollection *col)
    for (Int_t i=0; i!=n;i++) {
       printf("file = %s\n",fFileName[i].Data());
    }
+#if 0
+   if (!fEventListName.IsNull()) {
+      // get event list from info
+      fEventList = dynamic_cast<TTimestampEventList*>(col->GetInfo(fEventListName));
+      if (!fEventList) {
+         SetStateError(TString::Format("Event list does not exist '%s'",fEventListName.Data()));
+         return;
+      }
+   }
+#endif         
 
    col->Add(fNameSegmented,fRIDFData.fSegmentedData,fOutputIsTransparent);
    col->Add(fNameEventHeader,fRIDFData.fEventHeader,kFALSE);
@@ -196,8 +212,6 @@ void art::TRIDFEventStore::ClassDecoder03(Char_t *buf, Int_t& offset, struct RID
    Int_t last = offset + header.Size();
    offset += sizeof(header);
    offset += sizeof(int);
-   ridfdata->fEventHeader->IncrementEventNumber();
-   ((TRunInfo*)ridfdata->fRunHeaders->Last())->IncrementEventNumber();
    while (offset < last) {
       memcpy(&header,buf+offset,sizeof(header));
       if (header.ClassID() == 4) {
@@ -223,6 +237,7 @@ void art::TRIDFEventStore::ClassDecoder04(Char_t *buf, Int_t& offset, struct RID
    memcpy(&header,buf+offset,sizeof(header));
    // offset should be incremented by the size written in header 
    offset += header.Size();
+
    // local valude o
    index += sizeof(header);
    // read segment id
@@ -312,8 +327,6 @@ void art::TRIDFEventStore::ClassDecoder06(Char_t *buf, Int_t& offset, struct RID
    RIDFHeader header;
    memcpy(&header,buf+offset,sizeof(header));
    Int_t last = offset + header.Size();
-   ridfdata->fEventHeader->IncrementEventNumber();
-   ((TRunInfo*)ridfdata->fRunHeaders->Last())->IncrementEventNumber();
    offset += sizeof(header);
    offset += sizeof(int);
    ridfdata->fEventHeader->SetTimestamp(*(Long64_t*)(buf+offset));
@@ -518,7 +531,44 @@ Bool_t art::TRIDFEventStore::GetNextEvent()
       if (fHeader.ClassID() == 0) {
 	fIsEOB = kTRUE;
 	return kFALSE;
-      } 
+      }
+
+      //////////////////////////////////////////////////////////////////////
+      // judge if event segment is analyzed or not
+      //////////////////////////////////////////////////////////////////////
+      if (fHeader.ClassID() == kClassEventNoTimestamp ||
+          fHeader.ClassID() == kClassEventWithTimestamp) {
+         fRIDFData.fEventHeader->IncrementEventNumber();
+         ((TRunInfo*)fRIDFData.fRunHeaders->Last())->IncrementEventNumber();
+#if 0
+         if (fEventList) {
+            Int_t eventNumber = fEventList->GetEntry(fEventListIndex);
+            // set EOB and return false if no event exists
+            if (eventNumber == -1) {
+               fIsEOB = kTRUE;
+               return kFALSE;
+            }
+            // skip event if event number mismatch 
+            if (fRIDFData.fEventHeader->GetEventNumber() != eventNumber) {
+               ClassDecoderSkip(fBuffer,fOffset,&fRIDFData);
+               continue;
+            }
+         }
+#endif         
+         fEventListIndex++;
+#ifdef USE_MPI
+         { 
+            if (fUseMPI) {
+               // skip if modulus of event serial number to total number of processor is not equal to rank
+               if ((fEventListIndex % fNPE) != fRankID) {
+                  ClassDecoderSkip(fBuffer,fOffset,&fRIDFData);
+                  continue;
+               }
+            }
+         }
+#endif
+      }
+
       if (fClassDecoder[fHeader.ClassID()]) {
          fClassDecoder[fHeader.ClassID()](fBuffer,fOffset,&fRIDFData);
       } else {
@@ -528,17 +578,6 @@ Bool_t art::TRIDFEventStore::GetNextEvent()
       if (fOffset >= fBlockSize)  {
          fIsEOB = kTRUE;
       }
-#ifdef USE_MPI
-      { 
-	if (fUseMPI) {
-	  if ((fRIDFData.fEventHeader->GetEventNumber() % fNPE) != fRankID) {
-	    if (fIsEOB) return kFALSE;
-	    continue;
-	  }
-	}
-      }
-
-#endif
       // TClassDecoder::Decode(fBuffer,fOffset,fNext,something?)
       // if the data is available or not
       if (fRIDFData.fSegmentedData->GetEntriesFast()) {
