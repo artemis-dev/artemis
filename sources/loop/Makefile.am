@@ -38,6 +38,12 @@ SUBSRC+=TTimerProcessor.cc
 SUBSRC+=TTreeEventStore.cc 
 SUBSRC+=IProcessorHelper.cc
 SUBSRC+=TScalerData.cc
+SUBSRC+=TTimestampEventList.cc
+SUBSRC+=TTimestampEventReconstructor.cc
+SUBSRC+=TScalerTimestampProcessor.cc
+SUBSRC+=THeaderTimestampProcessor.cc
+SUBSRC+=TScalerMappingProcessor.cc
+SUBSRC+=TObjectLoader.cc
 
 
 SUBOBJ = $(SUBSRC:.cc=.o)

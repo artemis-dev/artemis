@@ -2,7 +2,7 @@
 /**
  * @file   TRIDFEventStore.cc
  * @date   Created : Jul 12, 2013 17:12:35 JST
- *   Last Modified : 2018-06-27 14:18:53 JST (ota)
+ *   Last Modified : 2018-06-27 19:36:06 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -24,6 +24,7 @@
 #include <TSystem.h>
 #include <TCatPadManager.h>
 #include <TRegexp.h>
+#include <TTimestampEventList.h>
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -118,7 +119,6 @@ void art::TRIDFEventStore::Init(TEventCollection *col)
    for (Int_t i=0; i!=n;i++) {
       printf("file = %s\n",fFileName[i].Data());
    }
-#if 0
    if (!fEventListName.IsNull()) {
       // get event list from info
       fEventList = dynamic_cast<TTimestampEventList*>(col->GetInfo(fEventListName));
@@ -127,7 +127,6 @@ void art::TRIDFEventStore::Init(TEventCollection *col)
          return;
       }
    }
-#endif         
 
    col->Add(fNameSegmented,fRIDFData.fSegmentedData,fOutputIsTransparent);
    col->Add(fNameEventHeader,fRIDFData.fEventHeader,kFALSE);
@@ -540,13 +539,17 @@ Bool_t art::TRIDFEventStore::GetNextEvent()
           fHeader.ClassID() == kClassEventWithTimestamp) {
          fRIDFData.fEventHeader->IncrementEventNumber();
          ((TRunInfo*)fRIDFData.fRunHeaders->Last())->IncrementEventNumber();
-#if 0
+
          if (fEventList) {
             Int_t eventNumber = fEventList->GetEntry(fEventListIndex);
+            printf("#event = %d, index = %d\n",eventNumber,fEventListIndex);
             // set EOB and return false if no event exists
-            if (eventNumber == -1) {
+            if (eventNumber < 0) {
+               SetStopEvent();
+               SetStopLoop();
+               SetEndOfRun();
                fIsEOB = kTRUE;
-               return kFALSE;
+               return kTRUE;
             }
             // skip event if event number mismatch 
             if (fRIDFData.fEventHeader->GetEventNumber() != eventNumber) {
@@ -554,7 +557,7 @@ Bool_t art::TRIDFEventStore::GetNextEvent()
                continue;
             }
          }
-#endif         
+
          fEventListIndex++;
 #ifdef USE_MPI
          { 

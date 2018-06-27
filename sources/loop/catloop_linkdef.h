@@ -2,7 +2,7 @@
 /**
  * @file   catloop_linkdef.h
  * @date   Created : Feb 19, 2012 11:19:06 JST
- *   Last Modified : 2017-06-06 22:14:03 JST (ota)
+ *   Last Modified : 2018-06-27 19:11:02 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -58,6 +58,12 @@
 #pragma link C++ class art::TModuleType;
 #pragma link C++ class art::IProcessorHelper;
 #pragma link C++ class art::TScalerData+;
+#pragma link C++ class art::TTimestampEventList+;
+#pragma link C++ class art::TTimestampEventReconstructor;
+#pragma link C++ class art::TScalerTimestampProcessor;
+#pragma link C++ class art::THeaderTimestampProcessor;
+#pragma link C++ class art::TScalerMappingProcessor;
+#pragma link C++ class art::TObjectLoader;
 #endif /* __CINT__ */
 
 #endif // end of #ifdef CATLOOP_LINKDEF_H
