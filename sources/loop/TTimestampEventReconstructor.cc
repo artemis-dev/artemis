@@ -3,7 +3,7 @@
  * @brief  event reconstruction using timestamp
  *
  * @date   Created       : 2018-06-27 15:37:30 JST
- *         Last Modified : 2018-06-27 19:17:46 JST (ota)
+ *         Last Modified : 2018-06-28 17:47:55 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2018 Shinsuke OTA
@@ -25,7 +25,7 @@ ClassImp(TTimestampEventReconstructor)
 TTimestampEventReconstructor::TTimestampEventReconstructor()
 {
 
-   RegisterInputCollection("EventLists","set of event list: n * [file name, timestamp, event header, window start, window end,  list name]",
+   RegisterInputCollection("EventLists","set of event list: n * [file name, timestamp, event header, window offset, window half width,  list name]",
                            fInputLists,StringVec_t(0));
 
    RegisterProcessorParameter("OutputFileName","name of output file",fOutputFileName,TString(""));
@@ -75,12 +75,16 @@ void TTimestampEventReconstructor::Init(TEventCollection *col)
       fFileNames.push_back(fInputLists[i]);
       fTimestampNames.push_back(fInputLists[i + 1]);
       fEventHeaderNames.push_back(fInputLists[i + 2]);
-      fSearchWindowStarts.push_back(fInputLists[i + 3].Atof());
-      fSearchWindowEnds.push_back(fInputLists[i + 4].Atof());
+      Double_t offset = fInputLists[i + 3].Atof();
+      Double_t width = fInputLists[i + 4].Atof();
       fOutputListNames.push_back(fInputLists[i + 5]);
+      fSearchWindowStarts.push_back(offset - width);
+      fSearchWindowEnds.push_back(offset + width);
    }
 
    fNumLists = fFileNames.size();
+   fHeaderQueue.resize(fNumLists);
+   fTimestampQueue.resize(fNumLists);
 
    //////////////////////////////////////////////////////////////////////
    // set output file
@@ -125,6 +129,7 @@ void TTimestampEventReconstructor::Init(TEventCollection *col)
    }
    //////////////////////////////////////////////////////////////////////
    // check and get event headers
+
    //////////////////////////////////////////////////////////////////////
    badlist.clear();
    for (Int_t i = 0, n = fNumLists; i < n; ++i) {
@@ -150,11 +155,15 @@ void TTimestampEventReconstructor::Init(TEventCollection *col)
    // create histogram
    //////////////////////////////////////////////////////////////////////
    gROOT->mkdir("eventReconstruction")->cd();
-   for (Int_t i = 1, n = fNumLists; i < n; ++i) {
+   for (Int_t i = 0, n = fNumLists; i < n; ++i) {
       TString name = TString::Format("%s_%s",fOutputEventLists[0]->GetName(),
                                      fOutputEventLists[i]->GetName());
+      TString nameAll = TString::Format("%s_%s_all",fOutputEventLists[0]->GetName(),
+                                     fOutputEventLists[i]->GetName());
       TH1F *hist = new TH1F(name,name,1000,fSearchWindowStarts[i],fSearchWindowEnds[i]);
+      TH1F *histAll = new TH1F(nameAll,nameAll,1000,fSearchWindowStarts[i],fSearchWindowEnds[i]);
       fTimestampHists.push_back(hist);
+      fTimestampHistsAll.push_back(histAll);
    }
    dirsaved->cd();
 
@@ -166,10 +175,59 @@ void TTimestampEventReconstructor::BeginOfRun()
 
 void TTimestampEventReconstructor::Process()
 {
+   Int_t foundTimestamps = 1;
    for (Int_t i = 0, n = fNumLists; i < n; ++i ) {
       TEventHeader *header = *fEventHeaders[i];
       TSimpleData *timestamp = *fTimestamps[i];
-      fOutputEventLists[i]->AddEntry(header->GetEventNumber(),timestamp->GetValue());
+      fHeaderQueue[i].push(header->GetEventNumber());
+      fTimestampQueue[i].push(timestamp->GetValue());
+   }
+   while (fTimestampQueue[0].size()) {
+      Double_t timestampOrigin = fTimestampQueue[0].front();
+      for (Int_t i = 1; i < fNumLists; ++i) {
+         while (fTimestampQueue[i].size()) {
+            Double_t timestamp = fTimestampQueue[i].front();
+            if (timestamp - timestampOrigin < fSearchWindowStarts[i]) {
+               // pop timestamp because it becomes old
+#if 0               
+               Info("Process","Dropped [%d][%d] %20.10f, %20.10f < %20.10f",i,timestamp, fHeaderQueue[i].front(),timestamp-timestampOrigin,fSearchWindowStarts[i]);
+#endif               
+               Pop(i);
+               fTimestampHistsAll[i]->Fill(timestamp-timestampOrigin);
+               if (fTimestampQueue[i].size() == 0) {
+                  // no more loop is available
+                  return;
+               }
+            } else if (timestamp - timestampOrigin > fSearchWindowEnds[i]) {
+               // pop timestamp reference because it becomes old
+               Info("Process","Dropped [%d] %20.10f",0,timestampOrigin);
+               Pop(0);
+               fTimestampHistsAll[0]->Fill(0);
+               if (fTimestampQueue[0].size() == 0) {
+                  // no more loop is available
+                  return;
+               }
+               // get new timestamp origin
+               timestampOrigin = fTimestampQueue[0].front();
+            } else {
+               // timestamp is within the search window
+               foundTimestamps++;
+               break;
+            }
+         }
+      }
+
+      if (foundTimestamps != fNumLists) return;
+      Double_t timeref = fTimestampQueue[0].front();
+      for (Int_t i = 0, n = fNumLists; i < n; ++i ) {
+         Double_t timestamp = fTimestampQueue[i].front();
+         Long64_t entry = fHeaderQueue[i].front();
+         Pop(i);
+         fOutputEventLists[i]->AddEntry(entry,timestamp);
+         fTimestampHists[i]->Fill(timestamp-timeref);
+         fTimestampHistsAll[i]->Fill(timestamp-timeref);
+      }
+      foundTimestamps = 1;
    }
 }
 

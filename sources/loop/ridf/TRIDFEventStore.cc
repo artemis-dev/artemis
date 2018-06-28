@@ -2,7 +2,7 @@
 /**
  * @file   TRIDFEventStore.cc
  * @date   Created : Jul 12, 2013 17:12:35 JST
- *   Last Modified : 2018-06-27 19:36:06 JST (ota)
+ *   Last Modified : 2018-06-27 21:14:25 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -525,6 +525,7 @@ Bool_t art::TRIDFEventStore::GetNextEvent()
    if (fIsEOB) return kFALSE;
    // parse data if available
    while (1) {
+      Bool_t doSkip = kFALSE;
       fRIDFData.fDecoderFactory->Clear();
       memcpy(&fHeader,fBuffer+fOffset,sizeof(fHeader));
       if (fHeader.ClassID() == 0) {
@@ -542,7 +543,7 @@ Bool_t art::TRIDFEventStore::GetNextEvent()
 
          if (fEventList) {
             Int_t eventNumber = fEventList->GetEntry(fEventListIndex);
-            printf("#event = %d, index = %d\n",eventNumber,fEventListIndex);
+//            printf("#event = %d, index = %d\n",eventNumber,fEventListIndex);
             // set EOB and return false if no event exists
             if (eventNumber < 0) {
                SetStopEvent();
@@ -553,26 +554,28 @@ Bool_t art::TRIDFEventStore::GetNextEvent()
             }
             // skip event if event number mismatch 
             if (fRIDFData.fEventHeader->GetEventNumber() != eventNumber) {
-               ClassDecoderSkip(fBuffer,fOffset,&fRIDFData);
-               continue;
+//               Info("GetNextEvent","skip");
+//               ClassDecoderSkip(fBuffer,fOffset,&fRIDFData);
+               doSkip = kTRUE;
             }
          }
-
-         fEventListIndex++;
+         if (!doSkip) {
+            fEventListIndex++;
+         }
 #ifdef USE_MPI
          { 
             if (fUseMPI) {
                // skip if modulus of event serial number to total number of processor is not equal to rank
                if ((fEventListIndex % fNPE) != fRankID) {
-                  ClassDecoderSkip(fBuffer,fOffset,&fRIDFData);
-                  continue;
+                  doSkip = kTRUE;
                }
             }
          }
 #endif
       }
-
-      if (fClassDecoder[fHeader.ClassID()]) {
+      if (doSkip) {
+         ClassDecoderSkip(fBuffer,fOffset,&fRIDFData);
+      } else if (fClassDecoder[fHeader.ClassID()]) {
          fClassDecoder[fHeader.ClassID()](fBuffer,fOffset,&fRIDFData);
       } else {
          printf("Class ID = %d\n",fHeader.ClassID());

@@ -3,7 +3,7 @@
  * @brief  event reconstruction using timestamp
  *
  * @date   Created       : 2018-06-27 15:37:06 JST
- *         Last Modified : 2018-06-27 19:22:40 JST (ota)
+ *         Last Modified : 2018-06-28 15:23:19 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2018 Shinsuke OTA
@@ -57,12 +57,18 @@ protected:
    TFile* fOutputFile; //! pointer to output files
    std::vector<TTimestampEventList*> fOutputEventLists; //! vector of output files
 
-   std::vector<TH1F*> fTimestampHists; //! hists
+   std::vector<TH1F*> fTimestampHists; //! hists for reconstructed timestamps
+   std::vector<TH1F*> fTimestampHistsAll; //! hists for all timestamps
 
-   std::queue<TEventHeader*> fHeaderQueue;
-   std::queue<TSimpleData*> fTimestampQueue;
+   std::vector<std::queue<Long64_t> > fHeaderQueue;
+   std::vector<std::queue<Double_t> > fTimestampQueue;
    
-   
+   virtual void Pop(Int_t idx) {
+      if (idx < 0 || idx >= fNumLists) return;
+      if (fHeaderQueue[idx].size() == 0) return;
+      fHeaderQueue[idx].pop();
+      fTimestampQueue[idx].pop();
+   }
    
 private:
 
