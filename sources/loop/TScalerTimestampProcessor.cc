@@ -3,7 +3,7 @@
  * @brief  generate timestamp from scaler
  *
  * @date   Created       : 2018-06-25 20:21:53 JST
- *         Last Modified : 2018-06-27 17:41:09 JST (ota)
+ *         Last Modified : 2018-06-29 01:51:24 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2018 Shinsuke OTA
@@ -19,6 +19,7 @@ using art::TScalerTimestampProcessor;
 ClassImp(TScalerTimestampProcessor)
 
 TScalerTimestampProcessor::TScalerTimestampProcessor()
+: fNumCycles(0), fFastSaved(0), fSlowSaved(0), fMaxTimeByFastClock(0)
 {
 
    RegisterInputCollection("Input","name of scaler input",fInputName,TString("scaler"),
@@ -82,12 +83,29 @@ void TScalerTimestampProcessor::Init(TEventCollection* col)
    
       
 }
+
+
+void TScalerTimestampProcessor::BeginOfRun()
+{
+   fNumCycles = 0;
+   fFastSaved = 0.;
+   fSlowSaved = 0.;
+   fMaxTimeByFastClock = TMath::Power(2,fBits)/fFastFrequency;
+}
 void TScalerTimestampProcessor::Process() {
    fOutput->Clear("C");
-   Double_t offset = 0;
-   if (fSlowID != -1) {
-      Double_t base = TMath::Power(2,fBits)/fFastFrequency;
-      offset = base * TMath::Floor((*fInput)->GetValue(fSlowID) / fSlowFrequency / base);
+   Double_t fast = (*fInput)->GetValue(fFastID);
+   Double_t slow = (*fInput)->GetValue(fSlowID);
+   if (fFastSaved > TMath::Limits<Double_t>::Epsilon() &&
+      fast < fFastSaved) {
+      // increment the number of cycle when loop over the counter
+      fNumCycles++;
    }
-   fOutput->SetValue((*fInput)->GetValue(fFastID) / fFastFrequency + offset);
+   // add cycle when the time more than maximum time pasts
+   if (fSlowSaved > TMath::Limits<Double_t>::Epsilon()) {
+      fNumCycles += TMath::Floor((slow - fSlowSaved) / fSlowFrequency / fMaxTimeByFastClock);
+   }
+   fFastSaved = fast;
+   fSlowSaved = slow;
+   fOutput->SetValue(fast / fFastFrequency + fNumCycles * fMaxTimeByFastClock);
 }

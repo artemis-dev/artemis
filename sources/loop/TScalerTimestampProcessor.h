@@ -3,7 +3,7 @@
  * @brief  generate timestamp from scaler
  *
  * @date   Created       : 2018-06-25 19:47:59 JST
- *         Last Modified : 2018-06-27 17:40:54 JST (ota)
+ *         Last Modified : 2018-06-29 01:43:43 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2018 Shinsuke OTA
@@ -30,6 +30,7 @@ public:
 
    virtual void Init(TEventCollection *col);
    virtual void Process();
+   virtual void BeginOfRun();
 
 protected:
 
@@ -47,7 +48,12 @@ protected:
 
    Int_t fBits; // number of bits
    
-
+   Int_t fNumCycles; //! number of clock sycle
+   Double_t fFastSaved; //! saved fast clock
+   Double_t fSlowSaved; //! saved slow clock
+   Double_t fMaxTimeByFastClock; //! maximum time calculsted fast clock
+   
+   
 private:
 
    
