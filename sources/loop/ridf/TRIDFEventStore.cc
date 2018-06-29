@@ -2,7 +2,7 @@
 /**
  * @file   TRIDFEventStore.cc
  * @date   Created : Jul 12, 2013 17:12:35 JST
- *   Last Modified : 2018-06-27 21:14:25 JST (ota)
+ *   Last Modified : 2018-06-29 19:04:13 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -58,6 +58,8 @@ art::TRIDFEventStore::TRIDFEventStore()
                             fNameEventHeader,TString("eventheader"));
    RegisterProcessorParameter("MaxEventNum","maximum number of event (no limit if 0)",fMaxEventNum,0);
    RegisterProcessorParameter("SHMID","Shared memory id (default : 0)",fSHMID,0);
+   RegisterOptionalParameter("Start","start event number",fStartEventNumber,0);
+   RegisterOptionalParameter("Asynchronous","asynchronous run end for timestamp event reconstruction",fAsynchronous,0);
    RegisterInputInfo("EventListName","name of event list",fEventListName,TString(""));
 
    fRIDFData.fSegmentedData = new TSegmentedData;
@@ -143,19 +145,26 @@ void art::TRIDFEventStore::Init(TEventCollection *col)
 
    col->AddInfo("scaler",fRIDFData.fScalerList,fOutputIsTransparent);
    fRIDFData.fScalerList->SetName("scaler");
+
+   // prepare event-store run status
+   TString status_name = TString::Format("%s_status",GetName());
+   fRunStatus = new TConditionBit;
+   // run status is added to info as always transparent object
+   col->AddInfo(status_name,fRunStatus,kTRUE);
 }
 
 
 void art::TRIDFEventStore::Process()
 {
-  if (fMaxEventNum > 0 && fRIDFData.fEventHeader->GetEventNumber() > fMaxEventNum) {
-    SetStopEvent();
-    SetStopLoop();
-    SetEndOfRun();
-    return;
-  }
    // try to prepare data source
    fRIDFData.fSegmentedData->Clear("C");
+
+   if (fRunStatus->IsSet(TLoop::kEndOfRun)) return;
+   
+   if (fMaxEventNum > 0 && fRIDFData.fEventHeader->GetEventNumber() > fMaxEventNum) {
+      NotifyEndOfRun();
+      return;
+   }
    // try to get next event
    while (!GetNextEvent()) {
       // try to get next block if no event is available
@@ -168,9 +177,7 @@ void art::TRIDFEventStore::Process()
          // try to open data source if no block is available 
          if (!Open()) {
             // loop is end if no data source is available
-            SetStopEvent();
-            SetStopLoop();
-            SetEndOfRun();
+            NotifyEndOfRun();
             return;
          }
       }
@@ -538,17 +545,19 @@ Bool_t art::TRIDFEventStore::GetNextEvent()
       //////////////////////////////////////////////////////////////////////
       if (fHeader.ClassID() == kClassEventNoTimestamp ||
           fHeader.ClassID() == kClassEventWithTimestamp) {
+
+         if (fStartEventNumber > fRIDFData.fEventHeader->GetEventNumber()) {
+            doSkip = kTRUE;
+         }
+
          fRIDFData.fEventHeader->IncrementEventNumber();
          ((TRunInfo*)fRIDFData.fRunHeaders->Last())->IncrementEventNumber();
-
          if (fEventList) {
             Int_t eventNumber = fEventList->GetEntry(fEventListIndex);
 //            printf("#event = %d, index = %d\n",eventNumber,fEventListIndex);
             // set EOB and return false if no event exists
             if (eventNumber < 0) {
-               SetStopEvent();
-               SetStopLoop();
-               SetEndOfRun();
+               NotifyEndOfRun();
                fIsEOB = kTRUE;
                return kTRUE;
             }
@@ -593,5 +602,28 @@ Bool_t art::TRIDFEventStore::GetNextEvent()
          // no data is available
          return kFALSE;
       }
+   }
+}
+
+void art::TRIDFEventStore::NotifyEndOfRun()
+{
+   fRunStatus->Set(TLoop::kEndOfRun);
+   if (fAsynchronous) return;
+   SetStopEvent();
+   SetStopLoop();
+   TProcessor::SetEndOfRun();
+}
+
+
+void art::TRIDFEventStore::PreLoop()
+{
+   fRunStatus->Set(TLoop::kRunning);
+}
+
+void art::TRIDFEventStore::PostLoop()
+{
+   fRunStatus->Unset(TLoop::kRunning);
+   if (fAsynchronous) {
+      Info("PostLoop",TString::Format("%10s %10d events analyzed",GetName(),fRIDFData.fEventHeader->GetEventNumber()));
    }
 }

@@ -3,7 +3,7 @@
  * @brief  event-by-event scaler mapping processor
  *
  * @date   Created       : 2018-06-27 17:39:22 JST
- *         Last Modified : 2018-06-27 17:45:16 JST (ota)
+ *         Last Modified : 2018-06-29 19:14:11 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2018 Shinsuke OTA
@@ -87,8 +87,10 @@ void art::TScalerMappingProcessor::Process()
   fScalerDiff->Clear("C");
   TObjArray *cat = (*fCategorized)->FindCategory(fCatID);
   if (!cat) {
-    printf("no such category %d\n",fCatID);
-    return;
+     if (fVerboseLevel) {
+        Warning("Process","no such category %d",fCatID);
+     }
+     return;
   }
   const Int_t &ndet = cat->GetEntriesFast();
   TObjArray *det = NULL;

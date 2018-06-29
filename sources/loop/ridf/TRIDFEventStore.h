@@ -2,7 +2,7 @@
 /**
  * @file   TRIDFEventStore.h
  * @date   Created : Jul 12, 2013 17:12:43 JST
- *   Last Modified : 2018-06-27 14:15:57 JST (ota)
+ *   Last Modified : 2018-06-29 18:17:31 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *
@@ -46,10 +46,13 @@ public:
 
    virtual void Init(TEventCollection *col);
    virtual void Process();
+   virtual void PreLoop();
+   virtual void PostLoop();
 protected:
-   Bool_t Open();
-   Bool_t GetNextBlock();
-   Bool_t GetNextEvent();
+   virtual Bool_t Open();
+   virtual Bool_t GetNextBlock();
+   virtual Bool_t GetNextEvent();
+   virtual void   NotifyEndOfRun();
 
 protected:
 #if USE_MPI
@@ -102,6 +105,12 @@ protected:
    Long64_t fEventListIndex; 
 
    TTimestampEventList* fEventList; //! event list
+
+   Int_t fStartEventNumber;
+
+   Int_t fAsynchronous;
+
+   TConditionBit *fRunStatus; // ! running condition for this event store
    
 
    // use function pointer array to decode classes instead of function object.

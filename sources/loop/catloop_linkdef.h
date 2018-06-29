@@ -2,7 +2,7 @@
 /**
  * @file   catloop_linkdef.h
  * @date   Created : Feb 19, 2012 11:19:06 JST
- *   Last Modified : 2018-06-27 19:11:02 JST (ota)
+ *   Last Modified : 2018-06-29 18:28:08 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -64,6 +64,7 @@
 #pragma link C++ class art::THeaderTimestampProcessor;
 #pragma link C++ class art::TScalerMappingProcessor;
 #pragma link C++ class art::TObjectLoader;
+#pragma link C++ class art::TAsynchronousRunEndProcessor;
 #endif /* __CINT__ */
 
 #endif // end of #ifdef CATLOOP_LINKDEF_H

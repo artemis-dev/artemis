@@ -44,6 +44,7 @@ SUBSRC+=TScalerTimestampProcessor.cc
 SUBSRC+=THeaderTimestampProcessor.cc
 SUBSRC+=TScalerMappingProcessor.cc
 SUBSRC+=TObjectLoader.cc
+SUBSRC+=TAsynchronousRunEndProcessor.cc
 
 
 SUBOBJ = $(SUBSRC:.cc=.o)
@@ -59,7 +60,7 @@ OPTHDR = TDataSource.h TArtTypes.h TProcessorParameter.h
 INCDIR = ../../include
 
 AUTOMAKE_OPTIONS = foreign
-CXXFLAGS = -fPIC  -I$(INCDIR) $(shell root-config --cflags)  -Wall -O2
+CXXFLAGS = -fPIC  -I$(INCDIR) $(shell root-config --cflags)  -Wall -O2 -g
 LDFLAGS = $(shell root-config --glibs)
 
 CXXFLAGS += @YAML_CPP_INCLUDE@

@@ -3,7 +3,7 @@
  * @brief  event reconstruction using timestamp
  *
  * @date   Created       : 2018-06-27 15:37:30 JST
- *         Last Modified : 2018-06-28 17:47:55 JST (ota)
+ *         Last Modified : 2018-06-29 01:53:07 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2018 Shinsuke OTA
@@ -181,6 +181,9 @@ void TTimestampEventReconstructor::Process()
       TSimpleData *timestamp = *fTimestamps[i];
       fHeaderQueue[i].push(header->GetEventNumber());
       fTimestampQueue[i].push(timestamp->GetValue());
+      while (fTimestampQueue[i].front() > timestamp->GetValue()) {
+         Pop(i);
+      }
    }
    while (fTimestampQueue[0].size()) {
       Double_t timestampOrigin = fTimestampQueue[0].front();
@@ -200,7 +203,9 @@ void TTimestampEventReconstructor::Process()
                }
             } else if (timestamp - timestampOrigin > fSearchWindowEnds[i]) {
                // pop timestamp reference because it becomes old
+#if 0               
                Info("Process","Dropped [%d] %20.10f",0,timestampOrigin);
+#endif               
                Pop(0);
                fTimestampHistsAll[0]->Fill(0);
                if (fTimestampQueue[0].size() == 0) {
@@ -219,9 +224,15 @@ void TTimestampEventReconstructor::Process()
 
       if (foundTimestamps != fNumLists) return;
       Double_t timeref = fTimestampQueue[0].front();
+#if 0      
+      Info("Process","Match found");
+#endif      
       for (Int_t i = 0, n = fNumLists; i < n; ++i ) {
          Double_t timestamp = fTimestampQueue[i].front();
          Long64_t entry = fHeaderQueue[i].front();
+#if 0         
+         Info("Process","timestamp = %20.10f entry = %lld",timestamp,entry);
+#endif         
          Pop(i);
          fOutputEventLists[i]->AddEntry(entry,timestamp);
          fTimestampHists[i]->Fill(timestamp-timeref);
@@ -234,4 +245,8 @@ void TTimestampEventReconstructor::Process()
 void TTimestampEventReconstructor::PostLoop()
 {
    fOutputFile->Write(0,TFile::kOverwrite);
+
+   for (Int_t i = 0; i < fNumLists; ++i) {
+      Info("PostLoop","Remains [%d] : %d",i,fHeaderQueue[i].size());
+   }
 }
