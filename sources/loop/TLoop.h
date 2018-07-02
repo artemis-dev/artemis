@@ -3,7 +3,7 @@
 /**
  * @file   TLoop.h
  * @date   Created : Apr 26, 2012 19:26:12 JST
- *   Last Modified : 2016-08-23 16:31:27 JST (ota)
+ *   Last Modified : 2018-07-02 19:09:25 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -17,11 +17,16 @@
 
 #include <TConditionBit.h>
 #include <TEventCollection.h>
-
 namespace art {
    class TLoop;
    class TProcessor;
 };
+
+namespace YAML {
+   class Node;
+}
+
+
 
 class art::TLoop : public TObject {
 
@@ -45,6 +50,10 @@ public:
    virtual void        Clear(Option_t * /*option*/ ="") { }
 
    Bool_t Load(const char* dirname, const char* basename, std::list<Long_t> *loaded);
+
+   virtual Bool_t LoadYAMLNode(const YAML::Node& node, std::list<Long_t> *loaded);
+
+   
    TConditionBit *GetCondition() { return fCondition; }
 
    Bool_t IsRunning() { return fCondition->IsSet(kRunning); }
@@ -55,6 +64,8 @@ private:
    TEventCollection   *fEventCollection;
    std::list<TProcessor*>   fProcessors;
    Int_t fID;
+
+   TString fBaseDir; //! base directory
 
    ClassDef(TLoop,1);
 };

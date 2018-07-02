@@ -29,6 +29,13 @@
 
 const char* art::TLoop::kConditionName = "condition";
 
+namespace {
+   const char* kNodeKeyInclude = "include";
+   const char* kNodeKeyReplace = "replace";
+   const char* kNodeKeyName = "name";
+}
+
+
 ClassImp(art::TLoop);
 
 art::TLoop::TLoop()
@@ -66,7 +73,8 @@ Bool_t art::TLoop::Load(const char* dirname, const char* basename, std::list<Lon
    const char *filename = gSystem->ConcatFileName(dirname, basename);
    FileStat_t fstat;
    gSystem->GetPathInfo(filename, fstat);
-   TString dirsave = dirname;
+   TString dirsave = fBaseDir;
+   fBaseDir = dirname;
    for (std::list<Long_t>::iterator itr = loaded->begin(); itr != loaded->end(); itr++) {
       if (*itr == fstat.fIno) {
          std::cerr << "Include loop found: " << filename << std::endl;
@@ -84,23 +92,8 @@ Bool_t art::TLoop::Load(const char* dirname, const char* basename, std::list<Lon
       
       parser.GetNextDocument(doc);
       fin.close();
-      const YAML::Node &node = doc["Processor"];
-      // iterate for all the processors
-      for (YAML::Iterator it = node.begin(); it != node.end(); it++) {
-         if (const YAML::Node *include = (*it).FindValue("include")) {
-            std::string name;
-            *include >> name;
-            const char* dir = gSystem->DirName(gSystem->ConcatFileName(dirsave,name.c_str()));
-            const char* base = gSystem->BaseName(name.c_str());
-            printf("%s %s %s %s\n",dirname,name.c_str(),dir,base);
-            if (!Load(dir,base, loaded))
-               return kFALSE;
-            continue;
-         }
-         TProcessor *proc = NULL;
-         (*it) >> proc;
-         if (!proc) return kFALSE;
-         fProcessors.push_back(proc);
+      if (!LoadYAMLNode(doc["Processor"],loaded)) {
+         return kFALSE;
       }
    } catch (YAML::KeyNotFound& e) {
       std::cout << e.what() << std::endl;
@@ -111,8 +104,115 @@ Bool_t art::TLoop::Load(const char* dirname, const char* basename, std::list<Lon
       return kFALSE;
    }
 //   Init();
+   fBaseDir = dirsave;
    return kTRUE;
 }
+
+
+
+void ParseSequenceRecursive(const YAML::Node &node, TString& str)
+{
+   if (node.Type() == YAML::NodeType::Sequence) {
+      for (YAML::Iterator itv = node.begin(); itv != node.end(); ++itv) {
+         if (itv->Type() == YAML::NodeType::Scalar) {
+            std::string value;
+            *itv >> value;
+            str.Append(TString::Format("\"%s\",",value.c_str()));
+         } else if (itv->Type() == YAML::NodeType::Sequence) {
+            ParseSequenceRecursive(*itv,str);
+         }
+      }
+   }
+}
+
+Bool_t art::TLoop::LoadYAMLNode(const YAML::Node &node, std::list<Long_t>* loaded)
+{
+   std::string name, type, value;
+   // iterate for all the processors
+   TString dirsaved = fBaseDir;
+   for (YAML::Iterator it = node.begin(); it != node.end(); it++) {
+      if (const YAML::Node *include = (*it).FindValue("include")) {
+         if (include->Type() == YAML::NodeType::Map) {
+            //////////////////////////////////////////////////////////////////////
+            // include template by replacing keywords
+            //////////////////////////////////////////////////////////////////////
+            const YAML::Node *replaceNode = include->FindValue(kNodeKeyReplace);
+            const YAML::Node *nameNode = include->FindValue(kNodeKeyName);
+            if (!nameNode) {
+               Error("LoadYAMLNode","no 'name' node is found in include node somewhere");
+               return kFALSE;
+            }
+            (*nameNode) >> name;
+            printf("loading %s\n",name.c_str());
+            
+            if (!replaceNode) {
+               Warning("LoadYAMLNode","no 'replace' node is found while it is expected in '%s'",name.c_str());
+            }
+            
+            TString filename = gSystem->ConcatFileName(fBaseDir,name.c_str());
+            const char* dir = gSystem->DirName(gSystem->ConcatFileName(fBaseDir,name.c_str()));
+            const char* base = gSystem->BaseName(name.c_str());
+            printf("%s %s %s %s\n",fBaseDir.Data(),name.c_str(),dir,base);
+
+
+            std::ifstream fin(filename.Data());
+            if (!fin.is_open()) {
+               Error("LoadFile", "Cannot open file: %s",filename.Data());
+               return kFALSE;
+            }
+            YAML::Node included_doc;
+            TString lines;
+            lines.ReadFile(fin);
+            if (replaceNode) {
+               for (YAML::Iterator it = replaceNode->begin(), itend = replaceNode->end();
+                    it != itend; ++it) {
+                  std::string key, value;
+                  TString valstr;
+                  it.first() >> key;
+                  if (it.second().Type() == YAML::NodeType::Scalar) {
+                     it.second() >> value;
+                     valstr = value;
+                  } else if (it.second().Type() == YAML::NodeType::Sequence) {
+                     valstr = "[";
+                     ParseSequenceRecursive(it.second(),valstr);
+                     valstr.Remove(TString::kTrailing,',');
+                     valstr.Append("]");
+                  }
+                  lines.ReplaceAll(TString::Format("@%s@",key.c_str()),valstr);
+               }
+            }
+//            printf("repalced\n");
+//            printf("%s\n",lines.Data());
+            std::istringstream iss(lines.Data());
+            YAML::Parser parser(iss);
+            parser.GetNextDocument(included_doc);
+            if (!LoadYAMLNode(included_doc["Processor"],loaded)) {
+               Error("LoadYAMLNode","Error while loading %s",name.c_str());
+               return kFALSE;
+            }
+         } else {
+            //////////////////////////////////////////////////////////////////////
+            // include simple file
+            //////////////////////////////////////////////////////////////////////
+            std::string name;
+            *include >> name;
+            const char* dir = gSystem->DirName(gSystem->ConcatFileName(fBaseDir,name.c_str()));
+            const char* base = gSystem->BaseName(name.c_str());
+            printf("%s %s %s %s\n",fBaseDir.Data(),name.c_str(),dir,base);
+            if (!Load(dir,base, loaded))
+               return kFALSE;
+         }
+         continue;
+      }
+      TProcessor *proc = NULL;
+      (*it) >> proc;
+      if (!proc) return kFALSE;
+      fProcessors.push_back(proc);
+   }
+   fBaseDir = dirsaved;
+   return kTRUE;
+}
+
 
 
 Bool_t art::TLoop::Init()
