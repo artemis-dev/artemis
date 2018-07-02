@@ -3,7 +3,7 @@
  * @brief  event reconstruction using timestamp
  *
  * @date   Created       : 2018-06-27 15:37:30 JST
- *         Last Modified : 2018-06-29 01:53:07 JST (ota)
+ *         Last Modified : 2018-07-02 17:23:49 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2018 Shinsuke OTA
@@ -17,6 +17,7 @@
 #include <TTimestampEventList.h>
 #include <TH1F.h>
 #include <TROOT.h>
+#include <TMath.h>
 
 using art::TTimestampEventReconstructor;
 
@@ -29,6 +30,9 @@ TTimestampEventReconstructor::TTimestampEventReconstructor()
                            fInputLists,StringVec_t(0));
 
    RegisterProcessorParameter("OutputFileName","name of output file",fOutputFileName,TString(""));
+
+   RegisterOptionalParameter("MaxAllCombination","make N x N combination if non-zeo",fMaxAllCombination,0);
+   RegisterOptionalParameter("CombinationThreshold","threshold for combination to verify the good combination",fCombinationThreshold,0.9);
 }
 
 TTimestampEventReconstructor::~TTimestampEventReconstructor()
@@ -160,8 +164,8 @@ void TTimestampEventReconstructor::Init(TEventCollection *col)
                                      fOutputEventLists[i]->GetName());
       TString nameAll = TString::Format("%s_%s_all",fOutputEventLists[0]->GetName(),
                                      fOutputEventLists[i]->GetName());
-      TH1F *hist = new TH1F(name,name,1000,fSearchWindowStarts[i],fSearchWindowEnds[i]);
-      TH1F *histAll = new TH1F(nameAll,nameAll,1000,fSearchWindowStarts[i],fSearchWindowEnds[i]);
+      TH1F *hist = new TH1F(name,name,1000000,fSearchWindowStarts[i],fSearchWindowEnds[i]);
+      TH1F *histAll = new TH1F(nameAll,nameAll,1000000,fSearchWindowStarts[i],fSearchWindowEnds[i]);
       fTimestampHists.push_back(hist);
       fTimestampHistsAll.push_back(histAll);
    }
@@ -179,12 +183,58 @@ void TTimestampEventReconstructor::Process()
    for (Int_t i = 0, n = fNumLists; i < n; ++i ) {
       TEventHeader *header = *fEventHeaders[i];
       TSimpleData *timestamp = *fTimestamps[i];
-      fHeaderQueue[i].push(header->GetEventNumber());
-      fTimestampQueue[i].push(timestamp->GetValue());
-      while (fTimestampQueue[i].front() > timestamp->GetValue()) {
-         Pop(i);
+      fHeaderQueue[i].push_back(header->GetEventNumber());
+      fTimestampQueue[i].push_back(timestamp->GetValue());
+//      while (fTimestampQueue[i].front() > timestamp->GetValue()) {
+//         Pop(i);
+//      }
+   }
+
+   if (fMaxAllCombination) {
+      if (fMaxAllCombination > fTimestampQueue[0].size()) return;
+      // make all the combination
+      for (Int_t iList = 0; iList < fNumLists; ++iList) {
+         for (Int_t i = 0, ni = fTimestampQueue[iList].size(); i < ni; ++i) {
+            for (Int_t j = 0, nj = fTimestampQueue[iList].size(); j < nj; ++j) {
+               Double_t t0 = fTimestampQueue[0][i];
+               Double_t t1 = fTimestampQueue[iList][j];
+               fTimestampHistsAll[iList]->Fill(t1-t0);
+            }
+         }
+      }
+      Bool_t found = kTRUE;
+      for (Int_t iList = 0; iList < fNumLists; ++iList) {
+         Int_t iBin = fTimestampHistsAll[iList]->GetMaximumBin();
+         Double_t tMean = fTimestampHistsAll[iList]->GetBinCenter(iBin);
+         Double_t count = fTimestampHistsAll[iList]->GetBinContent(iBin);
+         if (count < fMaxAllCombination * fCombinationThreshold) {
+            found = kFALSE;
+            break;
+         }
+         fSearchWindowStarts[iList] = tMean - fTimestampHistsAll[iList]->GetBinWidth(iBin) * 5.;
+         fSearchWindowEnds[iList] = tMean + fTimestampHistsAll[iList]->GetBinWidth(iBin) * 5.;
+         Info("Process","Timestamp matched [%d]: search window set from %f to %f",iList,fSearchWindowStarts[iList],fSearchWindowEnds[iList]);
+      }
+      if (!found) {
+         Warning("Process","Timestamp mismatched, please check the timestamp histogram and change the definition");
+         SetStopEvent();
+         SetStopLoop();
+         SetEndOfRun();
+         return;
+      } else {
+         for (Int_t iList = 0; iList < fNumLists; ++iList) {
+            Double_t binW = fTimestampHistsAll[iList]->GetBinWidth(1);
+            Int_t nBins = 10* TMath::Floor((fSearchWindowEnds[iList] - fSearchWindowStarts[iList])/binW);
+            fTimestampHistsAll[iList]->Reset();
+            fTimestampHists[iList]->Reset();
+            fTimestampHistsAll[iList]->SetBins(nBins,fSearchWindowStarts[iList],fSearchWindowEnds[iList]);
+            fTimestampHists[iList]->SetBins(nBins,fSearchWindowStarts[iList],fSearchWindowEnds[iList]);
+         }
+         fMaxAllCombination = 0;
       }
    }
+
+   
    while (fTimestampQueue[0].size()) {
       Double_t timestampOrigin = fTimestampQueue[0].front();
       for (Int_t i = 1; i < fNumLists; ++i) {
