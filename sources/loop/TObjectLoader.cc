@@ -3,7 +3,7 @@
  * @brief  load object from root file
  *
  * @date   Created       : 2018-06-27 18:46:58 JST
- *         Last Modified : 2018-06-27 19:22:15 JST (ota)
+ *         Last Modified : 2018-07-05 20:57:04 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2018 Shinsuke OTA
@@ -12,7 +12,7 @@
 #include "TObjectLoader.h"
 #include <TFile.h>
 #include <TKey.h>
-
+#include <TDirectory.h>
 using art::TObjectLoader;
 
 ClassImp(TObjectLoader)
@@ -47,7 +47,7 @@ void TObjectLoader::Init(TEventCollection *col)
       SetStateError(TString::Format("The number of components in ObjectLists should be muliple of %d",kRequiredNumTokens));
       return;
    }
-
+   TDirectory *dirSaved = gDirectory;
    for (Int_t i = 0; i < nTokens; i += kRequiredNumTokens) {
       TString filename = fObjectLists[i];
       TString objname =  fObjectLists[i+1];
@@ -68,7 +68,7 @@ void TObjectLoader::Init(TEventCollection *col)
             TKey *key = (TKey*) fKeys->At(i);
             TObject *obj = key->ReadObj();
             Info("Init","Object: %s",obj->GetName());
-            col->AddInfo(obj->GetName(),obj);
+            col->AddInfo(obj->GetName(),obj,kTRUE);
          }
       } else {
          TObject *obj = file->Get(objname);
@@ -76,8 +76,9 @@ void TObjectLoader::Init(TEventCollection *col)
             SetStateError(TString::Format("Cannot find object '%s'",objname.Data()));
             return;
          }
-         col->AddInfo(obj->GetName(),obj);
+         col->AddInfo(obj->GetName(),obj,kTRUE);
       }
             
    }
+   dirSaved->cd();
 }

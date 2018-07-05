@@ -2,7 +2,7 @@
 /**
  * @file   TRIDFEventStore.cc
  * @date   Created : Jul 12, 2013 17:12:35 JST
- *   Last Modified : 2018-06-29 19:04:13 JST (ota)
+ *   Last Modified : 2018-07-05 20:52:17 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -318,7 +318,7 @@ void art::TRIDFEventStore::ClassDecoder05(Char_t *buf, Int_t& offset, struct RID
          runinfo->SetStopTime(stop.GetSec());
          runinfo->SetHeader(fHeader);
          runinfo->SetEnder(fEnder);
-         ridfdata->fRunHeaders->Add(runinfo);
+//         ridfdata->fRunHeaders->Add(runinfo);
          ridfdata->fEventHeader->SetRunName(runName.Data());
          ridfdata->fEventHeader->SetRunNumber(runNumber.Atoll());
       }

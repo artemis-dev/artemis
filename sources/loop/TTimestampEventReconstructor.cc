@@ -3,7 +3,7 @@
  * @brief  event reconstruction using timestamp
  *
  * @date   Created       : 2018-06-27 15:37:30 JST
- *         Last Modified : 2018-07-02 17:23:49 JST (ota)
+ *         Last Modified : 2018-07-03 01:27:46 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2018 Shinsuke OTA
@@ -158,7 +158,7 @@ void TTimestampEventReconstructor::Init(TEventCollection *col)
    //////////////////////////////////////////////////////////////////////
    // create histogram
    //////////////////////////////////////////////////////////////////////
-   gROOT->mkdir("eventReconstruction")->cd();
+   fOutputFile->mkdir("eventReconstruction")->cd();
    for (Int_t i = 0, n = fNumLists; i < n; ++i) {
       TString name = TString::Format("%s_%s",fOutputEventLists[0]->GetName(),
                                      fOutputEventLists[i]->GetName());
