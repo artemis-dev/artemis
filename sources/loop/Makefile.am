@@ -45,7 +45,7 @@ SUBSRC+=THeaderTimestampProcessor.cc
 SUBSRC+=TScalerMappingProcessor.cc
 SUBSRC+=TObjectLoader.cc
 SUBSRC+=TAsynchronousRunEndProcessor.cc
-
+SUBSRC+=TPulseShapeTimestampProcessor.cc
 
 SUBOBJ = $(SUBSRC:.cc=.o)
 SUBHDR = $(SUBSRC:.cc=.h) 
