@@ -2,7 +2,7 @@
 /**
  * @file   TModuleDecoderV1740.cc
  * @date   Created : Feb 06, 2013 15:06:29 JST
- *   Last Modified : Feb 04, 2015 19:26:05 JST
+ *   Last Modified : 2018-07-09 16:15:24 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -45,17 +45,15 @@ Int_t art::TModuleDecoderV1740::Decode(char* buf, const int &size, TObjArray *se
          bufs+=8;
          iw  +=8;
          nw  -=8;
-         if (nw==0) {
+
             //          if (((bufi[1]>>8)&0xffff) == 0xfffe) {
-            TRawDataFadc* data = (TRawDataFadc*) New();
-            Int_t ch = 64;
-            Int_t len = 0;
-            data->Clear("C");
-            data->SetSegInfo(seg->GetUniqueID(),geo,ch);
-            data->SetFadcInfo(timestamp,len,pattern);
-            seg->Add(data);
-            continue;
-         }
+         TRawDataFadc* data = (TRawDataFadc*) New();
+         Int_t ch = 64;
+         Int_t len = 0;
+         data->Clear("C");
+         data->SetSegInfo(seg->GetUniqueID(),geo,ch);
+         data->SetFadcInfo(timestamp,len,pattern);
+         seg->Add(data);
          for (Int_t iws = 0; iws < nw;) {
             bufi = (unsigned int*) bufs;
             if (((bufi[0])>>28) == 3) {
@@ -95,7 +93,7 @@ Int_t art::TModuleDecoderV1740::Decode(char* buf, const int &size, TObjArray *se
                iw  += (4 + sample);
                bufs += sample;
             } else {
-               Warning("Decode","Unknown Header 0x%08x",bufi[0]);
+               //if (fVerboseLevel>0) Warning("Decode","Unknown Header 0x%08x",bufi[0]);
                return 0;
             }
          }
