@@ -2,7 +2,7 @@
 /**
  * @file   catloop_linkdef.h
  * @date   Created : Feb 19, 2012 11:19:06 JST
- *   Last Modified : 2018-07-06 18:36:34 JST (ota)
+ *   Last Modified : 2018-07-17 14:51:02 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -66,6 +66,7 @@
 #pragma link C++ class art::TObjectLoader;
 #pragma link C++ class art::TAsynchronousRunEndProcessor;
 #pragma link C++ class art::TPulseShapeTimestampProcessor;
+#pragma link C++ class art::TTimeValidator;
 #endif /* __CINT__ */
 
 #endif // end of #ifdef CATLOOP_LINKDEF_H
