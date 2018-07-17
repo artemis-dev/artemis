@@ -3,7 +3,7 @@
  * @brief  event reconstruction using timestamp
  *
  * @date   Created       : 2018-06-27 15:37:30 JST
- *         Last Modified : 2018-07-03 01:27:46 JST (ota)
+ *         Last Modified : 2018-07-17 18:05:17 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2018 Shinsuke OTA
@@ -33,6 +33,7 @@ TTimestampEventReconstructor::TTimestampEventReconstructor()
 
    RegisterOptionalParameter("MaxAllCombination","make N x N combination if non-zeo",fMaxAllCombination,0);
    RegisterOptionalParameter("CombinationThreshold","threshold for combination to verify the good combination",fCombinationThreshold,0.9);
+   RegisterOptionalParameter("DoUpdateOffset","flag to update offset (update if 1 default 0)",fDoUpdateOffset,0);
 }
 
 TTimestampEventReconstructor::~TTimestampEventReconstructor()
@@ -89,6 +90,7 @@ void TTimestampEventReconstructor::Init(TEventCollection *col)
    fNumLists = fFileNames.size();
    fHeaderQueue.resize(fNumLists);
    fTimestampQueue.resize(fNumLists);
+   fAdditionalOffset.resize(fNumLists,0);
 
    //////////////////////////////////////////////////////////////////////
    // set output file
@@ -194,11 +196,21 @@ void TTimestampEventReconstructor::Process()
       if (fMaxAllCombination > fTimestampQueue[0].size()) return;
       // make all the combination
       for (Int_t iList = 0; iList < fNumLists; ++iList) {
+         Double_t min = TMath::Limits<Double_t>::Max();
+         Double_t max = TMath::Limits<Double_t>::Min();
          for (Int_t i = 0, ni = fTimestampQueue[iList].size(); i < ni; ++i) {
             for (Int_t j = 0, nj = fTimestampQueue[iList].size(); j < nj; ++j) {
-               Double_t t0 = fTimestampQueue[0][i];
-               Double_t t1 = fTimestampQueue[iList][j];
-               fTimestampHistsAll[iList]->Fill(t1-t0);
+               Double_t tdiff = fTimestampQueue[iList][i] - fTimestampQueue[0][j];
+               if (min > tdiff) min = tdiff;
+               if (max < tdiff) max = tdiff;
+            }
+         }
+         Int_t nbins = 1e6;
+         fTimestampHistsAll[iList]->SetBins(nbins,min,max);
+         for (Int_t i = 0, ni = fTimestampQueue[iList].size(); i < ni; ++i) {
+            for (Int_t j = 0, nj = fTimestampQueue[iList].size(); j < nj; ++j) {
+               Double_t tdiff = fTimestampQueue[iList][i] - fTimestampQueue[0][j];
+               fTimestampHistsAll[iList]->Fill(tdiff);
             }
          }
       }
@@ -211,8 +223,9 @@ void TTimestampEventReconstructor::Process()
             found = kFALSE;
             break;
          }
-         fSearchWindowStarts[iList] = tMean - fTimestampHistsAll[iList]->GetBinWidth(iBin) * 5.;
-         fSearchWindowEnds[iList] = tMean + fTimestampHistsAll[iList]->GetBinWidth(iBin) * 5.;
+         Double_t halfwidth = (fSearchWindowEnds[iList]  - fSearchWindowStarts[iList]) * 0.5;
+         fSearchWindowStarts[iList] = tMean - halfwidth;
+         fSearchWindowEnds[iList] = tMean + halfwidth;
          Info("Process","Timestamp matched [%d]: search window set from %f to %f",iList,fSearchWindowStarts[iList],fSearchWindowEnds[iList]);
       }
       if (!found) {
@@ -223,8 +236,9 @@ void TTimestampEventReconstructor::Process()
          return;
       } else {
          for (Int_t iList = 0; iList < fNumLists; ++iList) {
-            Double_t binW = fTimestampHistsAll[iList]->GetBinWidth(1);
-            Int_t nBins = 10* TMath::Floor((fSearchWindowEnds[iList] - fSearchWindowStarts[iList])/binW);
+//            Double_t binW = fTimestampHistsAll[iList]->GetBinWidth(1);
+//            Int_t nBins = 10* TMath::Floor((fSearchWindowEnds[iList] - fSearchWindowStarts[iList])/binW);
+            Int_t nBins = 1e3;
             fTimestampHistsAll[iList]->Reset();
             fTimestampHists[iList]->Reset();
             fTimestampHistsAll[iList]->SetBins(nBins,fSearchWindowStarts[iList],fSearchWindowEnds[iList]);
@@ -234,28 +248,23 @@ void TTimestampEventReconstructor::Process()
       }
    }
 
-   
+
    while (fTimestampQueue[0].size()) {
       Double_t timestampOrigin = fTimestampQueue[0].front();
       for (Int_t i = 1; i < fNumLists; ++i) {
          while (fTimestampQueue[i].size()) {
             Double_t timestamp = fTimestampQueue[i].front();
-            if (timestamp - timestampOrigin < fSearchWindowStarts[i]) {
+            Double_t tdiff = timestamp - timestampOrigin + fAdditionalOffset[i];
+            if (tdiff < fSearchWindowStarts[i]) {
                // pop timestamp because it becomes old
-#if 0               
-               Info("Process","Dropped [%d][%d] %20.10f, %20.10f < %20.10f",i,timestamp, fHeaderQueue[i].front(),timestamp-timestampOrigin,fSearchWindowStarts[i]);
-#endif               
                Pop(i);
-               fTimestampHistsAll[i]->Fill(timestamp-timestampOrigin);
+               fTimestampHistsAll[i]->Fill(tdiff);
                if (fTimestampQueue[i].size() == 0) {
                   // no more loop is available
                   return;
                }
-            } else if (timestamp - timestampOrigin > fSearchWindowEnds[i]) {
+            } else if (tdiff > fSearchWindowEnds[i]) {
                // pop timestamp reference because it becomes old
-#if 0               
-               Info("Process","Dropped [%d] %20.10f",0,timestampOrigin);
-#endif               
                Pop(0);
                fTimestampHistsAll[0]->Fill(0);
                if (fTimestampQueue[0].size() == 0) {
@@ -285,8 +294,14 @@ void TTimestampEventReconstructor::Process()
 #endif         
          Pop(i);
          fOutputEventLists[i]->AddEntry(entry,timestamp);
-         fTimestampHists[i]->Fill(timestamp-timeref);
-         fTimestampHistsAll[i]->Fill(timestamp-timeref);
+         fTimestampHists[i]->Fill(timestamp-timeref + fAdditionalOffset[i]);
+         fTimestampHistsAll[i]->Fill(timestamp-timeref + fAdditionalOffset[i]);
+         Double_t mean = (fSearchWindowStarts[i] + fSearchWindowEnds[i]) * 0.5;
+         Double_t halfwidth = (fSearchWindowEnds[i] - fSearchWindowStarts[i]) * 0.5;
+         if (fDoUpdateOffset && i > 0 && TMath::Abs(timestamp - timeref + fAdditionalOffset[i] - mean) < halfwidth) {
+            fAdditionalOffset[i] = mean + timeref - timestamp;
+//            printf("offset[%d] = %f\n",i,fAdditionalOffset[i]);
+         }
       }
       foundTimestamps = 1;
    }
