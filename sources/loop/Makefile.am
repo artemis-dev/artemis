@@ -48,6 +48,8 @@ SUBSRC+=TAsynchronousRunEndProcessor.cc
 SUBSRC+=TPulseShapeTimestampProcessor.cc
 SUBSRC+=TTimeValidator.cc
 SUBSRC+=TTimingTimestampAdapter.cc
+SUBSRC+=TTimestampValidator.cc
+
 
 SUBOBJ = $(SUBSRC:.cc=.o)
 SUBHDR = $(SUBSRC:.cc=.h) 
