@@ -2,7 +2,7 @@
 /**
  * @file   TMappingProcessor.cc
  * @date   Created : Nov 22, 2013 17:22:19 JST
- *   Last Modified : 2017-12-21 06:49:05 JST (ota)
+ *   Last Modified : 2018-07-24 16:51:10 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -17,6 +17,8 @@
 #include <TConfigFile.h>
 
 using art::TMappingProcessor;
+
+art::TMappingProcessor::FormatType_t art::TMappingProcessor::fgFormatType = art::TMappingProcessor::RIDF;
 
 TMappingProcessor::TMappingProcessor()
 {
@@ -90,7 +92,12 @@ void TMappingProcessor::Init(TEventCollection *col)
             for (Int_t j=0; j!=nids; j++) {
                ids[j] = mapfile.GetNextToken().Atoi();
             }
-            Int_t segid = (((ids[0]&0x3f)<<20) | ((ids[1]&0x3f)<<14) |((ids[2]&0x3f)<<8));
+            Int_t segid;
+            if (fgFormatType == RIDF) {
+               segid = (((ids[0]&0x3f)<<20) | ((ids[1]&0x3f)<<14) |((ids[2]&0x3f)<<8));
+            } else if (fgFormatType == RDF) {
+               segid = ids[2];
+            }
             fMapTable->SetMap(segid,ids[3],ids[4],cid,did,i);
          }
       }
