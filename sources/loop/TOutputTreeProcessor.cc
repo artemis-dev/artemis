@@ -2,7 +2,7 @@
 /**
  * @file   TOutputTreeProcessor.cc
  * @date   Created : Jul 11, 2013 17:11:41 JST
- *   Last Modified : 2017-12-26 20:27:42 JST (ota)
+ *   Last Modified : 2018-07-25 13:59:22 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -50,6 +50,10 @@ void art::TOutputTreeProcessor::Init(TEventCollection *col)
    }
 #endif
    fFile = TFile::Open(fFileName,"RECREATE");
+   if (!fFile) {
+      SetStateError(TString::Format("Cannot create file: %s",fFileName.Data()));
+      return;
+   }
    fTree = new TTree(fTreeName,fTreeName);
    // assume all of the objects inherit from TObject
    TIter *iter = col->GetIter();
