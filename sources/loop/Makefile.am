@@ -49,6 +49,7 @@ SUBSRC+=TPulseShapeTimestampProcessor.cc
 SUBSRC+=TTimeValidator.cc
 SUBSRC+=TTimingTimestampAdapter.cc
 SUBSRC+=TTimestampValidator.cc
+SUBSRC+= TGainShiftCorrectionProcessor.cc
 
 
 SUBOBJ = $(SUBSRC:.cc=.o)

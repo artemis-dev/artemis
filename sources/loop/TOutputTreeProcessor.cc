@@ -2,7 +2,7 @@
 /**
  * @file   TOutputTreeProcessor.cc
  * @date   Created : Jul 11, 2013 17:11:41 JST
- *   Last Modified : 2018-07-25 13:59:22 JST (ota)
+ *   Last Modified : 2018-07-26 18:07:52 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -12,6 +12,7 @@
 #include <TEventObject.h>
 #include <TDirectory.h>
 #include <TROOT.h>
+#include <TArtemisUtil.h>
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -49,6 +50,7 @@ void art::TOutputTreeProcessor::Init(TEventCollection *col)
       fFileName.Append(Form("%d",myrank));
    }
 #endif
+   Util::PrepareDirectoryFor(fFileName);
    fFile = TFile::Open(fFileName,"RECREATE");
    if (!fFile) {
       SetStateError(TString::Format("Cannot create file: %s",fFileName.Data()));

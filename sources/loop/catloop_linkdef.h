@@ -2,7 +2,7 @@
 /**
  * @file   catloop_linkdef.h
  * @date   Created : Feb 19, 2012 11:19:06 JST
- *   Last Modified : 2018-07-18 14:12:01 JST (ota)
+ *   Last Modified : 2018-07-25 18:40:40 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -69,6 +69,7 @@
 #pragma link C++ class art::TTimeValidator;
 #pragma link C++ class art::TTimingTimestampAdapter;
 #pragma link C++ class art::TTimestampValidator;
+#pragma link C++ class art::TGainShiftCorrectionProcessor;
 #endif /* __CINT__ */
 
 #endif // end of #ifdef CATLOOP_LINKDEF_H
