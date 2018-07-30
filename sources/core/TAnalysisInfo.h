@@ -3,7 +3,7 @@
  * @brief  container for analysis information
  *
  * @date   Created       : 2018-07-28 09:02:06 JST
- *         Last Modified : 2018-07-30 15:36:29 JST (ota)
+ *         Last Modified : 2018-07-30 17:47:57 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2018 Shinsuke OTA
@@ -19,6 +19,7 @@ namespace art {
    class TAnalysisInfo;
 }
 
+class TDirectory;
 
 class art::TAnalysisInfo : public TNamed {
 public:
@@ -29,6 +30,8 @@ public:
 
    TAnalysisInfo(const TAnalysisInfo& rhs);
    TAnalysisInfo& operator=(const TAnalysisInfo& rhs);
+
+   static Bool_t AddTo(TDirectory *);
 
    virtual void Print(Option_t *option = "") const ;
    virtual void ShowProcessors() const;

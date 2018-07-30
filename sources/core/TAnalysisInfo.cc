@@ -3,7 +3,7 @@
  * @brief  analysis information
  *
  * @date   Created       : 2018-07-28 09:55:24 JST
- *         Last Modified : 2018-07-30 15:43:08 JST (ota)
+ *         Last Modified : 2018-07-30 17:51:10 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2018 Shinsuke OTA
@@ -14,6 +14,7 @@
 #include <algorithm>
 #include <TCollection.h>
 #include <iostream>
+#include <TDirectory.h>
 
 using art::TAnalysisInfo;
 
@@ -93,3 +94,11 @@ Long64_t TAnalysisInfo::Merge(TCollection *col)
    return fAnalyzedEventNumber;
 }
 
+Bool_t TAnalysisInfo::AddTo(TDirectory *dir)
+{
+   TAnalysisInfo *info = dynamic_cast<TAnalysisInfo*>(gROOT->FindObjectAny(kDefaultAnalysInfoName));
+   if (!info) return kFALSE;
+
+   dir->Add(info);
+   return kTRUE;
+}

@@ -2,7 +2,7 @@
 /**
  * @file   TOutputTreeProcessor.cc
  * @date   Created : Jul 11, 2013 17:11:41 JST
- *   Last Modified : 2018-07-30 10:12:39 JST (ota)
+ *   Last Modified : 2018-07-30 17:54:36 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -57,11 +57,7 @@ void art::TOutputTreeProcessor::Init(TEventCollection *col)
       SetStateError(TString::Format("Cannot create file: %s",fFileName.Data()));
       return;
    }
-   TAnalysisInfo *info = dynamic_cast<TAnalysisInfo*>(gROOT->FindObjectAny(
-                                                         TString::Format("/artemis/loops/loop0/%s",TAnalysisInfo::kDefaultAnalysInfoName)));
-   if (info) {
-      fFile->Add(info);
-   }
+   TAnalysisInfo::AddTo(fFile);
    fTree = new TTree(fTreeName,fTreeName);
    // assume all of the objects inherit from TObject
    TIter *iter = col->GetIter();

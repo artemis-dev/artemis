@@ -3,7 +3,7 @@
  * @brief  generate gain shift correction table and correct by using table
  *
  * @date   Created       : 2018-07-25 18:21:47 JST
- *         Last Modified : 2018-07-30 14:10:41 JST (ota)
+ *         Last Modified : 2018-07-30 17:51:54 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2018 Shinsuke OTA
@@ -21,6 +21,7 @@
 #include <TEventHeader.h>
 #include <TArtemisUtil.h>
 #include <TSystem.h>
+#include <TAnalysisInfo.h>
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -171,6 +172,7 @@ void TGainShiftCorrectionProcessor::Init(TEventCollection *col)
       SetStateError(TString::Format("Cannot create file : %s",filename.Data()));
       return;
    }
+   TAnalysisInfo::AddTo(fFile);
 
    fHists.resize(fNumDet);
    for (Int_t i = 0; i < fNumDet; ++i) {

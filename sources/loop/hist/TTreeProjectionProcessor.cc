@@ -4,7 +4,7 @@
  * @brief  tree projection
  *
  * @date   Created       : 2014-03-05 22:30:06 JST
- *         Last Modified : 2018-07-30 12:54:31 JST (ota)
+ *         Last Modified : 2018-07-30 17:54:52 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -64,11 +64,7 @@ void TTreeProjectionProcessor::Init(TEventCollection *col)
    if (IsError()) return;
    fTreeProj = static_cast<art::TTreeProjection*>(fParameter);
    
-   TAnalysisInfo *info = dynamic_cast<TAnalysisInfo*>(gROOT->FindObjectAny(
-                                                         TString::Format("/artemis/loops/loop0/%s",TAnalysisInfo::kDefaultAnalysInfoName)));
-   if (info) {
-      fDirectory->Add(info);
-   }
+   TAnalysisInfo::AddTo(fDirectory);
 
    // prepare tree
    fTree = new TTree("tmptree","tree for variables");
