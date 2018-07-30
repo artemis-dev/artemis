@@ -3,7 +3,7 @@
  * @brief  processor parameter
  *
  * @date   Created       : 2014-05-09 18:06:39 JST
- *         Last Modified : 2016-07-22 09:20:05 JST (ota)
+ *         Last Modified : 2018-07-30 08:39:55 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -13,23 +13,21 @@
 #define INCLUDE_GUARD_UUID_6D72126A_3ED4_434A_BA27_441B5C89DC2E
 
 #include <TParameterStrings.h>
+#include <TNamed.h>
 
 namespace art {
    class TProcessorParameter;
    template <class T> class TParameter_t;
 }
 
-class art::TProcessorParameter  {
+class art::TProcessorParameter  : public TNamed {
 public:
    TProcessorParameter(const char* name, const char* title)
-      : fName(name), fTitle(title)
+      : TNamed(name,title)
       {   
       }
    
    virtual ~TProcessorParameter(){;}
-   
-   virtual TString GetName() { return fName; }
-   virtual TString GetTitle() { return fTitle; }
    
    virtual void SetValue(TParameterStrings *p) = 0;
    virtual TString Type() const = 0;
@@ -48,13 +46,13 @@ public:
    
 protected:
    TProcessorParameter(){;}
-   TString fName;
-   TString fTitle;
    Bool_t fIsOptional;
    Bool_t fIsValueSet;
    Int_t  fSize;
    
 private:
+
+   ClassDef(TProcessorParameter,1); // 
    
 };
 
@@ -114,6 +112,8 @@ public:
    
    TString DefaultValue() { return ToString(fDefValue,fSize); }
    TString Value() { return ToString(fParameter,fSize); }
+   template<class T1> const T1& GetRawValue() { return fParameter; }
+   
    
 
    template<class T1> 

@@ -2,7 +2,7 @@
 /**
  * @file   catloop_linkdef.h
  * @date   Created : Feb 19, 2012 11:19:06 JST
- *   Last Modified : 2018-07-25 18:40:40 JST (ota)
+ *   Last Modified : 2018-07-29 12:26:52 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -27,7 +27,18 @@
 #pragma link C++ class art::TEventObject;
 #pragma link C++ class art::TEventCollection;
 #pragma link C++ class art::TProcessor;
-#pragma link C++ namespace art;
+#pragma link C++ class art::TProcessorParameter;
+//#pragma link C++ class art::TParameter_t<Int_t>-;
+//#pragma link C++ class art::TParameter_t<Long_t>-;
+//#pragma link C++ class art::TParameter_t<Float_t>-;
+//#pragma link C++ class art::TParameter_t<Double_t>-;
+//#pragma link C++ class art::TParameter_t<Bool_t>-;
+//#pragma link C++ class art::TParameter_t<std::vector<Int_t> >-;
+//#pragma link C++ class art::TParameter_t<std::vector<Float_t> >-;
+//#pragma link C++ class art::TParameter_t<std::vector<Double_t> >-;
+//#pragma link C++ class art::TParameter_t<TString>+;
+//#pragma link C++ class art::TParameter_t<std::vector<TString> >-;
+//#pragma link C++ namespace art;
 #pragma link C++ global art::gProcessors;
 #pragma link C++ class art::TTimerProcessor;
 #pragma link C++ class art::TOutputTreeProcessor;
@@ -70,6 +81,8 @@
 #pragma link C++ class art::TTimingTimestampAdapter;
 #pragma link C++ class art::TTimestampValidator;
 #pragma link C++ class art::TGainShiftCorrectionProcessor;
+#pragma link C++ class art::TAnalysisInfo+;
+#pragma link C++ class art::IEventStore;
 #endif /* __CINT__ */
 
 #endif // end of #ifdef CATLOOP_LINKDEF_H

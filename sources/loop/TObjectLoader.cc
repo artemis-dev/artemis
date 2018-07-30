@@ -3,7 +3,7 @@
  * @brief  load object from root file
  *
  * @date   Created       : 2018-06-27 18:46:58 JST
- *         Last Modified : 2018-07-05 20:57:04 JST (ota)
+ *         Last Modified : 2018-07-30 08:48:38 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2018 Shinsuke OTA
@@ -19,7 +19,7 @@ ClassImp(TObjectLoader)
 
 TObjectLoader::TObjectLoader()
 {
-   RegisterProcessorParameter("ObjectLists","pairs of input file and object to be loaded. all objects are loaded if object name is empty (\"\")",
+   RegisterProcessorParameter("ObjectLists","pairs of input file and object to be loaded. all objects are loaded if object name is * (\"*\")",
                               fObjectLists,StringVec_t(0));
 }
 
@@ -56,7 +56,7 @@ void TObjectLoader::Init(TEventCollection *col)
          SetStateError(TString::Format("Cannot open file '%s'",filename.Data()));
          return;
       }
-      if (objname.IsNull()) {
+      if (objname.EqualTo('*')) {
          // load all file
          TList *fKeys = gDirectory->GetListOfKeys();
          Int_t n = fKeys->GetEntries();

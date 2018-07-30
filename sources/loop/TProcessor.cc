@@ -3,7 +3,7 @@
  * Base class for the user processors
  
  * @date   Created : Jul 10, 2013 17:10:19 JST
- *   Last Modified : 2018-02-25 23:40:40 JST (ota)
+ *   Last Modified : 2018-07-30 08:42:07 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *
@@ -274,7 +274,7 @@ void art::TProcessor::UpdateParameters()
    }
 }
 
-void art::TProcessor::PrintDescriptionYAML()
+void art::TProcessor::PrintDescriptionYAML(ostream& ros) const 
 {
    TString name;
    if (strcmp(GetName(),"")){
@@ -301,22 +301,22 @@ void art::TProcessor::PrintDescriptionYAML()
              << title.Data()
              << YAML::Key << "parameter" << YAML::Value;
          out << YAML::BeginMap;
-         ProcPrmMap_t::iterator it;
-         for (it = fParamMap.begin(); it != fParamMap.end(); it++) {
+         for (ProcPrmMap_t::const_iterator it = fParamMap.begin(); it != fParamMap.end(); it++) {
 	    TProcessorParameter *prm = it->second;
 	    const TString &value =
 	       prm->IsValueSet() ? prm->Value() : prm->DefaultValue();
 	    const TString &comment =
 	       TString::Format("[%s] %s",
-			       prm->Type().Data(), prm->GetTitle().Data());
+			       prm->Type().Data(), prm->GetTitle());
 	    out << YAML::Key << prm->GetName();
-	    if (prm->IsStringVector()) {
-	       out << YAML::Comment(comment.Data())
-		   << YAML::Value
-		   << YAML::BeginSeq
-		   << value.Data()
-		   << YAML::EndSeq;
-	    } else if (prm->IsVector()) {
+//	    if (prm->IsStringVector()) {
+//	       out << YAML::Comment(comment.Data())
+//		   << YAML::Value
+//		   << YAML::BeginSeq
+//		   << value.Data()
+//		   << YAML::EndSeq;
+//	    } else
+            if (prm->IsVector()) {
 	       TObjArray *values = value.Tokenize(", ");
 	       const Int_t n = values->GetEntriesFast();
 	       out << YAML::Value
@@ -339,7 +339,8 @@ void art::TProcessor::PrintDescriptionYAML()
       out   << YAML::EndMap;
    }
    out << YAML::EndMap;
-   std::cout << out.c_str() << std::endl;
+//   std::cout << out.c_str() << std::endl;
+   ros << out.c_str() << std::endl;
 
 }
 

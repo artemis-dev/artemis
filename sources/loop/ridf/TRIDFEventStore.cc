@@ -2,7 +2,7 @@
 /**
  * @file   TRIDFEventStore.cc
  * @date   Created : Jul 12, 2013 17:12:35 JST
- *   Last Modified : 2018-07-05 20:52:17 JST (ota)
+ *   Last Modified : 2018-07-30 13:23:21 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -624,6 +624,17 @@ void art::TRIDFEventStore::PostLoop()
 {
    fRunStatus->Unset(TLoop::kRunning);
    if (fAsynchronous) {
-      Info("PostLoop",TString::Format("%10s %10d events analyzed",GetName(),fRIDFData.fEventHeader->GetEventNumber()));
+      Info("PostLoop",TString::Format("%10s %10lld events analyzed",GetName(),fRIDFData.fEventHeader->GetEventNumber()));
    }
 }
+
+Int_t art::TRIDFEventStore::GetRunNumber() const
+{
+   return fRIDFData.fEventHeader->GetRunNumber();
+}
+
+const char* art::TRIDFEventStore::GetRunName() const
+{
+   return fRIDFData.fEventHeader->GetRunName();
+}
+   

@@ -3,7 +3,7 @@
  * @brief  generate gain shift correction table and correct by using table
  *
  * @date   Created       : 2018-07-25 18:21:47 JST
- *         Last Modified : 2018-07-26 22:00:58 JST (ota)
+ *         Last Modified : 2018-07-30 14:10:41 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2018 Shinsuke OTA
@@ -211,26 +211,8 @@ void TGainShiftCorrectionProcessor::PostLoop()
 
 void TGainShiftCorrectionProcessor::EndOfRun()
 {
-#ifdef USE_MPI
-   int myrank, npe,useMPI;
-   MPI_Initialized(&useMPI);
-   if (useMPI) {
-      MPI_Comm_size(MPI_COMM_WORLD, &npe);
-      MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
+   if (fDoCreate) {
+      Util::MPIFileMerger(fHistFileName.Data());
    }
-   if (useMPI) {
-      MPI_Barrier(MPI_COMM_WORLD);
-      if (fDoCreate) {
-         if (npe > 0 && myrank == 0) {
-            TString files;
-            for (Int_t i = 0; i < npe; ++i) {
-               files.Append(Form("%s%d ",fHistFileName.Data(),i));
-            }
-            gSystem->Exec(Form("hadd -f %s %s",fHistFileName.Data(),files.Data()));
-         }
-      }
-      MPI_Barrier(MPI_COMM_WORLD);
-   }
-#endif
 }
 

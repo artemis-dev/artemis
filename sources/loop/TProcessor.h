@@ -2,7 +2,7 @@
 /**
  * @file   TProcessor.h
  * @date   Created : Jul 10, 2013 17:10:49 JST
- *   Last Modified : 2018-02-04 11:03:46 JST (ota)
+ *   Last Modified : 2018-07-29 12:18:28 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -15,6 +15,7 @@
 #include <TParameterStrings.h>
 #include <TProcessorParameter.h>
 #include <TLoop.h>
+#include <iostream>
 
 namespace art {
    class TProcessor;
@@ -86,7 +87,7 @@ public:
    // set error message
    virtual void SetErrorMessage(const char* message) { fErrorMessage = message; }
 
-   virtual void PrintDescriptionYAML();
+   virtual void PrintDescriptionYAML(ostream& ros = std::cout) const;
 
 
    // orverride the original function
@@ -218,7 +219,7 @@ template<class T>
 protected:
    Bool_t fOutputIsTransparent;    // output transparency
    TConditionBit **fCondition; //! condition bit to control loop
-   TParameterStrings *fParameters; // parameter strings
+   TParameterStrings *fParameters; //! parameter strings
    Int_t  fVerboseLevel; // verbose level
    std::vector<IOCollection> fInputs;//!
    std::vector<IOCollection> fOutputs;//!
@@ -227,9 +228,9 @@ protected:
 
 private:
    // parameter map to hold the processor parameters
-   ProcPrmMap_t fParamMap;
+   ProcPrmMap_t fParamMap; //
    State_t fState; // state of initialization
-   TString fErrorMessage; // error message to be filled by user
+   TString fErrorMessage; //! error message to be filled by user
 
    ClassDef(TProcessor,1);
    

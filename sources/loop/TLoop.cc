@@ -14,6 +14,7 @@
 #include "TLoop.h"
 
 #include <fstream>
+#include <sstream>
 #include <yaml-cpp/yaml.h>
 
 #include <algorithm>
@@ -26,8 +27,11 @@
 #include <TString.h>
 #include <TFolder.h>
 #include <TROOT.h>
+#include <IEventStore.h>
+#include <TAnalysisInfo.h>
 
 const char* art::TLoop::kConditionName = "condition";
+const char* art::TLoop::kAnalysisInfoName = "analysisInfo";
 
 namespace {
    const char* kNodeKeyInclude = "include";
@@ -39,10 +43,12 @@ namespace {
 ClassImp(art::TLoop);
 
 art::TLoop::TLoop()
-   : fCondition(NULL), fEventCollection(NULL), fProcessors(NULL), fID(0)
+   : fCondition(NULL), fEventCollection(NULL), fProcessors(NULL), fID(0), fAnalysisInfo(NULL),
+     fEventStore(NULL)
 {
    fEventCollection = new TEventCollection;
    fCondition       = new TConditionBit;
+   fAnalysisInfo    = new TAnalysisInfo;
 }
 
 art::TLoop::~TLoop()
@@ -56,6 +62,7 @@ art::TLoop::~TLoop()
 //   fEventCollection->Delete();
    delete fEventCollection;
    delete fCondition;
+//   delete fAnalysisInfo;
 }
 
 
@@ -71,6 +78,10 @@ art::TLoop::~TLoop()
 Bool_t art::TLoop::Load(const char* dirname, const char* basename, std::list<Long_t> *loaded)
 {
    const char *filename = gSystem->ConcatFileName(dirname, basename);
+   if ( 0 == loaded->size() ) {
+      // if file is top
+      fAnalysisInfo->SetSteeringFileName(TString(dirname) + TString("/") + TString(basename));
+   }
    FileStat_t fstat;
    gSystem->GetPathInfo(filename, fstat);
    TString dirsave = fBaseDir;
@@ -223,7 +234,11 @@ Bool_t art::TLoop::Init()
    // initialization function
 //   fEventCollection->Clear();
    fEventCollection->Add(kConditionName,fCondition,kTRUE);
+//   fEventCollection->AddInfo(kAnalysisInfoName,fAnalysisInfo,kFALSE);
    fCondition->Set(kBeginOfRun);
+   TFolder *folder = (TFolder*) gROOT->FindObject(TString::Format("/artemis/loops/loop%d",fID));
+   folder->Add(fAnalysisInfo);
+//   fAnalysisInfo->SetProcessors(fProcessors);
    for (itr = itrBegin; itr!=itrEnd; itr++) {
       TProcessor *proc = (*itr);
       proc->InitProc(fEventCollection);
@@ -231,8 +246,10 @@ Bool_t art::TLoop::Init()
          Error("Init","\n\n Process '%s' (%s) %s\n",proc->GetName(),proc->GetTitle(),proc->GetErrorMessage());
          return kFALSE;
       }
+      if ( NULL == fEventStore ) {
+         fEventStore = dynamic_cast<IEventStore*>(proc);
+      }
    }
-   TFolder *folder = (TFolder*) gROOT->FindObject(TString::Format("/artemis/loops/loop%d",fID));
    if (folder) {
       TFolder *conf = folder->AddFolder("Config","configuration");
       TIter *infoiter = fEventCollection->GetUserInfoIter();
@@ -242,6 +259,18 @@ Bool_t art::TLoop::Init()
       }
       delete infoiter;
    }
+
+   // prepared
+   std::stringstream ss;
+   for (itr = itrBegin; itr != itrEnd; ++itr) {
+      (*itr)->PrintDescriptionYAML(ss);
+   }
+   TString yaml(ss.str());
+   yaml.ReplaceAll("Processor:\n","");
+   yaml.Prepend("Processor:\n");
+   fAnalysisInfo->SetProcessors(yaml);
+   
+   
    return kTRUE;
 }
 
@@ -259,6 +288,7 @@ Bool_t art::TLoop::Resume()
    if (fCondition->IsSet(kBeginOfRun)) {
       for_each(itrBegin,itrEnd,std::mem_fun(&TProcessor::BeginOfRun));
       fCondition->Unset(kBeginOfRun);
+      fAnalysisInfo->SetAnalysisStartTime(TDatime().AsSQLString());
    }
    // do prerun
    // For the special call to remap branch etc.
@@ -266,13 +296,19 @@ Bool_t art::TLoop::Resume()
    // start loop
    while (1) { 
      Int_t objectNumber = TProcessID::GetObjectCount();
+     // increment event number
       for (itr = itrBegin; itr != itrEnd; itr++) {
          (*itr)->Process();
          if (fCondition->IsSet(kStopEvent)) {
-            fCondition->Unset(kStopEvent);
             break;
          }
       }
+      if (fCondition->IsSet(kStopEvent)) {
+         fCondition->Unset(kStopEvent);
+      } else {
+         fAnalysisInfo->IncrementEventNumber();
+      }
+      
       TProcessID::SetObjectCount(objectNumber);
       if (fCondition->IsSet(kStopLoop)) {
          // requested to stop run
@@ -280,7 +316,22 @@ Bool_t art::TLoop::Resume()
          break;
       }
    }
+   fAnalysisInfo->SetAnalysisEndTime(TDatime().AsSQLString());
+   
+   // store analysis information
+   if (fEventStore) {
+      fAnalysisInfo->SetRunNumber(TString::Format("%04d",fEventStore->GetRunNumber()));
+      fAnalysisInfo->SetRunName(TString::Format("%s",fEventStore->GetRunName()));
+   } else {
+      printf("no event store\n");
+   }
+
    for_each(itrBegin,itrEnd,std::mem_fun(&TProcessor::PostLoop));
+
+      
+
+      
+      
    if (fCondition->IsSet(kEndOfRun)) {
       fCondition->Unset(kEndOfRun);
       for_each(itrBegin,itrEnd,std::mem_fun(&TProcessor::EndOfRun));

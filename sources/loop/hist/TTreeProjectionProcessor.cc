@@ -4,7 +4,7 @@
  * @brief  tree projection
  *
  * @date   Created       : 2014-03-05 22:30:06 JST
- *         Last Modified : 2017-12-26 20:26:26 JST (ota)
+ *         Last Modified : 2018-07-30 12:54:31 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -17,6 +17,8 @@
 #include <TROOT.h>
 #include <TCatCmdHstore.h>
 #include <TDirectory.h>
+#include <TAnalysisInfo.h>
+#include <TArtemisUtil.h>
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -57,11 +59,16 @@ TTreeProjectionProcessor& TTreeProjectionProcessor::operator=(const TTreeProject
 
 void TTreeProjectionProcessor::Init(TEventCollection *col)
 {
-  fDirectory = gDirectory;
+   fDirectory = gDirectory;
    TParameterLoader::Init(col);
    if (IsError()) return;
    fTreeProj = static_cast<art::TTreeProjection*>(fParameter);
    
+   TAnalysisInfo *info = dynamic_cast<TAnalysisInfo*>(gROOT->FindObjectAny(
+                                                         TString::Format("/artemis/loops/loop0/%s",TAnalysisInfo::kDefaultAnalysInfoName)));
+   if (info) {
+      fDirectory->Add(info);
+   }
 
    // prepare tree
    fTree = new TTree("tmptree","tree for variables");
@@ -122,17 +129,19 @@ void TTreeProjectionProcessor::PostLoop()
    hstore.Run(filename,"recreate");
    saved->cd();
 #ifdef USE_MPI
-   if (useMPI) {
-      MPI_Barrier(MPI_COMM_WORLD);   
-      if (npe > 0 && myrank == 0) {
-         TString files;
-         for (Int_t i = 0; i < npe; ++i) {
-            files.Append(Form("%s%d ",fOutputFilename.Data(),i));
-         }
-         gSystem->Exec(Form("hadd -f %s %s",fOutputFilename.Data(),files.Data()));
-      }
-      MPI_Barrier(MPI_COMM_WORLD);   
-   }
+   Util::MPIFileMerger(fOutputFilename.Data());
+   
+//   if (useMPI) {
+//      MPI_Barrier(MPI_COMM_WORLD);   
+//      if (npe > 0 && myrank == 0) {
+//         TString files;
+//         for (Int_t i = 0; i < npe; ++i) {
+//            files.Append(Form("%s%d ",fOutputFilename.Data(),i));
+//         }
+//         gSystem->Exec(Form("hadd -f %s %s",fOutputFilename.Data(),files.Data()));
+//      }
+//      MPI_Barrier(MPI_COMM_WORLD);   
+//   }
 #endif
    
 }

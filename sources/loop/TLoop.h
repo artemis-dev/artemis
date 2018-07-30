@@ -3,7 +3,7 @@
 /**
  * @file   TLoop.h
  * @date   Created : Apr 26, 2012 19:26:12 JST
- *   Last Modified : 2018-07-02 19:09:25 JST (ota)
+ *   Last Modified : 2018-07-28 17:59:45 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -20,6 +20,8 @@
 namespace art {
    class TLoop;
    class TProcessor;
+   class TAnalysisInfo;
+   class IEventStore;
 };
 
 namespace YAML {
@@ -36,6 +38,7 @@ public:
     */
    enum EProc {kRunning, kBeginOfRun, kEndOfRun, kStopEvent, kStopLoop};
    static const char* kConditionName;
+   static const char* kAnalysisInfoName; 
 
 
    TLoop();
@@ -62,10 +65,12 @@ private:
    TConditionBit *fCondition;
    
    TEventCollection   *fEventCollection;
-   std::list<TProcessor*>   fProcessors;
+   std::list<TProcessor*>   fProcessors; //
    Int_t fID;
 
    TString fBaseDir; //! base directory
+   TAnalysisInfo *fAnalysisInfo; //->  analysis information
+   IEventStore  *fEventStore; //! Event store to get analysis information
 
    ClassDef(TLoop,1);
 };

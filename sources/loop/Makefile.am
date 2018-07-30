@@ -50,7 +50,8 @@ SUBSRC+=TTimeValidator.cc
 SUBSRC+=TTimingTimestampAdapter.cc
 SUBSRC+=TTimestampValidator.cc
 SUBSRC+= TGainShiftCorrectionProcessor.cc
-
+SUBSRC+=TAnalysisInfo.cc
+SUBSRC+=IEventStore.cc
 
 SUBOBJ = $(SUBSRC:.cc=.o)
 SUBHDR = $(SUBSRC:.cc=.h) 

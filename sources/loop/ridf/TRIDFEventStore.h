@@ -2,7 +2,7 @@
 /**
  * @file   TRIDFEventStore.h
  * @date   Created : Jul 12, 2013 17:12:43 JST
- *   Last Modified : 2018-06-29 18:17:31 JST (ota)
+ *   Last Modified : 2018-07-28 16:49:56 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *
@@ -21,6 +21,7 @@
 
 
 #include <TProcessor.h>
+#include <IEventStore.h>
 
 namespace art {
    class TRIDFEventStore;
@@ -37,7 +38,7 @@ namespace art {
 
 class THashList;
 
-class art::TRIDFEventStore  : public TProcessor {
+class art::TRIDFEventStore  : public TProcessor, public IEventStore {
 
 public:
    static const Int_t kMaxBufSize = 1024*1024; // default size is 1 MB
@@ -48,6 +49,9 @@ public:
    virtual void Process();
    virtual void PreLoop();
    virtual void PostLoop();
+
+   Int_t GetRunNumber() const; 
+   const char* GetRunName() const;
 protected:
    virtual Bool_t Open();
    virtual Bool_t GetNextBlock();
