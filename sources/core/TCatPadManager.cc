@@ -2,7 +2,7 @@
 /**
  * @file   TCatPadManager.cc
  * @date   Created : Feb 06, 2012 19:06:29 JST
- *   Last Modified : 2018-07-30 15:40:14 JST (ota)
+ *   Last Modified : 2018-07-30 15:42:37 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -17,6 +17,7 @@
 #include <TROOT.h>
 #include <TRunInfo.h>
 #include <TAnalysisInfo.h>
+#include <TArtemisUtil.h>
 
 TCatPadManager::TCatPadManager()
    : fCanvas(NULL), fMainPad(NULL), fCurrentPadId(0), fNumSubPads(0), fTitleLabel(NULL), fDateLabel(NULL)
@@ -128,6 +129,7 @@ TVirtualPad *TCatPadManager::GetCanvas()
    if (!fMainPad) CreateCanvas();
    TDatime now;
    TFolder *folder = (TFolder*) gROOT->FindObject("/artemis/loops/loop0");
+   art::Util::LoadAnalysisInformation();
    art::TAnalysisInfo *info = (art::TAnalysisInfo*) gROOT->FindObjectAny(art::TAnalysisInfo::kDefaultAnalysInfoName);
    if (folder) {
       TString header = folder->GetTitle();
