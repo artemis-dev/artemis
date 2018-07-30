@@ -3,14 +3,13 @@
  * @brief  analysis information
  *
  * @date   Created       : 2018-07-28 09:55:24 JST
- *         Last Modified : 2018-07-30 13:28:06 JST (ota)
+ *         Last Modified : 2018-07-30 15:39:57 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2018 Shinsuke OTA
  */
 
 #include "TAnalysisInfo.h"
-#include <TProcessor.h>
 #include <TROOT.h>
 #include <algorithm>
 #include <TCollection.h>
@@ -48,7 +47,7 @@ void TAnalysisInfo::Print(Option_t *opt) const
    Info("","Analysis Information");
    Info("","Steering    : %s",fSteeringFileName.Data());
    Info("","Run         : %s%s", fRunName.Data(),fRunNumber.Data());
-   Info("","# of Events : %lld",fAnalyzedEventNumber);
+   Info("","# of Recorded Events : %lld",fAnalyzedEventNumber);
    Info("","Analysis begins at  %s",fAnalysisStartTime.Data());
    Info("","         ends   at  %s",fAnalysisEndTime.Data());
 }

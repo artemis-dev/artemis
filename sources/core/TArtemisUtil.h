@@ -3,7 +3,7 @@
  * @brief  utilities
  *
  * @date   Created       : 2018-07-26 16:30:08 JST
- *         Last Modified : 2018-07-30 12:43:08 JST (ota)
+ *         Last Modified : 2018-07-30 14:34:38 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2018 Shinsuke OTA
@@ -35,6 +35,10 @@ namespace art {
       
       // file merger in mpi
       Bool_t MPIFileMerger(const char* file);
+
+      // Load analysis information (at top directory of this directory)
+      Bool_t LoadAnalysisInformation(const char *infoName = NULL);
+      
    }
 }
 

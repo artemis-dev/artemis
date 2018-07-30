@@ -2,7 +2,7 @@
 /**
  * @file   catloop_linkdef.h
  * @date   Created : Feb 19, 2012 11:19:06 JST
- *   Last Modified : 2018-07-29 12:26:52 JST (ota)
+ *   Last Modified : 2018-07-30 14:46:57 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -81,7 +81,6 @@
 #pragma link C++ class art::TTimingTimestampAdapter;
 #pragma link C++ class art::TTimestampValidator;
 #pragma link C++ class art::TGainShiftCorrectionProcessor;
-#pragma link C++ class art::TAnalysisInfo+;
 #pragma link C++ class art::IEventStore;
 #endif /* __CINT__ */
 

@@ -3,7 +3,7 @@
  * @brief
  *
  * @date   Created       : 2018-07-26 16:33:05 JST
- *         Last Modified : 2018-07-30 12:57:22 JST (ota)
+ *         Last Modified : 2018-07-30 15:05:02 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2018 Shinsuke OTA
@@ -14,6 +14,13 @@
 #include <TSystem.h>
 #include <TFileMerger.h>
 #include <iostream>
+#include <TAnalysisInfo.h>
+#include <TDirectory.h>
+#include <TFile.h>
+#include <TROOT.h>
+#include <TFolder.h>
+#include <TClass.h>
+#include <TKey.h>
 using namespace art;
 
 
@@ -28,6 +35,33 @@ Bool_t Util::PrepareDirectoryFor(const char *filename)
    } else {
       return ( 0 == gSystem->mkdir(target,kTRUE) );
    }
+}
+
+
+Bool_t Util::LoadAnalysisInformation(const char *infoName)
+{
+   TString name = (infoName) ? infoName : TAnalysisInfo::kDefaultAnalysInfoName;
+   TDirectory *topdir = gDirectory->GetFile();
+   TObject *obj = NULL;
+   if ( NULL == topdir ) {
+      topdir = gROOT;
+      obj = topdir->FindObject(name);
+   } else {
+      TFile *file = (TFile*)topdir;
+      TIter next(file->GetListOfKeys());
+      while (TKey *key = (TKey*) next()) {
+         if (TClass::GetClass(key->GetClassName()) != TAnalysisInfo::Class()) continue;
+
+         // analysis info was found
+         obj = key->ReadObj();
+         break;
+      }
+   }
+   if ( NULL ==  obj ) return kFALSE;
+   TFolder *topfolder = static_cast<TFolder*>(gROOT->FindObject("/artemis"));
+   if (!topfolder) return kFALSE;
+   topfolder->Add(obj);
+   return kTRUE;
 }
 
 

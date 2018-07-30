@@ -3,7 +3,7 @@
 /**
  * @file   TLoop.h
  * @date   Created : Apr 26, 2012 19:26:12 JST
- *   Last Modified : 2018-07-28 17:59:45 JST (ota)
+ *   Last Modified : 2018-07-30 14:51:02 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -17,6 +17,7 @@
 
 #include <TConditionBit.h>
 #include <TEventCollection.h>
+#include <TAnalysisInfo.h>
 namespace art {
    class TLoop;
    class TProcessor;

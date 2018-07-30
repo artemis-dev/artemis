@@ -3,7 +3,7 @@
  * @brief  container for analysis information
  *
  * @date   Created       : 2018-07-28 09:02:06 JST
- *         Last Modified : 2018-07-30 10:37:26 JST (ota)
+ *         Last Modified : 2018-07-30 15:36:29 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2018 Shinsuke OTA
@@ -17,7 +17,6 @@
 
 namespace art {
    class TAnalysisInfo;
-   class TProcessor;
 }
 
 
