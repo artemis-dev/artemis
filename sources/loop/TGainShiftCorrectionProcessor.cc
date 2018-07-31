@@ -3,7 +3,7 @@
  * @brief  generate gain shift correction table and correct by using table
  *
  * @date   Created       : 2018-07-25 18:21:47 JST
- *         Last Modified : 2018-07-30 17:51:54 JST (ota)
+ *         Last Modified : 2018-07-31 13:34:11 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2018 Shinsuke OTA
@@ -214,7 +214,9 @@ void TGainShiftCorrectionProcessor::PostLoop()
 void TGainShiftCorrectionProcessor::EndOfRun()
 {
    if (fDoCreate) {
+#ifdef USE_MPI      
       Util::MPIFileMerger(fHistFileName.Data());
+#endif      
    }
 }
 
