@@ -3,7 +3,7 @@
  * @brief  generate gain shift correction table and correct by using table
  *
  * @date   Created       : 2018-07-25 18:21:47 JST
- *         Last Modified : 2018-07-31 13:34:11 JST (ota)
+ *         Last Modified : 2018-08-06 21:23:27 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2018 Shinsuke OTA
@@ -165,7 +165,7 @@ void TGainShiftCorrectionProcessor::Init(TEventCollection *col)
       filename.Append(TString::Format("%d",myrank));
    }
 #endif
-   
+   Info("Init","Output filename %s",filename.Data());
    Util::PrepareDirectoryFor(filename);
    fFile = TFile::Open(filename,"recreate");
    if (!fFile) {
@@ -208,7 +208,9 @@ void TGainShiftCorrectionProcessor::Process()
 
 void TGainShiftCorrectionProcessor::PostLoop()
 {
-   fFile->Write();
+   if (fDoCreate) {
+      fFile->Write();
+   }
 }
 
 void TGainShiftCorrectionProcessor::EndOfRun()
