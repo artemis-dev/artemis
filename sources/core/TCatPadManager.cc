@@ -2,7 +2,7 @@
 /**
  * @file   TCatPadManager.cc
  * @date   Created : Feb 06, 2012 19:06:29 JST
- *   Last Modified : 2018-07-30 15:42:37 JST (ota)
+ *   Last Modified : 2018-08-06 16:32:38 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -131,7 +131,15 @@ TVirtualPad *TCatPadManager::GetCanvas()
    TFolder *folder = (TFolder*) gROOT->FindObject("/artemis/loops/loop0");
    art::Util::LoadAnalysisInformation();
    art::TAnalysisInfo *info = (art::TAnalysisInfo*) gROOT->FindObjectAny(art::TAnalysisInfo::kDefaultAnalysInfoName);
-   if (folder) {
+   if (info) {
+      TString header;
+      header.Append(info->GetSteeringFileName());
+      header.Append("  ");
+      header.Append(info->GetRunName());
+      header.Append(info->GetRunNumber());
+      header.Append(TString::Format(" (%lld evts recorded)",info->GetAnalyzedEventNumber()));
+      fTitleLabel->SetLabel(header);
+   } else if (folder) {
       TString header = folder->GetTitle();
       TList *runheader = (TList*)folder->FindObjectAny("runheader");
       if (runheader) {
@@ -143,15 +151,7 @@ TVirtualPad *TCatPadManager::GetCanvas()
          }
       }
       fTitleLabel->SetLabel(header);
-   } else if (info) {
-      TString header;
-      header.Append(info->GetSteeringFileName());
-      header.Append("  ");
-      header.Append(info->GetRunName());
-      header.Append(info->GetRunNumber());
-      header.Append(TString::Format(" (%lld evts recorded)",info->GetAnalyzedEventNumber()));
-      fTitleLabel->SetLabel(header);
-   }
+   } 
    fDateLabel->SetLabel(now.AsString());
    fCanvas->Modified();
    fCanvas->Update();
