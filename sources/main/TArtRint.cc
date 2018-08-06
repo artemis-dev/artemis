@@ -2,7 +2,7 @@
 /**
  * @file   TArtRint.cc
  * @date   Created : Feb 06, 2012 00:06:18 JST
- *   Last Modified : 2018-05-09 10:01:47 JST (ota)
+ *   Last Modified : 2018-08-06 22:50:25 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -57,10 +57,11 @@ TArtRint::TArtRint(int* argc, char** argv, void* options, int numOptions, Bool_t
    }
    filepath = gEnv->GetValue("Art.MassTable",filepath);
    if (filepath.IsNull()) {
-      printf("Art.MassTable is not defined in .rootrc\n");
-      return;
+      gAtomicMassTable->Build();
+      printf("Use mass table inside root since Art.MassTable is not defined in .rootrc\n");
+   } else {
+      gAtomicMassTable->SetMassTable(filepath,40);
    }
-   gAtomicMassTable->SetMassTable(filepath,40);
 #if USE_MPI
     int myrank, npe;
     int usempi;

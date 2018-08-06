@@ -2,7 +2,7 @@
 /**
  * @file   TArtAtomicMassTable.cc
  * @date   Created : Aug 04, 2011 19:04:38 JST
- *   Last Modified : Feb 02, 2013 19:28:09 JST
+ *   Last Modified : 2018-08-06 22:48:03 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -13,12 +13,18 @@
 #include "TArtSystemOfUnit.h"
 using namespace TArtSystemOfUnit;
 #include <TEnv.h>
+#include <TGeoManager.h>
+#include <TGeoElement.h>
 #include <fstream>
 using namespace std;
 
 ClassImp(TArtAtomicMassTable);
 
 const TString TArtAtomicMassTable::kEnvName  = "Art.MassTable";
+const Double_t TArtAtomicMassTable::kAtomicMassUnit = 931.494061;
+const Double_t TArtAtomicMassTable::kElectronMass = 0.510999;
+
+
 TArtAtomicMassTable *gAtomicMassTable = new TArtAtomicMassTable;
 TArtAtomicMassTable::TArtAtomicMassTable()
    : fIsCreated(kFALSE)
@@ -30,6 +36,23 @@ TArtAtomicMassTable::TArtAtomicMassTable()
 TArtAtomicMassTable::~TArtAtomicMassTable()
 {
 }
+
+void TArtAtomicMassTable::Build()
+{
+   if (!gGeoManager) new TGeoManager;
+   for (Int_t iz = 0; iz < kNumZ; ++iz) {
+      for (Int_t ia = 0; ia < kNumA; ++ia) {
+         if (TGeoElementRN *element = gGeoManager->GetElementTable()->GetElementRN(ia,iz)) {
+            fMass[iz][ia] = kAtomicMassUnit * ia + element->MassEx();
+            fIsEvaluated[iz][ia] = kTRUE;
+         } else {
+            fIsEvaluated[iz][ia] = kFALSE;
+         }
+      }
+   }
+}
+
+
 
 void TArtAtomicMassTable::SetMassTable(const char *filename, Int_t firstLine)
 {

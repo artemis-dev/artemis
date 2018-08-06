@@ -2,7 +2,7 @@
 /**
  * @file   TArtAtomicMassTable.h
  * @date   Created : Aug 04, 2011 15:04:58 JST
- *   Last Modified : Feb 02, 2013 19:17:21 JST
+ *   Last Modified : 2018-08-06 22:49:30 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -34,8 +34,20 @@ public:
    // get nucleus mass by atomic number and mass number
    Double_t GetNucleusMass(Int_t z, Int_t a);
 
+   void SetAtomicMass(Int_t z, Int_t a, Double_t mass) {
+      fIsEvaluated[z][a] = kTRUE;
+      fMass[z][a] = mass;
+   }
+
+   /**
+    * build mass table from the table inside root
+    **/
+   void Build();
+
    static const Int_t kNumZ = 200;
    static const Int_t kNumA = 300;
+   static const Double_t kAtomicMassUnit;
+   static const Double_t kElectronMass;
    static const TString kEnvName;
 private:
    TString  fTableName;
