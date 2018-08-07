@@ -2,7 +2,7 @@
 /**
  * @file   TTreeEventStore.cc
  * @date   Created : Jul 11, 2013 21:11:20 JST
- *   Last Modified : 2018-06-06 15:40:54 JST (ota)
+ *   Last Modified : 2018-08-07 14:01:40 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -18,11 +18,13 @@
 #include <TLeaf.h>
 #include <TROOT.h>
 #include <TClonesArray.h>
+#include <TEventHeader.h>
 ClassImp(art::TTreeEventStore);
 
 
 
 art::TTreeEventStore::TTreeEventStore()
+   : fEventHeader(NULL)
 {
    RegisterProcessorParameter("FileName","The name of output file",fFileName,TString("temp.root"));
    RegisterProcessorParameter("TreeName","The name of output tree",fTreeName,TString("tree"));
@@ -123,7 +125,7 @@ void art::TTreeEventStore::Init(TEventCollection *col)
                cls = 0;
             }
             br->ResetAddress();
-         }
+         } 
 #endif         
          if (cls) {
             useBranch.push_back(br);
@@ -131,6 +133,9 @@ void art::TTreeEventStore::Init(TEventCollection *col)
             col->Add(br->GetName(),(TObject*)cls->New(),kTRUE);
             fTree->SetBranchAddress(br->GetName(),(TObject**)col->Get(br->GetName())->GetObjectRef());
             printf("branch : %s\n",br->GetName());
+         }
+         if (cls == TEventHeader::Class()) {
+            fEventHeader = reinterpret_cast<TEventHeader**>(col->GetObjectRef(br->GetName()));
          }
       }
    }
@@ -155,4 +160,17 @@ void art::TTreeEventStore::Process()
       SetStopLoop();
       SetEndOfRun();
    }
+}
+
+
+Int_t art::TTreeEventStore::GetRunNumber() const
+{
+   if ( NULL == fEventHeader ) return 0;
+   return (*fEventHeader)->GetRunNumber();
+}
+
+const char* art::TTreeEventStore::GetRunName() const
+{
+   if ( NULL == fEventHeader ) return "";
+   return (*fEventHeader)->GetRunName();
 }

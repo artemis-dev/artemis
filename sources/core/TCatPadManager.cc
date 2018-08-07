@@ -2,7 +2,7 @@
 /**
  * @file   TCatPadManager.cc
  * @date   Created : Feb 06, 2012 19:06:29 JST
- *   Last Modified : 2018-08-06 16:32:38 JST (ota)
+ *   Last Modified : 2018-08-07 10:10:06 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -18,6 +18,7 @@
 #include <TRunInfo.h>
 #include <TAnalysisInfo.h>
 #include <TArtemisUtil.h>
+#include <TSystem.h>
 
 TCatPadManager::TCatPadManager()
    : fCanvas(NULL), fMainPad(NULL), fCurrentPadId(0), fNumSubPads(0), fTitleLabel(NULL), fDateLabel(NULL)
@@ -48,10 +49,10 @@ void TCatPadManager::CreateCanvas()
    fCanvas->Clear();
    fCanvas->cd();
    if (!fTitleLabel) {
-      fTitleLabel = new TPaveLabel(0.1,0.96,0.9,0.99,"");
+      fTitleLabel = new TPaveLabel(0.05,0.96,0.95,0.99,"");
    }
    if (!fDateLabel) {
-      fDateLabel  = new TPaveLabel(0.7,0.93,0.9,0.95,"");
+      fDateLabel  = new TPaveLabel(0.5,0.92,0.95,0.95,"");
       fDateLabel->SetBorderSize(0);
       fDateLabel->SetFillStyle(0);
    }
@@ -133,7 +134,7 @@ TVirtualPad *TCatPadManager::GetCanvas()
    art::TAnalysisInfo *info = (art::TAnalysisInfo*) gROOT->FindObjectAny(art::TAnalysisInfo::kDefaultAnalysInfoName);
    if (info) {
       TString header;
-      header.Append(info->GetSteeringFileName());
+      header.Append(gSystem->BaseName(info->GetSteeringFileName()));
       header.Append("  ");
       header.Append(info->GetRunName());
       header.Append(info->GetRunNumber());
@@ -147,12 +148,15 @@ TVirtualPad *TCatPadManager::GetCanvas()
          if (info) {
             header.Append("   ");
             header.Append(info->GetName());
-            header.Append(Form("  (%lld evt)",info->GetEventNumber()));
+            header.Append(Form("  (%ld evt)",info->GetEventNumber()));
          }
       }
       fTitleLabel->SetLabel(header);
-   } 
-   fDateLabel->SetLabel(now.AsString());
+   }
+   TString dateLabel = now.AsString();
+   dateLabel += TString::Format("(%u)",now.Convert());
+   
+   fDateLabel->SetLabel(dateLabel);
    fCanvas->Modified();
    fCanvas->Update();
       

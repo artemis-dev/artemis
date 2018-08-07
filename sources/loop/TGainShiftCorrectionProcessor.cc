@@ -3,7 +3,7 @@
  * @brief  generate gain shift correction table and correct by using table
  *
  * @date   Created       : 2018-07-25 18:21:47 JST
- *         Last Modified : 2018-08-06 21:23:27 JST (ota)
+ *         Last Modified : 2018-08-07 14:36:26 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2018 Shinsuke OTA
@@ -177,7 +177,14 @@ void TGainShiftCorrectionProcessor::Init(TEventCollection *col)
    fHists.resize(fNumDet);
    for (Int_t i = 0; i < fNumDet; ++i) {
       TString name = TString::Format("h%03d",i);
-      fHists[i] = new TH2F(name,name,nBinsX,0.,eventNumber,TMath::FloorNint(fAxisY[0]+0.5),fAxisY[1],fAxisY[2]);
+      TString title = TString::Format("%s",fInputName.Data());
+      if (fDataType == static_cast<Int_t>(ETiming)) {
+         title.Append(".GetTiming()");
+      } else if (fDataType == static_cast<Int_t>(ECharge)) {
+         title.Append(".GetCharge()");
+      }
+      title.Append(TString::Format(" (id = %03d)",i));
+      fHists[i] = new TH2F(name,title,nBinsX,0.,eventNumber,TMath::FloorNint(fAxisY[0]+0.5),fAxisY[1],fAxisY[2]);
    }
 }
 
