@@ -3,7 +3,7 @@
  * @brief  event reconstruction using timestamp
  *
  * @date   Created       : 2018-06-27 15:37:30 JST
- *         Last Modified : 2018-07-17 18:05:17 JST (ota)
+ *         Last Modified : 2018-08-20 18:42:46 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2018 Shinsuke OTA
@@ -18,6 +18,7 @@
 #include <TH1F.h>
 #include <TROOT.h>
 #include <TMath.h>
+#include <TArtemisUtil.h>
 
 using art::TTimestampEventReconstructor;
 
@@ -95,6 +96,7 @@ void TTimestampEventReconstructor::Init(TEventCollection *col)
    //////////////////////////////////////////////////////////////////////
    // set output file
    //////////////////////////////////////////////////////////////////////
+   art::Util::PrepareDirectoryFor(fOutputFileName);
    TDirectory *dirsaved = gDirectory;
    fOutputFile = TFile::Open(fOutputFileName,"recreate");
    if (!fOutputFile) {
@@ -128,7 +130,7 @@ void TTimestampEventReconstructor::Init(TEventCollection *col)
       TString message = "Timestamps are missing: ";
       for (Int_t i = 0, n = badlist.size(); i < n; ++i) {
          message += badlist[i];
-         message += ', ';
+         message += ", ";
       }
       message[message.Length()-1] = '\0';
       SetStateError(message);
@@ -151,7 +153,7 @@ void TTimestampEventReconstructor::Init(TEventCollection *col)
       TString message = "Event headers are missing: ";
       for (Int_t i = 0, n = badlist.size(); i < n; ++i) {
          message += badlist[i];
-         message += ', ';
+         message += ", ";
       }
       message[message.Length()-1] = '\0';
       SetStateError(message);
@@ -312,6 +314,6 @@ void TTimestampEventReconstructor::PostLoop()
    fOutputFile->Write(0,TFile::kOverwrite);
 
    for (Int_t i = 0; i < fNumLists; ++i) {
-      Info("PostLoop","Remains [%d] : %d",i,fHeaderQueue[i].size());
+      Info("PostLoop","Remains [%d] : %zu",i,fHeaderQueue[i].size());
    }
 }
