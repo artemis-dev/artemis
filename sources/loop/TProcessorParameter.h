@@ -3,7 +3,7 @@
  * @brief  processor parameter
  *
  * @date   Created       : 2014-05-09 18:06:39 JST
- *         Last Modified : 2018-07-30 08:39:55 JST (ota)
+ *         Last Modified : 2018-08-23 21:13:34 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -22,6 +22,7 @@ namespace art {
 
 class art::TProcessorParameter  : public TNamed {
 public:
+   TProcessorParameter(){;}
    TProcessorParameter(const char* name, const char* title)
       : TNamed(name,title)
       {   
@@ -45,7 +46,6 @@ public:
    virtual Int_t Size() { return fSize; }
    
 protected:
-   TProcessorParameter(){;}
    Bool_t fIsOptional;
    Bool_t fIsValueSet;
    Int_t  fSize;
