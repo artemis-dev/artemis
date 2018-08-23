@@ -3,7 +3,7 @@
  * @brief  processor parameter
  *
  * @date   Created       : 2014-05-09 18:15:59 JST
- *         Last Modified : 2018-07-29 12:14:32 JST (ota)
+ *         Last Modified : 2018-08-23 21:28:32 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -13,8 +13,8 @@
 
 using art::TProcessorParameter;
 
-ClassImp(TProcessorParameter)
+//ClassImp(TProcessorParameter)
 
 
-templateClassImp(TParameter_t) 
+//templateClassImp(TParameter_t) 
 
