@@ -2,7 +2,7 @@
 /**
  * @file   TCatPulseShape.h
  * @date   Created : Mar 10, 2013 18:10:59 JST
- *   Last Modified : 2017-01-30 17:27:52 JST (ota)
+ *   Last Modified : 2018-08-23 20:13:08 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -46,6 +46,8 @@ public:
    Float_t GetRiseTime() const { return fRiseTime; }
    std::vector<Float_t>& GetSample() { return fSample; }
    std::vector<Float_t>& GetClock() { return fClock; }
+   const std::vector<Float_t>& GetSample() const { return fSample; }
+   const std::vector<Float_t>& GetClock() const { return fClock; }
    Double_t GetX() const { return fPos.X(); }
    Double_t GetY() const { return fPos.Y(); }
    Double_t GetZ() const { return fPos.Z(); }

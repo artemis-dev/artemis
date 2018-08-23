@@ -2,7 +2,7 @@
 /**
  * @file   TCatPulseShape.cc
  * @date   Created : Mar 10, 2013 23:10:50 JST
- *   Last Modified : 2018-03-18 23:35:14 JST (ota)
+ *   Last Modified : 2018-08-23 20:15:18 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -51,6 +51,13 @@ void TCatPulseShape::Copy(TObject &obj) const
    pulse.fRiseTime = fRiseTime;
    fPos.Copy(pulse.fPos);
    pulse.fPos = fPos;
+   std::vector<Float_t>& sample = pulse.GetSample();
+   sample.resize(fSample.size());
+   std::copy(fSample.begin(),fSample.end(),sample.begin());
+   std::vector<Float_t>& clock = pulse.GetClock();
+   clock.resize(fClock.size());
+   std::copy(fClock.begin(),fClock.end(),clock.begin());
+   
    TDataObject::Copy(obj);
 }
 
