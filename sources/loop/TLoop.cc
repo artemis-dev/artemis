@@ -236,8 +236,9 @@ Bool_t art::TLoop::Init()
    fEventCollection->Add(kConditionName,fCondition,kTRUE);
 //   fEventCollection->AddInfo(kAnalysisInfoName,fAnalysisInfo,kFALSE);
    fCondition->Set(kBeginOfRun);
+   TFolder *topfolder = (TFolder*) gROOT->FindObject("/artemis");
    TFolder *folder = (TFolder*) gROOT->FindObject(TString::Format("/artemis/loops/loop%d",fID));
-   folder->Add(fAnalysisInfo);
+   topfolder->Add(fAnalysisInfo);
 //   fAnalysisInfo->SetProcessors(fProcessors);
    for (itr = itrBegin; itr!=itrEnd; itr++) {
       TProcessor *proc = (*itr);

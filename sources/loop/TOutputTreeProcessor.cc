@@ -2,7 +2,7 @@
 /**
  * @file   TOutputTreeProcessor.cc
  * @date   Created : Jul 11, 2013 17:11:41 JST
- *   Last Modified : 2018-07-30 17:54:36 JST (ota)
+ *   Last Modified : 2018-08-09 22:05:44 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -122,7 +122,9 @@ void art::TOutputTreeProcessor::PostLoop()
    if (!gDirectory) gDirectory = gROOT;
    TDirectory *saved = gDirectory;
    fFile->cd();
-   fFile->Write(0,TFile::kOverwrite);
+   fTree->Write(0,TFile::kOverwrite);
+   gDirectory->Get(TAnalysisInfo::kDefaultAnalysInfoName)->Write(0,TFile::kOverwrite);
+//   fFile->Write(0,TFile::kOverwrite);
    saved->cd();
 #ifdef USE_MPI
    Int_t useMPI;

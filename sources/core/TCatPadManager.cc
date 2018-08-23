@@ -2,7 +2,7 @@
 /**
  * @file   TCatPadManager.cc
  * @date   Created : Feb 06, 2012 19:06:29 JST
- *   Last Modified : 2018-08-07 10:10:06 JST (ota)
+ *   Last Modified : 2018-08-07 16:34:04 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -130,8 +130,9 @@ TVirtualPad *TCatPadManager::GetCanvas()
    if (!fMainPad) CreateCanvas();
    TDatime now;
    TFolder *folder = (TFolder*) gROOT->FindObject("/artemis/loops/loop0");
+   TFolder *topfolder = (TFolder*) gROOT->FindObject("/artemis");
    art::Util::LoadAnalysisInformation();
-   art::TAnalysisInfo *info = (art::TAnalysisInfo*) gROOT->FindObjectAny(art::TAnalysisInfo::kDefaultAnalysInfoName);
+   art::TAnalysisInfo *info = (art::TAnalysisInfo*) topfolder->FindObject(art::TAnalysisInfo::kDefaultAnalysInfoName);
    if (info) {
       TString header;
       header.Append(gSystem->BaseName(info->GetSteeringFileName()));

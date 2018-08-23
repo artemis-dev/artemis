@@ -3,7 +3,7 @@
  * @brief
  *
  * @date   Created       : 2018-07-26 16:33:05 JST
- *         Last Modified : 2018-08-06 20:56:02 JST (ota)
+ *         Last Modified : 2018-08-07 17:07:09 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2018 Shinsuke OTA
@@ -42,25 +42,30 @@ Bool_t Util::LoadAnalysisInformation(const char *infoName)
 {
    TString name = (infoName) ? infoName : TAnalysisInfo::kDefaultAnalysInfoName;
    TDirectory *topdir = gDirectory->GetFile();
-   TObject *obj = NULL;
+   TObject *cachedobj = NULL;
+   TObject * obj = NULL;
+   TFolder *topfolder = static_cast<TFolder*>(gROOT->FindObject("/artemis"));
+   cachedobj = topfolder->FindObject(name);
+
+   // find directory object
+   
    if ( NULL == topdir ) {
       topdir = gROOT;
       obj = topdir->FindObject(name);
    } else {
-      TFile *file = (TFile*)topdir;
-      TIter next(file->GetListOfKeys());
-      while (TKey *key = (TKey*) next()) {
-         if (TClass::GetClass(key->GetClassName()) != TAnalysisInfo::Class()) continue;
-
-         // analysis info was found
-         obj = key->ReadObj();
-         break;
-      }
+      obj = topdir->Get(name);
    }
-   if ( NULL ==  obj ) return kFALSE;
-   TFolder *topfolder = static_cast<TFolder*>(gROOT->FindObject("/artemis"));
-   if (!topfolder) return kFALSE;
-   topfolder->Add(obj);
+
+   if ( !obj && !cachedobj ) return kFALSE;
+   if ( obj == cachedobj ) return kTRUE;
+   if ( obj ) {
+      topdir->Add(obj);
+      if ( cachedobj ) {
+         topfolder->Remove(cachedobj);
+      }
+      topfolder->Add(obj);
+   }
+      
    return kTRUE;
 }
 
