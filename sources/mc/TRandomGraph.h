@@ -3,7 +3,7 @@
  * @brief  generate random number from graph
  *
  * @date   Created       : 2015-08-25 14:34:51 JST
- *         Last Modified : Dec 21, 2015 15:26:50 JST
+ *         Last Modified : 2018-08-27 17:48:12 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2015 Shinsuke OTA
@@ -19,6 +19,8 @@ namespace art {
    class TRandomGraph;
 }
 
+class TSpline;
+
 class art::TRandomGraph : public TGraph {
 public:
    TRandomGraph(TGraph *graph);
@@ -30,7 +32,10 @@ public:
 
 protected:
    void Init();
+
+   TSpline *fSpline; //!
 private:
+   
 
    ClassDef(TRandomGraph,1) // generate random number from graph
 };
