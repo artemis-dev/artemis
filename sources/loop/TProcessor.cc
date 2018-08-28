@@ -3,7 +3,7 @@
  * Base class for the user processors
  
  * @date   Created : Jul 10, 2013 17:10:19 JST
- *   Last Modified : 2018-07-30 08:42:07 JST (ota)
+ *   Last Modified : 2018-08-27 16:16:04 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *
@@ -307,7 +307,7 @@ void art::TProcessor::PrintDescriptionYAML(ostream& ros) const
 	       prm->IsValueSet() ? prm->Value() : prm->DefaultValue();
 	    const TString &comment =
 	       TString::Format("[%s] %s",
-			       prm->Type().Data(), prm->GetTitle());
+			       prm->Type().Data(), prm->GetTitle().Data());
 	    out << YAML::Key << prm->GetName();
 //	    if (prm->IsStringVector()) {
 //	       out << YAML::Comment(comment.Data())

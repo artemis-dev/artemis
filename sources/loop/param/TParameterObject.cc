@@ -186,7 +186,7 @@ void TParameterObject::Print(Option_t */* opt*/) const
    for (ParameterMap_t::const_iterator it = fParameterMap.begin(); it != fParameterMap.end(); it++) {
       TProcessorParameter *prm = it->second;
       const TString &value = prm->IsValueSet() ? prm->Value():prm->DefaultValue();
-      outs.Append(indent).Append(TString::Format("%-20s",prm->GetName()))
+      outs.Append(indent).Append(TString::Format("%-20s",prm->GetName().Data()))
          .Append(": ").Append(value).Append("\n");
    }
    printf("%s",outs.Data());
