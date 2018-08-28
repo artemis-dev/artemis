@@ -3,7 +3,7 @@
  * Base class for the user processors
  
  * @date   Created : Jul 10, 2013 17:10:19 JST
- *   Last Modified : 2018-08-27 16:16:04 JST (ota)
+ *   Last Modified : 2018-08-28 15:45:55 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *
@@ -274,7 +274,7 @@ void art::TProcessor::UpdateParameters()
    }
 }
 
-void art::TProcessor::PrintDescriptionYAML(ostream& ros) const 
+void art::TProcessor::PrintDescriptionYAML(std::ostream& ros) const 
 {
    TString name;
    if (strcmp(GetName(),"")){

@@ -2,7 +2,7 @@
 /**
  * @file   TProcessor.h
  * @date   Created : Jul 10, 2013 17:10:49 JST
- *   Last Modified : 2018-08-28 10:41:38 JST (ota)
+ *   Last Modified : 2018-08-28 15:45:40 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -87,7 +87,7 @@ public:
    // set error message
    virtual void SetErrorMessage(const char* message) { fErrorMessage = message; }
 
-   virtual void PrintDescriptionYAML(ostream& ros = std::cout) const;
+   virtual void PrintDescriptionYAML(std::ostream& ros = std::cout) const;
 
    virtual Int_t GetVerboseLevel() const { return fVerboseLevel; } 
 
