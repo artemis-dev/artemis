@@ -3,7 +3,7 @@
  * @brief  RDF Event store
  *
  * @date   Created       : 2014-03-30 09:26:04 JST
- *         Last Modified : Jun 22, 2014 16:11:35 JST
+ *         Last Modified : 2018-08-28 16:16:16 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -67,15 +67,15 @@ private:
 
 
    TString       fSegmentInfoName; // name of segment information
-   TClonesArray **fSegmentInfoArray; //-> segment information
+   TClonesArray **fSegmentInfoArray; //!-> segment information
    TModuleDecoderFactory *fDecoderFactory; //!
    TObjArray      *fDecoders; //!
    TString       fModuleListName; // name of module information
-   TClonesArray **fModuleTypeArray; //-> module information
+   TClonesArray **fModuleTypeArray; //!-> module information
 
    TSegmentedData *fSegmentedData; //! segmented data
    TEventHeader   *fEventHeader; //! event header
-   TList *fRunHeaders;
+   TList *fRunHeaders; //!
 
    ClassDef(TRDFEventStore,1) // RDF Event store
 };
