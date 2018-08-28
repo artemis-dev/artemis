@@ -2,7 +2,7 @@
 /**
  * @file   TProcessor.h
  * @date   Created : Jul 10, 2013 17:10:49 JST
- *   Last Modified : 2018-08-28 15:45:40 JST (ota)
+ *   Last Modified : 2018-08-28 16:23:42 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -31,6 +31,8 @@ namespace art {
    }
    R__EXTERN TList *gProcessors;
 }
+
+class TClonesArray;
 
 namespace YAML {
    class Node;
