@@ -3,7 +3,7 @@
  * @brief  analysis information
  *
  * @date   Created       : 2018-07-28 09:55:24 JST
- *         Last Modified : 2018-07-30 17:51:10 JST (ota)
+ *         Last Modified : 2018-08-29 21:54:26 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2018 Shinsuke OTA
@@ -96,9 +96,9 @@ Long64_t TAnalysisInfo::Merge(TCollection *col)
 
 Bool_t TAnalysisInfo::AddTo(TDirectory *dir)
 {
+   if (dir->FindObject(kDefaultAnalysInfoName)) return kTRUE;
    TAnalysisInfo *info = dynamic_cast<TAnalysisInfo*>(gROOT->FindObjectAny(kDefaultAnalysInfoName));
    if (!info) return kFALSE;
-
    dir->Add(info);
    return kTRUE;
 }
