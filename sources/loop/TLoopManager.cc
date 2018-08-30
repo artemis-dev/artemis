@@ -2,7 +2,7 @@
 /**
  * @file   TLoopManager.cc
  * @date   Created : Jul 10, 2013 17:10:36 JST
- *   Last Modified : 2016-04-19 00:54:59 JST (nil)
+ *   Last Modified : 2018-08-30 14:05:36 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -106,6 +106,7 @@ Int_t art::TLoopManager::Terminate(Int_t i)
       gSystem->Sleep(100);
    }
    fLoops->Remove(obj);
+   obj->Terminate();
    TFolder *topfolder = (TFolder*)gROOT->FindObject("/artemis/loops");
    TFolder *folder = (TFolder*)topfolder->FindObject(TString::Format("loop%d",i));
    topfolder->Remove(folder);

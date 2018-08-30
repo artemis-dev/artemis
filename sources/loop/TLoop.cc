@@ -345,3 +345,10 @@ Bool_t art::TLoop::Resume()
 
 
 
+Bool_t art::TLoop::Terminate()
+{
+   std::list<TProcessor*>::iterator itr;
+   std::list<TProcessor*>::iterator itrBegin = fProcessors.begin();
+   std::list<TProcessor*>::iterator itrEnd   = fProcessors.end();
+   for_each(itrBegin,itrEnd,std::mem_fun(&TProcessor::Terminate));
+}

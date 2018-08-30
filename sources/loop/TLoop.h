@@ -3,7 +3,7 @@
 /**
  * @file   TLoop.h
  * @date   Created : Apr 26, 2012 19:26:12 JST
- *   Last Modified : 2018-07-30 14:51:02 JST (ota)
+ *   Last Modified : 2018-08-30 14:05:50 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -48,6 +48,7 @@ public:
 
    Bool_t Init();
    Bool_t Resume();
+   Bool_t Terminate();
    void SetID(Int_t id) { fID = id;}
    Int_t GetID() { return fID; }
 
