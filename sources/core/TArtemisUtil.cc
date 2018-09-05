@@ -3,7 +3,7 @@
  * @brief
  *
  * @date   Created       : 2018-07-26 16:33:05 JST
- *         Last Modified : 2018-08-07 17:07:09 JST (ota)
+ *         Last Modified : 2018-09-05 13:57:25 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2018 Shinsuke OTA
@@ -21,6 +21,7 @@
 #include <TFolder.h>
 #include <TClass.h>
 #include <TKey.h>
+#include "TMath.h"
 using namespace art;
 
 
@@ -67,6 +68,21 @@ Bool_t Util::LoadAnalysisInformation(const char *infoName)
    }
       
    return kTRUE;
+}
+
+
+void Util::GetPolygonFromSide(Int_t n, Double_t side, Double_t angle, Double_t *vx, Double_t *vy, Double_t xoffset, Double_t yoffset)
+{
+   Double_t theta = 2. * TMath::Pi() / n;
+   Double_t r = side * TMath::Abs(TMath::Sin( (TMath::Pi() - theta)/2. ) / TMath::Sin(theta));
+
+   for (Int_t i = 0; i < n + 1; ++i) {
+      Double_t t = theta * i + angle;
+      Double_t sint = TMath::Sin(t);
+      Double_t cost = TMath::Cos(t);
+      vx[i] = r * cost + xoffset;
+      vy[i] = r * sint + yoffset;
+   }
 }
 
 

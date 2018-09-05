@@ -3,7 +3,7 @@
  * @brief  utilities
  *
  * @date   Created       : 2018-07-26 16:30:08 JST
- *         Last Modified : 2018-07-30 21:21:53 JST (ota)
+ *         Last Modified : 2018-09-05 13:44:04 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2018 Shinsuke OTA
@@ -34,6 +34,18 @@ namespace art {
 
       // Load analysis information (at top directory of this directory)
       Bool_t LoadAnalysisInformation(const char *infoName = NULL);
+
+      /// \brief get polygon vertexes
+      /// The polygon is a closed one, which request the size of output vertexes should be n + 1, where n is the number of vertexes
+      /// @param[in] n number of vertex
+      /// @param[in] side length of side 
+      /// @param[in] angle rotation angle (rad)
+      /// @param[out] vx x coordinates of vertex
+      /// @param[out] vy y coordinates of vertex
+      /// @param[in] xoffset offset of x coordinate
+      /// @param[in] yoffset offset of y coordinate
+      void GetPolygonFromSide(Int_t n, Double_t side, Double_t angle, Double_t *vx, Double_t *vy, Double_t xoffset = 0., Double_t yoffset = 0);
+      
 
 #ifdef USE_MPI
       // file merger in mpi
