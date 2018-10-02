@@ -2,7 +2,7 @@
 /**
  * @file   TOutputTreeProcessor.cc
  * @date   Created : Jul 11, 2013 17:11:41 JST
- *   Last Modified : 2018-10-02 09:58:34 JST (ota)
+ *   Last Modified : 2018-10-03 04:37:45 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -89,7 +89,8 @@ void art::TOutputTreeProcessor::Init(TEventCollection *col)
       if (obj->IsPassive()) continue;
       fTree->GetUserInfo()->Add(*(TObject**)obj->GetObjectRef());
    }
-   gDirectory->cd();
+   savedir->cd();
+   
    
 }
 void art::TOutputTreeProcessor::Process()
