@@ -2,7 +2,7 @@
 /**
  * @file   TOutputTreeProcessor.cc
  * @date   Created : Jul 11, 2013 17:11:41 JST
- *   Last Modified : 2018-08-09 22:05:44 JST (ota)
+ *   Last Modified : 2018-10-02 09:58:34 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -52,6 +52,7 @@ void art::TOutputTreeProcessor::Init(TEventCollection *col)
    }
 #endif
    Util::PrepareDirectoryFor(fFileName);
+   TDirectory *savedir = gDirectory;
    fFile = TFile::Open(fFileName,"RECREATE");
    if (!fFile) {
       SetStateError(TString::Format("Cannot create file: %s",fFileName.Data()));
@@ -88,6 +89,8 @@ void art::TOutputTreeProcessor::Init(TEventCollection *col)
       if (obj->IsPassive()) continue;
       fTree->GetUserInfo()->Add(*(TObject**)obj->GetObjectRef());
    }
+   gDirectory->cd();
+   
 }
 void art::TOutputTreeProcessor::Process()
 {

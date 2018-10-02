@@ -3,7 +3,7 @@
  * @brief  Tree projection definitions
  *
  * @date   Created       : 2014-03-05 10:15:05 JST
- *         Last Modified : 2018-04-02 13:35:22 JST (ota)
+ *         Last Modified : 2018-10-03 03:17:33 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -229,7 +229,13 @@ Bool_t TTreeProjection::LoadYAMLNode(const YAML::Node &node)
          }
       } else if (contents) {
          // new group is created
-         group = new TTreeProjGroup(name,title,cut);
+         Int_t nSame = 0;
+         TString groupName = name;
+         while (gDirectory->Get(groupName)) {
+            ++nSame;
+            groupName = Form("%s%d",name.Data(),nSame);
+         }
+         group = new TTreeProjGroup(groupName,title,cut);
       } else {
          // invalid declaration of group
          Warning(kMethodName,"group skipped since the group '%s' does not contain any clones or contents",
