@@ -43,7 +43,7 @@ namespace {
 ClassImp(art::TLoop);
 
 art::TLoop::TLoop()
-   : fCondition(NULL), fEventCollection(NULL), fProcessors(NULL), fID(0), fAnalysisInfo(NULL),
+   : fCondition(NULL), fEventCollection(NULL),  fID(0), fAnalysisInfo(NULL),
      fEventStore(NULL)
 {
    fEventCollection = new TEventCollection;
@@ -75,7 +75,8 @@ art::TLoop::~TLoop()
 ///
 /// Load yaml file at [dirname]/[basename]. 
 ///
-Bool_t art::TLoop::Load(const char* dirname, const char* basename, std::list<Long_t> *loaded)
+Bool_t art::TLoop::Load(const char* dirname, const char* basename, std::list<Long_t> *loaded,
+                        std::map<std::string,std::string>* replace )
 {
    const char *filename = gSystem->ConcatFileName(dirname, basename);
    if ( 0 == loaded->size() ) {
@@ -94,15 +95,33 @@ Bool_t art::TLoop::Load(const char* dirname, const char* basename, std::list<Lon
    }
 
    try {
+      TString lines;
       std::ifstream fin(filename);
-      YAML::Parser parser(fin);
+      lines.ReadFile(fin);
+      fin.close();
+#if 0
+      // list keys
+      TPRegexp patt("@[A-Z_]+@");
+      TObjArray *
+      patt.Match(lines,"",0,100,&pos
+#endif
+      if (replace) {
+         std::map<std::string,std::string>::const_iterator it = replace->begin();
+         std::map<std::string,std::string>::const_iterator itend = replace->end();
+         for (; it != itend;  ++it) {
+            const std::string& key = it->first;
+            const std::string& value = it->second;
+            lines.ReplaceAll(Form("@%s@",key.c_str()),value.c_str());
+         }
+      }
+      std::istringstream iss(lines.Data());
+      YAML::Parser parser(iss);
       YAML::Node doc;
       std::string name, type, value;
       
       loaded->push_back(fstat.fIno);
       
       parser.GetNextDocument(doc);
-      fin.close();
       if (!LoadYAMLNode(doc["Processor"],loaded)) {
          return kFALSE;
       }
@@ -308,6 +327,12 @@ Bool_t art::TLoop::Resume()
          fCondition->Unset(kStopEvent);
       } else {
          fAnalysisInfo->IncrementEventNumber();
+         if (fEventStore) {
+            fAnalysisInfo->SetRunNumber(TString::Format("%04d",fEventStore->GetRunNumber()));
+            fAnalysisInfo->SetRunName(TString::Format("%s",fEventStore->GetRunName()));
+         } else {
+            printf("no event store\n");
+         }
       }
       
       TProcessID::SetObjectCount(objectNumber);

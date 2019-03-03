@@ -3,7 +3,7 @@
 /**
  * @file   TLoop.h
  * @date   Created : Apr 26, 2012 19:26:12 JST
- *   Last Modified : 2018-08-30 14:05:50 JST (ota)
+ *   Last Modified :2019-02-28 20:08:54 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -18,6 +18,7 @@
 #include <TConditionBit.h>
 #include <TEventCollection.h>
 #include <TAnalysisInfo.h>
+
 namespace art {
    class TLoop;
    class TProcessor;
@@ -54,7 +55,8 @@ public:
 
    virtual void        Clear(Option_t * /*option*/ ="") { }
 
-   Bool_t Load(const char* dirname, const char* basename, std::list<Long_t> *loaded);
+   Bool_t Load(const char* dirname, const char* basename, std::list<Long_t> *loaded, 
+               std::map<std::string,std::string>* replace = NULL);
 
    virtual Bool_t LoadYAMLNode(const YAML::Node& node, std::list<Long_t> *loaded);
 

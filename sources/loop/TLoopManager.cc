@@ -2,7 +2,7 @@
 /**
  * @file   TLoopManager.cc
  * @date   Created : Jul 10, 2013 17:10:36 JST
- *   Last Modified : 2018-08-30 14:05:36 JST (ota)
+ *   Last Modified :2019-02-28 21:59:26 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -31,7 +31,7 @@ art::TLoopManager* art::TLoopManager::Instance()
    return & instance;
 }
 
-art::TLoop* art::TLoopManager::Add(const char *filename)
+art::TLoop* art::TLoopManager::Add(const char *filename, std::map<std::string,std::string>* replace)
 {
    if (fLoops->GetEntries() > 0) {
       printf("currently not supported to perform many loops at the same time\n");
@@ -55,7 +55,7 @@ art::TLoop* art::TLoopManager::Add(const char *filename)
      TFolder *myfolder = folder->AddFolder(name,filename);
    }
 
-   if (!loop->Load(dirname, basename, &loaded) ||  !loop->Init()) {
+   if (!loop->Load(dirname, basename, &loaded, replace) ||  !loop->Init()) {
       loop->Clear("C");
       if (folder)       folder->Remove(folder);
       delete loop;

@@ -2,7 +2,7 @@
 /**
  * @file   TCatPadManager.cc
  * @date   Created : Feb 06, 2012 19:06:29 JST
- *   Last Modified : 2018-08-07 16:34:04 JST (ota)
+ *   Last Modified :2019-03-01 20:39:19 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -61,6 +61,9 @@ void TCatPadManager::CreateCanvas()
    fMainPad = new TPad("graphs","graphs",0.05,0.01,0.95,0.91);
    fMainPad->Draw();
    fMainPad->cd();
+   fMainPad->SetGridy(kTRUE);
+   fMainPad->SetGridx(kTRUE);
+   
 
    fMainPad->Connect("Closed()","TCatPadManager",this,"MainPadClosed()");
    fCurrentPadId = 0;
@@ -189,6 +192,11 @@ void TCatPadManager::Divide(Int_t nx, Int_t ny,
    fMainPad->Divide(nx,ny,xmargin,ymargin);
    fCurrentPadId = 0;
    fNumSubPads = nx * ny;
+   for (Int_t i = 0; i < fNumSubPads; ++i) {
+      fMainPad->GetPad(i+1)->SetGridy(kTRUE);
+      fMainPad->GetPad(i+1)->SetGridx(kTRUE);
+   }
+
 }
 
 void TCatPadManager::SetCurrentPadId(Int_t id)
