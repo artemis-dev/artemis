@@ -3,7 +3,7 @@
  * @brief  helper to generate data from formula
  *
  * @date   Created       : 2019-03-04 19:04:38 JST
- *         Last Modified :2019-03-04 20:37:32 JST (ota)
+ *         Last Modified : 2019-03-04 23:53:57 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2019 Shinsuke OTA
@@ -21,6 +21,7 @@ namespace art {
 class TTree;
 class TTreeFormulaManager;
 class TTreeFormula;
+class TClonesArray;
 
 class art::TFormulaData : public TNamed {
 public:
