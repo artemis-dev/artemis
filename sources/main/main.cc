@@ -2,7 +2,7 @@
 /**
  * @file   main.cc
  * @date   Created : Feb 06, 2012 00:06:56 JST
- *   Last Modified : 2018-04-27 16:55:24 JST (ota)
+ *   Last Modified :2019-03-03 21:15:20 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -11,6 +11,7 @@
 #include "TArtRint.h"
 #include "TString.h"
 #include <TLoopManager.h>
+#include <unistd.h>
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -55,6 +56,16 @@ int main (int argc, char **argv)
 
 #else
    art::TArtRint *theApp = new art::TArtRint(&argc, argv);
+   char opt;
+   while ((opt = getopt(argc,argv,"u:")) != -1) {
+      switch(opt) {
+      case 'u':
+         printf("username = %s\n",optarg);
+         break;
+      default:
+         break;
+      }
+   }
    theApp->Run();
 #endif
 
