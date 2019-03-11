@@ -2,7 +2,7 @@
 /**
  * @file   TArtAtomicMassTable.h
  * @date   Created : Aug 04, 2011 15:04:58 JST
- *   Last Modified : 2018-08-06 22:49:30 JST (ota)
+ *   Last Modified : 2019-03-12 02:53:47 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -34,9 +34,14 @@ public:
    // get nucleus mass by atomic number and mass number
    Double_t GetNucleusMass(Int_t z, Int_t a);
 
-   void SetAtomicMass(Int_t z, Int_t a, Double_t mass) {
+   // get nucleus name
+   const char* GetIsotopeName(Int_t z, Int_t a) const;
+   
+
+   void SetAtomicMass(Int_t z, Int_t a, Double_t mass, const char* name) {
       fIsEvaluated[z][a] = kTRUE;
       fMass[z][a] = mass;
+      fIsotopeName[z][a] = name;
    }
 
    /**
@@ -52,6 +57,7 @@ public:
 private:
    TString  fTableName;
    Double_t fMass[kNumZ][kNumA];
+   TString fIsotopeName[kNumZ][kNumA];
    Bool_t   fIsEvaluated[kNumZ][kNumA];
    Bool_t   fIsCreated;
 
