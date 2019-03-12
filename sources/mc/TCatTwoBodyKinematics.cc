@@ -2,7 +2,7 @@
 /**
  * @file   TCatTwoBodyKinematics.cc
  * @date   Created : Oct 07, 2012 13:07:55 JST
- *   Last Modified : Feb 02, 2013 16:46:02 JST
+ *   Last Modified : 2019-03-12 10:06:44 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -36,7 +36,11 @@ TCatTwoBodyKinematics::TCatTwoBodyKinematics(Int_t a1, Int_t z1, Int_t a2, Int_t
    Int_t z[4] = { z1, z2, z3, z4 };
    fIncidentEnergyPerNucleon = 0.;
    for (Int_t i=0; i!=4 ; i++) {
-      fMass[i] = gAtomicMassTable->GetNucleusMass(z[i],a[i]);
+      if (z[i] == 0 && a[i] == 0) {
+         fMass[i] = 0;
+      } else {
+         fMass[i] = gAtomicMassTable->GetNucleusMass(z[i],a[i]);
+      }
       fEx[i]   = 0.;
       fPLab[i] = NULL;
       fPCM[i]  = NULL;
