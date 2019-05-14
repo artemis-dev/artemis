@@ -14,9 +14,16 @@
 #include <map>
 #include <vector>
 
+
+
 namespace art {
    class TMacroReplacer;
 }
+
+namespace YAML {
+   class Node;
+}
+
 
 class art::TMacroReplacer {
 public:
@@ -24,14 +31,15 @@ public:
    virtual ~TMacroReplacer() {;}
    
 
-   std::string operator() (const std::string& input);
-   
    typedef std::map<std::string,std::string> Map_t;
 
    static const std::string fgMacroFormat;
 
    // add macro
    bool Add(const char* key, const char* value);
+   // add macro from yaml node
+   bool Add(const YAML::Node& node);
+   
    // replace macro
    std::string Replace(const std::string& input);
    // find the macro

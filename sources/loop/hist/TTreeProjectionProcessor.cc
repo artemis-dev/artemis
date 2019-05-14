@@ -4,21 +4,26 @@
  * @brief  tree projection
  *
  * @date   Created       : 2014-03-05 22:30:06 JST
- *         Last Modified : 2018-07-30 17:54:52 JST (ota)
+ *         Last Modified : 2019-05-14 18:42:06 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
  */
 
 #include "TTreeProjectionProcessor.h"
-#include <TTreeProjection.h>
-#include <TTree.h>
-#include <TFolder.h>
-#include <TROOT.h>
-#include <TCatCmdHstore.h>
-#include <TDirectory.h>
-#include <TAnalysisInfo.h>
-#include <TArtemisUtil.h>
+#include "TTreeProjection.h"
+#include "TTree.h"
+#include "TFolder.h"
+#include "TROOT.h"
+#include "TCatCmdHstore.h"
+#include "TDirectory.h"
+#include "TAnalysisInfo.h"
+#include "TArtemisUtil.h"
+#include "TMacroReplacer.h"
+#include <fstream>
+#include <sstream>
+#include "yaml-cpp/yaml.h"
+
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -38,6 +43,8 @@ TTreeProjectionProcessor::TTreeProjectionProcessor()
 {
    RegisterProcessorParameter("OutputFilename","output filename",fOutputFilename,
                               TString(""));
+   RegisterProcessorParameter("Replace","Replacement of macro",fReplacement,TString(""));
+   
 }
 
 TTreeProjectionProcessor::~TTreeProjectionProcessor()
@@ -60,7 +67,55 @@ TTreeProjectionProcessor& TTreeProjectionProcessor::operator=(const TTreeProject
 void TTreeProjectionProcessor::Init(TEventCollection *col)
 {
    fDirectory = gDirectory;
-   TParameterLoader::Init(col);
+
+   // initialization of tree projection class
+   fTypeName = art::TTreeProjection::Class_Name();
+   fParameter = static_cast<TParameterObject*> (TClass::GetClass(fTypeName)->New());
+   fParameter->SetName(fParameterName);
+
+   ifstream fin(fFileName);
+   if (!fin) {
+      SetStateError(Form("No such file '%s'",fFileName.Data()));
+      return;
+   }
+   std::stringstream ss;
+   ss << fin.rdbuf();
+   std::string input(ss.str());
+
+
+   Info("Init","do it");
+   
+   TMacroReplacer replacer;
+   if (!fReplacement.IsNull()) {
+      std::istringstream iss(fReplacement.Data());
+      printf("fReplacement %s\n",fReplacement.Data());
+      
+      YAML::Parser parser(iss);
+      YAML::Node doc;
+      parser.GetNextDocument(doc);
+      replacer.Add(doc);
+      input = replacer.Replace(input);
+   }
+   std::vector<std::string> remains = replacer.Parse(input);
+   if (remains.size()) {
+      std::ostringstream os;
+      std::copy(remains.begin(),remains.end(),std::ostream_iterator<std::string>(os,","));
+      std::string emess = os.str();
+      emess.erase(emess.size() - std::char_traits<char>::length(","));
+      SetStateError(Form("macro remains %s",emess.c_str()));
+      return;
+   }
+
+   ss.str("");
+   ss << input;
+   YAML::Parser parser(ss);
+   YAML::Node doc;
+   parser.GetNextDocument(doc);
+   fParameter->LoadYAMLNode(doc);
+
+   Info("Init","Treeprojetion is prepared");
+   
+
    if (IsError()) return;
    fTreeProj = static_cast<art::TTreeProjection*>(fParameter);
    

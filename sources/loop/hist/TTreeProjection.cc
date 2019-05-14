@@ -3,7 +3,7 @@
  * @brief  Tree projection definitions
  *
  * @date   Created       : 2014-03-05 10:15:05 JST
- *         Last Modified : 2018-10-03 03:17:33 JST (ota)
+ *         Last Modified : 2019-05-15 08:37:06 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -441,4 +441,23 @@ Bool_t TTreeProjection::Sync(TTreeProjGroup *group, TTree *tree, TCut cut)
       }
    }
    return kTRUE;
+}
+
+
+Bool_t TTreeProjection::LoadYAMLFile(const TString &filename)
+{
+   std::ifstream fin(filename.Data());
+   if (!fin.is_open()) {
+      Error("LoadFile", "Cannot open file: %s",filename.Data());
+      fCurrentFile = "";
+      return kFALSE;
+   }
+   fCurrentFile = filename;
+
+   std::stringstream strstream;
+   strstream << fin.rdbuf();
+   fin.close();
+
+   TPar
+   
 }

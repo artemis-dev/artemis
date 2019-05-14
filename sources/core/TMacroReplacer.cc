@@ -10,7 +10,7 @@
 #include <algorithm>
 #include "TString.h"
 #include "TRegexp.h"
-
+#include "yaml-cpp/yaml.h"
 
 using art::TMacroReplacer;
 
@@ -34,6 +34,21 @@ bool TMacroReplacer::Add(const char* key, const char* value)
       return false;
    }
    fMacros[key] = std::string(value);
+   return true;
+}
+
+bool TMacroReplacer::Add(const YAML::Node& node)
+{
+   for (YAML::Iterator it = node.begin(), itend = node.end(); it != itend; ++it) {
+      std::string key,value;
+      it.first() >> key;
+      if (it.second().Type() != YAML::NodeType::Scalar) {
+         printf("TMacroReplacer::Add : key '%s' has non scalar value",key.c_str());
+         return false;
+      }
+      it.second() >> value;
+      Add(key.c_str(),value.c_str());
+   }
    return true;
 }
 
