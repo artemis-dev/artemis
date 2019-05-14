@@ -11,6 +11,8 @@ SUBSRC += TSemaphoreObject.cc
 SUBSRC += TArtCanvas.cc
 SUBSRC += TArtemisUtil.cc
 SUBSRC += TAnalysisInfo.cc
+SUBSRC += TMacroReplacer.cc
+
 SUBOBJ = $(SUBSRC:.cc=.o)
 SUBHDR = $(SUBSRC:.cc=.h)
 # TCatTypes.h
