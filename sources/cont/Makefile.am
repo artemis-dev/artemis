@@ -5,6 +5,7 @@ SUBSRC += TCatPulseShape.cc
 SUBSRC += TSimpleData.cc
 SUBSRC += ICharge.cc
 SUBSRC += ITiming.cc
+SUBSRC += IPosition.cc
 SUBSRC += TNArray.cc
 
 

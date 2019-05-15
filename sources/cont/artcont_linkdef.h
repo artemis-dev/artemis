@@ -3,7 +3,7 @@
  * @brief
  *
  * @date   Created       : 2014-10-29 18:10:16 JST
- *         Last Modified : 2018-07-28 11:27:11 JST (ota)
+ *         Last Modified : 2019-05-15 11:16:07 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -23,6 +23,7 @@
 #pragma link C++ class art::TSimpleData;
 #pragma link C++ class art::ICharge;
 #pragma link C++ class art::ITiming;
+#pragma link C++ class art::IPosition;
 #pragma link C++ class art::TNArray+;
 #pragma link C++ class art::TNArray::Variable+;
 
