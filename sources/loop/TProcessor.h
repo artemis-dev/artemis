@@ -126,6 +126,27 @@ public:
       Bool_t fIsObject;
       TString *fLength;
    } ;
+
+   Bool_t ParameterExists(const char* name) {
+      if (fParamMap.find(TString(name)) != fParamMap.end()) {
+         return true;
+      }
+      return false;
+   }
+   
+   void RemoveParameter(const char* name) {
+      fParamMap.erase(fParamMap.find(TString(name)));
+   }
+   void RemoveIO(std::vector<art::TProcessor::IOCollection>& iocol, const char* name) {
+      RemoveParameter(name);
+      for (std::vector<IOCollection>::iterator it = fOutputs.begin(), itend = fOutputs.end();
+           it != itend; ++it) {
+         if ((*it).fPrmName == TString(name)) {
+            fOutputs.erase(it);
+            break;
+         }
+      }
+   }
       
    // register processor parameter
    template<class T>
@@ -133,6 +154,11 @@ public:
                                    const char* description,
                                    T& parameter,
                                    const T& defaultParam) {
+      if (ParameterExists(name)) {
+         Warning("RegisterProcessorParameter",
+                 "Parameter '%s' exists already. Use OverrideProcessorParameter instead.",
+                 name);
+      }
       fParamMap[TString(name)] = new TParameter_t<T>(name,description,parameter,
                                                defaultParam,false);
    }                                               
@@ -157,7 +183,8 @@ public:
       if (p) {
          fInputs.push_back(IOCollection(p, &parameter,inputclass,dataclass,name));
       }
-   }                                               
+   }
+
 
    void RegisterOutputCollection(const char* name,
                                  const char* description,
@@ -171,7 +198,20 @@ public:
       if (p) {
          fOutputs.push_back(IOCollection(p, &parameter,outputclass,dataclass,name));
       }
-   }                                               
+   }
+
+   void OverrideOutputCollection(const char* name,
+                                 const char* description,
+                                 TString& parameter,
+                                 const TString& defaultParam,
+                                 void * p = NULL,
+                                 TString outputclass = "",
+                                 TString dataclass = "") {
+      RemoveIO(fOutputs,name);
+      RegisterOutputCollection(name,description,parameter,defaultParam,p,outputclass,dataclass);
+   }
+   
+   
 
    // register output collection for primitive class
    void RegisterOutputCollection(const char* name,
@@ -187,7 +227,19 @@ public:
       if (p) {
          fOutputs.push_back(IOCollection(p, &parameter,type,capacity,length));
       }
-   }                                               
+   }
+
+   void OverrideOutputCollection(const char* name,
+                                 const char* description,
+                                 TString& parameter,
+                                 const TString& defaultParam,
+                                 TString type,
+                                 void* p,
+                                 Int_t capacity = 1,
+                                 TString *length = NULL) {
+      RemoveIO(fOutputs,name);
+      RegisterOutputCollection(name,description,parameter,defaultParam,type,p,capacity,length);
+   }
 
 template<class T>
    void RegisterOptionalParameter(const TString& name,
@@ -197,6 +249,16 @@ template<class T>
       fParamMap[TString(name)] = new TParameter_t<T>(name,description,parameter,
                                                defaultParam,true);
    }
+
+   template<class T>
+   void OverrideOptionalParameter(const TString& name,
+                                  const TString& description,
+                                  T& parameter,
+                                  const T& defaultParam) {
+      RemoveParameter(name);
+      RegisterOptionalParameter(name,description,parameter,defaultParam);
+   }
+      
 
    void RegisterInputInfo(const char* name, const char* description,
                           TString &parameter, const TString& defaultParam,
