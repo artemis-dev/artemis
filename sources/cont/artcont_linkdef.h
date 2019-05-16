@@ -26,6 +26,7 @@
 #pragma link C++ class art::IPosition;
 #pragma link C++ class art::TNArray+;
 #pragma link C++ class art::TNArray::Variable+;
+#pragma link C++ class art::TDetectorGeometryInfo+;
 
 #endif /* __CINT__ */
 

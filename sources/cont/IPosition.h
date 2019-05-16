@@ -24,6 +24,10 @@ public:
    IPosition();
    virtual ~IPosition();
 
+   virtual void Copy(IPosition& dest) const {
+      dest.SetXYZ(X(),Y(),Z());
+   }
+
    TVector3 Vec() const;
    virtual double X() const = 0;
    virtual double Y() const = 0;

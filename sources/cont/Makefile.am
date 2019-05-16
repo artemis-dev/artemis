@@ -6,6 +6,7 @@ SUBSRC += TSimpleData.cc
 SUBSRC += ICharge.cc
 SUBSRC += ITiming.cc
 SUBSRC += IPosition.cc
+SUBSRC += TDetectorGeometryInfo.cc
 SUBSRC += TNArray.cc
 
 
