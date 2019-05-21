@@ -34,6 +34,7 @@ public:
    static const UInt_t kLowPassUnfolded   = 1<<18;
    static const UInt_t kLongPulse         = 1<<19;
    static const UInt_t kOutOfOffset       = 1<<20;
+   static const UInt_t kBadPad            = 1<<21;
 
    TCatPulseShape();
    ~TCatPulseShape();
@@ -55,8 +56,8 @@ public:
    Double_t GetY() const { return fPos.Y(); }
    Double_t GetZ() const { return fPos.Z(); }
    double X() const { return GetX(); }
-   double Y() const { return GetX(); }
-   double Z() const { return GetX(); }
+   double Y() const { return GetY(); }
+   double Z() const { return GetZ(); }
    void SetX(double x) { fPos.SetX(x); }
    void SetY(double y) { fPos.SetY(y); }
    void SetZ(double z) { fPos.SetZ(z); }
