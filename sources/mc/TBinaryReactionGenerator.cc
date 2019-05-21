@@ -52,7 +52,8 @@ art::TBinaryReactionGenerator::TBinaryReactionGenerator()
    RegisterProcessorParameter("AngMom","angular momentum for bessel function. If -1 (default), the isotopic distribution is assumed.",fAngMom,(int)-1);
    RegisterProcessorParameter("AngDistFile","file name of the angular distribution. The format of content is '%f %f'. ",fAngDistFile,TString(""));
    RegisterOptionalParameter("DoRandomizePhi","Flag to randomize phi direction (uniform)",fDoRandomizePhi,1);
-
+   Register(fRunName("RunName","run name","sim"));
+   Register(fRunNumber("RunNumber","run number",0));
 }
 art::TBinaryReactionGenerator::~TBinaryReactionGenerator()
 {
@@ -68,12 +69,12 @@ void art::TBinaryReactionGenerator::Init(TEventCollection *col)
    Float_t stepEx = (fExRange[1]-fExRange[0])/nEx;
    Float_t stepAng = (fAngRange[1]-fAngRange[0])/nAng;
 
-   printf("A1 = %d, Z1 = %d\n",fP1[0],fP1[1]);
-   printf("A2 = %d, Z2 = %d\n",fP2[0],fP2[1]);
-   printf("A3 = %d, Z3 = %d\n",fP3[0],fP3[1]);
-   printf("ex  = [%f,%f]\n",fExRange[0],fExRange[1]);
-   printf("ang = [%f,%f]\n",fAngRange[0],fAngRange[1]);
-   printf("L   = %d\n",fAngMom);
+   Info("Init","A1 = %d, Z1 = %d",fP1[0],fP1[1]);
+   Info("Init","A2 = %d, Z2 = %d",fP2[0],fP2[1]);
+   Info("Init","A3 = %d, Z3 = %d",fP3[0],fP3[1]);
+   Info("Init","ex  = [%f,%f]",fExRange[0],fExRange[1]);
+   Info("Init","ang = [%f,%f]",fAngRange[0],fAngRange[1]);
+   Info("Init","L   = %d",fAngMom);
          
 
    
@@ -86,14 +87,13 @@ void art::TBinaryReactionGenerator::Init(TEventCollection *col)
    fExAngDistribution = new TH2F("hseed","hseed",nEx,fExRange[0],fExRange[1],nAng,fAngRange[0],fAngRange[1]);
 //   fExAngDistribution->SetDirectory(NULL);
 
-   TF1 *fExFun = NULL;
+   fExFun = NULL;
    if (fExWidth > 0) {
       fExFun = new TF1("fExFun",
                        "[1]*[1]*x*x/(TMath::Power((x*x-[0]*[0]),2)+[1]*[1]*x*x)",
                        fExRange[0],fExRange[1]);
       fExFun->SetParameters(fExMean,fExWidth);
-   }
-
+   } 
    // angular distribution function
    if (fAngDistFile.IsNull()) {
       TF1 *fun = NULL;
@@ -118,7 +118,9 @@ void art::TBinaryReactionGenerator::Init(TEventCollection *col)
          printf("angular distribution should be indicated\n");
          return;
       }
-      Double_t  R = 1.2*(TMath::Power(fP1[0],1./3.) + TMath::Power(fP2[0],1./3.)); 
+      fAngFun = fun;
+      Double_t  R = 1.2*(TMath::Power(fP1[0],1./3.) + TMath::Power(fP2[0],1./3.));
+      fMaxAmpl = TMath::Limits<Double_t>::Min();
       for (Int_t iEx = 0; iEx!=nEx; iEx++) {
          Double_t ampl;
          Double_t ex = stepEx * iEx + fExRange[0];
@@ -128,6 +130,8 @@ void art::TBinaryReactionGenerator::Init(TEventCollection *col)
             fKinematics->SetTheta(theta*deg);
             ampl = fun->Eval(fKinematics->GetDq()/197.*R);
             ampl *= ampl;
+            fMaxAmpl = std::max(fMaxAmpl,ampl * sin(theta*deg));
+            
             if (fAngMom != -2) {
                ampl *= stepAng*deg*sin(theta*deg);
             }
@@ -135,6 +139,7 @@ void art::TBinaryReactionGenerator::Init(TEventCollection *col)
             fExAngDistribution->Fill(ex,theta,ampl);
          }
       }
+      fMaxAmpl *= 1.2;
    }
    
    col->Add(fOutputColName,fOutputArray,fOutputIsTransparent);
@@ -145,9 +150,22 @@ void art::TBinaryReactionGenerator::Process()
 {
    Double_t ex = 0;
    Double_t theta = 0;
+#if 1
+   while (1) {
+      ex = fExFun ? fExFun->GetRandom() : fExMean;
+      theta = gRandom->Uniform(fAngRange[0],fAngRange[1]) * deg;
+      fKinematics->SetExcitationEnergy(ex);
+      fKinematics->SetTheta(theta);
+      Double_t  R = 1.2*(TMath::Power(fP1[0],1./3.) + TMath::Power(fP2[0],1./3.)); 
+      Double_t ampl = fAngFun->Eval(fKinematics->GetDq() / 197. * R);
+      ampl = ampl * ampl * TMath::Sin(theta);
+      if (ampl < gRandom->Uniform(0.,fMaxAmpl)) break;
+   }
+#else
    fExAngDistribution->GetRandom2(ex,theta);
    fKinematics->SetExcitationEnergy(ex);
    fKinematics->SetTheta(theta*deg);
+#endif   
    const TArtParticle *p3 = fKinematics->GetParticle(3);
    const TArtParticle *p2 = fKinematics->GetParticle(2,kTRUE);
    const TArtParticle *p0 = fKinematics->GetParticle(0,kTRUE);
