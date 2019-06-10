@@ -117,7 +117,7 @@ void   TArtRint::Terminate(Int_t status)
    for (Int_t i=0; i!=n; i++) {
       lm->Terminate(i);
    }
-#ifdef USE_MPI
+#ifdef 0
    int useMPI;
    MPI_Initialized(&useMPI);
    if (useMPI) {
