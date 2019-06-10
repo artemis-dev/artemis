@@ -14,6 +14,7 @@
 
 #include  <Rtypes.h>
 #include <TString.h>
+#include "TAttParameter.h"
 
 namespace art {
    class IProcessorHelper;
@@ -21,7 +22,7 @@ namespace art {
    class TProcessor;
 }
 
-class art::IProcessorHelper {
+class art::IProcessorHelper : public TAttParameter {
 public:
    IProcessorHelper();
    virtual ~IProcessorHelper();

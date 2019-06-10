@@ -67,12 +67,15 @@
 #pragma link C++ class art::TAsynchronousRunEndProcessor;
 #pragma link C++ class art::TPulseShapeTimestampProcessor;
 #pragma link C++ class art::TTimeValidator;
+#pragma link C++ class art::TChargeValidator;
 #pragma link C++ class art::TTimingTimestampAdapter;
 #pragma link C++ class art::TTimestampValidator;
 #pragma link C++ class art::TGainShiftCorrectionProcessor;
 #pragma link C++ class art::IEventStore;
 #pragma link C++ class art::TFormulaData;
 #pragma link C++ class art::TFormulaDataGenerator;
+#pragma link C++ class art::TEventNumberConditionProcessor;
+// #pragma link C++ class art::TAttParameter; 
 #endif /* __CINT__ */
 
 #endif // end of #ifdef CATLOOP_LINKDEF_H

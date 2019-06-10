@@ -296,6 +296,21 @@ Bool_t art::TLoop::Init()
 
 Bool_t art::TLoop::Resume()
 {
+
+#ifdef USE_MPI
+   {
+      int myrank, npe,useMPI = false;
+      MPI_Initialized(&useMPI);
+      sleep(1);
+      printf("resuming\n");
+      if (useMPI) {
+         MPI_Comm_size(MPI_COMM_WORLD, &npe);
+         MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
+         MPI_Barrier(MPI_COMM_WORLD);   
+      }
+   }
+   
+#endif   
    // get loop iterator
    std::list<TProcessor*>::iterator itr;
    std::list<TProcessor*>::iterator itrBegin = fProcessors.begin();
@@ -352,10 +367,20 @@ Bool_t art::TLoop::Resume()
       printf("no event store\n");
    }
 
+#ifdef USE_MPI
+   int myrank, npe,useMPI = false;
+   MPI_Initialized(&useMPI);
+   printf("post loop\n");
+   if (useMPI) {
+      MPI_Comm_size(MPI_COMM_WORLD, &npe);
+      MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
+      MPI_Barrier(MPI_COMM_WORLD);   
+   }
+#endif   
+
    for_each(itrBegin,itrEnd,std::mem_fun(&TProcessor::PostLoop));
 
       
-
       
       
    if (fCondition->IsSet(kEndOfRun)) {

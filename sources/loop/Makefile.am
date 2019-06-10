@@ -47,23 +47,28 @@ SUBSRC+=TObjectLoader.cc
 SUBSRC+=TAsynchronousRunEndProcessor.cc
 SUBSRC+=TPulseShapeTimestampProcessor.cc
 SUBSRC+=TTimeValidator.cc
+SUBSRC+=TChargeValidator.cc
 SUBSRC+=TTimingTimestampAdapter.cc
 SUBSRC+=TTimestampValidator.cc
 SUBSRC+= TGainShiftCorrectionProcessor.cc
 SUBSRC+=IEventStore.cc
 SUBSRC+=TFormulaData.cc
 SUBSRC+=TFormulaDataGenerator.cc
+SUBSRC+=TEventNumberConditionProcessor.cc
 
+OPTSRC = 
+OPTSRC+=TAttParameter.cc
 
 SUBOBJ = $(SUBSRC:.cc=.o)
 SUBHDR = $(SUBSRC:.cc=.h) 
-
+OPTOBJ = $(OPTSRC:.cc=.o)
 
 DICTSRC = catloop_dict.cc
 DICTOBJ = $(DICTSRC:.cc=.o)
 DICTHDR = $(DICTSRC:.cc=.h)
 
-OPTHDR = TDataSource.h TArtTypes.h TProcessorParameter.h
+OPTHDR = $(OPTSRC:.cc=.h)
+OPTHDR+= TDataSource.h TArtTypes.h TProcessorParameter.h
 
 INCDIR = ../../include
 
@@ -78,7 +83,7 @@ LDFLAGS  += @YAML_CPP_LIB@
 include_HEADERS = $(SUBHDR) $(SUBHDRF) $(OPTHDR)
 
 lib_LTLIBRARIES = libcatloop.la
-libcatloop_la_SOURCES = $(SUBSRC) $(DICTSRC)
+libcatloop_la_SOURCES = $(SUBSRC) $(OPTSRC) $(DICTSRC)
 libcatloop_la_DEPENDENCIES = .header 
 # libcatloop_la_LIBADD = $(SUBOBJ)
 libcatloop_la_LDFLAGS = $(LDFLAGS)

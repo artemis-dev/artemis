@@ -20,9 +20,13 @@
 #pragma link C++ class art::TCatReadoutPad;
 #pragma link C++ class art::TCatReadoutPadArray;
 #pragma link C++ class art::TCatPulseShape-;
-#pragma link C++ class art::TSimpleData;
+#pragma link C++ class art::TSimpleData+;
+#pragma link C++ class art::TSimpleDataInt+;
+#pragma link C++ class art::TSimpleDataDouble+;
+#pragma link C++ class art::TSimpleDataLong+;
 #pragma link C++ class art::ICharge;
 #pragma link C++ class art::ITiming;
+#pragma link C++ class art::ITrack;
 #pragma link C++ class art::IPosition;
 #pragma link C++ class art::TNArray+;
 #pragma link C++ class art::TNArray::Variable+;

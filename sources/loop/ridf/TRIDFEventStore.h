@@ -22,7 +22,7 @@
 
 #include <TProcessor.h>
 #include <IEventStore.h>
-
+#include "TSimpleData.h"
 namespace art {
    class TRIDFEventStore;
    class TConditionBit;
@@ -34,6 +34,8 @@ namespace art {
    class TModuleDecoderFactory;
    class TScalerData;
    class TTimestampEventList;
+   class TSimpleDataLong;
+   
 }
 
 class THashList;
@@ -57,6 +59,11 @@ protected:
    virtual Bool_t GetNextBlock();
    virtual Bool_t GetNextEvent();
    virtual void   NotifyEndOfRun();
+
+   InputInfo<TSimpleDataLong> fInputEventNumber;
+   OutputInfo<TSimpleDataLong> fOutputEventNumber;
+   
+   
 
 protected:
 #if USE_MPI

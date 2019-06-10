@@ -48,6 +48,8 @@ void TObjectLoader::Init(TEventCollection *col)
       return;
    }
    TDirectory *dirSaved = gDirectory;
+   Info("Init","nTokens = %d",nTokens);
+   
    for (Int_t i = 0; i < nTokens; i += kRequiredNumTokens) {
       TString filename = fObjectLists[i];
       TString objname =  fObjectLists[i+1];
@@ -68,7 +70,7 @@ void TObjectLoader::Init(TEventCollection *col)
             TKey *key = (TKey*) fKeys->At(i);
             TObject *obj = key->ReadObj();
             Info("Init","Object: %s",obj->GetName());
-            col->AddInfo(obj->GetName(),obj,kTRUE);
+            col->AddInfo(obj->GetName(),obj,fOutputIsTransparent);
          }
       } else {
          TObject *obj = file->Get(objname);
@@ -76,7 +78,7 @@ void TObjectLoader::Init(TEventCollection *col)
             SetStateError(TString::Format("Cannot find object '%s'",objname.Data()));
             return;
          }
-         col->AddInfo(obj->GetName(),obj,kTRUE);
+         col->AddInfo(obj->GetName(),obj,fOutputIsTransparent);
       }
             
    }

@@ -111,7 +111,10 @@ void TTreeProjectionProcessor::Init(TEventCollection *col)
    YAML::Parser parser(ss);
    YAML::Node doc;
    parser.GetNextDocument(doc);
-   fParameter->LoadYAMLNode(doc);
+   if (!fParameter->LoadYAMLNode(doc)) {
+      SetStateError("Error while loading histogram definitions.");
+      return;
+   }
 
    Info("Init","Treeprojetion is prepared");
    

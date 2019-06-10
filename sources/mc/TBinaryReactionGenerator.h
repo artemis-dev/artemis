@@ -22,6 +22,7 @@ namespace art {
 class TH2F;
 class TClonesArray;
 class TF1;
+class TSpline3;
 
 class art::TBinaryReactionGenerator  : public TProcessor, public IEventStore {
 
@@ -59,13 +60,14 @@ private:
    
    Int_t fDoRandomizePhi;
 
-   ParamSet<Int_t> fRunNumber;
-   ParamSet<TString> fRunName;
+   Parameter<Int_t> fRunNumber;
+   Parameter<TString> fRunName;
    
    TF1 *fExFun; //!
    TF1 *fAngFun; //!
    Double_t fMaxAmpl;//!
-    
+   TSpline3 *fAngSpline; //!
+   
    
    TH2F *fExAngDistribution;
 };

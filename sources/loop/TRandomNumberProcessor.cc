@@ -33,5 +33,5 @@ void art::TRandomNumberProcessor::Init(TEventCollection *col)
 
 void art::TRandomNumberProcessor::Process()
 {
-   fOutData->fValue = 10.*(*fData)->fValue;
+   fOutData->SetValue(10.*(*fData)->GetValue());
 }

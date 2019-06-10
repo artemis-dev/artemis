@@ -12,6 +12,7 @@
 
 #include "TNamed.h"
 #include "IPosition.h"
+#include "TVector3.h"
 
 namespace art {
    class TDetectorGeometryInfo;
@@ -34,10 +35,21 @@ public:
 
    virtual int GetID() const { return fID; }
 
+   virtual void SetDeadLayer(double thickness) { fDeadLayer = thickness; }
+   virtual void SetDeadLayerDirecion(double x, double y, double z) {
+      fDeadLayerDirection.SetXYZ(x,y,z);
+   }
+
+   virtual double GetDeadLayer() const { return fDeadLayer; }
+   virtual const TVector3& GetDeadLayerDirection() const { return fDeadLayerDirection; }
+
 protected:
    Int_t fID;
 //   Int_t fNumVertexPoints;
    Double_t fPos[3];
+   Double_t fDeadLayer;
+   TVector3 fDeadLayerDirection;
+   
 //   std::vector<Double_t> fVertexX;
 //   std::vector<Double_t> fVertexY;
 //   std::vector<Double_t> fVertexZ;

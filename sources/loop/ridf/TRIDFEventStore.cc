@@ -25,6 +25,7 @@
 #include <TCatPadManager.h>
 #include <TRegexp.h>
 #include <TTimestampEventList.h>
+#include "TSimpleData.h"
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -49,6 +50,13 @@ art::TRIDFEventStore::TRIDFEventStore()
 {
    fDataSource = NULL;
    StringVec_t dummy;
+   fInputEventNumber.SetDoAuto(true);
+   fOutputEventNumber.SetDoAuto(false);
+   
+   Register(fInputEventNumber("InputEventNumber","name of event number info to align with other event store",
+                              ""));
+   Register(fOutputEventNumber("OutputEventNumber","name of event number info to align with other event store",
+                              ""));
    RegisterInputCollection("InputFiles","The names of input files",fFileName,dummy);
    RegisterOutputCollection("SegmentedData","The name of output array for segmented data",
                             fNameSegmented,TString("segdata"));
@@ -134,7 +142,7 @@ void art::TRIDFEventStore::Init(TEventCollection *col)
    col->Add(fNameEventHeader,fRIDFData.fEventHeader,kFALSE);
    col->AddInfo(fNameRunHeaders,fRIDFData.fRunHeaders,kFALSE);
    fRIDFData.fRunHeaders->SetName(fNameRunHeaders);
-
+   
 #if USE_MPI
    MPI_Initialized(&fUseMPI);
    if (fUseMPI) {
@@ -151,7 +159,15 @@ void art::TRIDFEventStore::Init(TEventCollection *col)
    fRunStatus = new TConditionBit;
    // run status is added to info as always transparent object
    col->AddInfo(status_name,fRunStatus,kTRUE);
+
+   if (!fOutputEventNumber.Value().IsNull()) {
+      
+      fOutputEventNumber.SetData(new TSimpleDataLong);
+      col->AddInfo(fOutputEventNumber.Value(), fOutputEventNumber.fData, fOutputIsTransparent);
+      Info("Init","OutputEventNumber '%s' is registered",fOutputEventNumber.Value().Data());
+   } 
 }
+
 
 
 void art::TRIDFEventStore::Process()
@@ -553,6 +569,9 @@ Bool_t art::TRIDFEventStore::GetNextEvent()
          fRIDFData.fEventHeader->IncrementEventNumber();
          ((TRunInfo*)fRIDFData.fRunHeaders->Last())->IncrementEventNumber();
          if (fEventList) {
+            if (fInputEventNumber.IsInitialized()) {
+               fEventListIndex = fInputEventNumber->GetValue();
+            }
             Int_t eventNumber = fEventList->GetEntry(fEventListIndex);
 //            printf("#event = %d, index = %d\n",eventNumber,fEventListIndex);
             // set EOB and return false if no event exists
@@ -575,13 +594,17 @@ Bool_t art::TRIDFEventStore::GetNextEvent()
          { 
             if (fUseMPI) {
                // skip if modulus of event serial number to total number of processor is not equal to rank
-               if ((fEventListIndex % fNPE) != fRankID) {
+               if (!fInputEventNumber.IsInitialized() && (fEventListIndex % fNPE) != fRankID) {
                   doSkip = kTRUE;
                }
             }
          }
 #endif
+         if (!doSkip) {
+            if (fOutputEventNumber.IsInitialized()) fOutputEventNumber->SetValue(fEventListIndex - 1);
+         }
       }
+      
       if (doSkip) {
          ClassDecoderSkip(fBuffer,fOffset,&fRIDFData);
       } else if (fClassDecoder[fHeader.ClassID()]) {

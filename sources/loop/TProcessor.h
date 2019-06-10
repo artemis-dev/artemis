@@ -18,6 +18,7 @@
 #include <iostream>
 #include "TClass.h"
 #include "TClonesArray.h"
+#include "TAttParameter.h"
 
 namespace art {
    class TProcessor;
@@ -44,7 +45,7 @@ namespace YAML {
 
 void operator >> (const YAML::Node &node, art::TProcessor *&proc);
    
-class art::TProcessor  : public TNamed {
+class art::TProcessor  : public TNamed, public TAttParameter {
 public:
    typedef std::map<TString,TProcessorParameter*> ProcPrmMap_t;
    typedef enum { ERROR=-1, INIT, READY} State_t;
@@ -130,88 +131,10 @@ public:
       Bool_t fIsObject;
       TString *fLength;
    } ;
-
-
-   template <typename T>
-   class ParamSet {
-   public:
-      ParamSet() {}
-      ParamSet(const char* name, const char* title, T defaultValue)
-         : fValue(defaultValue), fName(name), fTitle(title), fDefaultValue(defaultValue) {}
-      virtual void SetContents(const char* name, const char* title, T defaultValue) {
-         fName = name;
-         fTitle = title;
-         fDefaultValue = defaultValue;
-      }
-      virtual ParamSet<T>& operator() (const char* name, const char* title, T defaultValue) {
-         SetContents(name, title, defaultValue);
-         return *this;
-      }
-      virtual void RegisterTo(TProcessor *proc) { proc->RegisterProcessorParameter(*this); }
-      T fValue;
-      T fDefaultValue;
-      TString fName;
-      TString fTitle;
-   };
-
-   class DataIO : public ParamSet<TString> {
-   public:
-      virtual void SetContents(const char* name, const char* title, TString defaultValue, bool isData, bool doAuto) {
-         fDoAuto = doAuto;
-         fIsData = isData;
-         ParamSet<TString>::SetContents(name, title, defaultValue);
-      }
-      virtual DataIO& operator() (const char* name, const char* title, TString defaultValue, bool isData, bool doAuto) {
-         SetContents(name, title, defaultValue, isData, doAuto);
-         return *this;
-      }
-      Bool_t fDoAuto;
-      Bool_t fIsData;
-      TString fDataClassName;
-      virtual void RegisterTo(TProcessor *proc) = 0;
-      virtual bool IsInput() = 0;
-      virtual bool IsData() {return fIsData;}
-      virtual void* Ptr() { return NULL; }
-      virtual void* PtrRef() { return NULL; }
-      virtual TString ClassName() { return ""; }
-   };
-
-   template <class T, class data = TObject>
-   class InputData : public DataIO {
-   public:
-      InputData() {
-         if (typeid(T) == typeid(TClonesArray)) {
-            fDataClassName = data::Class_Name();
-         }
-      }
-      virtual void RegisterTo(TProcessor *proc) {
-         IsData() ? proc->RegisterInputCollection(*this) : proc->RegisterInputInfo(*this); }
-      virtual bool IsInput() { return kTRUE; }
-      virtual void* Ptr() { return fData; }
-      virtual void* PtrRef() { return &fData; }
-      virtual TString ClassName() { return T::Class_Name(); }
-      T** fData;
-   };
-
-   template <class T, class data = TObject>
-   class OutputData : public DataIO {
-   public:
-      OutputData() {
-         if (typeid(T) == typeid(TClonesArray)) {
-            fDataClassName = data::Class_Name();
-         }
-      }
-      virtual void RegisterTo(TProcessor *proc) { proc->RegisterOutputCollection(*this); }
-      virtual bool IsInput() { return kFALSE; }
-      virtual void* Ptr() { return fData; }
-      virtual void* PtrRef() { return &fData; }
-      virtual TString ClassName() { return T::Class_Name(); }
-      T* fData;
-   };
-
-   template <class T> 
-   void Register(ParamSet<T>& prm) { prm.RegisterTo(this); }
-
+   
+   
+   
+   
    Bool_t ParameterExists(const char* name) {
       if (fParamMap.find(TString(name)) != fParamMap.end()) {
          return true;
@@ -247,11 +170,6 @@ public:
       fParamMap[TString(name)] = new TParameter_t<T>(name,description,parameter,
                                                defaultParam,false);
    }                                               
-
-   template <class T>
-   void RegisterProcessorParameter(ParamSet<T>& param) {
-      RegisterProcessorParameter(param.fName, param.fTitle, param.fValue, param.fDefaultValue);
-   }
    
    void RegisterInputCollection(const char* name,
                                 const char* description,
@@ -260,7 +178,7 @@ public:
       RegisterProcessorParameter(name,description,parameter,
                                  defaultParam);
    }                                               
-
+   
    void RegisterInputCollection(const char* name,
                                 const char* description,
                                 TString& parameter,
@@ -274,18 +192,9 @@ public:
          fInputs.push_back(IOCollection(p, &parameter,inputclass,dataclass,name));
       }
    }
-
-   void RegisterInputCollection(DataIO& input) {
-      if (input.fDoAuto) {
-         RegisterInputCollection(input.fName, input.fTitle, input.fValue, input.fDefaultValue,
-                                 input.PtrRef(), input.ClassName(), input.fDataClassName);
-      } else {
-         RegisterInputCollection(input.fName, input.fTitle, input.fValue, input.fDefaultValue);
-      }
-       
-   }
-
-
+   
+   
+   
    void RegisterOutputCollection(const char* name,
                                  const char* description,
                                  TString& parameter,
@@ -294,21 +203,13 @@ public:
                                  TString outputclass = "",
                                  TString dataclass = "") {
       RegisterProcessorParameter(name,description,parameter,
-                                  defaultParam);
+                                 defaultParam);
       if (p) {
          fOutputs.push_back(IOCollection(p, &parameter,outputclass,dataclass,name));
       }
    }
-
-   void RegisterOutputCollection(DataIO& output) {
-      if (output.fDoAuto) {
-         RegisterOutputCollection(output.fName, output.fTitle, output.fValue, output.fDefaultValue,
-                                  output.PtrRef(), output.ClassName(), output.fDataClassName);
-      } else {
-         RegisterOutputCollection(output.fName, output.fTitle, output.fValue, output.fDefaultValue);
-      }
-   }
-
+   
+   
    void OverrideOutputCollection(const char* name,
                                  const char* description,
                                  TString& parameter,
@@ -321,7 +222,7 @@ public:
    }
    
    
-
+   
    // register output collection for primitive class
    void RegisterOutputCollection(const char* name,
                                  const char* description,
@@ -337,7 +238,7 @@ public:
          fOutputs.push_back(IOCollection(p, &parameter,type,capacity,length));
       }
    }
-
+   
    void OverrideOutputCollection(const char* name,
                                  const char* description,
                                  TString& parameter,
@@ -349,16 +250,16 @@ public:
       RemoveIO(fOutputs,name);
       RegisterOutputCollection(name,description,parameter,defaultParam,type,p,capacity,length);
    }
-
-template<class T>
+   
+   template<class T>
    void RegisterOptionalParameter(const TString& name,
                                   const TString& description,
                                   T& parameter,
                                   const T& defaultParam) {
       fParamMap[TString(name)] = new TParameter_t<T>(name,description,parameter,
-                                               defaultParam,true);
+                                                     defaultParam,true);
    }
-
+   
    template<class T>
    void OverrideOptionalParameter(const TString& name,
                                   const TString& description,
@@ -367,8 +268,8 @@ template<class T>
       RemoveParameter(name);
       RegisterOptionalParameter(name,description,parameter,defaultParam);
    }
-      
-
+   
+   
    void RegisterInputInfo(const char* name, const char* description,
                           TString &parameter, const TString& defaultParam,
                           void *p = NULL,
@@ -378,23 +279,75 @@ template<class T>
          fInputInfo.push_back(IOCollection(p, &parameter,infoclass,dataclass,name));
       }
    }
-   void RegisterInputInfo(DataIO& input) {
-      if (input.fDoAuto) {
-         RegisterInputInfo(input.fName, input.fTitle, input.fValue, input.fDefaultValue,
-                           input.PtrRef(), input.ClassName(), input.fDataClassName);
-      } else {
-         RegisterInputInfo(input.fName, input.fTitle, input.fValue, input.fDefaultValue);
-      }
+   void RegisterOutputInfo(const char* name, const char* description,
+                           TString &parameter, const TString& defaultParam) 
+      {
+         
+      RegisterProcessorParameter(name,description,parameter,defaultParam);
    }
    void RegisterOptionalInputInfo(const char* name, const char* description,
-                          TString &parameter, const TString& defaultParam,
-                          void *p = NULL,
-                          TString infoclass = "", TString dataclass = "") {
+                                  TString &parameter, const TString& defaultParam,
+                                  void *p = NULL,
+                                  TString infoclass = "", TString dataclass = "") {
       RegisterOptionalParameter(name,description,parameter,defaultParam);
       if (p) {
          fInputInfo.push_back(IOCollection(p, &parameter,infoclass,dataclass,name));
       }
    }
+   
+   template <class T>
+   void RegisterProcessorParameter(Parameter<T>* param) {
+      RegisterProcessorParameter(param->fName, param->fTitle, param->fValue, param->fDefaultValue);
+   }
+   
+
+   void RegisterInputCollection(ObjectIO* input) {
+      if (input->fDoAuto) {
+         RegisterInputCollection(input->fName, input->fTitle, input->fValue, input->fDefaultValue,
+                                 input->PtrRef(), input->ClassName(), input->fDataClassName);
+      } else {
+         RegisterInputCollection(input->fName, input->fTitle, input->fValue, input->fDefaultValue);
+      }
+   }
+   void RegisterOutputCollection(ObjectIO* output) {
+      if (output->fDoAuto) {
+         RegisterOutputCollection(output->fName, output->fTitle, output->fValue, output->fDefaultValue,
+                                  output->PtrRef(), output->ClassName(), output->fDataClassName);
+      } else {
+         RegisterOutputCollection(output->fName, output->fTitle, output->fValue, output->fDefaultValue);
+      }
+   }
+   void RegisterInputInfo(ObjectIO* input) {
+      if (input->fDoAuto) {
+         RegisterInputInfo(input->fName, input->fTitle, input->fValue, input->fDefaultValue,
+                           input->PtrRef(), input->ClassName(), input->fDataClassName);
+      } else {
+         RegisterInputInfo(input->fName, input->fTitle, input->fValue, input->fDefaultValue);
+      }
+   }
+   void RegisterOutputInfo(ObjectIO* output) {
+      RegisterOutputInfo(output->fName, output->fTitle, output->fValue, output->fDefaultValue);
+   }
+
+template <class T> 
+   void Register(Parameter<T>* prm) {
+      if (prm->IsInputData()) {
+         Info("Register","InputData");
+         RegisterInputCollection(dynamic_cast<ObjectIO*>(prm));
+      } else if (prm->IsInputInfo()) {
+         Info("Register","InputInfo");
+         RegisterInputInfo(dynamic_cast<ObjectIO*>(prm));
+      } else if (prm->IsOutputData()) {
+         Info("Register","OutputData");
+         RegisterOutputCollection(dynamic_cast<ObjectIO*>(prm));
+      } else if (prm->IsOutputInfo()) {
+         Info("Register","OutputInfo");
+         RegisterOutputInfo(dynamic_cast<ObjectIO*>(prm));
+      } else {
+         RegisterProcessorParameter(prm);
+      }
+   }
+
 
    void RegisterHelper(IProcessorHelper *helper);
    

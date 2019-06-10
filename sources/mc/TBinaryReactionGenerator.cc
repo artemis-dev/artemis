@@ -10,12 +10,14 @@
  */
 #include "TBinaryReactionGenerator.h"
 
-#include <TCatTwoBodyKinematics.h>
-#include <TH2F.h>
-#include <TClonesArray.h>
-#include <TF1.h>
-#include <TArtSystemOfUnit.h>
-#include <TRandom.h>
+#include "TCatTwoBodyKinematics.h"
+#include "TH2F.h"
+#include "TClonesArray.h"
+#include "TF1.h"
+#include "TArtSystemOfUnit.h"
+#include "TRandom.h"
+#include "TSpline.h"
+#include "TGraph.h"
 
 using TArtSystemOfUnit::deg;
 
@@ -37,6 +39,8 @@ art::TBinaryReactionGenerator::TBinaryReactionGenerator()
    FloatVec_t angRangeDefault;
    angRangeDefault.push_back(0.);
    angRangeDefault.push_back(10.);
+   fAngSpline = NULL;
+   
    
    RegisterOutputCollection("OutputCollection","output name of particle array",fOutputColName,TString("recoil"));
    RegisterOutputCollection("MCTruthCollection","output name of MC truth",fMCTruthColName,TString("mctruth"));
@@ -140,6 +144,43 @@ void art::TBinaryReactionGenerator::Init(TEventCollection *col)
          }
       }
       fMaxAmpl *= 1.2;
+   } else {
+      Info("Init","Read angular distribution file '%s'",fAngDistFile.Data());
+      TGraph graph(fAngDistFile);
+      if (graph.GetN() == 0) {
+         SetStateError(Form("Invalid data points in %s",fAngDistFile.Data()));
+         return;
+      }
+      fMaxAmpl = TMath::Limits<Double_t>::Min();
+      for (Int_t i = 0, n = graph.GetN(); i < n; ++i) {
+         Double_t angle = graph.GetX()[i];
+         angle *= deg;
+         graph.GetX()[i] = angle;
+         graph.GetY()[i] *= TMath::Sin(angle);
+         if (fAngRange[0] * deg < angle && angle < fAngRange[1] * deg) {
+            fMaxAmpl = std::max(fMaxAmpl, graph.GetY()[i]);
+         }
+      }
+//      graph.Print();
+      
+      fMaxAmpl *= 1.2;
+      fAngSpline = new TSpline3(fAngDistFile,graph.GetX(),graph.GetY(),graph.GetN());
+      fAngSpline->Draw();
+
+      Double_t xsec = 0.;
+      Double_t step = 0.05 * deg;
+      const Int_t nStep = (fAngRange[1] - fAngRange[0]) * deg / step;
+      for (Int_t i = 0; i < nStep; ++i) {
+         Double_t theta = fAngRange[0] * deg + step * (i+0.5);
+         xsec += fAngSpline->Eval(theta) * step * 2 * TMath::Pi();
+#if 0         
+         Info("Init","x = %f deg, ds/do = %.3g mb/sr, step = %g, sin = %g, ds = %.3g mb, xsec = %.3g mb",
+              theta*TMath::RadToDeg(), fAngSpline->Eval(theta)/TMath::Sin(theta),step,TMath::Sin(theta),
+              fAngSpline->Eval(theta) * step * 2 * TMath::Pi(), xsec);
+#endif         
+      }
+      
+      Info("Init","fMaxAmpl = %f, Cross section = %f",fMaxAmpl, xsec);
    }
    
    col->Add(fOutputColName,fOutputArray,fOutputIsTransparent);
@@ -150,16 +191,27 @@ void art::TBinaryReactionGenerator::Process()
 {
    Double_t ex = 0;
    Double_t theta = 0;
+   fOutputArray->Clear("C");
+   fMCTruthArray->Clear("C");
 #if 1
    while (1) {
       ex = fExFun ? fExFun->GetRandom() : fExMean;
       theta = gRandom->Uniform(fAngRange[0],fAngRange[1]) * deg;
-      fKinematics->SetExcitationEnergy(ex);
-      fKinematics->SetTheta(theta);
-      Double_t  R = 1.2*(TMath::Power(fP1[0],1./3.) + TMath::Power(fP2[0],1./3.)); 
-      Double_t ampl = fAngFun->Eval(fKinematics->GetDq() / 197. * R);
-      ampl = ampl * ampl * TMath::Sin(theta);
-      if (ampl < gRandom->Uniform(0.,fMaxAmpl)) break;
+      if (fAngSpline) {
+         if (fAngSpline->Eval(theta) > gRandom->Uniform(0., fMaxAmpl)) {
+            fKinematics->SetExcitationEnergy(ex);
+            fKinematics->SetTheta(theta);
+            break;
+         }
+      } else {
+         fKinematics->SetExcitationEnergy(ex);
+         fKinematics->SetTheta(theta);
+         Double_t  R = 1.2*(TMath::Power(fP1[0],1./3.) + TMath::Power(fP2[0],1./3.)); 
+         Double_t ampl = fAngFun->Eval(fKinematics->GetDq() / 197. * R);
+         ampl = ampl * ampl * TMath::Sin(theta);
+         if (ampl > gRandom->Uniform(0.,fMaxAmpl)) break;
+      }
+      
    }
 #else
    fExAngDistribution->GetRandom2(ex,theta);

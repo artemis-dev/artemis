@@ -311,6 +311,7 @@ Bool_t TTreeProjection::LoadYAMLNode(const YAML::Node &node)
                   // insufficient number of input for axis
                   Error("LoadYAMLNode",TString::Format("\n    histgram '%s': insufficient number of axis input for '%c' (size = %d)\n",
                                                        hname.Data(),'x'+i,axisnode[i]->size()));
+                  saved->cd();
                   return kFALSE;
                }
             }

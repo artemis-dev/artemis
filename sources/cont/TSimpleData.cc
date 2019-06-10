@@ -10,4 +10,10 @@
  */
 #include "TSimpleData.h"
 
-ClassImp(art::TSimpleData);
+ClassImp(art::TSimpleData)
+
+ClassImp(art::TSimpleDataLong)
+
+ClassImp(art::TSimpleDataDouble)
+
+ClassImp(art::TSimpleDataInt)

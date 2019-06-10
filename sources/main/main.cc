@@ -45,6 +45,7 @@ int main (int argc, char **argv)
     MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
     art::TArtRint *theApp = new art::TArtRint(&argc, argv);
     MPI_Barrier(MPI_COMM_WORLD);
+    printf("myrank = %d / %d\n",myrank,npe);
     theApp->Run();
     printf("myrank = %d / %d\n",myrank,npe);
     MPI_Barrier(MPI_COMM_WORLD);

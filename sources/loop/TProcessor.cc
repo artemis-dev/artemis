@@ -93,8 +93,17 @@ void art::TProcessor::InitProc(TEventCollection *col)
       IOCollection &input = fInputs[iInput];
       *(void***)input.fP = NULL;
       TString inputname = *input.fName;
+
+      // if input name is null or empty, skip
+      if (inputname.IsNull()) {
+         Warning("InitProc","input name is not given for parameter '%s'",input.fPrmName.Data());
+         continue;         
+      }
+      printf("'%s'\n",inputname.Data());
+      
       if (!(col->GetObjectRef(inputname))) {
-         SetStateError(TString::Format(ErrMsgFmt::INVALID_INPUT_COLLECTION,inputname.Data()));
+//         printf("************** ERROR **************** '%s'\n ",inputname.Data());
+         SetStateError(TString::Format(ErrMsgFmt::INVALID_INPUT_COLLECTION,Form("'%s'",inputname.Data())));
          return;
       }
       // initialize input collection
@@ -189,8 +198,12 @@ void art::TProcessor::InitProc(TEventCollection *col)
          SetStateError(TString::Format(ErrMsgFmt::INVALID_INPUT_COLLECTION,info.fPrmName.Data()));
          return;
       }
-      // get registered information
+      if (infoname.IsNull()) {
+         Info("InitProc","%s has empty parameter",info.fPrmName.Data()) ;
+         continue;
+      }
       if (!((*(void***)info.fP) = (void**)col->GetInfoRef(infoname))) {
+      // get registered information
          if (!fParamMap[info.fPrmName]->IsOptional()) {
             SetStateError(TString::Format(ErrMsgFmt::INVALID_INPUT_COLLECTION,infoname.Data()));
             return;
