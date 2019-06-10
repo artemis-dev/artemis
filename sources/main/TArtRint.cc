@@ -117,13 +117,15 @@ void   TArtRint::Terminate(Int_t status)
    for (Int_t i=0; i!=n; i++) {
       lm->Terminate(i);
    }
-#ifdef 0
+#if 0   
+#ifdef USE_MPI
    int useMPI;
    MPI_Initialized(&useMPI);
    if (useMPI) {
       MPI_Barrier(MPI_COMM_WORLD);
       MPI_Finalize();
    }
+#endif
 #endif
    TRint::Terminate(status);
 }
