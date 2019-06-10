@@ -367,17 +367,6 @@ Bool_t art::TLoop::Resume()
       printf("no event store\n");
    }
 
-#ifdef USE_MPI
-   int myrank, npe,useMPI = false;
-   MPI_Initialized(&useMPI);
-   printf("post loop\n");
-   if (useMPI) {
-      MPI_Comm_size(MPI_COMM_WORLD, &npe);
-      MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
-      MPI_Barrier(MPI_COMM_WORLD);   
-   }
-#endif   
-
    for_each(itrBegin,itrEnd,std::mem_fun(&TProcessor::PostLoop));
 
       

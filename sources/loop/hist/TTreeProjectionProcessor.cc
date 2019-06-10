@@ -4,7 +4,7 @@
  * @brief  tree projection
  *
  * @date   Created       : 2014-03-05 22:30:06 JST
- *         Last Modified : 2019-05-14 18:42:06 JST (ota)
+ *         Last Modified : 2019-06-10 14:56:06 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -181,6 +181,11 @@ void TTreeProjectionProcessor::PostLoop()
    fDirectory->cd();
    TCatCmdHstore hstore;
    hstore.Run(filename,"recreate");
+#ifdef USE_MPI
+   if (useMPI) {
+      MPI_Barrier(MPI_COMM_WORLD);   
+   }
+#endif
    saved->cd();
 #ifdef USE_MPI
    Util::MPIFileMerger(fOutputFilename.Data());
