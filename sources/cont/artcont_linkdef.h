@@ -20,6 +20,9 @@
 #pragma link C++ class art::TCatReadoutPad;
 #pragma link C++ class art::TCatReadoutPadArray;
 #pragma link C++ class art::TCatPulseShape-;
+#pragma link C++ class art::TSimpleDataBase<double>+;
+#pragma link C++ class art::TSimpleDataBase<int>+;
+#pragma link C++ class art::TSimpleDataBase<long>+;
 #pragma link C++ class art::TSimpleData+;
 #pragma link C++ class art::TSimpleDataInt+;
 #pragma link C++ class art::TSimpleDataDouble+;

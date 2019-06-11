@@ -34,6 +34,7 @@ namespace art {
       T GetValue() const { return fValue; }
    protected:   
       T fValue;
+      ClassDef(TSimpleDataBase,1)
    };
 }
 
