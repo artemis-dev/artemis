@@ -2,7 +2,7 @@
 /**
  * @file   TBinaryReactionGenerator.cc
  * @date   Created : Aug 18, 2013 12:18:37 JST
- *   Last Modified : 2018-06-19 20:26:02 JST (ota)
+ *   Last Modified : 2019-06-14 15:38:39 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -195,7 +195,13 @@ void art::TBinaryReactionGenerator::Process()
    fMCTruthArray->Clear("C");
 #if 1
    while (1) {
-      ex = fExFun ? fExFun->GetRandom() : fExMean;
+      if (fExFun) {
+         ex = fExFun->GetRandom();
+      } else if (fExRange[1] - fExRange[0] > TMath::Limits<Double_t>::Epsilon()) {
+         ex = gRandom->Uniform(fExRange[0],fExRange[1]);
+      } else {
+         ex = fExMean;
+      }
       theta = gRandom->Uniform(fAngRange[0],fAngRange[1]) * deg;
       if (fAngSpline) {
          if (fAngSpline->Eval(theta) > gRandom->Uniform(0., fMaxAmpl)) {
@@ -203,6 +209,11 @@ void art::TBinaryReactionGenerator::Process()
             fKinematics->SetTheta(theta);
             break;
          }
+      } else if (fAngMom == -2) {
+         theta = gRandom->Uniform(fAngRange[0],fAngRange[1]) * deg;
+         fKinematics->SetExcitationEnergy(ex);
+         fKinematics->SetTheta(theta);
+         break;
       } else {
          fKinematics->SetExcitationEnergy(ex);
          fKinematics->SetTheta(theta);

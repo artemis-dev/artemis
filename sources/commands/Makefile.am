@@ -52,6 +52,7 @@ SUBSRC = \
 	TCmdSave.cc \
 	TCmdPrint.cc \
 	TCmdPadZoom.cc\
+	TCmdHcol.cc\
 	TCmdProcessorDescription.cc
 
 
