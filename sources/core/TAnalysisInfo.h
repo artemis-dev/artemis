@@ -3,7 +3,7 @@
  * @brief  container for analysis information
  *
  * @date   Created       : 2018-07-28 09:02:06 JST
- *         Last Modified : 2018-07-30 17:47:57 JST (ota)
+ *         Last Modified : 2019-08-06 20:00:31 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2018 Shinsuke OTA
@@ -13,7 +13,7 @@
 #define INCLUDE_GUARD_UUID_5CA39B51_D066_4D5C_A8FE_63A1F71A2295
 
 #include "TNamed.h"
-#include <list>
+#include <map>
 
 namespace art {
    class TAnalysisInfo;
@@ -43,6 +43,13 @@ public:
    const char* GetAnalysisStartTime() const { return fAnalysisStartTime; }
    const char* GetAnalysisEndTime() const { return fAnalysisEndTime; }
    const char* GetProcessors() const { return fProcessors; }
+   const char* GetStringData(const char* key) {
+      if (fStringData.count(TString(key))) {
+         return fStringData[TString(key)];
+      } else {
+         return "";
+      }
+   }
 
    void SetSteeringFileName(const char* fileName) { fSteeringFileName = fileName; }
    void IncrementEventNumber() { ++fAnalyzedEventNumber; }
@@ -51,7 +58,8 @@ public:
    void SetProcessors(const char* proc) { fProcessors = proc; }
    void SetAnalysisStartTime(const char* timestamp) { fAnalysisStartTime = timestamp; }
    void SetAnalysisEndTime(const char* timestamp) { fAnalysisEndTime = timestamp; }
-   
+   void SetStringData(const char* key, const char* val) { fStringData.insert(std::make_pair(TString(key),TString(val))); }
+
    // for hadd
    virtual Long64_t Merge(TCollection *);
    virtual ROOT::MergeFunc_t GetMerge() { return NULL; }
@@ -63,9 +71,10 @@ protected:
    TString fAnalysisStartTime; // analysis start  timestamp
    TString fAnalysisEndTime; // analysis end timestamp
    TString fProcessors; // yaml
+   std::map<TString,TString> fStringData; // string information
 private:
 
-   ClassDef(TAnalysisInfo,1) // container for analysis information
+   ClassDef(TAnalysisInfo,2) // container for analysis information
 };
 
 #endif // INCLUDE_GUARD_UUID_5CA39B51_D066_4D5C_A8FE_63A1F71A2295
