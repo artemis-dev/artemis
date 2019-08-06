@@ -2,7 +2,7 @@
 /**
  * @file   TCatPadManager.cc
  * @date   Created : Feb 06, 2012 19:06:29 JST
- *   Last Modified :2019-03-01 20:39:19 JST (ota)
+ *   Last Modified : 2019-08-06 21:01:47 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -51,13 +51,22 @@ void TCatPadManager::CreateCanvas()
    if (!fTitleLabel) {
       fTitleLabel = new TPaveLabel(0.05,0.96,0.95,0.99,"");
    }
+   
    if (!fDateLabel) {
       fDateLabel  = new TPaveLabel(0.5,0.92,0.95,0.95,"");
       fDateLabel->SetBorderSize(0);
       fDateLabel->SetFillStyle(0);
    }
+   if (!fCommentLabel) {
+      fCommentLabel = new TPaveLabel(0.08,0.92,0.5,0.95,"");
+      fCommentLabel->SetBorderSize(0);
+      fCommentLabel->SetFillStyle(0);
+      
+   }
    fDateLabel->Draw();
    fTitleLabel->Draw();
+   fCommentLabel->Draw();
+   
    fMainPad = new TPad("graphs","graphs",0.05,0.01,0.95,0.91);
    fMainPad->Draw();
    fMainPad->cd();
@@ -73,10 +82,12 @@ void TCatPadManager::CreateCanvas()
 void TCatPadManager::SetTitle(const char* title)
 {
    Instance()->GetTitleLabel()->SetLabel(title);
+   Instance()->GetCanvas();
 }
 void TCatPadManager::SetComment(const char* comment)
 {
-//   Instance()->GetTitleLabel()->SetLabel(title);
+   Instance()->GetCommentLabel()->SetLabel(comment);
+   Instance()->GetCanvas();
 }
 
 Int_t TCatPadManager::GetNumChild()
@@ -143,6 +154,14 @@ TVirtualPad *TCatPadManager::GetCanvas()
       header.Append(info->GetRunName());
       header.Append(info->GetRunNumber());
       header.Append(TString::Format(" (%lld evts recorded)",info->GetAnalyzedEventNumber()));
+      TString aid(info->GetStringData("AID"));
+      if (!aid.IsNull()) {
+         header.Append(Form("AID=%04d",aid.Atoi()));
+      }
+      TString rev(info->GetStringData("REV"));
+      if (!rev.IsNull()) {
+         header.Append(Form("[%s]",rev.Data()));
+      }
       fTitleLabel->SetLabel(header);
    } else if (folder) {
       TString header = folder->GetTitle();
