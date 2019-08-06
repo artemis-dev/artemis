@@ -3,7 +3,7 @@
  * @brief  analysis information
  *
  * @date   Created       : 2018-07-28 09:55:24 JST
- *         Last Modified : 2019-08-06 21:42:44 JST (ota)
+ *         Last Modified : 2019-08-07 01:28:03 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2018 Shinsuke OTA
@@ -80,7 +80,12 @@ Long64_t TAnalysisInfo::Merge(TCollection *col)
       if (endTime < endTimeNew) endTime = endTimeNew;
 
       runs.push_back(TString(info->GetRunNumber()).Atoi());
-      fStringData = info->fStringData;
+      if (fStringData.size() == 0) {
+         for (std::map<TString,TString>::iterator it = info->fStringData.begin(),
+                 itend = info->fStringData.end(); it != itend; ++it) {
+            fStringData.insert(std::make_pair(it->first,it->second));
+         }
+      }
    }
    std::sort(runs.begin(),runs.end());
    runs.erase(std::unique(runs.begin(),runs.end()),runs.end());
