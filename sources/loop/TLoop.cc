@@ -111,6 +111,7 @@ Bool_t art::TLoop::Load(const char* dirname, const char* basename, std::list<Lon
          for (; it != itend;  ++it) {
             const std::string& key = it->first;
             const std::string& value = it->second;
+            fAnalysisInfo->SetStringData(key.c_str(),value.c_str());
             lines.ReplaceAll(Form("@%s@",key.c_str()),value.c_str());
          }
       }
