@@ -2,7 +2,7 @@
 /**
  * @file   TBinaryReactionGenerator.cc
  * @date   Created : Aug 18, 2013 12:18:37 JST
- *   Last Modified : 2019-06-14 15:38:39 JST (ota)
+ *   Last Modified : 2019-08-08 11:16:49 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -244,8 +244,9 @@ void art::TBinaryReactionGenerator::Process()
    *out1 = *p1;
    *out2 = *p2;
    if (fDoRandomizePhi) {
-      out3->RotateZ(gRandom->Uniform(0.,2*TMath::Pi()));
-      out2->RotateZ(gRandom->Uniform(0.,2*TMath::Pi()));
+      double phi = gRandom->Uniform(0.,2*TMath::Pi());
+      out3->RotateZ(phi);
+      out2->RotateZ(TMath::Pi() + phi);
    }
    fNumLoop++;
    if (fMaxLoop<=fNumLoop) {
