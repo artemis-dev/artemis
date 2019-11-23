@@ -61,5 +61,6 @@
 #pragma link C++ class TCatCmdFactory+;
 #pragma link C++ class art::TCmdGroup+;
 #pragma link C++ class art::TCmdProcessorDescription+;
+#pragma link C++ class art::TCmdGlobalComment;   
 
 #endif /* __CINT__ */
