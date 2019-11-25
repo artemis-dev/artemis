@@ -3,7 +3,7 @@
  * @brief  GET Event Store
  *
  * @date   Created       : 2017-12-21 00:29:39 JST
- *         Last Modified : 2018-02-22 06:23:19 JST (ota)
+ *         Last Modified : 2019-11-25 01:31:07 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2017 Shinsuke OTA
@@ -227,7 +227,7 @@ void TGetEventStore::Process()
             if ( !fRequireHitBit || hits[67-iCh] ) {
 //               printf("hits in cobo = %d, asad = %d, aget = %d, ch = %d\n",asad->GetCoboID(),asad->GetAsadID(),iAGET,iCh);
                Int_t* adc = asad->GetSample(iAGET,iCh);
-               if (!adc) continue;
+               if (!adc || adc[0] == 0) continue;
                Int_t offset = asad->GetReadOffset() + fValidBucket[0];
                Int_t timestamp = asad->GetEventTime();
                Int_t pattern = 0;
@@ -300,9 +300,24 @@ art::TRunInfo* TGetEventStore::GetRunInfo()
    TRunInfo *runInfo = new TRunInfo(runName+runNumber,runName+runNumber);
    runInfo->SetRunName(runName.Data());
    runInfo->SetRunNumber(runNumber.Atoll());
+   printf("%ld\n",runNumber.Atoll());
+   
    runInfo->SetStartTime(startTime.GetSec());
    runInfo->SetTotalSize(size);
-   fEventHeader->SetRunName(runName.Data());
+   fEventHeader->SetRunName(TString(runName.Data()));
    fEventHeader->SetRunNumber(runNumber.Atoll());
    return runInfo;
 }
+
+Int_t art::TGetEventStore::GetRunNumber() const
+{
+   return fEventHeader->GetRunNumber();
+}
+
+const char* art::TGetEventStore::GetRunName() const
+{
+   static char runname[128];
+   strncpy(runname,fEventHeader->GetRunName(),4);
+   return runname;
+}
+

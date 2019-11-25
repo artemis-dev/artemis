@@ -3,7 +3,7 @@
  * @brief  Attribute to fill the tree projection
  *
  * @date   Created       : 2014-03-03 23:30:16 JST
- *         Last Modified : 2018-04-11 15:37:22 JST (ota)
+ *         Last Modified : 2019-11-25 18:11:29 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -64,6 +64,7 @@ void TAttTreeProj::Copy(TAttTreeProj &newatt) const
    newatt.fNeedSync  = kTRUE;
    TAttCut::Copy(newatt);
    Int_t n = fAxes.size();
+   newatt.fAxes.clear();
    for (Int_t i=0; i!=n; i++) {
       newatt.fAxes.push_back((TAxisTreeProj*)fAxes[i]->Clone());
    }

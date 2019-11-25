@@ -3,7 +3,7 @@
  * @brief  Tree projection histogram
  *
  * @date   Created       : 2014-03-04 13:11:54 JST
- *         Last Modified : Mar 07, 2014 09:03:07 JST
+ *         Last Modified : 2019-11-25 17:59:54 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -27,6 +27,9 @@ public:
 
    TH1FTreeProj(const TH1FTreeProj& rhs);
    TH1FTreeProj& operator=(const TH1FTreeProj& rhs);
+
+   virtual void Copy(TObject &obj) const;
+   
 
 protected:
 

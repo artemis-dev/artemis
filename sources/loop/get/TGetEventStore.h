@@ -3,7 +3,7 @@
  * @brief  get file event store
  *
  * @date   Created       : 2017-12-21 00:15:51 JST
- *         Last Modified : 2018-02-20 15:46:05 JST (ota)
+ *         Last Modified : 2019-11-17 11:15:03 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2017 Shinsuke OTA
@@ -21,6 +21,7 @@
 #endif
 
 #include "TProcessor.h"
+#include "IEventStore.h"
 
 namespace art {
    class TGetEventStore;
@@ -31,7 +32,7 @@ namespace art {
 
 class GETDecoder;
 
-class art::TGetEventStore : public TProcessor {
+class art::TGetEventStore : public TProcessor, public IEventStore {
 public:
    static const Int_t kFPNIDs[4]; // 11, 22, 45, 56
 
@@ -40,6 +41,11 @@ public:
 
    TGetEventStore(const TGetEventStore& rhs);
    TGetEventStore& operator=(const TGetEventStore& rhs);
+
+   Int_t GetRunNumber() const ;
+   const char* GetRunName() const;
+   
+   
 
    virtual void Init(TEventCollection *col);
    virtual void Process();
