@@ -2,7 +2,7 @@
 /**
  * @file   TTreeEventStore.h
  * @date   Created : Jul 11, 2013 21:11:30 JST
- *   Last Modified : 2018-08-07 14:00:59 JST (ota)
+ *   Last Modified : 2019-04-26 10:40:11 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -52,13 +52,13 @@ private:
    
    TString  fFileName;
    TString  fTreeName;
-   TFile   *fFile;
-   TTree   *fTree;
-   TList   *fObjects;
+   TFile   *fFile; //!
+   TTree   *fTree; //!
+   TList   *fObjects; //!
    Long_t   fEventNum;
    Long_t   fMaxEventNum;
 
-   TEventHeader **fEventHeader;
+   TEventHeader **fEventHeader; //!
 
 #ifdef USE_MPI   
    Int_t fRankID; //!

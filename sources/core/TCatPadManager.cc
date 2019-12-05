@@ -2,7 +2,7 @@
 /**
  * @file   TCatPadManager.cc
  * @date   Created : Feb 06, 2012 19:06:29 JST
- *   Last Modified : 2019-08-06 21:01:47 JST (ota)
+ *   Last Modified : 2019-11-15 17:42:07 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -141,7 +141,13 @@ TVirtualPad* TCatPadManager::Get(Int_t idx)
 
 TVirtualPad *TCatPadManager::GetCanvas() 
 {
-   if (!fMainPad) CreateCanvas();
+   if (!fMainPad) {
+      if (fCanvas) {
+         fCanvas->Close();
+         fCanvas = 0;
+      }
+      CreateCanvas();      
+   }
    TDatime now;
    TFolder *folder = (TFolder*) gROOT->FindObject("/artemis/loops/loop0");
    TFolder *topfolder = (TFolder*) gROOT->FindObject("/artemis");
@@ -189,6 +195,11 @@ TVirtualPad *TCatPadManager::GetCanvas()
 
 void TCatPadManager::Closed()
 {
+   if (fMainPad) {
+      delete fMainPad;      
+      fMainPad = 0;
+   }
+   
    fCanvas = 0;
    fMainPad = 0;
    fTitleLabel = 0;

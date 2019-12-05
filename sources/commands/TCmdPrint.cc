@@ -3,7 +3,7 @@
  * @brief  print the last-saved figure
  *
  * @date   Created       : 2017-06-13 16:38:43 JST
- *         Last Modified : 2017-12-26 21:36:51 JST (ota)
+ *         Last Modified : 2019-11-15 20:45:33 JST (ota)
  * @author KAWASE Shoichiro <kawase@aees.kyushu-u.ac.jp>
  *
  *    (C) 2017 KAWASE Shoichiro
@@ -65,13 +65,18 @@ Long_t TCmdPrint::Run()
     Error("Run","There is no file to be printed.");
     return 1;
   }
+  TString cmd;
+  if (fPrintCmd.IsNull()) {
+     cmd = TString::Format("lpr %s %s %s",
+                          fPrinter.IsNull() ? ""
+                          : TString::Format("-P%s ",fPrinter.Data()).Data(),
+                          fOption.Data(),
+                          filename.Data());
+  } else {
+     cmd = TString::Format(fPrintCmd,filename.Data());
+  }
   
-  const TString &cmd
-    = TString::Format("lpr %s %s %s",
-		      fPrinter.IsNull() ? ""
-		                        : TString::Format("-P%s ",fPrinter.Data()).Data(),
-                      fOption.Data(),
-		      filename.Data());
+  
   Info("Run","%s",cmd.Data());
   gSystem->Exec(cmd.Data());
 
