@@ -2,7 +2,7 @@
 /**
  * @file   TCatCmdHt.cc
  * @date   Created : Feb 06, 2012 11:06:16 JST
- *   Last Modified : 2020-01-17 02:50:03 JST (ota)
+ *   Last Modified : 2020-01-18 01:41:16 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -146,6 +146,11 @@ Long_t TCatCmdHt::Cmd(vector<TString> tokens)
    for (Int_t i = 0; i < drawObjects->GetEntriesFast(); ++i) {
       TCatPadManager::Instance()->Next();
       drawObjects->At(i)->Draw(tokens.size() > 2 ? tokens[2] : "");
+   }
+
+   if (array->GetEntriesFast() == 1 &&
+       tokens[1].IsDigit()) {
+      TCatHistManager::Instance()->SetId(tokens[1].Atoi());
    }
    return 1;
    
