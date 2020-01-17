@@ -2,7 +2,7 @@
 /**
  * @file   TCatCmdHt.cc
  * @date   Created : Feb 06, 2012 11:06:16 JST
- *   Last Modified : 2020-01-18 01:41:16 JST (ota)
+ *   Last Modified : 2020-01-18 01:43:41 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -40,7 +40,7 @@ namespace {
 
       if (id.IsDigit()) {
          TObject *obj = TCatHistManager::Instance()->GetObject(id.Atoi());
-         if (obj->InheritsFrom("TH1")) {
+         if (obj && obj->InheritsFrom("TH1")) {
             objects->Add(obj);
          } else {
             printf("GetObjects: '%s' does not inherits from TH1\n",id.Data());
