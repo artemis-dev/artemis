@@ -2,7 +2,7 @@
 /**
  * @file   TDataObject.h
  * @date   Created : Jan 07, 2014 10:07:51 JST
- *   Last Modified : Nov 10, 2015 16:11:34 JST
+ *   Last Modified : 2018-07-02 11:31:43 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -41,7 +41,7 @@ public:
    virtual Int_t GetAuxID() const { return fAuxID; }
 
    virtual void SetTimestamp(Double_t time) { fTimestamp = time; }
-   virtual Double_t GetTimestamp() { return fTimestamp; }
+   virtual Double_t GetTimestamp() const { return fTimestamp; }
 
    virtual void SetQualityBit(UInt_t quality, Bool_t set);
    virtual void SetQualityBit(UInt_t quality) { fQuality |= quality; }

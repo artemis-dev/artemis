@@ -64,9 +64,9 @@ protected:
 
    TObjArray *fCategory; //! cash for the last category
 
-   static TClonesArray *fgCats; //!
-   static TClonesArray *fgDets; //!
-   static TClonesArray *fgTypes; //!
+   TClonesArray *fgCats; //!
+   TClonesArray *fgDets; //!
+   TClonesArray *fgTypes; //!
 
    
    ClassDef(TCategorizedData,1);

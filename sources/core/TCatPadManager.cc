@@ -2,7 +2,7 @@
 /**
  * @file   TCatPadManager.cc
  * @date   Created : Feb 06, 2012 19:06:29 JST
- *   Last Modified : 2016-04-19 04:36:17 JST (nil)
+ *   Last Modified : 2019-11-15 17:42:07 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -16,6 +16,9 @@
 #include <TFolder.h>
 #include <TROOT.h>
 #include <TRunInfo.h>
+#include <TAnalysisInfo.h>
+#include <TArtemisUtil.h>
+#include <TSystem.h>
 
 TCatPadManager::TCatPadManager()
    : fCanvas(NULL), fMainPad(NULL), fCurrentPadId(0), fNumSubPads(0), fTitleLabel(NULL), fDateLabel(NULL)
@@ -46,18 +49,30 @@ void TCatPadManager::CreateCanvas()
    fCanvas->Clear();
    fCanvas->cd();
    if (!fTitleLabel) {
-      fTitleLabel = new TPaveLabel(0.1,0.96,0.9,0.99,"");
+      fTitleLabel = new TPaveLabel(0.05,0.96,0.95,0.99,"");
    }
+   
    if (!fDateLabel) {
-      fDateLabel  = new TPaveLabel(0.7,0.93,0.9,0.95,"");
+      fDateLabel  = new TPaveLabel(0.5,0.92,0.95,0.95,"");
       fDateLabel->SetBorderSize(0);
       fDateLabel->SetFillStyle(0);
    }
+   if (!fCommentLabel) {
+      fCommentLabel = new TPaveLabel(0.08,0.92,0.5,0.95,"");
+      fCommentLabel->SetBorderSize(0);
+      fCommentLabel->SetFillStyle(0);
+      
+   }
    fDateLabel->Draw();
    fTitleLabel->Draw();
+   fCommentLabel->Draw();
+   
    fMainPad = new TPad("graphs","graphs",0.05,0.01,0.95,0.91);
    fMainPad->Draw();
    fMainPad->cd();
+   fMainPad->SetGridy(kTRUE);
+   fMainPad->SetGridx(kTRUE);
+   
 
    fMainPad->Connect("Closed()","TCatPadManager",this,"MainPadClosed()");
    fCurrentPadId = 0;
@@ -67,10 +82,12 @@ void TCatPadManager::CreateCanvas()
 void TCatPadManager::SetTitle(const char* title)
 {
    Instance()->GetTitleLabel()->SetLabel(title);
+   Instance()->GetCanvas();
 }
 void TCatPadManager::SetComment(const char* comment)
 {
-//   Instance()->GetTitleLabel()->SetLabel(title);
+   Instance()->GetCommentLabel()->SetLabel(comment);
+   Instance()->GetCanvas();
 }
 
 Int_t TCatPadManager::GetNumChild()
@@ -124,10 +141,35 @@ TVirtualPad* TCatPadManager::Get(Int_t idx)
 
 TVirtualPad *TCatPadManager::GetCanvas() 
 {
-   if (!fMainPad) CreateCanvas();
+   if (!fMainPad) {
+      if (fCanvas) {
+         fCanvas->Close();
+         fCanvas = 0;
+      }
+      CreateCanvas();      
+   }
    TDatime now;
    TFolder *folder = (TFolder*) gROOT->FindObject("/artemis/loops/loop0");
-   if (folder) {
+   TFolder *topfolder = (TFolder*) gROOT->FindObject("/artemis");
+   art::Util::LoadAnalysisInformation();
+   art::TAnalysisInfo *info = (art::TAnalysisInfo*) topfolder->FindObject(art::TAnalysisInfo::kDefaultAnalysInfoName);
+   if (info) {
+      TString header;
+      header.Append(gSystem->BaseName(info->GetSteeringFileName()));
+      header.Append("  ");
+      header.Append(info->GetRunName());
+      header.Append(info->GetRunNumber());
+      header.Append(TString::Format(" (%lld evts recorded)",info->GetAnalyzedEventNumber()));
+      TString aid(info->GetStringData("AID"));
+      if (!aid.IsNull()) {
+         header.Append(Form("AID=%04d",aid.Atoi()));
+      }
+      TString rev(info->GetStringData("REV"));
+      if (!rev.IsNull()) {
+         header.Append(Form("[%s]",rev.Data()));
+      }
+      fTitleLabel->SetLabel(header);
+   } else if (folder) {
       TString header = folder->GetTitle();
       TList *runheader = (TList*)folder->FindObjectAny("runheader");
       if (runheader) {
@@ -135,12 +177,15 @@ TVirtualPad *TCatPadManager::GetCanvas()
          if (info) {
             header.Append("   ");
             header.Append(info->GetName());
-            header.Append(Form("  (%d evt)",info->GetEventNumber()));
+            header.Append(Form("  (%ld evt)",info->GetEventNumber()));
          }
       }
       fTitleLabel->SetLabel(header);
    }
-   fDateLabel->SetLabel(now.AsString());
+   TString dateLabel = now.AsString();
+   dateLabel += TString::Format("(%u)",now.Convert());
+   
+   fDateLabel->SetLabel(dateLabel);
    fCanvas->Modified();
    fCanvas->Update();
       
@@ -150,6 +195,11 @@ TVirtualPad *TCatPadManager::GetCanvas()
 
 void TCatPadManager::Closed()
 {
+   if (fMainPad) {
+      delete fMainPad;      
+      fMainPad = 0;
+   }
+   
    fCanvas = 0;
    fMainPad = 0;
    fTitleLabel = 0;
@@ -172,6 +222,11 @@ void TCatPadManager::Divide(Int_t nx, Int_t ny,
    fMainPad->Divide(nx,ny,xmargin,ymargin);
    fCurrentPadId = 0;
    fNumSubPads = nx * ny;
+   for (Int_t i = 0; i < fNumSubPads; ++i) {
+      fMainPad->GetPad(i+1)->SetGridy(kTRUE);
+      fMainPad->GetPad(i+1)->SetGridx(kTRUE);
+   }
+
 }
 
 void TCatPadManager::SetCurrentPadId(Int_t id)

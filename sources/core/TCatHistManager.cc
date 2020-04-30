@@ -2,7 +2,7 @@
 /**
  * @file   TCatHistManager.cc
  * @date   Created : Feb 06, 2012 11:06:39 JST
- *   Last Modified : 2016-01-18 11:39:41 JST (kawase)
+ *   Last Modified : 2018-08-07 17:13:09 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -34,16 +34,14 @@ void TCatHistManager::Load()
    fObjs = gDirectory->GetList();
    fKeys = gDirectory->GetListOfKeys();
    if (!fObjs || !fKeys) return;
-   if (!fObjs->GetEntries()) {
-      Int_t n = fKeys->GetEntries();
-      for (Int_t i=0; i<n; i++) {
-         TKey *key = (TKey*) fKeys->At(i);
-         if (fObjs->FindObject(key->GetName())) continue;
-         if (TClass::GetClass(key->GetClassName())->InheritsFrom("TH1") |
-             TClass::GetClass(key->GetClassName())->InheritsFrom("TDirectory")
-            ) {
-            key->ReadObj();
-         }
+   Int_t n = fKeys->GetEntries();
+   for (Int_t i=0; i<n; i++) {
+      TKey *key = (TKey*) fKeys->At(i);
+      if (fObjs->FindObject(key->GetName())) continue;
+      if (TClass::GetClass(key->GetClassName())->InheritsFrom("TH1") |
+          TClass::GetClass(key->GetClassName())->InheritsFrom("TDirectory")
+         ) {
+         key->ReadObj();
       }
    }
 }

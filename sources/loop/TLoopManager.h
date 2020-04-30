@@ -2,7 +2,7 @@
 /**
  * @file   TLoopManager.h
  * @date   Created : Apr 21, 2012 17:21:44 JST
- *   Last Modified : Mar 10, 2014 15:57:24 JST
+ *   Last Modified :2019-02-28 21:58:54 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -31,7 +31,7 @@ public:
    
    static TLoopManager* Instance();
    
-   TLoop* Add(const char *filename = "");
+   TLoop* Add(const char *filename = "", std::map<std::string,std::string>* replace = NULL);
    Int_t Resume(Int_t i = 0);
    Int_t Suspend(Int_t i = 0);
    Int_t Terminate(Int_t i = 0);

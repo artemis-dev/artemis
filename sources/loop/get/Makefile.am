@@ -12,11 +12,11 @@ DICTHDR = $(DICTSRC:.cc=.h)
 
 OPTHDR = 
 INCDIR = ../../../include 
-GETINC = -I ${HOME}/work/GETDecoder/source/GETCore -I ${HOME}/work/GETDecoder/source/GETFormat -I ${HOME}/work/GETDecoder/source/GETUtil
+GETINC = -I @GET_DECODER_INCLUDE_DIR@
 
 AUTOMAKE_OPTIONS = foreign
 CXXFLAGS = -fPIC -I.. -I$(INCDIR) $(shell root-config --cflags) -Wall -O2
-LDFLAGS = $(shell root-config --glibs) -L${HOME}/work/GETDecoder/build -lGETDecoder
+LDFLAGS = $(shell root-config --glibs) @GET_DECODER_LIB@
 
 CXXFLAGS+= @YAML_CPP_INCLUDE@ $(GETINC)
 LDFLAGS+= @YAML_CPP_LIB@

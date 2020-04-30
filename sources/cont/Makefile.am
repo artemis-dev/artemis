@@ -5,7 +5,11 @@ SUBSRC += TCatPulseShape.cc
 SUBSRC += TSimpleData.cc
 SUBSRC += ICharge.cc
 SUBSRC += ITiming.cc
+SUBSRC += ITrack.cc
+SUBSRC += IPosition.cc
+SUBSRC += TDetectorGeometryInfo.cc
 SUBSRC += TNArray.cc
+
 
 SUBOBJ = $(SUBSRC:.cc=.o)
 SUBHDR = $(SUBSRC:.cc=.h)

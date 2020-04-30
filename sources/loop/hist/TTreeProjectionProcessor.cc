@@ -4,19 +4,26 @@
  * @brief  tree projection
  *
  * @date   Created       : 2014-03-05 22:30:06 JST
- *         Last Modified : 2017-12-26 20:26:26 JST (ota)
+ *         Last Modified : 2019-06-10 14:56:06 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
  */
 
 #include "TTreeProjectionProcessor.h"
-#include <TTreeProjection.h>
-#include <TTree.h>
-#include <TFolder.h>
-#include <TROOT.h>
-#include <TCatCmdHstore.h>
-#include <TDirectory.h>
+#include "TTreeProjection.h"
+#include "TTree.h"
+#include "TFolder.h"
+#include "TROOT.h"
+#include "TCatCmdHstore.h"
+#include "TDirectory.h"
+#include "TAnalysisInfo.h"
+#include "TArtemisUtil.h"
+#include "TMacroReplacer.h"
+#include <fstream>
+#include <sstream>
+#include "yaml-cpp/yaml.h"
+
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -36,6 +43,8 @@ TTreeProjectionProcessor::TTreeProjectionProcessor()
 {
    RegisterProcessorParameter("OutputFilename","output filename",fOutputFilename,
                               TString(""));
+   RegisterProcessorParameter("Replace","Replacement of macro",fReplacement,TString(""));
+   
 }
 
 TTreeProjectionProcessor::~TTreeProjectionProcessor()
@@ -57,11 +66,63 @@ TTreeProjectionProcessor& TTreeProjectionProcessor::operator=(const TTreeProject
 
 void TTreeProjectionProcessor::Init(TEventCollection *col)
 {
-  fDirectory = gDirectory;
-   TParameterLoader::Init(col);
+   fDirectory = gDirectory;
+
+   // initialization of tree projection class
+   fTypeName = art::TTreeProjection::Class_Name();
+   fParameter = static_cast<TParameterObject*> (TClass::GetClass(fTypeName)->New());
+   fParameter->SetName(fParameterName);
+
+   ifstream fin(fFileName);
+   if (!fin) {
+      SetStateError(Form("No such file '%s'",fFileName.Data()));
+      return;
+   }
+   std::stringstream ss;
+   ss << fin.rdbuf();
+   std::string input(ss.str());
+
+
+   Info("Init","do it");
+   
+   TMacroReplacer replacer;
+   if (!fReplacement.IsNull()) {
+      std::istringstream iss(fReplacement.Data());
+      printf("fReplacement %s\n",fReplacement.Data());
+      
+      YAML::Parser parser(iss);
+      YAML::Node doc;
+      parser.GetNextDocument(doc);
+      replacer.Add(doc);
+      input = replacer.Replace(input);
+   }
+   std::vector<std::string> remains = replacer.Parse(input);
+   if (remains.size()) {
+      std::ostringstream os;
+      std::copy(remains.begin(),remains.end(),std::ostream_iterator<std::string>(os,","));
+      std::string emess = os.str();
+      emess.erase(emess.size() - std::char_traits<char>::length(","));
+      SetStateError(Form("macro remains %s",emess.c_str()));
+      return;
+   }
+
+   ss.str("");
+   ss << input;
+   YAML::Parser parser(ss);
+   YAML::Node doc;
+   parser.GetNextDocument(doc);
+   if (!fParameter->LoadYAMLNode(doc)) {
+      SetStateError("Error while loading histogram definitions.");
+      return;
+   }
+
+   Info("Init","Treeprojetion is prepared");
+   
+
    if (IsError()) return;
    fTreeProj = static_cast<art::TTreeProjection*>(fParameter);
    
+   TAnalysisInfo::AddTo(fDirectory);
 
    // prepare tree
    fTree = new TTree("tmptree","tree for variables");
@@ -120,19 +181,26 @@ void TTreeProjectionProcessor::PostLoop()
    fDirectory->cd();
    TCatCmdHstore hstore;
    hstore.Run(filename,"recreate");
-   saved->cd();
 #ifdef USE_MPI
    if (useMPI) {
       MPI_Barrier(MPI_COMM_WORLD);   
-      if (npe > 0 && myrank == 0) {
-         TString files;
-         for (Int_t i = 0; i < npe; ++i) {
-            files.Append(Form("%s%d ",fOutputFilename.Data(),i));
-         }
-         gSystem->Exec(Form("hadd -f %s %s",fOutputFilename.Data(),files.Data()));
-      }
-      MPI_Barrier(MPI_COMM_WORLD);   
    }
+#endif
+   saved->cd();
+#ifdef USE_MPI
+   Util::MPIFileMerger(fOutputFilename.Data());
+   
+//   if (useMPI) {
+//      MPI_Barrier(MPI_COMM_WORLD);   
+//      if (npe > 0 && myrank == 0) {
+//         TString files;
+//         for (Int_t i = 0; i < npe; ++i) {
+//            files.Append(Form("%s%d ",fOutputFilename.Data(),i));
+//         }
+//         gSystem->Exec(Form("hadd -f %s %s",fOutputFilename.Data(),files.Data()));
+//      }
+//      MPI_Barrier(MPI_COMM_WORLD);   
+//   }
 #endif
    
 }

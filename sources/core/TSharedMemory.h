@@ -2,7 +2,7 @@
 /**
  * @file   TSharedMemory.h
  * @date   Created : Nov 29, 2013 21:29:50 JST
- *   Last Modified : Nov 29, 2013 21:53:14 JST
+ *   Last Modified : 2019-04-25 22:41:44 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -32,7 +32,7 @@ protected:
    int   fKey;    // shared memmory key
    int   fSize;   // shared memory size
    bool  fIsValid;// flag for validity of shared memory
-   char* fSharedMemory; // pointer to shared memory       
+   char* fSharedMemory; //!-> pointer to shared memory       
    ClassDef(TSharedMemory,1); // shared memory wrapper class
 };
 #endif // end of #ifdef TSHAREDMEMORY_H

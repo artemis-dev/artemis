@@ -3,7 +3,7 @@
  * @brief  processor for tree projection
  *
  * @date   Created       : 2014-03-05 22:22:59 JST
- *         Last Modified : 2016-11-25 21:11:44 JST (ota)
+ *         Last Modified : 2019-05-14 17:37:20 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -41,6 +41,9 @@ protected:
 
    TString fOutputFilename; // output filename
    TDirectory *fDirectory; //!
+
+   TString fReplacement; //
+   
 private:
 
    ClassDef(TTreeProjectionProcessor,1) // processor for tree projection

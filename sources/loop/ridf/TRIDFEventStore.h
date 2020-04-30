@@ -2,7 +2,7 @@
 /**
  * @file   TRIDFEventStore.h
  * @date   Created : Jul 12, 2013 17:12:43 JST
- *   Last Modified : 2017-03-01 14:10:58 JST (kawase)
+ *   Last Modified : 2018-07-28 16:49:56 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *
@@ -21,7 +21,8 @@
 
 
 #include <TProcessor.h>
-
+#include <IEventStore.h>
+#include "TSimpleData.h"
 namespace art {
    class TRIDFEventStore;
    class TConditionBit;
@@ -32,11 +33,14 @@ namespace art {
    class TEventHeader;
    class TModuleDecoderFactory;
    class TScalerData;
+   class TTimestampEventList;
+   class TSimpleDataLong;
+   
 }
 
 class THashList;
 
-class art::TRIDFEventStore  : public TProcessor {
+class art::TRIDFEventStore  : public TProcessor, public IEventStore {
 
 public:
    static const Int_t kMaxBufSize = 1024*1024; // default size is 1 MB
@@ -45,10 +49,21 @@ public:
 
    virtual void Init(TEventCollection *col);
    virtual void Process();
+   virtual void PreLoop();
+   virtual void PostLoop();
+
+   Int_t GetRunNumber() const; 
+   const char* GetRunName() const;
 protected:
-   Bool_t Open();
-   Bool_t GetNextBlock();
-   Bool_t GetNextEvent();
+   virtual Bool_t Open();
+   virtual Bool_t GetNextBlock();
+   virtual Bool_t GetNextEvent();
+   virtual void   NotifyEndOfRun();
+
+   InputInfo<TSimpleDataLong> fInputEventNumber;
+   OutputInfo<TSimpleDataLong> fOutputEventNumber;
+   
+   
 
 protected:
 #if USE_MPI
@@ -96,6 +111,18 @@ protected:
    static const Int_t kSEMKEY_BASE   = 561001;
    Int_t fSHMID;
    Int_t fBlockNumber;
+
+   TString fEventListName;
+   Long64_t fEventListIndex; 
+
+   TTimestampEventList* fEventList; //! event list
+
+   Int_t fStartEventNumber;
+
+   Int_t fAsynchronous;
+
+   TConditionBit *fRunStatus; // ! running condition for this event store
+   
 
    // use function pointer array to decode classes instead of function object.
    // since the number of classes may not change so much and they are easy to be maintained.

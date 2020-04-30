@@ -2,7 +2,7 @@
 /**
  * @file   TModuleDecoderV1740.h
  * @date   Created : Feb 06, 2013 15:06:14 JST
- *   Last Modified : Feb 14, 2014 20:06:21 JST
+ *   Last Modified : 2018-07-09 16:15:46 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -21,13 +21,14 @@ class art::TModuleDecoderV1740  : public TModuleDecoder {
 public:
    static const int kID = 63;
 protected:
+   Int_t fVerboseLevel; // verbose level
 
 public:
    TModuleDecoderV1740();
    virtual ~TModuleDecoderV1740();
    virtual Int_t Decode(char* buffer, const int &size, TObjArray *seg);
-   typedef struct V1740EventHeader {
-      V1740EventHeader(int val) { header = val; }
+   typedef struct V1740_EventHeader {
+      V1740_EventHeader(int val) { header = val; }
       Int_t header;
       void Print() {
          if ((header>>28) == 3) { 
@@ -38,7 +39,7 @@ public:
             printf("Invalid 0x%08x \n",header);
          }
       }
-   } V1740EventHeader_t;
+   } V1740_EventHeader_t;
 
    ClassDef(TModuleDecoderV1740,0); // decoder for V1740
 };

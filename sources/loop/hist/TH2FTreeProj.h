@@ -3,7 +3,7 @@
  * @brief  Tree projection 2-D historgram
  *
  * @date   Created       : 2014-03-07 08:35:46 JST
- *         Last Modified : Mar 07, 2014 08:36:53 JST
+ *         Last Modified : 2019-11-25 17:23:32 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -27,6 +27,9 @@ public:
 
    TH2FTreeProj(const TH2FTreeProj& rhs);
    TH2FTreeProj& operator=(const TH2FTreeProj& rhs);
+
+   virtual void Copy(TObject& obj) const;
+   
 
 protected:
 

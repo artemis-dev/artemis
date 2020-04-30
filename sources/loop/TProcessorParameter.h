@@ -3,7 +3,7 @@
  * @brief  processor parameter
  *
  * @date   Created       : 2014-05-09 18:06:39 JST
- *         Last Modified : 2016-07-22 09:20:05 JST (ota)
+ *         Last Modified : 2018-08-23 21:33:19 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -13,6 +13,7 @@
 #define INCLUDE_GUARD_UUID_6D72126A_3ED4_434A_BA27_441B5C89DC2E
 
 #include <TParameterStrings.h>
+#include <TString.h>
 
 namespace art {
    class TProcessorParameter;
@@ -21,6 +22,7 @@ namespace art {
 
 class art::TProcessorParameter  {
 public:
+   TProcessorParameter(){;}
    TProcessorParameter(const char* name, const char* title)
       : fName(name), fTitle(title)
       {   
@@ -28,14 +30,14 @@ public:
    
    virtual ~TProcessorParameter(){;}
    
-   virtual TString GetName() { return fName; }
-   virtual TString GetTitle() { return fTitle; }
-   
    virtual void SetValue(TParameterStrings *p) = 0;
    virtual TString Type() const = 0;
    
    virtual TString DefaultValue() = 0;
    virtual TString Value() = 0;
+
+   virtual TString GetName() const { return fName; }
+   virtual TString GetTitle() const { return fTitle; }
 
    virtual Bool_t IsStringVector() const = 0;
    virtual Bool_t IsVector() const = 0;
@@ -47,7 +49,6 @@ public:
    virtual Int_t Size() { return fSize; }
    
 protected:
-   TProcessorParameter(){;}
    TString fName;
    TString fTitle;
    Bool_t fIsOptional;
@@ -55,6 +56,8 @@ protected:
    Int_t  fSize;
    
 private:
+
+//   ClassDef(TProcessorParameter,1); // 
    
 };
 
@@ -114,6 +117,8 @@ public:
    
    TString DefaultValue() { return ToString(fDefValue,fSize); }
    TString Value() { return ToString(fParameter,fSize); }
+   template<class T1> const T1& GetRawValue() { return fParameter; }
+   
    
 
    template<class T1> 

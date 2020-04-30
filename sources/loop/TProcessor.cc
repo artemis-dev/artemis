@@ -3,7 +3,7 @@
  * Base class for the user processors
  
  * @date   Created : Jul 10, 2013 17:10:19 JST
- *   Last Modified : 2018-01-25 21:52:46 JST (ota)
+ *   Last Modified : 2019-05-15 08:35:43 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *
@@ -93,8 +93,17 @@ void art::TProcessor::InitProc(TEventCollection *col)
       IOCollection &input = fInputs[iInput];
       *(void***)input.fP = NULL;
       TString inputname = *input.fName;
+
+      // if input name is null or empty, skip
+      if (inputname.IsNull()) {
+         Warning("InitProc","input name is not given for parameter '%s'",input.fPrmName.Data());
+         continue;         
+      }
+      printf("'%s'\n",inputname.Data());
+      
       if (!(col->GetObjectRef(inputname))) {
-         SetStateError(TString::Format(ErrMsgFmt::INVALID_INPUT_COLLECTION,inputname.Data()));
+//         printf("************** ERROR **************** '%s'\n ",inputname.Data());
+         SetStateError(TString::Format(ErrMsgFmt::INVALID_INPUT_COLLECTION,Form("'%s'",inputname.Data())));
          return;
       }
       // initialize input collection
@@ -189,8 +198,12 @@ void art::TProcessor::InitProc(TEventCollection *col)
          SetStateError(TString::Format(ErrMsgFmt::INVALID_INPUT_COLLECTION,info.fPrmName.Data()));
          return;
       }
-      // get registered information
+      if (infoname.IsNull()) {
+         Info("InitProc","%s has empty parameter",info.fPrmName.Data()) ;
+         continue;
+      }
       if (!((*(void***)info.fP) = (void**)col->GetInfoRef(infoname))) {
+      // get registered information
          if (!fParamMap[info.fPrmName]->IsOptional()) {
             SetStateError(TString::Format(ErrMsgFmt::INVALID_INPUT_COLLECTION,infoname.Data()));
             return;
@@ -274,7 +287,7 @@ void art::TProcessor::UpdateParameters()
    }
 }
 
-void art::TProcessor::PrintDescriptionYAML()
+void art::TProcessor::PrintDescriptionYAML(std::ostream& ros) const 
 {
    TString name;
    if (strcmp(GetName(),"")){
@@ -301,8 +314,7 @@ void art::TProcessor::PrintDescriptionYAML()
              << title.Data()
              << YAML::Key << "parameter" << YAML::Value;
          out << YAML::BeginMap;
-         ProcPrmMap_t::iterator it;
-         for (it = fParamMap.begin(); it != fParamMap.end(); it++) {
+         for (ProcPrmMap_t::const_iterator it = fParamMap.begin(); it != fParamMap.end(); it++) {
 	    TProcessorParameter *prm = it->second;
 	    const TString &value =
 	       prm->IsValueSet() ? prm->Value() : prm->DefaultValue();
@@ -310,13 +322,14 @@ void art::TProcessor::PrintDescriptionYAML()
 	       TString::Format("[%s] %s",
 			       prm->Type().Data(), prm->GetTitle().Data());
 	    out << YAML::Key << prm->GetName();
-	    if (prm->IsStringVector()) {
-	       out << YAML::Comment(comment.Data())
-		   << YAML::Value
-		   << YAML::BeginSeq
-		   << value.Data()
-		   << YAML::EndSeq;
-	    } else if (prm->IsVector()) {
+//	    if (prm->IsStringVector()) {
+//	       out << YAML::Comment(comment.Data())
+//		   << YAML::Value
+//		   << YAML::BeginSeq
+//		   << value.Data()
+//		   << YAML::EndSeq;
+//	    } else
+            if (prm->IsVector()) {
 	       TObjArray *values = value.Tokenize(", ");
 	       const Int_t n = values->GetEntriesFast();
 	       out << YAML::Value
@@ -339,7 +352,8 @@ void art::TProcessor::PrintDescriptionYAML()
       out   << YAML::EndMap;
    }
    out << YAML::EndMap;
-   std::cout << out.c_str() << std::endl;
+//   std::cout << out.c_str() << std::endl;
+   ros << out.c_str() << std::endl;
 
 }
 
@@ -369,7 +383,7 @@ void art::TProcessor::ListProcessors()
 
 void art::TProcessor::RegisterHelper(IProcessorHelper *helper)
 {
-   helper->Register(this);
+   helper->RegisterProcessor(this);
    fHelpers.push_back(helper);
 }
 

@@ -2,7 +2,7 @@
 /**
  * @file   TModuleDecoderSIS3820.cc
  * @date   Created : Oct 24, 2013 22:39:29 JST
- *   Last Modified : Oct 31, 2013 06:50:39 JST
+ *   Last Modified : 2019-11-22 17:52:03 JST (ota)
  * @author Hiroshi TOKIEDA <tokieda@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -15,8 +15,8 @@
 #include "TModuleDecoderSIS3820.h"
 
 
-art::TModuleDecoderSIS3820::TModuleDecoderSIS3820()
-  : TModuleDecoder(kID,TRawDataSimple<UInt_t>::Class()) {
+art::TModuleDecoderSIS3820::TModuleDecoderSIS3820(Int_t id)
+  : TModuleDecoder(id,TRawDataSimple<UInt_t>::Class()) {
 }
 
 art::TModuleDecoderSIS3820::~TModuleDecoderSIS3820()

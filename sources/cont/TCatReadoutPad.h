@@ -2,7 +2,7 @@
 /**
  * @file   TCatReadoutPad.h
  * @date   Created : Nov 30, 2013 20:30:06 JST
- *   Last Modified : 2016-11-12 01:17:25 JST (ota)
+ *   Last Modified : 2018-05-08 13:21:47 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -55,7 +55,7 @@ public:
    virtual Bool_t IsInside(Double_t xp, Double_t yp) const {
       const Int_t &np = fNumPoints;
       const Double_t* x = &fVertexX[0];
-      const Double_t* y = &fVertexX[0];
+      const Double_t* y = &fVertexY[0];
       Int_t i, j = np-1 ;
       Bool_t oddNodes = kFALSE;
       for (i=0; i<np; i++) {

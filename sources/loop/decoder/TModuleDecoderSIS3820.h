@@ -2,7 +2,7 @@
 /**
  * @file   TModuleDecoderSIS3820.h
  * @date   Created : Oct 24, 2013 22:39:28 JST
- *   Last Modified : Oct 31, 2013 06:50:39 JST
+ *   Last Modified : 2019-11-22 17:51:59 JST (ota)
  * @author Hiroshi TOKIEDA <tokieda@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -24,7 +24,7 @@ public:
 
 
 public:
-  TModuleDecoderSIS3820();
+  TModuleDecoderSIS3820(Int_t id = kID);
   virtual ~TModuleDecoderSIS3820();
   virtual Int_t Decode(char* buffer, const int &size, TObjArray *seg);
   TModuleDecoderSIS3820(const TModuleDecoderSIS3820& /*rhs */) 

@@ -3,7 +3,7 @@
  * @brief  Tree projection definitions
  *
  * @date   Created       : 2014-03-05 10:15:05 JST
- *         Last Modified : 2018-01-28 12:13:15 JST (ota)
+ *         Last Modified : 2019-05-15 11:18:26 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -20,6 +20,8 @@
 #include <TH3FTreeProj.h>
 #include <TAxisTreeProj.h>
 #include <TTree.h>
+#include <fstream>
+#include <sstream>
 
 using art::TTreeProjection;
 
@@ -31,6 +33,7 @@ namespace {
    const char* kNodeKeyGroup = "group";
    const char* kNodeKeyInclude = "include";
    const char* kNodeKeyAlias = "alias";
+   const char* kNodeKeyReplace = "replace";
    const char* kNodeKeyCut = "cut";
    const char* kNodeKeyName = "name";
    const char* kNodeKeyTitle = "title";
@@ -101,29 +104,74 @@ Bool_t TTreeProjection::LoadYAMLNode(const YAML::Node &node)
    // include node
    //======================================================================
    if (includeNode) {
+      printf("include\n");
       // prepare includes before continue
+      TString filename;
       try {
-         for (YAML::Iterator it = includeNode->begin(); it != includeNode->end(); it++) {
+         for (YAML::Iterator it = includeNode->begin(); it != includeNode->end(); ++it) {
             std::string name;
-            (*it) >> name;
-            TString filename = gSystem->ConcatFileName(fBaseDir,name.c_str());
-            TString dirsaved = fBaseDir;
-            
-//            gSystem->FindFile(fSearchPath,filename);
-            if (filename.IsNull()) {
-               Warning(kMethodName,"File '%s' in include node does not exist",name.c_str());
-               continue;
-            }
-            if (LoadYAMLFile(filename)) {
-               fIncludes->Add(new TObjString(filename));
+
+            // load template
+            if ((*it).Type() == YAML::NodeType::Map) {
+               const YAML::Node *replaceNode = (*it).FindValue(kNodeKeyReplace);
+               const YAML::Node *nameNode = (*it).FindValue(kNodeKeyName);
+               if (!nameNode) {
+                  Error("LoadFile","no 'name' node is found");
+                  return kFALSE;
+               }
+               (*nameNode) >> name;
+
+               if (!replaceNode) {
+                  Warning("LoadFile","no 'replace' node is found while it is expected in '%s'",name.c_str());
+               }
+               
+               filename = gSystem->ConcatFileName(fBaseDir,name.c_str());
+               std::ifstream fin(filename.Data());
+               if (!fin.is_open()) {
+                  Error("LoadFile", "Cannot open file: %s",filename.Data());
+                  return kFALSE;
+               }
+               YAML::Node doc;
+               TString lines;
+               lines.ReadFile(fin);
+               if (replaceNode) {
+                  for (YAML::Iterator it = replaceNode->begin(), itend = replaceNode->end();
+                       it != itend; ++it) {
+                     std::string key, value;
+                     it.first() >> key;
+                     it.second() >> value;
+                     lines.ReplaceAll(TString::Format("@%s@",key.c_str()),value);
+                  }
+               }
+               std::istringstream iss(lines.Data());
+               YAML::Parser parser(iss);
+               parser.GetNextDocument(doc);
+               if (!LoadYAMLNode(doc)) {
+                  return kFALSE;
+               }
             } else {
-               Error("LoadYAMLNode","Error while loading file '%s'",filename.Data());
-               return kFALSE;
+               // load file simply 
+               printf("loading file\n");
+               (*it) >> name;
+               filename = gSystem->ConcatFileName(fBaseDir,name.c_str());
+               TString dirsaved = fBaseDir;
+               
+//            gSystem->FindFile(fSearchPath,filename);
+               if (filename.IsNull()) {
+                  Warning(kMethodName,"File '%s' in include node does not exist",name.c_str());
+                  continue;
+               }
+               if (LoadYAMLFile(filename)) {
+                  fIncludes->Add(new TObjString(filename));
+               } else {
+                  Error("LoadYAMLNode","Error while loading file '%s'",filename.Data());
+                  return kFALSE;
+               }
+               fBaseDir = dirsaved;
             }
-            fBaseDir = dirsaved;
          }
       } catch (YAML::Exception &e){
-         Error(kMethodName,"%s",e.what());
+         Error(kMethodName,"In %s, %s",filename.Data(),e.what());
          return kFALSE;
       }
    }
@@ -181,7 +229,13 @@ Bool_t TTreeProjection::LoadYAMLNode(const YAML::Node &node)
          }
       } else if (contents) {
          // new group is created
-         group = new TTreeProjGroup(name,title,cut);
+         Int_t nSame = 0;
+         TString groupName = name;
+         while (gDirectory->Get(groupName)) {
+            ++nSame;
+            groupName = Form("%s%d",name.Data(),nSame);
+         }
+         group = new TTreeProjGroup(groupName,title,cut);
       } else {
          // invalid declaration of group
          Warning(kMethodName,"group skipped since the group '%s' does not contain any clones or contents",
@@ -257,6 +311,7 @@ Bool_t TTreeProjection::LoadYAMLNode(const YAML::Node &node)
                   // insufficient number of input for axis
                   Error("LoadYAMLNode",TString::Format("\n    histgram '%s': insufficient number of axis input for '%c' (size = %d)\n",
                                                        hname.Data(),'x'+i,axisnode[i]->size()));
+                  saved->cd();
                   return kFALSE;
                }
             }
@@ -388,3 +443,4 @@ Bool_t TTreeProjection::Sync(TTreeProjGroup *group, TTree *tree, TCut cut)
    }
    return kTRUE;
 }
+

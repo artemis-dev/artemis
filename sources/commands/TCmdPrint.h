@@ -3,7 +3,7 @@
  * @brief  print the last-saved figure
  *
  * @date   Created       : 2017-06-13 16:38:24 JST
- *         Last Modified : 2017-12-26 21:37:19 JST (ota)
+ *         Last Modified : 2019-11-15 20:42:02 JST (ota)
  * @author KAWASE Shoichiro <kawase@aees.kyushu-u.ac.jp>
  *
  *    (C) 2017 KAWASE Shoichiro
@@ -27,10 +27,13 @@ public:
    Long_t Cmd(vector<TString>);
    void SetPrinter(const char* printer);
    void SetOption(const char* option);
+   void SetCommand(const char* command) { fPrintCmd = command; }
 
 protected:
    TString fPrinter; // printer name
    TString fOption; // option
+   TString fPrintCmd; // directly set the command
+   
 
 private:
    TCmdPrint(const TCmdPrint&); // undefined 

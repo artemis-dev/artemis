@@ -2,7 +2,7 @@
 /**
  * @file   TCatCmdHstore.cc
  * @date   Created : Jul 13, 2012 10:13:10 JST
- *   Last Modified : 2016-11-28 11:11:08 JST (ota)
+ *   Last Modified : 2018-07-30 10:17:39 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -76,6 +76,8 @@ void TCatCmdHstore::WriteRecursive(TDirectory *parent, TList *list)
          TDirectory *newdir = parent->mkdir(dir->GetName());
          newdir->SetTitle(dir->GetTitle());
          WriteRecursive(newdir,dir->GetList());
+      } else {
+         obj->Write();
       }
    }
 }

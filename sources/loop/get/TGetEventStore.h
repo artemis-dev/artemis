@@ -3,7 +3,7 @@
  * @brief  get file event store
  *
  * @date   Created       : 2017-12-21 00:15:51 JST
- *         Last Modified : 2017-12-25 19:24:06 JST (ota)
+ *         Last Modified : 2019-11-17 11:15:03 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2017 Shinsuke OTA
@@ -21,6 +21,7 @@
 #endif
 
 #include "TProcessor.h"
+#include "IEventStore.h"
 
 namespace art {
    class TGetEventStore;
@@ -31,13 +32,20 @@ namespace art {
 
 class GETDecoder;
 
-class art::TGetEventStore : public TProcessor {
+class art::TGetEventStore : public TProcessor, public IEventStore {
 public:
+   static const Int_t kFPNIDs[4]; // 11, 22, 45, 56
+
    TGetEventStore();
    virtual ~TGetEventStore();
 
    TGetEventStore(const TGetEventStore& rhs);
    TGetEventStore& operator=(const TGetEventStore& rhs);
+
+   Int_t GetRunNumber() const ;
+   const char* GetRunName() const;
+   
+   
 
    virtual void Init(TEventCollection *col);
    virtual void Process();
@@ -57,7 +65,10 @@ private:
    TString fNameRunHeaders;
    TString fNameEventHeader;
    Int_t fMaxEventNum; // maximum number of event
-
+   Int_t fRequireHitBit; // require hit bit if 1
+   Bool_t fSubtractFPN; // flag for subtraction of FPN (default 0)
+   IntVec_t fValidBucket; // range of valid time bucket (default [0,0])
+   Int_t fStartEventNum; // start number of event
 
    GETDecoder *fGetDecoder; //! get decoder 
    TSegmentedData *fSegmentedData; //! segmented data
@@ -66,6 +77,9 @@ private:
    TClonesArray *fData; //!
 
    Int_t fDataID; // current data id;
+
+   Int_t fFPNID[68]; //! FPN ID for subtraction
+   Int_t *fFPN[4]; //! FPN buffer
 
    ClassDef(TGetEventStore,1) // get file event store
 };

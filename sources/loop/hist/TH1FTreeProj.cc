@@ -3,7 +3,7 @@
  * @brief  Tree projection
  *
  * @date   Created       : 2014-03-04 13:21:56 JST
- *         Last Modified : Mar 07, 2014 09:02:54 JST
+ *         Last Modified : 2019-11-25 17:59:37 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -39,4 +39,13 @@ TH1FTreeProj& TH1FTreeProj::operator=(const TH1FTreeProj& rhs)
 
    }
    return *this;
+}
+void TH1FTreeProj::Copy(TObject& obj) const
+{
+   TH1F* h2 = dynamic_cast<TH1F*>(&obj);
+   TH1F::Copy(*h2);
+   TAttTreeProj* proj = dynamic_cast<TAttTreeProj*>(&obj);
+   if (proj) {
+      TAttTreeProj::Copy(*proj);
+   }
 }
