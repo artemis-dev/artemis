@@ -3,7 +3,7 @@
  * @brief  Attribute to fill the tree projection
  *
  * @date   Created       : 2014-03-03 23:30:16 JST
- *         Last Modified : 2019-11-25 18:11:29 JST (ota)
+ *         Last Modified : 2020-04-30 11:26:26 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -188,8 +188,11 @@ void TAttTreeProj::Sync()
    if (!fNeedSync) return;
    fH->Rebuild();
    Int_t nDim = fH->GetDimension();
+   TTreeFormulaManager *man;
+   if (!fAxisAsync) man = new TTreeFormulaManager;
+   
    for (Int_t i = 0; i!=nDim; i++) {
-      TTreeFormulaManager *man = new TTreeFormulaManager;
+      if (fAxisAsync) man = new TTreeFormulaManager;
       TAxisTreeProj *axis = fAxes[i];
       if (!axis->GetVariableFormula()) {
          printf("TAisTreeProj (%s) is not initialized correctly\n",axis->GetTitle());
@@ -211,8 +214,15 @@ void TAttTreeProj::Sync()
       histaxis->SetTitle(axis->GetVariableFormula()->GetTitle());
       histaxis->SetTitleOffset(1.5);
       if (axis->GetSelectionFormula()) man->Add(axis->GetSelectionFormula());
+      if (fAxisAsync) {
+         man->Sync();
+         fManagers.push_back(man);
+      }
+   }
+   if (!fAxisAsync) {
       man->Sync();
       fManagers.push_back(man);
+      
    }
    fNeedSync = kFALSE;
 }
