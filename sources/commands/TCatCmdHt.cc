@@ -2,7 +2,7 @@
 /**
  * @file   TCatCmdHt.cc
  * @date   Created : Feb 06, 2012 11:06:16 JST
- *   Last Modified : 2020-01-18 01:43:41 JST (ota)
+ *   Last Modified : 2020-03-06 10:54:29 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -35,12 +35,17 @@ TCatCmdHt* TCatCmdHt::Instance()
 
 
 namespace {
+   TList* GetListOfDirectories(TRegexp& dirsexp) {
+      
+   }
+   
    void GetObjects(TString id, TObjArray *objects) {
 //      printf("id = %s\n",id.Data());
 
       if (id.IsDigit()) {
          TObject *obj = TCatHistManager::Instance()->GetObject(id.Atoi());
-         if (obj && obj->InheritsFrom("TH1")) {
+         if (obj && (
+                obj->InheritsFrom("TH1") || obj->InheritsFrom("TGraph"))) {
             objects->Add(obj);
          } else {
             printf("GetObjects: '%s' does not inherits from TH1\n",id.Data());
