@@ -36,6 +36,7 @@ Upload image which is saved immediately before using TCmdSave (save command) to 
    cmdupload->SetPrivateTokenFile(".gitlab_api_token");
    // --- (option) command for copying to clipboard ---
    cmdupload->SetClipBoardAccessCommand("xsel -bi");
+   cmdupload->UseTmux(kTRUE); // if you use tmux & want to copy to clipboard, please add
    // --- end option ---
    cf->Register(cmdupload);
 
@@ -73,13 +74,9 @@ public:
    virtual Long_t Run();
 
    virtual void UploadFile(const TString&);
-   virtual void PrintMarkdown(const TString);
+   virtual void PrintMarkdown(const TString&);
    virtual void CopyToClipBoard(const TString&);
    
-
-   // virtual void SetJSONResult(const TString json) { fJSONResult = json; }
-   // virtual TString GetJSONResult() const { return fJSONResult; }
-
    virtual void SetClipBoardAccessCommand(const TString command) { fClipBoardAccessCommand = command; }
    virtual const char* GetClipBoardAccessCommand() { return fClipBoardAccessCommand.Data(); }
 
@@ -89,22 +86,18 @@ public:
    virtual void SetPrivateTokenFile(const TString token) { fPrivateTokenFile = token; }
    virtual const char* GetPrivateTokenFile() { return fPrivateTokenFile.Data(); }
 
-   // virtual void SetCopiedKeyName(const TString key) { fCopiedKeyName = key; }
-   // virtual const char* GetCopiedKeyName() { return fCopiedKeyName.Data(); }
-
-   // virtual void SetCopyToClipBoard(Bool_t copyToClipBoard = kFALSE) { fClopToClipBoard = copyToClipBoard; }
-   // virtual Bool_t CopyToClipBoard() const { return fCopyToClipBoard; }
-   
+   virtual void UseTmux(const Bool_t tmux=kFALSE) { fUseTmux = tmux; }
+   virtual const Bool_t GetUseTmux() { return fUseTmux; }
+  
 protected:
 
 private:
 
-//   Bool_t fCopyToClipBoard;
-   TString fPrivateTokenFile;
-   TString fUploadURL;
-//   TString fJSONResult;
+   TString fPrivateTokenFile; // set gitlab access token file.
+   TString fUploadURL; // set upload URL.
    TString fClipBoardAccessCommand; // execute clip board command. Ex. 'xclip -selection c', 'xsel -bi'
-
+   Bool_t fUseTmux; // if you use tmux & want to copy to clipboard, switch to kTRUE. (default: kFALSE)
+   
    ClassDef(TCmdUpload,1) // Upload image file to GitLab via API
 };
 

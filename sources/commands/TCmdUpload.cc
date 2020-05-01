@@ -65,12 +65,13 @@ void TCmdUpload::UploadFile(const TString &fileName)
       return;
    }
    TString sendAPI = TString::Format("curl --request POST --header 'PRIVATE-TOKEN: %s' --form 'file=@%s' %s", token.Data(),fileName.Data(),GetUploadURL());
-   printf("%s\n",sendAPI.Data());
+
    const TString json = gSystem->GetFromPipe(sendAPI);
+   
    PrintMarkdown(json);
 }
 
-void TCmdUpload::PrintMarkdown(const TString json)
+void TCmdUpload::PrintMarkdown(const TString &json)
 {
 //   const TString json = GetJSONResult();
    if (json.IsNull()) {
@@ -84,7 +85,7 @@ void TCmdUpload::PrintMarkdown(const TString json)
          return;
       } else {
          TString result = ((TObjString*)resultList->At(1))->GetString();
-         printf("Upload completed. Markdown: %s\n",result.Data());
+         printf("Upload completed. Markdown: \n%s\n",result.Data());
          CopyToClipBoard(result);
       }
    }
@@ -97,6 +98,13 @@ void TCmdUpload::CopyToClipBoard(const TString &content)
       Info("CopyToClipBoard","clip board command is not specified");
       return;
    } else {
-      gSystem->Exec(TString::Format("echo '%s' | %s",content.Data(),GetClipBoardAccessCommand()));
+      if (GetUseTmux()) {
+         TString display = gSystem->GetFromPipe("tmux showenv DISPLAY");
+         gSystem->Exec(TString::Format("echo '%s' | env %s %s",
+                                       content.Data(),display.Data(),GetClipBoardAccessCommand()));
+      } else {
+      gSystem->Exec(TString::Format("echo '%s' | %s"
+                                    ,content.Data(),GetClipBoardAccessCommand()));
+      }
    }
 }
