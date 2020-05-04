@@ -56,6 +56,8 @@ SUBSRC = \
 	TCmdProcessorDescription.cc \
 	TCmdMergeFile.cc \
 	TCmdGlobalComment.cc 
+	TCmdMergeFile.cc\
+	TCmdUpload.cc
 
 
 SUBOBJ = $(SUBSRC:.cc=.o)
