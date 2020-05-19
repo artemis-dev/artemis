@@ -55,8 +55,7 @@ SUBSRC = \
 	TCmdHcol.cc\
 	TCmdProcessorDescription.cc \
 	TCmdMergeFile.cc \
-	TCmdGlobalComment.cc 
-	TCmdMergeFile.cc\
+	TCmdGlobalComment.cc \
 	TCmdUpload.cc
 
 
