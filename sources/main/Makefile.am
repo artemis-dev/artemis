@@ -24,13 +24,13 @@ LDFLAGS = -O \
 	-L../loop/hist/.libs -larthist \
 	-L../loop/rdf/.libs -lartrdf \
 	-L../loop/ridf/.libs -lartridf \
-	$(shell if [ "@HAVE_GET@" == "1"]; then echo -L../loop/get/.libs -lartget fi) \
 	-L../loop/decoder/.libs -lartdecoder  \
 	-L../loop/param/.libs -lartparam   \
 	-L../cont/.libs -lartcont \
 	-L../core/.libs -lcatcore \
 	$(shell root-config --glibs) -lTreePlayer -lyaml-cpp 
-
+LDFLAGS+=@ARTGET_LIB@
+LDFLAGS+=@GET_DECODER_LIB@
 
 include_HEADERS = $(SUBHDR) $(SUBHDRF)
 bin_PROGRAMS = artemis 

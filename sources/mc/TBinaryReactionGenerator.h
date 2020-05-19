@@ -2,7 +2,7 @@
 /**
  * @file   TBinaryReactionGenerator.h
  * @date   Created : Aug 18, 2013 12:18:48 JST
- *   Last Modified : Aug 22, 2013 15:45:33 JST
+ *   Last Modified : 2018-06-19 20:20:40 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -11,8 +11,8 @@
 #ifndef TBINARYREACTIONGENERATOR_H
 #define TBINARYREACTIONGENERATOR_H
 
-#include <TProcessor.h>
-
+#include "TProcessor.h"
+#include "IEventStore.h"
 
 // forward declaration
 namespace art {
@@ -21,8 +21,10 @@ namespace art {
    class TCatTwoBodyKinematics;
 class TH2F;
 class TClonesArray;
+class TF1;
+class TSpline3;
 
-class art::TBinaryReactionGenerator  : public TProcessor {
+class art::TBinaryReactionGenerator  : public TProcessor, public IEventStore {
 
 public:
    TBinaryReactionGenerator();
@@ -30,6 +32,9 @@ public:
 
    virtual void Init(TEventCollection *col);
    virtual void Process();
+
+   virtual Int_t GetRunNumber() const { return fRunNumber.fValue; }
+   virtual const char* GetRunName() const { return fRunName.fValue; }
 
 private:
    Int_t fMaxLoop;
@@ -53,8 +58,16 @@ private:
    FloatVec_t fExRange;
    FloatVec_t fAngRange;
    
-   
+   Int_t fDoRandomizePhi;
 
+   Parameter<Int_t> fRunNumber;
+   Parameter<TString> fRunName;
+   
+   TF1 *fExFun; //!
+   TF1 *fAngFun; //!
+   Double_t fMaxAmpl;//!
+   TSpline3 *fAngSpline; //!
+   
    
    TH2F *fExAngDistribution;
 };

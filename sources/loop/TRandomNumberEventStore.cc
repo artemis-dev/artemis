@@ -37,7 +37,7 @@ void art::TRandomNumberEventStore::Init(TEventCollection *col)
 }
 void art::TRandomNumberEventStore::Process()
 {
-   fData->fValue = gRandom->Uniform(fMin,fMax);
+   fData->SetValue(gRandom->Uniform(fMin,fMax));
    fNumLoop++;
 
    if (fMaxLoop <= fNumLoop) {

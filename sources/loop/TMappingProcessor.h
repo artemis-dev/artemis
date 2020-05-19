@@ -2,7 +2,7 @@
 /**
  * @file   TMappingProcessor.h
  * @date   Created : Nov 22, 2013 17:22:13 JST
- *   Last Modified : Jan 02, 2015 11:06:04 JST
+ *   Last Modified : 2018-07-24 16:51:54 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -24,13 +24,20 @@ namespace art {
 class art::TMappingProcessor  : public TProcessor {
 
 public:
+   typedef enum { RIDF, RDF } FormatType_t; // type of format
+   
+
    TMappingProcessor();
    ~TMappingProcessor();
 
    virtual void Process();
 
+   static void SetFormatType(FormatType_t type) { fgFormatType = type; }
+   
 protected:
    virtual void Init(TEventCollection *col);
+
+   static FormatType_t fgFormatType;
    
    StringVec_t fInputColName; // Name of input collections
    TString     fNameCategorized; // name of output collection

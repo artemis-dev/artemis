@@ -71,7 +71,7 @@ Bool_t TParameterObject::LoadFile(const TString& filename)
    if (filename.Contains(TRegexp(".ya?ml"))) {
       succeeded = LoadYAMLFile(filename);
    } else {
-      ifstream fin(filename.Data());
+      std::ifstream fin(filename.Data());
       if (!fin.is_open()) {
 	 Error("LoadFile", "Cannot open file: %s",filename.Data());
 	 return kFALSE;
@@ -86,7 +86,7 @@ Bool_t TParameterObject::LoadFile(const TString& filename)
    return succeeded;
 }
 
-Bool_t TParameterObject::LoadTextFile(istream&)
+Bool_t TParameterObject::LoadTextFile(std::istream&)
 {
    // Load Text filestream.
    // Classes that provide text file loading must override this method.
@@ -100,7 +100,7 @@ Bool_t TParameterObject::LoadYAMLFile(const TString &filename)
    // Load YAML file.
    // The root node is used as argument of LoadYAML(const YAML::Node& node).
 
-   ifstream fin(filename.Data());
+   std::ifstream fin(filename.Data());
    if (!fin.is_open()) {
       Error("LoadFile", "Cannot open file: %s",filename.Data());
       fCurrentFile = "";

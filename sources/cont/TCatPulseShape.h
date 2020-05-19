@@ -2,7 +2,7 @@
 /**
  * @file   TCatPulseShape.h
  * @date   Created : Mar 10, 2013 18:10:59 JST
- *   Last Modified : 2017-01-30 17:27:52 JST (ota)
+ *   Last Modified : 2019-05-15 11:21:56 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -11,11 +11,14 @@
 #ifndef TCATPULSESHAPE_H
 #define TCATPULSESHAPE_H
 
-#include <TDataObject.h>
-#include <ICharge.h>
+#include "TDataObject.h"
+#include "ICharge.h"
+#include "ITiming.h"
+#include "IPosition.h"
 #include <vector>
-#include <TVector3.h>
-#include <TMath.h>
+#include "TVector3.h"
+#include "TMath.h"
+
 
 namespace art {
    class TCatPulseShape;
@@ -23,7 +26,7 @@ namespace art {
 
 class TBuffer;
 
-class art::TCatPulseShape  : public TDataObject, public ICharge {
+class art::TCatPulseShape  : public TDataObject, public ICharge, public ITiming, public IPosition {
 
 public:
    static const UInt_t kWrongBitCorrected = 1<<16;
@@ -31,6 +34,7 @@ public:
    static const UInt_t kLowPassUnfolded   = 1<<18;
    static const UInt_t kLongPulse         = 1<<19;
    static const UInt_t kOutOfOffset       = 1<<20;
+   static const UInt_t kBadPad            = 1<<21;
 
    TCatPulseShape();
    ~TCatPulseShape();
@@ -46,9 +50,17 @@ public:
    Float_t GetRiseTime() const { return fRiseTime; }
    std::vector<Float_t>& GetSample() { return fSample; }
    std::vector<Float_t>& GetClock() { return fClock; }
+   const std::vector<Float_t>& GetSample() const { return fSample; }
+   const std::vector<Float_t>& GetClock() const { return fClock; }
    Double_t GetX() const { return fPos.X(); }
    Double_t GetY() const { return fPos.Y(); }
    Double_t GetZ() const { return fPos.Z(); }
+   double X() const { return GetX(); }
+   double Y() const { return GetY(); }
+   double Z() const { return GetZ(); }
+   void SetX(double x) { fPos.SetX(x); }
+   void SetY(double y) { fPos.SetY(y); }
+   void SetZ(double z) { fPos.SetZ(z); }
    TVector3& GetPos() { return fPos; }
    const TVector3& GetPos() const { return fPos; }
    
@@ -103,7 +115,11 @@ public:
    virtual Double_t GetBaselineRMS() const { return fBaselineRMS; }
    virtual Double_t GetLeadingEdgeOffset() const { return fLeadingEdgeOffset; }
    virtual Double_t GetMoment(Int_t i) const { return  (i < fNumMoment) ? fMoment[i] : TMath::QuietNaN(); }
-       
+   // pure virtual method in 
+   virtual Double_t GetTiming() const { return fTime; }
+   virtual void SetTiming(Double_t time) { fTime = time; }
+   virtual void SetTiming(const ITiming& time) { fTime = time.GetTiming(); }
+
 
 
 protected:
@@ -118,7 +134,7 @@ protected:
    Float_t fOffset;
    Int_t fNumSample;
    TVector3 fPos;
-
+   
    std::vector<Float_t> fSample;
    std::vector<Float_t> fClock;
 

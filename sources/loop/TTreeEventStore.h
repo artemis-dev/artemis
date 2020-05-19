@@ -2,7 +2,7 @@
 /**
  * @file   TTreeEventStore.h
  * @date   Created : Jul 11, 2013 21:11:30 JST
- *   Last Modified : 2016-12-15 16:53:51 JST (ota)
+ *   Last Modified : 2019-04-26 10:40:11 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -12,6 +12,7 @@
 #define TTREEEVENTSTORE_H
 
 #include <TProcessor.h>
+#include <IEventStore.h>
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -25,6 +26,7 @@
 namespace art {
    class TTreeEventStore;
    class TConditionBit;
+   class TEventHeader;
 }
 
 class TString;
@@ -32,7 +34,7 @@ class TFile;
 class TTree;
 class TList;
 
-class art::TTreeEventStore  : public TProcessor {
+class art::TTreeEventStore  : public TProcessor, public IEventStore {
 
 public:
    TTreeEventStore();
@@ -41,16 +43,22 @@ public:
 
    virtual void Init(TEventCollection *col);
    virtual void Process();
+
+   Int_t GetRunNumber() const; 
+   const char* GetRunName() const;
+   
    
 private:
    
    TString  fFileName;
    TString  fTreeName;
-   TFile   *fFile;
-   TTree   *fTree;
-   TList   *fObjects;
+   TFile   *fFile; //!
+   TTree   *fTree; //!
+   TList   *fObjects; //!
    Long_t   fEventNum;
    Long_t   fMaxEventNum;
+
+   TEventHeader **fEventHeader; //!
 
 #ifdef USE_MPI   
    Int_t fRankID; //!

@@ -2,13 +2,14 @@
 /**
  * @file   TCatPulseShape.cc
  * @date   Created : Mar 10, 2013 23:10:50 JST
- *   Last Modified : 2017-01-31 05:35:43 JST (ota)
+ *   Last Modified : 2018-08-23 20:15:18 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
  *    Copyright (C)2013
  */
 #include "TCatPulseShape.h"
+#include <TBuffer.h>
 
 using art::TCatPulseShape;
 using std::vector;
@@ -39,11 +40,24 @@ void TCatPulseShape::Copy(TObject &obj) const
    pulse.fGeo = fGeo;
    pulse.fTime = fTime;
    pulse.fCharge = fCharge;
+   pulse.fRiseTime = fRiseTime;
    pulse.fOffset = fOffset;
    pulse.fNumSample = fNumSample;
+   pulse.fMaxSample = fMaxSample;
+   pulse.fMaxSampleOffset = fMaxSampleOffset;
+   pulse.fBaseline = fBaseline;
+   pulse.fBaselineRMS = fBaselineRMS;
+   pulse.fLeadingEdgeOffset = fLeadingEdgeOffset;
    pulse.fRiseTime = fRiseTime;
    fPos.Copy(pulse.fPos);
    pulse.fPos = fPos;
+   std::vector<Float_t>& sample = pulse.GetSample();
+   sample.resize(fSample.size());
+   std::copy(fSample.begin(),fSample.end(),sample.begin());
+   std::vector<Float_t>& clock = pulse.GetClock();
+   clock.resize(fClock.size());
+   std::copy(fClock.begin(),fClock.end(),clock.begin());
+   
    TDataObject::Copy(obj);
 }
 

@@ -21,7 +21,7 @@ INCDIR = ../../include
 AUTOMAKE_OPTIONS = foreign
 
 CXXFLAGS = -fPIC  -I$(INCDIR)  $(shell root-config --cflags) -Wall -O2
-LDFLAGS = $(shell root-config --glibs) 
+LDFLAGS = $(shell root-config --glibs)  -lGeom
 
 include_HEADERS = $(SUBHDR) $(SUBHDRF) $(OPTHDR)
 

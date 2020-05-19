@@ -9,6 +9,9 @@ SUBSRC += TConfigFile.cc
 SUBSRC += TSharedMemory.cc
 SUBSRC += TSemaphoreObject.cc
 SUBSRC += TArtCanvas.cc
+SUBSRC += TArtemisUtil.cc
+SUBSRC += TAnalysisInfo.cc
+SUBSRC += TMacroReplacer.cc
 
 SUBOBJ = $(SUBSRC:.cc=.o)
 SUBHDR = $(SUBSRC:.cc=.h)
@@ -27,7 +30,10 @@ AUTOMAKE_OPTIONS = foreign
 MYINCLUDES = -I$(INCDIR) -I$(ROOTSYS)/include 
 CXXFLAGS = -fPIC  -I$(INCDIR) $(shell root-config --cflags) -Wall -O2 -g
 #CXXFLAGS += -pg
-LDFLAGS = $(shell root-config --glibs) 
+LDFLAGS = $(shell root-config --glibs)
+
+CXXFLAGS += @YAML_CPP_INCLUDE@
+LDFLAGS  += @YAML_CPP_LIB@
 
 include_HEADERS = $(SUBHDR) $(SUBHDRF) $(OPTHDR)
 

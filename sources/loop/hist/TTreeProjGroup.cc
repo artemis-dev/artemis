@@ -3,7 +3,7 @@
  * @brief  Collection of the projections of TTree
  *
  * @date   Created       : 2014-03-03 17:01:02 JST
- *         Last Modified : Mar 05, 2014 17:52:17 JST
+ *         Last Modified : 2019-11-25 17:42:21 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -12,6 +12,7 @@
 #include "TTreeProjGroup.h"
 #include <TROOT.h>
 #include <TH1.h>
+#include "TClass.h"
 
 using art::TTreeProjGroup;
 
@@ -60,7 +61,10 @@ TObject *TTreeProjGroup::Clone(const char *newname) const
    while ((obj = next())) {
       if (obj->InheritsFrom(TH1::Class())) {
          // cloning histogram in usual way
+//         TObject* newobj = (TObject*)obj->Class()->New();
+//         obj->Copy(*newobj);
          TObject *newobj = obj->Clone();
+         obj->Copy(*newobj);
          ((TH1*)newobj)->SetDirectory(newgroup);
       } else if (obj->InheritsFrom(TTreeProjGroup::Class())) {
          // cloning TTreeProjGroup. (not directory since TDirectory does not support Clone())

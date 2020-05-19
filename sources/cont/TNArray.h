@@ -3,7 +3,7 @@
  * @brief  n-dimension array
  *
  * @date   Created       : 2016-01-29 11:34:04 JST
- *         Last Modified : 2016-10-24 20:16:04 JST (ota)
+ *         Last Modified : 2020-05-07 18:15:50 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2016 Shinsuke OTA
@@ -35,8 +35,16 @@ public:
 
    virtual void Add(const char* name, Double_t min, Double_t max, Int_t num);
    virtual Double_t Eval(Double_t *x);
+   virtual Double_t Eval2(Double_t *x);
 
    virtual const Variable& GetVar(Int_t i) { return fVars[i]; }
+
+   virtual Double_t Value(Int_t i) const { return fValues[i]; }
+
+   virtual double WeightedSum(int ipar, double w, int idx, const std::vector< std::vector< double > >& weights,
+                              const std::vector< std::vector< int > > & indexes);
+   virtual void CalcBicubicWeights(double dx, std::vector<double>& weight, double param = -0.5);
+   virtual void CalcBilinearWeights(double dx, std::vector<double>& weight);
    
 
 protected:
@@ -57,9 +65,13 @@ public:
    Variable(const char* name, Double_t step, Double_t min, Double_t max, Int_t num);
 
 //   Int_t IndexI(Double_t x) { return TMath::Nint((x-fMin)*(1./fStep)); }
-   Int_t IndexI(Double_t x) { return (Int_t)TMath::Floor(((Float_t)(x-fMin))*((Float_t)(1./fStep))); }
+//   Int_t IndexI(Double_t x) { return (Int_t)TMath::Floor(((Float_t)(x-fMin))*((Float_t)(1./fStep))); }
+   Int_t IndexI(Double_t x) { return TMath::FloorNint(TMath::Floor((x-fMin)/fStep*10 + 0.5)/10); }
    Bool_t CheckBounce(Double_t x) { return (fMin <= x ) && (x <= fMax); }
-   Double_t Derivative(Double_t x) { return (x-fMin)*(1/fStep) - TMath::Floor((x-fMin)*(1/fStep)); }
+   Double_t Derivative(Double_t x) {
+      double ret = (x-fMin)*(1/fStep)  - TMath::Floor((TMath::Floor((x-fMin)/fStep * 10 + 0.5))/10.);
+      return ret > 0. ? ret : 0.;
+   }
 
    virtual Int_t GetNumVals() const { return fNumVals; }
    virtual Double_t GetMin() const{ return fMin; }

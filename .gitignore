@@ -18,3 +18,5 @@
 *.swp
 .root_hist
 /example/temp.root
+*.d
+*.so

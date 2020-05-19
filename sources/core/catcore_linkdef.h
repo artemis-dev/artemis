@@ -13,5 +13,7 @@
 #pragma link C++ class art::TSharedMemory;
 #pragma link C++ class art::TSemaphoreObject;
 #pragma link C++ class art::TArtCanvas;
-
+#pragma link C++ class art::TAnalysisInfo-;
+#pragma link C++ class art::TMacroReplacer-;
+#pragma link C++ namespace art::Util;
 #endif /* __CINT__ */

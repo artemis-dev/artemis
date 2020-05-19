@@ -3,7 +3,7 @@
  * @brief  command for setting axis range
  *
  * @date   Created       : 2016-10-09 13:38:23 JST
- *         Last Modified : 2016-10-10 13:40:59 JST (kawase)
+ *         Last Modified : 2018-02-04 11:23:57 JST (ota)
  * @author KAWASE Shoichiro <kawase@aees.kyushu-u.ac.jp>
  *
  *    (C) 2016 KAWASE Shoichiro
@@ -21,13 +21,24 @@ ClassImp(TCmdRg)
 
 TCmdRg::TCmdRg(const EAxis axis)
 {
-   const Char_t axisLabel = 'x' + axis;
+   const Char_t axisLabel = 'x' + (Char_t) axis;
    SetName(TString::Format("rg%c",axisLabel));
    SetTitle(TString::Format("set range of %c axis",axisLabel));
 
-   fGetAxis = axis == kX ? &TH1::GetXaxis
-      : axis == kY ? &TH1::GetYaxis
-      : &TH1::GetZaxis;
+   switch (axis) {
+   case kX:
+      fGetAxis = &TH1::GetXaxis;
+      break;
+   case kY:
+      fGetAxis = &TH1::GetYaxis;
+      break;
+   case kZ:
+      fGetAxis = &TH1::GetZaxis;
+      break;
+   default:
+      fGetAxis = NULL;
+      break;
+   }
 }
 
 TCmdRg::~TCmdRg()

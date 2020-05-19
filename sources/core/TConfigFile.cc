@@ -2,7 +2,7 @@
 /**
  * @file   TConfigFile.cc
  * @date   Created : Jul 17, 2013 05:17:55 JST
- *   Last Modified : 
+ *   Last Modified : 2019-04-25 22:39:31 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -10,10 +10,10 @@
  */
 #include "TConfigFile.h"
 
-#include <TObjArray.h>
-#include <TObjString.h>
+#include "TObjArray.h"
+#include "TObjString.h"
 
-ClassImp(art::TConfigFile);
+ClassImp(art::TConfigFile)
 
 art::TConfigFile::TConfigFile(const char *filename,
                               const char *comment,

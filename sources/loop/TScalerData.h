@@ -2,7 +2,7 @@
 /**
  * @file   TScalerData.h
  * @date   Created : Feb 12, 2013 05:12:04 JST
- *   Last Modified : 2017-09-19 19:26:11 JST (ota)
+ *   Last Modified : 2018-06-27 17:44:09 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    Imported and renamed from TCatScalerData
@@ -28,6 +28,7 @@ public:
    virtual ~TScalerData();
 
    void SetNumChannel(Int_t fNumChannel);
+   Int_t GetNumChannel() const { return fNumChannel; }
    void SetDate(time_t date) { fDate = date; }
    time_t GetDate() const { return fDate; }
    void SetValue(Int_t idx, UInt_t data) { if (idx >= 0 && idx < fNumChannel) fData[idx] = data; }

@@ -12,14 +12,10 @@
 
 #include <TRawDataObject.h>
 
-ClassImp(art::TCategorizedData);
-
-TClonesArray* art::TCategorizedData::fgCats = 0;
-TClonesArray* art::TCategorizedData::fgDets = 0;
-TClonesArray* art::TCategorizedData::fgTypes = 0;
-
+ClassImp(art::TCategorizedData)
 
 art::TCategorizedData::TCategorizedData()
+: fgCats(NULL), fgDets(NULL), fgTypes(NULL)
 {
    if (!fgCats) fgCats = new TClonesArray("TObjArray",100);
    if (!fgDets) fgDets = new TClonesArray("TObjArray",1000);

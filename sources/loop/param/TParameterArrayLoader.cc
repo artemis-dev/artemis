@@ -3,7 +3,7 @@
  * @brief  parameter array loader
  *
  * @date   Created       : 2014-03-03 11:11:54 JST
- *         Last Modified : Jun 12, 2014 23:00:33 JST
+ *         Last Modified : 2018-02-04 11:00:11 JST (ota)
  * @author KAWASE Shoichiro <kawase@cns.s.u-tokyo.ac.jp>, Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 KAWASE Shoichiro
@@ -82,7 +82,7 @@ void TParameterArrayLoader::Init(TEventCollection *col) {
 
 Bool_t TParameterArrayLoader::LoadText()
 {
-   ifstream fin(fFileName.Data());
+   std::ifstream fin(fFileName.Data());
    if (!fin.is_open()) {
       Error("Init", "Cannot open file: %s", fFileName.Data());
       return kFALSE;
@@ -116,7 +116,7 @@ Bool_t TParameterArrayLoader::LoadText()
 
 Bool_t TParameterArrayLoader::LoadYAML()
 {
-   ifstream fin(fFileName.Data());
+   std::ifstream fin(fFileName.Data());
    if (!fin.is_open()){
       SetStateError(TString::Format("Cannot open file: %s",fFileName.Data()));
       return kFALSE;

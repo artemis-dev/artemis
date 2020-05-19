@@ -17,6 +17,7 @@
 
 #include <TSystem.h>
 #include <TNamed.h>
+#include <iostream>
 
 #include "TProcessorParameter.h"
 #include "TParameterStrings.h"
@@ -53,7 +54,7 @@ public:
 
 protected:
    Bool_t LoadYAMLFile(const TString& filename);
-   virtual Bool_t LoadTextFile(istream& /* stream */);
+   virtual Bool_t LoadTextFile(std::istream& /* stream */);
    std::list<FileStat_t> *fLoadedFileStat; //!filestat of loaded file(s) for current parameter
    Bool_t fLoaded; // loaded flag
    TString fCurrentFile; //! current file name

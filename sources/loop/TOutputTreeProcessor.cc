@@ -2,7 +2,7 @@
 /**
  * @file   TOutputTreeProcessor.cc
  * @date   Created : Jul 11, 2013 17:11:41 JST
- *   Last Modified : 2017-12-26 20:27:42 JST (ota)
+ *   Last Modified : 2018-10-03 04:37:45 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -12,6 +12,8 @@
 #include <TEventObject.h>
 #include <TDirectory.h>
 #include <TROOT.h>
+#include <TArtemisUtil.h>
+#include <TAnalysisInfo.h>
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -49,7 +51,14 @@ void art::TOutputTreeProcessor::Init(TEventCollection *col)
       fFileName.Append(Form("%d",myrank));
    }
 #endif
+   Util::PrepareDirectoryFor(fFileName);
+   TDirectory *savedir = gDirectory;
    fFile = TFile::Open(fFileName,"RECREATE");
+   if (!fFile) {
+      SetStateError(TString::Format("Cannot create file: %s",fFileName.Data()));
+      return;
+   }
+   TAnalysisInfo::AddTo(fFile);
    fTree = new TTree(fTreeName,fTreeName);
    // assume all of the objects inherit from TObject
    TIter *iter = col->GetIter();
@@ -80,6 +89,9 @@ void art::TOutputTreeProcessor::Init(TEventCollection *col)
       if (obj->IsPassive()) continue;
       fTree->GetUserInfo()->Add(*(TObject**)obj->GetObjectRef());
    }
+   savedir->cd();
+   
+   
 }
 void art::TOutputTreeProcessor::Process()
 {
@@ -115,6 +127,8 @@ void art::TOutputTreeProcessor::PostLoop()
    TDirectory *saved = gDirectory;
    fFile->cd();
    fTree->Write(0,TFile::kOverwrite);
+   gDirectory->Get(TAnalysisInfo::kDefaultAnalysInfoName)->Write(0,TFile::kOverwrite);
+//   fFile->Write(0,TFile::kOverwrite);
    saved->cd();
 #ifdef USE_MPI
    Int_t useMPI;

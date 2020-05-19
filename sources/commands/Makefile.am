@@ -52,7 +52,12 @@ SUBSRC = \
 	TCmdSave.cc \
 	TCmdPrint.cc \
 	TCmdPadZoom.cc\
-	TCmdProcessorDescription.cc
+	TCmdHcol.cc\
+	TCmdProcessorDescription.cc \
+	TCmdMergeFile.cc \
+	TCmdGlobalComment.cc 
+	TCmdMergeFile.cc\
+	TCmdUpload.cc
 
 
 SUBOBJ = $(SUBSRC:.cc=.o)
