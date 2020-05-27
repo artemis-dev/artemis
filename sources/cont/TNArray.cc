@@ -3,7 +3,7 @@
  * @brief
  *
  * @date   Created       : 2016-01-29 14:16:43 JST
- *         Last Modified : 2020-05-07 18:43:03 JST (ota)
+ *         Last Modified : 2020-05-21 18:40:18 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2016 Shinsuke OTA
@@ -55,7 +55,7 @@ void TNArray::Add(const char* name, Double_t min, Double_t max, Int_t num)
    fNumVars++;
 }
 
-Double_t TNArray::Eval(Double_t *x)
+Double_t TNArray::Eval(Double_t *x) const
 {
    Int_t baseIndex = 0;
    Double_t retval = 0.;
@@ -110,13 +110,15 @@ Double_t TNArray::Eval(Double_t *x)
 }
 
 
-void TNArray::CalcBilinearWeights(double dx, std::vector<double>& weight) {
+void TNArray::CalcBilinearWeights(double dx, std::vector<double>& weight)  const
+{
    weight.resize(2);
    weight[0] = 1 - dx;
    weight[1] = dx;
 }
 
-void TNArray::CalcBicubicWeights(double dx, std::vector<double>& weight, double param) {
+void TNArray::CalcBicubicWeights(double dx, std::vector<double>& weight, double param) const
+{
    weight.resize(4);
    double d = 1 + dx;
    weight[0] = param * (d * d * d - 5 * d * d + 8 * d - 4);
@@ -130,7 +132,7 @@ void TNArray::CalcBicubicWeights(double dx, std::vector<double>& weight, double 
 
 double TNArray::WeightedSum(int ipar, double w, int idxbase,
                             const std::vector< std::vector<double> > &weight,
-                            const std::vector< std::vector<int> > &indexes)
+                            const std::vector< std::vector<int> > &indexes) const 
 {
    double sum = 0.;
    for (int i = 0, n = weight[ipar].size(); i < n; ++i) {
@@ -151,7 +153,7 @@ double TNArray::WeightedSum(int ipar, double w, int idxbase,
 }
 
 
-Double_t TNArray::Eval2(Double_t *x)
+Double_t TNArray::Eval2(Double_t *x) const
 {
 //   Int_t baseIndex = 0;
 //   Double_t retval = 0.;

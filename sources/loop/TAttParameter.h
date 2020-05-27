@@ -2,7 +2,7 @@
  * @brief attribute of parameter
  *
  * @date Create        : 2019-06-04 09:47:23 JST
- *       Last Modified : 2019-05-15 11:05:47 JST (ota)
+ *       Last Modified : 2020-05-21 18:33:09 JST (ota)
  * @author: Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  */
 
@@ -33,7 +33,7 @@ public:
    template <typename T, typename DataClass = TObject> class OutputData;
    template <typename T, typename DataClass = TObject> class InputInfo;
    template <typename T, typename DataClass = TObject> class OutputInfo;
-   
+
    template <typename T>
    class Parameter {
    public:
@@ -60,14 +60,19 @@ public:
       virtual bool IsOutputInfo() const { return IsObject() && !IsData() && !IsInput(); }
 
       virtual T& Value() { return fValue; }
+      virtual const T& Value() const { return fValue; }
       virtual const T& DefaultValue() const { return fDefaultValue; }
 //   operator T&() { return fValue; }
       operator T() const { return fValue; }
+      virtual T& operator=(T val) { fValue = val; return fValue; }
       T fValue;
       T fDefaultValue;
       TString fName;
       TString fTitle;
    };
+
+
+
    
    class ObjectIO : public Parameter<TString> {
    public:
@@ -79,13 +84,14 @@ public:
       virtual bool IsData() const = 0;
       virtual void* Ptr() { return NULL; }
       virtual void* PtrRef() { return NULL; }
-      virtual const char* ClassName() { return ""; }
+      virtual const char* ClassName() const { return ""; }
    };
 
    template <class T, class dataClass>
    class InputObject : public ObjectIO {
    public:
       InputObject() : fData(NULL) {
+         fDoAuto = kTRUE;
          if (typeid(T) == typeid(TClonesArray)) {
             fDataClassName = dataClass::Class_Name();
          }
@@ -93,10 +99,13 @@ public:
       virtual bool IsInput() const { return true; }
       virtual bool IsInitialized() const { return (fData != NULL); }
       virtual void SetData(T** data) { fData = data; }
+      virtual const T* Data() const { return  (fData ? *fData : NULL) ; }
+      virtual T* Data() { return  (fData ? *fData : NULL) ; }
       virtual void* Ptr() { return fData; }
       virtual void* PtrRef() { return &fData; }
-      virtual const char* ClassName() { return T::Class_Name(); }
-      virtual inline T* operator->() { return (fData ? *fData : NULL) ; }
+      virtual const char* ClassName() const { return T::Class_Name(); }
+      virtual inline const T* operator->() const { return Data(); }
+      virtual inline T* operator->() { return Data(); }
       T** fData;
    };
 
@@ -104,6 +113,7 @@ public:
    class OutputObject : public ObjectIO {
    public:
       OutputObject() : fData(NULL) {
+         fDoAuto = kTRUE;
          if (typeid(T) == typeid(TClonesArray)) {
             fDataClassName = dataClass::Class_Name();
          }
@@ -111,11 +121,14 @@ public:
       virtual bool IsInput() const { return false; }
       virtual void SetData(T* data) { fData = data; }
       virtual bool IsInitialized() const { return (fData != NULL); }
+      virtual const T* Data() const { return  fData; }
+      virtual T* Data() { return  fData; }
       virtual void* Ptr() { return fData; }
       virtual void* PtrRef() { return &fData; }
-      virtual const char* ClassName() { return T::Class_Name();  }
-      
+      virtual const char* ClassName() const { return T::Class_Name();  }
+      virtual inline const T* operator->() const {return fData; }
       virtual inline T* operator->() {return fData; }
+      
       T* fData;
    };
 
