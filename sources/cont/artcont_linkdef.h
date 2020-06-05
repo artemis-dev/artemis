@@ -3,7 +3,7 @@
  * @brief
  *
  * @date   Created       : 2014-10-29 18:10:16 JST
- *         Last Modified : 2019-05-15 11:16:07 JST (ota)
+ *         Last Modified : 2020-06-02 16:14:54 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -34,6 +34,7 @@
 #pragma link C++ class art::TNArray+;
 #pragma link C++ class art::TNArray::Variable+;
 #pragma link C++ class art::TDetectorGeometryInfo+;
+#pragma link C++ class art::TTpcStaticGasProperty+;   
 
 #endif /* __CINT__ */
 
