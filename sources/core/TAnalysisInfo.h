@@ -3,7 +3,7 @@
  * @brief  container for analysis information
  *
  * @date   Created       : 2018-07-28 09:02:06 JST
- *         Last Modified : 2019-08-06 20:00:31 JST (ota)
+ *         Last Modified : 2020-07-30 21:13:49 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2018 Shinsuke OTA
@@ -32,6 +32,7 @@ public:
    TAnalysisInfo& operator=(const TAnalysisInfo& rhs);
 
    static Bool_t AddTo(TDirectory *);
+   static Bool_t RemoveFrom(TDirectory *);
 
    virtual void Print(Option_t *option = "") const ;
    virtual void ShowProcessors() const;
