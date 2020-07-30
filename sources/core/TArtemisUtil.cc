@@ -3,7 +3,7 @@
  * @brief
  *
  * @date   Created       : 2018-07-26 16:33:05 JST
- *         Last Modified : 2018-09-05 13:57:25 JST (ota)
+ *         Last Modified : 2020-07-28 23:04:21 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2018 Shinsuke OTA
@@ -84,6 +84,8 @@ void Util::GetPolygonFromSide(Int_t n, Double_t side, Double_t angle, Double_t *
       vy[i] = r * sint + yoffset;
    }
 }
+
+
 
 
 #ifdef USE_MPI
