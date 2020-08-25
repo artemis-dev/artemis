@@ -3,7 +3,7 @@
  * @brief  Upload image file to GitLab via API
  *
  * @date   Created       : 2020-04-30 22:14:36 JST
- *         Last Modified :
+ *         Last Modified : 2020-06-30 09:56:38 JST (ota)
  * @author Shoichiro Masuoka <masuoka@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2020 Shoichiro Masuoka
@@ -71,7 +71,7 @@ public:
 
 
    virtual Long_t Cmd(vector<TString>);
-   virtual Long_t Run();
+   virtual Long_t Run(const char* filename = NULL);
 
    virtual void UploadFile(const TString&);
    virtual void PrintMarkdown(const TString&);

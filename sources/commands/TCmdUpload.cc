@@ -3,7 +3,7 @@
  * @brief  Upload image file to GitLab via API
  *
  * @date   Created       : 2020-04-30 22:13:55 JST
- *         Last Modified :
+ *         Last Modified : 2020-06-30 10:04:14 JST (ota)
  * @author Shoichiro Masuoka <masuoka@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2020 Shoichiro Masuoka
@@ -35,14 +35,17 @@ TCmdUpload::~TCmdUpload()
 }
 
 
-Long_t TCmdUpload::Cmd(vector<TString>)
+Long_t TCmdUpload::Cmd(vector<TString> token)
 {
+   if (token.size() > 1) {
+      return Run(token[1].Data());
+   }
    return Run();
 }
 
-Long_t TCmdUpload::Run()
+Long_t TCmdUpload::Run(const char* filename_input)
 {
-   const TString &filename = TCmdSave::Instance()->GetPrintFileName();
+   const TString &filename = filename_input ? filename_input : TCmdSave::Instance()->GetPrintFileName();
    if (filename.IsNull()) {
       Error("Run","There is no file to be uploaded.");
       return 1;
