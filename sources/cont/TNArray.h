@@ -3,7 +3,7 @@
  * @brief  n-dimension array
  *
  * @date   Created       : 2016-01-29 11:34:04 JST
- *         Last Modified : 2020-05-21 18:41:15 JST (ota)
+ *         Last Modified : 2020-08-27 06:53:16 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2016 Shinsuke OTA
@@ -66,10 +66,10 @@ public:
 
 //   Int_t IndexI(Double_t x) { return TMath::Nint((x-fMin)*(1./fStep)); }
 //   Int_t IndexI(Double_t x) { return (Int_t)TMath::Floor(((Float_t)(x-fMin))*((Float_t)(1./fStep))); }
-   Int_t IndexI(Double_t x) const { return TMath::FloorNint(TMath::Floor((x-fMin)/fStep*10 + 0.5)/10); }
+   Int_t IndexI(Double_t x) const { return fNumVals == 1 ? 0 : TMath::FloorNint(TMath::Floor((x-fMin)/fStep*10 + 0.5)/10); }
    Bool_t CheckBounce(Double_t x) const { return (fMin <= x ) && (x <= fMax); }
    Double_t Derivative(Double_t x) const {
-      double ret = (x-fMin)*(1/fStep)  - TMath::Floor((TMath::Floor((x-fMin)/fStep * 10 + 0.5))/10.);
+      double ret = fNumVals == 1 ? 0 : (x-fMin)*(1/fStep)  - TMath::Floor((TMath::Floor((x-fMin)/fStep * 10 + 0.5))/10.);
       return ret > 0. ? ret : 0.;
    }
 

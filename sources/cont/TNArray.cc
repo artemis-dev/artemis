@@ -3,7 +3,7 @@
  * @brief
  *
  * @date   Created       : 2016-01-29 14:16:43 JST
- *         Last Modified : 2020-09-03 08:36:18 JST (ota)
+ *         Last Modified : 2020-09-03 09:50:39 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2016 Shinsuke OTA
@@ -51,7 +51,12 @@ TNArray& TNArray::operator=(const TNArray& rhs)
 
 void TNArray::Add(const char* name, Double_t min, Double_t max, Int_t num)
 {
-   fVars.push_back(Variable(name,(max-min)/(num-1),min,max,num));
+   if (num < 1) {
+      Error(__func__,"The number of elements should be greater than 1");
+      return;
+   }
+   double step = (num == 1) ? 0. : (max-min)/(num-1);
+   fVars.push_back(Variable(name,step,min,max,num));
    fNumVars++;
 }
 
@@ -78,7 +83,8 @@ Double_t TNArray::Eval(Double_t *x) const
    for (Int_t i = 0; i!=fNumVars; ++i) {
       Double_t diff = 0;
       Int_t nDiff = 0.;
-
+      if (fVars[i].GetNumVals() == 1) continue;
+      
       if (idx[i] < fVars[i].GetNumVals() - 1 && baseIndex + fTotalNumVals[i] < fTotalNumVals[0] * fVars[0].GetNumVals()) {
          diff += (fValues[baseIndex + fTotalNumVals[i]] - reference);
          nDiff++;
@@ -281,7 +287,7 @@ Double_t TNArray::Eval2(Double_t *x) const
 void TNArray::Load()
 {
    Int_t nEntries = GetEntries();
-   Int_t modulo = nEntries/1000;
+   Int_t modulo = nEntries/(nEntries/20) + 1;
    // nVars is the number of index variables (except for the array value)
    Int_t nVars = GetNvar() - 1;
    Double_t *vars = GetArgs();
@@ -302,7 +308,7 @@ void TNArray::Load()
       return;
    }
 
-   Info("Load","Loading from ntuple (%.5f Mbytes)... please wait for a while",fTotalNumVals[0] * fVars[0].GetNumVals() * sizeof(Double_t) / 1024. / 1024.);
+   Info("Load","Loading from ntuple (%.3f Mbytes)... please wait for a while",fTotalNumVals[0] * fVars[0].GetNumVals() * sizeof(Double_t) / 1024. / 1024.);
 
    fValues = new Double_t[fTotalNumVals[0] * fVars[0].GetNumVals()];
 
