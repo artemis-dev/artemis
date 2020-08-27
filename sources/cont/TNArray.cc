@@ -3,7 +3,7 @@
  * @brief
  *
  * @date   Created       : 2016-01-29 14:16:43 JST
- *         Last Modified : 2020-09-03 09:50:39 JST (ota)
+ *         Last Modified : 2020-09-03 09:51:47 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2016 Shinsuke OTA
@@ -284,7 +284,7 @@ Double_t TNArray::Eval2(Double_t *x) const
 
 
 
-void TNArray::Load()
+bool TNArray::Load()
 {
    Int_t nEntries = GetEntries();
    Int_t modulo = nEntries/(nEntries/20) + 1;
@@ -295,7 +295,7 @@ void TNArray::Load()
    std::vector<Int_t> used(nEntries,0);
    if (fNumVars != nVars) {
       Error("Load","fNumVars (%d) differes from # of vars in tree (%d)",fNumVars,nVars);
-      return;
+      return false;
    }
    fTotalNumVals.resize(fNumVars,1);
    for (Int_t i = 0; i!=fNumVars; ++i) {
@@ -305,7 +305,7 @@ void TNArray::Load()
    }
    if (nEntries != fTotalNumVals[0] * fVars[0].GetNumVals()) {
       Error("Load","Inconsistent numver of values: nEntries = %d, total = %d",nEntries, fTotalNumVals[0] * fVars[0].GetNumVals());
-      return;
+      return false;
    }
 
    Info("Load","Loading from ntuple (%.3f Mbytes)... please wait for a while",fTotalNumVals[0] * fVars[0].GetNumVals() * sizeof(Double_t) / 1024. / 1024.);
@@ -318,16 +318,42 @@ void TNArray::Load()
       for (Int_t iVar = 0; iVar != nVars; ++iVar) {
          index += fVars[iVar].IndexI(vars[iVar]) * fTotalNumVals[iVar];
       }
-      if (used[index]) {
-         printf("index = %d used for entry %d\n",index,iEntry);
+
+      if (index >=  nEntries) {
+         Error(__func__, "\nSomething goes wrong required index is larger than entries : index = %d, nEntries = %d",index,nEntries);
+#if 0         
          for (Int_t iVar = 0; iVar != nVars; ++iVar) {
+            printf("vars[%d] = %f, IndexI = %d, GetMin() = %f, GetMax() = %f, GetStep() = %f, fTotalNumVals[%d] = %d\n",
+                   iVar, vars[iVar], fVars[iVar].IndexI(vars[iVar]),
+                   fVars[iVar].GetMin(), fVars[iVar].GetMax(), fVars[iVar].GetStep(),
+                   iVar, fTotalNumVals[iVar]);
+         }
+#endif         
+         return false ;
+      }
+      
+      if (used[index]) {
+         printf("Index = %d required for entry %d is already used\n",index,iEntry);
+         for (Int_t iVar = 0; iVar != nVars; ++iVar) {
+            printf("vars[%d] = %f, fVars[%d].IndexI(vars[%d]) = %d, fTotalNumVals[%d] = %d\n",
+                   iVar, vars[iVar], iVar, iVar, fVars[iVar].IndexI(vars[iVar]), iVar, fTotalNumVals[iVar]);
+         }
+         
+         
+         for (Int_t iVar = 0; iVar != nVars; ++iVar) {
+            printf("vars[%d] = %f, fVars[%d].IndexI(vars[%d]) = %d, fTotalNumVals[%d] = %d",
+                   iVar, vars[iVar], iVar, iVar, fVars[iVar].IndexI(vars[iVar]), iVar, fTotalNumVals[iVar]);
+            
+            printf("vars[%d] = %f, fVars[%d].IndexI(vars[%d]) = %d, fTotalNumVals[%d] = %d",
+                   iVar, vars[iVar], iVar, iVar, fVars[iVar].IndexI(vars[iVar]), iVar, fTotalNumVals[iVar]);
+            
             printf("iVar = %d vars[%d] = %.10g IndexI = %d\n",iVar,iVar,vars[iVar],fVars[iVar].IndexI(vars[iVar]));
             printf(" %.20e / %.20f = %.20e => %.20e\n",(vars[iVar]-fVars[iVar].GetMin()),fVars[iVar].GetStep(),(vars[iVar]-fVars[iVar].GetMin())/fVars[iVar].GetStep(),
                    TMath::Floor((vars[iVar]-fVars[iVar].GetMin())/(fVars[iVar].GetStep())));
             printf("index = %d\n",fVars[iVar].IndexI(vars[iVar]));
             
          }
-         return;
+         return false ;
       }
       used[index] = 1;
       fValues[index] = vars[nVars];
@@ -346,7 +372,7 @@ void TNArray::Load()
    fprintf(stderr,"\r"); fflush(stderr);
    Info("Load","loaded %d/%d",nEntries,nEntries);
 
-   
+   return true;
 }
 
 

@@ -3,7 +3,7 @@
  * @brief  n-dimension array
  *
  * @date   Created       : 2016-01-29 11:34:04 JST
- *         Last Modified : 2020-08-27 06:53:16 JST (ota)
+ *         Last Modified : 2020-08-28 08:25:13 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2016 Shinsuke OTA
@@ -30,7 +30,7 @@ public:
    TNArray(const TNArray& rhs);
    TNArray& operator=(const TNArray& rhs);
 
-   virtual void Load(); // should be called after all the values are filled
+   virtual bool Load(); // should be called after all the values are filled
 //   virtual void Init(); // should be called after all the index variables are added
 
    virtual void Add(const char* name, Double_t min, Double_t max, Int_t num);
@@ -66,7 +66,12 @@ public:
 
 //   Int_t IndexI(Double_t x) { return TMath::Nint((x-fMin)*(1./fStep)); }
 //   Int_t IndexI(Double_t x) { return (Int_t)TMath::Floor(((Float_t)(x-fMin))*((Float_t)(1./fStep))); }
-   Int_t IndexI(Double_t x) const { return fNumVals == 1 ? 0 : TMath::FloorNint(TMath::Floor((x-fMin)/fStep*10 + 0.5)/10); }
+   inline Int_t IndexI(Double_t x) const;
+   
+
+
+
+   
    Bool_t CheckBounce(Double_t x) const { return (fMin <= x ) && (x <= fMax); }
    Double_t Derivative(Double_t x) const {
       double ret = fNumVals == 1 ? 0 : (x-fMin)*(1/fStep)  - TMath::Floor((TMath::Floor((x-fMin)/fStep * 10 + 0.5))/10.);
@@ -85,5 +90,17 @@ private:
    Int_t    fNumVals; // number of values of each variable
    ClassDef(Variable,1) // information of variable
 };
+
+
+Int_t art::TNArray::Variable::IndexI(double x) const {
+
+   if (fNumVals == 1) return 0;
+
+   int idxc = TMath::Floor((x-fMin)/fStep);
+
+
+   
+   return fNumVals == 1 ? 0 : TMath::FloorNint(TMath::Floor((x-fMin)/fStep*10 + 0.5)/10);    
+}
 
 #endif // INCLUDE_GUARD_UUID_E384AEC2_D044_4456_B21F_1AD3607B698B
