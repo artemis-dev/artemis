@@ -3,7 +3,7 @@
  * @brief
  *
  * @date   Created       : 2016-01-29 14:16:43 JST
- *         Last Modified : 2020-05-21 18:40:18 JST (ota)
+ *         Last Modified : 2020-09-03 07:13:19 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2016 Shinsuke OTA
@@ -163,10 +163,13 @@ Double_t TNArray::Eval2(Double_t *x) const
    std::vector< std::vector< int > > indexes(fNumVars);
    
    for (Int_t i = 0; i!=fNumVars; ++i) {
-      if (x[i] < fVars[i].GetMin()) {
-         return TMath::QuietNaN();
-      } else if (fVars[i].GetMax() < x[i]) {
-         return TMath::QuietNaN();
+      if (fVars[i].GetNumVals() == 1) {
+         weight[i].push_back(1.);
+         indexes[i].push_back(0);
+         continue;
+      }
+      if (x[i] < fVars[i].GetMin() || fVars[i].GetMax() < x[i]) {
+         return Eval(x);
       }
       idx[i] = fVars[i].IndexI(x[i]);
       deriv[i] = fVars[i].Derivative(x[i]);
