@@ -3,7 +3,7 @@
  * @brief
  *
  * @date   Created       : 2016-01-29 14:16:43 JST
- *         Last Modified : 2020-09-03 07:13:19 JST (ota)
+ *         Last Modified : 2020-09-03 08:36:18 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2016 Shinsuke OTA
@@ -169,7 +169,7 @@ Double_t TNArray::Eval2(Double_t *x) const
          continue;
       }
       if (x[i] < fVars[i].GetMin() || fVars[i].GetMax() < x[i]) {
-         return Eval(x);
+         return TNArray::Eval(x);
       }
       idx[i] = fVars[i].IndexI(x[i]);
       deriv[i] = fVars[i].Derivative(x[i]);
