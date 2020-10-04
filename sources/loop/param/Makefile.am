@@ -1,7 +1,6 @@
 SUBDIRS = 
 
 SUBSRC = 
-SUBSRC+=TParameterObject.cc
 SUBSRC+=TParameterLoader.cc
 SUBSRC+=TParameterArrayLoader.cc
 

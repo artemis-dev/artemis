@@ -3,7 +3,7 @@
  * @brief
  *
  * @date   Created       : 2014-10-29 18:10:16 JST
- *         Last Modified : 2020-06-02 16:14:54 JST (ota)
+ *         Last Modified : 2020-10-04 18:08:15 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -17,6 +17,7 @@
 #pragma link off all classes;
 #pragma link off all functions;
 
+#pragma link C++ class art::TParameterObject+;
 #pragma link C++ class art::TCatReadoutPad;
 #pragma link C++ class art::TCatReadoutPadArray;
 #pragma link C++ class art::TCatPulseShape-;

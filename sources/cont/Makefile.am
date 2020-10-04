@@ -1,4 +1,5 @@
 SUBSRC  =
+SUBSRC+=TParameterObject.cc
 SUBSRC += TCatReadoutPad.cc
 SUBSRC += TCatReadoutPadArray.cc
 SUBSRC += TCatPulseShape.cc
