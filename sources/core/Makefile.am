@@ -22,7 +22,7 @@ DICTSRC = catcore_dict.cc
 DICTOBJ = $(DICTSRC:.cc=.o)
 DICTHDR = $(DICTSRC:.cc=.h)
 
-OPTHDR = TProcessorParameter.h
+OPTHDR = TProcessorParameter.h TArtTypes.h 
 INCDIR = ../../include
 
 AUTOMAKE_OPTIONS = foreign

@@ -67,7 +67,7 @@ DICTOBJ = $(DICTSRC:.cc=.o)
 DICTHDR = $(DICTSRC:.cc=.h)
 
 OPTHDR = $(OPTSRC:.cc=.h)
-OPTHDR+= TDataSource.h TArtTypes.h 
+OPTHDR+= TDataSource.h 
 
 INCDIR = ../../include
 
