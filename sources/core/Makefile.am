@@ -14,7 +14,7 @@ SUBSRC += TAnalysisInfo.cc
 SUBSRC += TMacroReplacer.cc
 
 SUBOBJ = $(SUBSRC:.cc=.o)
-SUBHDR = $(SUBSRC:.cc=.h)
+SUBHDR = $(SUBSRC:.cc=.h)  TArtSystemOfUnit.h
 # TCatTypes.h
 
 

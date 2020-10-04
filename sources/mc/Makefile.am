@@ -8,7 +8,7 @@ SUBSRC = \
 	TRandomGraph.cc 
 
 SUBOBJ = $(SUBSRC:.cc=.o)
-SUBHDR = $(SUBSRC:.cc=.h) TArtSystemOfUnit.h
+SUBHDR = $(SUBSRC:.cc=.h)
 
 
 DICTSRC = catmc_dict.cc

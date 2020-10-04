@@ -2,7 +2,7 @@
 /**
  * @file   LinkDefArtMC.h
  * @date   Created : Jan 25, 2011 21:25:03 JST
- *   Last Modified : 2018-02-04 11:24:14 JST (ota)
+ *   Last Modified : 2020-10-04 18:02:27 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -22,7 +22,6 @@
 #pragma link C++ class TArtAtomicMassTable;
 #pragma link C++ class art::TBinaryReactionGenerator;
 #pragma link C++ global gAtomicMassTable;
-#pragma link C++ namespace TArtSystemOfUnit;
 #pragma link C++ class art::TTrackG4;
 #pragma link C++ class art::TRandomGraph;
 #endif
