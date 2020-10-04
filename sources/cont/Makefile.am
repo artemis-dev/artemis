@@ -11,6 +11,7 @@ SUBSRC += IPosition.cc
 SUBSRC += TDetectorGeometryInfo.cc
 SUBSRC += TNArray.cc
 SUBSRC += TTpcStaticGasProperty.cc
+SUBSRC+=TParameterStrings.cc 
 
 SUBOBJ = $(SUBSRC:.cc=.o)
 SUBHDR = $(SUBSRC:.cc=.h)

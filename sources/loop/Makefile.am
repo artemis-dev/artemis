@@ -22,7 +22,6 @@ SUBSRC+=TModuleDecoderFactory.cc
 SUBSRC+=TModuleInfo.cc
 SUBSRC+=TModuleType.cc
 SUBSRC+=TOutputTreeProcessor.cc 
-SUBSRC+=TParameterStrings.cc 
 SUBSRC+=TProcessor.cc 
 SUBSRC+=TRandomNumberEventStore.cc 
 SUBSRC+=TRandomNumberProcessor.cc 
@@ -68,7 +67,7 @@ DICTOBJ = $(DICTSRC:.cc=.o)
 DICTHDR = $(DICTSRC:.cc=.h)
 
 OPTHDR = $(OPTSRC:.cc=.h)
-OPTHDR+= TDataSource.h TArtTypes.h TProcessorParameter.h
+OPTHDR+= TDataSource.h TArtTypes.h 
 
 INCDIR = ../../include
 

@@ -14,7 +14,7 @@ SUBSRC += TAnalysisInfo.cc
 SUBSRC += TMacroReplacer.cc
 
 SUBOBJ = $(SUBSRC:.cc=.o)
-SUBHDR = $(SUBSRC:.cc=.h)  TArtSystemOfUnit.h
+SUBHDR = $(SUBSRC:.cc=.h)  TArtSystemOfUnit.h 
 # TCatTypes.h
 
 
@@ -22,7 +22,7 @@ DICTSRC = catcore_dict.cc
 DICTOBJ = $(DICTSRC:.cc=.o)
 DICTHDR = $(DICTSRC:.cc=.h)
 
-OPTHDR = 
+OPTHDR = TProcessorParameter.h
 INCDIR = ../../include
 
 AUTOMAKE_OPTIONS = foreign
