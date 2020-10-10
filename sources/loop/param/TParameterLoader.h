@@ -31,7 +31,7 @@ protected:
    TString           fParameterName;
    TString           fTypeName;
    TString           fFileName;
-   TParameterObject *fParameter;
+   TParameterObject *fParameter; //!->
 
 private:
    // Copy constructor (prohibited)
