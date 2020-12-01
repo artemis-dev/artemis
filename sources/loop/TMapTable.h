@@ -2,7 +2,7 @@
 /**
  * @file   TMapTable.h
  * @date   Created : Jul 16, 2013 22:16:52 JST
- *   Last Modified : Nov 23, 2013 01:36:44 JST
+ *   Last Modified : 2020-11-27 00:16:50 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -12,8 +12,8 @@
 #define TMAPTABLE_H
 
 #include <TObject.h>
-#include <TRawDataObject.h>
-#include <TSegmentedData.h>
+#include "TRawDataObject.h"
+#include "TSegmentedData.h"
 
 namespace art {
    class TMapTable;

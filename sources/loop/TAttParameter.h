@@ -2,7 +2,7 @@
  * @brief attribute of parameter
  *
  * @date Create        : 2019-06-04 09:47:23 JST
- *       Last Modified : 2020-05-21 18:33:09 JST (ota)
+ *       Last Modified : 2020-11-27 00:04:20 JST (ota)
  * @author: Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  */
 
@@ -12,6 +12,7 @@
 #include "TString.h"
 #include "TClass.h"
 #include <typeinfo>
+#include "TClonesArray.h"
 
 namespace art {
    class TAttParameter;

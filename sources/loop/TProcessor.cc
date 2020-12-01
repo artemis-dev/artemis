@@ -3,7 +3,7 @@
  * Base class for the user processors
  
  * @date   Created : Jul 10, 2013 17:10:19 JST
- *   Last Modified : 2019-05-15 08:35:43 JST (ota)
+ *   Last Modified : 2020-11-27 00:03:34 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *
@@ -18,6 +18,7 @@
 #include <TClonesArray.h>
 #include <TClassTable.h>
 #include <IProcessorHelper.h>
+#include "TObjString.h"
 
 TList* art::gProcessors = new TList;
 

@@ -94,6 +94,15 @@ $(DICTSRC): $(SUBHDR) catcmd_linkdef.h
 	@cp -a $(include_HEADERS) $(INCDIR)
 	@touch .header
 
+if HAVE_ROOT_PCM
+DICTPCM = $(DICTSRC:.cc=_rdict.pcm)
+install-exec-local:
+	@echo Copying PCM file to $(libdir)
+	$(INSTALL) $(DICTPCM) $(libdir)
+uninstall-local:
+	rm -f $(libdir)/$(DICTPCM)
+endif
+
 .cc.o:
 
 .f.o:

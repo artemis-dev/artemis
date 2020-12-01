@@ -2,7 +2,7 @@
 /**
  * @file   TMappingProcessor.h
  * @date   Created : Nov 22, 2013 17:22:13 JST
- *   Last Modified : 2018-07-24 16:51:54 JST (ota)
+ *   Last Modified : 2020-11-27 00:14:13 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -11,7 +11,7 @@
 #ifndef TMAPPINGPROCESSOR_H
 #define TMAPPINGPROCESSOR_H
 
-#include <TProcessor.h>
+#include "TProcessor.h"
 #include <vector>
 
 namespace art {

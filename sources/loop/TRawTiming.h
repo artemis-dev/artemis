@@ -12,7 +12,7 @@
 #ifndef TRAWTIMING_H
 #define TRAWTIMING_H
 
-#include <TRawDataSimple.h>
+#include "TRawDataSimple.h"
 #include <TMath.h>
 
 namespace art{

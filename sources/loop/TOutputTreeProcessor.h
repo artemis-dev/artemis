@@ -2,7 +2,7 @@
 /**
  * @file   TOutputTreeProcessor.h
  * @date   Created : Jul 11, 2013 17:11:09 JST
- *   Last Modified : Jul 22, 2013 18:47:32 JST
+ *   Last Modified : 2020-11-27 00:14:33 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -11,7 +11,7 @@
 #ifndef TOUTPUTTREEPROCESSOR_H
 #define TOUTPUTTREEPROCESSOR_H
 
-#include <TProcessor.h>
+#include "TProcessor.h"
 #include <TFile.h>
 #include <TTree.h>
 
