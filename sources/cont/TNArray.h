@@ -3,7 +3,7 @@
  * @brief  n-dimension array
  *
  * @date   Created       : 2016-01-29 11:34:04 JST
- *         Last Modified : 2020-08-28 08:25:13 JST (ota)
+ *         Last Modified : 2020-12-08 20:51:15 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2016 Shinsuke OTA
@@ -30,7 +30,7 @@ public:
    TNArray(const TNArray& rhs);
    TNArray& operator=(const TNArray& rhs);
 
-   virtual bool Load(); // should be called after all the values are filled
+   virtual bool Load(int verbose = 0); // should be called after all the values are filled
 //   virtual void Init(); // should be called after all the index variables are added
 
    virtual void Add(const char* name, Double_t min, Double_t max, Int_t num);

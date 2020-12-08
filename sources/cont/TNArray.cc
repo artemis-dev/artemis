@@ -3,7 +3,7 @@
  * @brief
  *
  * @date   Created       : 2016-01-29 14:16:43 JST
- *         Last Modified : 2020-09-03 09:51:47 JST (ota)
+ *         Last Modified : 2020-12-08 20:51:39 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2016 Shinsuke OTA
@@ -284,7 +284,7 @@ Double_t TNArray::Eval2(Double_t *x) const
 
 
 
-bool TNArray::Load()
+bool TNArray::Load(int verbose)
 {
    Int_t nEntries = GetEntries();
    Int_t modulo = nEntries/(nEntries/20) + 1;
@@ -357,7 +357,7 @@ bool TNArray::Load()
       }
       used[index] = 1;
       fValues[index] = vars[nVars];
-      if (!(iEntry % modulo)) {
+      if (verbose > 1 && !(iEntry % modulo)) {
          char  progress[12];
          Int_t ii;
          for (ii = 0; ii < TMath::Floor(iEntry*10/nEntries); ii++) {
