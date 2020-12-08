@@ -1,4 +1,5 @@
 SUBSRC  =
+SUBSRC+=TParameterObject.cc
 SUBSRC += TCatReadoutPad.cc
 SUBSRC += TCatReadoutPadArray.cc
 SUBSRC += TCatPulseShape.cc
@@ -10,6 +11,8 @@ SUBSRC += IPosition.cc
 SUBSRC += TDetectorGeometryInfo.cc
 SUBSRC += TNArray.cc
 SUBSRC += TTpcStaticGasProperty.cc
+SUBSRC+=TParameterStrings.cc 
+
 
 SUBOBJ = $(SUBSRC:.cc=.o)
 SUBHDR = $(SUBSRC:.cc=.h)
@@ -26,7 +29,7 @@ INCDIR = ../../include
 AUTOMAKE_OPTIONS = foreign
 
 MYINCLUDES = -I$(INCDIR) -I$(ROOTSYS)/include 
-CXXFLAGS = -fPIC  -I$(INCDIR) $(shell root-config --cflags) -Wall -O2
+CXXFLAGS = -fPIC  -I$(INCDIR) $(shell root-config --cflags) $(YAML_CPP_INCLUDE) -Wall -O2
 #CXXFLAGS += -pg
 LDFLAGS = $(shell root-config --glibs) 
 
@@ -48,6 +51,14 @@ $(DICTSRC): $(SUBHDR) artcont_linkdef.h
 	@cp -a $(include_HEADERS) $(INCDIR)
 	@touch .header
 
+if HAVE_ROOT_PCM
+DICTPCM = $(DICTSRC:.cc=_rdict.pcm)
+install-exec-local:
+	@echo Copying PCM file to $(libdir)
+	$(INSTALL) $(DICTPCM) $(libdir)
+uninstall-local:
+	rm -f $(libdir)/$(DICTPCM)
+endif
 
 .cc.o:
 

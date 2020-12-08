@@ -24,6 +24,7 @@ LDFLAGS+= @YAML_CPP_LIB@
 include_HEADERS = $(SUBHDR) $(SUBHDRF) $(OPTHDR)
 
 lib_LTLIBRARIES = libartridf.la
+
 libartridf_la_SOURCES = $(SUBSRC) $(DICTSRC)
 libartridf_la_DEPENDENCIES = .header
 # libartridf_la_LIBADD = $(SUBOBJ)
@@ -40,6 +41,14 @@ $(DICTSRC): $(SUBHDR) artridf_linkdef.h
 	@cp -a $(include_HEADERS) $(INCDIR)
 	@touch .header
 
+if HAVE_ROOT_PCM
+DICTPCM = $(DICTSRC:.cc=_rdict.pcm)
+install-exec-local:
+	@echo Copying PCM file to $(libdir)
+	$(INSTALL) $(DICTPCM) $(libdir)
+uninstall-local:
+	rm -f $(libdir)/$(DICTPCM)
+endif
 
 .cc.o:
 

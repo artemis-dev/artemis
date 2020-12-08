@@ -2,7 +2,7 @@
 /**
  * @file   TModuleDecoderFactory.h
  * @date   Created : Jul 22, 2013 08:22:10 JST
- *   Last Modified : Apr 27, 2014 12:43:57 JST
+ *   Last Modified : 2020-11-27 00:14:22 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -11,7 +11,7 @@
 #ifndef TMODULEDECODERFACTORY_H
 #define TMODULEDECODERFACTORY_H
 
-#include <TModuleDecoder.h>
+#include "TModuleDecoder.h"
 
 namespace art {
    class TModuleDecoderFactory;

@@ -58,7 +58,13 @@ AC_SUBST([YAML_CPP_LIB],["-L$WITH_YAML_CPP/lib -lyaml-cpp"])
 fi
 
 ROOTLIBS="`$ROOTSYS/bin/root-config --glibs`"
+ROOTVER="`$ROOTSYS/bin/root-config --version`"
+ROOTVER="${ROOTVER:0:1}"
 AC_SUBST(ROOTLIBS)
+AC_SUBST(ROOTVER)
+AM_CONDITIONAL(HAVE_ROOT_PCM, test $ROOTVER -ge 6)
+
+
 
 # check for get decoder
 AC_ARG_WITH([get-decoder],

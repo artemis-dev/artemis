@@ -35,7 +35,7 @@ protected:
    TString fTypeName;
    TString fFileName;
    TString fFileFormat;
-   TClonesArray *fParameterArray;
+   TClonesArray *fParameterArray; //!->
 
    // loader for text file
    virtual Bool_t LoadText();

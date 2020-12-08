@@ -2,7 +2,7 @@
 /**
  * @file   TTreeEventStore.h
  * @date   Created : Jul 11, 2013 21:11:30 JST
- *   Last Modified : 2019-04-26 10:40:11 JST (ota)
+ *   Last Modified : 2020-11-27 00:16:23 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -11,8 +11,8 @@
 #ifndef TTREEEVENTSTORE_H
 #define TTREEEVENTSTORE_H
 
-#include <TProcessor.h>
-#include <IEventStore.h>
+#include "TProcessor.h"
+#include "IEventStore.h"
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>

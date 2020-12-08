@@ -2,7 +2,7 @@
 /**
  * @file   TEventCollection.h
  * @date   Created : Apr 26, 2012 23:26:19 JST
- *   Last Modified : Jan 31, 2015 20:08:43 JST
+ *   Last Modified : 2020-11-27 00:11:40 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -11,12 +11,11 @@
 #ifndef ART_TEVENTCOLLECTION_H
 #define ART_TEVENTCOLLECTION_H
 
-#include <TEventObject.h>
-
-#include <TList.h>
-
+#include "TList.h"
+#include "TEventObject.h"
 namespace art {
    class TEventCollection;
+
 }
 
 class art::TEventCollection  {
@@ -47,8 +46,8 @@ public:
    virtual void Delete();
    
 protected:
-   TList *fObjects; // list of object
-   TList *fUserInfo; // list of user objects associated to this process
+   TList *fObjects; //! list of object
+   TList *fUserInfo; //! list of user objects associated to this process
 
    ClassDef(TEventCollection,1); // Event collection containing the data container 
 };

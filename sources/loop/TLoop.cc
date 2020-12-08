@@ -29,6 +29,7 @@
 #include <TROOT.h>
 #include <IEventStore.h>
 #include <TAnalysisInfo.h>
+#include "TDatime.h"
 
 const char* art::TLoop::kConditionName = "condition";
 const char* art::TLoop::kAnalysisInfoName = "analysisInfo";

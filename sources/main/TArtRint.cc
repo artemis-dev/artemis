@@ -2,7 +2,7 @@
 /**
  * @file   TArtRint.cc
  * @date   Created : Feb 06, 2012 00:06:18 JST
- *   Last Modified : 2018-08-06 22:50:25 JST (ota)
+ *   Last Modified : 2020-11-27 00:22:27 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -19,6 +19,7 @@
 #include "TEnv.h"
 #include <TClassTable.h>
 #include "TProcessor.h"
+#include "TObjString.h"
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>

@@ -2,7 +2,7 @@
 /**
  * @file   TCatCmdLoopAdd.cc
  * @date   Created : May 02, 2012 16:02:35 JST
- *   Last Modified :2019-03-01 17:47:04 JST (ota)
+ *   Last Modified : 2020-11-27 00:20:58 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -12,7 +12,7 @@
 #include "TLoopManager.h"
 #include <TROOT.h>
 #include <map>
-
+#include "TObjString.h"
 
 #include <fstream>
 

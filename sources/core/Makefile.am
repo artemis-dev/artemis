@@ -14,7 +14,7 @@ SUBSRC += TAnalysisInfo.cc
 SUBSRC += TMacroReplacer.cc
 
 SUBOBJ = $(SUBSRC:.cc=.o)
-SUBHDR = $(SUBSRC:.cc=.h)
+SUBHDR = $(SUBSRC:.cc=.h)  TArtSystemOfUnit.h 
 # TCatTypes.h
 
 
@@ -22,7 +22,7 @@ DICTSRC = catcore_dict.cc
 DICTOBJ = $(DICTSRC:.cc=.o)
 DICTHDR = $(DICTSRC:.cc=.h)
 
-OPTHDR = 
+OPTHDR = TProcessorParameter.h TArtTypes.h 
 INCDIR = ../../include
 
 AUTOMAKE_OPTIONS = foreign
@@ -53,6 +53,14 @@ $(DICTSRC): $(SUBHDR) catcore_linkdef.h
 	@cp -a $(include_HEADERS) $(INCDIR)
 	@touch .header
 
+if HAVE_ROOT_PCM
+DICTPCM = $(DICTSRC:.cc=_rdict.pcm)
+install-exec-local:
+	@echo Copying PCM file to $(libdir)
+	$(INSTALL) $(DICTPCM) $(libdir)
+uninstall-local:
+	rm -f $(libdir)/$(DICTPCM)
+endif
 
 .cc.o:
 

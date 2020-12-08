@@ -2,7 +2,7 @@
 /**
  * @file   TSharedMemoryDataSource.h
  * @date   Created : Nov 29, 2013 21:29:10 JST
- *   Last Modified : Nov 30, 2013 00:58:50 JST
+ *   Last Modified : 2020-11-27 00:16:02 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -11,8 +11,8 @@
 #ifndef TSHAREDMEMORYDATASOURCE_H
 #define TSHAREDMEMORYDATASOURCE_H
 
-#include <TDataSource.h>
-#include <TSemaphoreObject.h>
+#include "TDataSource.h"
+#include "TSemaphoreObject.h"
 
 namespace art {
    class TSharedMemoryDataSource;
