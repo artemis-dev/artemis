@@ -2,7 +2,7 @@
 /**
  * @file   TEventObject.h
  * @date   Created : Jul 10, 2013 14:10:50 JST
- *   Last Modified : 2018-02-04 11:14:33 JST (ota)
+ *   Last Modified : 2020-12-02 17:38:45 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -50,7 +50,7 @@ public:
    TString GetLength() { return (fLength)?*fLength:TString(""); }
    Bool_t IsObject() { return fIsObject; }
 
-   Bool_t SetBranch(TTree *tree);
+   Bool_t SetBranch(TTree *tree,Int_t splitLevel = 0);
       
 
 private:
