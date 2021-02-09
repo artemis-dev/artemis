@@ -50,6 +50,8 @@ art::TLoop::TLoop()
    fEventCollection = new TEventCollection;
    fCondition       = new TConditionBit;
    fAnalysisInfo    = new TAnalysisInfo;
+   fAnalysisInfo->SetBit(kMustCleanup);
+   
 }
 
 art::TLoop::~TLoop()
