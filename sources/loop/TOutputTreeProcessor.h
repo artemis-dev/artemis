@@ -2,7 +2,7 @@
 /**
  * @file   TOutputTreeProcessor.h
  * @date   Created : Jul 11, 2013 17:11:09 JST
- *   Last Modified : 2020-11-27 00:14:33 JST (ota)
+ *   Last Modified : 2020-12-02 08:09:17 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -35,9 +35,11 @@ public:
 private:
    TString  fFileName;  // output file name
    TString  fTreeName;  // output tree name
-   TFile   *fFile;
-   TTree   *fTree;      //-> output tree
-   TList   *fObjects;
+   TFile   *fFile; //! output file
+   TTree   *fTree; //! output tree
+   TList   *fObjects; //! list of objects
+   Parameter<Int_t> fSplitLevel; // split level of tree
+   
 
    ClassDef(TOutputTreeProcessor,1);
 };

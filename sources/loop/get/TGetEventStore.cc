@@ -3,7 +3,7 @@
  * @brief  GET Event Store
  *
  * @date   Created       : 2017-12-21 00:29:39 JST
- *         Last Modified : 2019-11-25 01:31:07 JST (ota)
+ *         Last Modified : 2021-01-17 22:39:49 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2017 Shinsuke OTA
@@ -56,7 +56,8 @@ TGetEventStore::TGetEventStore()
    RegisterProcessorParameter("RequireHitBit","require hit bit if 1 other wise all the data passed is filled",fRequireHitBit,1);
    RegisterOptionalParameter("SubtractFPN","flag for subtraction of FPN",fSubtractFPN,kFALSE);
    RegisterOptionalParameter("ValidBucket","range of valid time bucket",fValidBucket,IntVec_t(2,0));
-
+   Register(fIsReducedCobo("IsReducedCobo","flag to deal with reduced cobo (default : false)",false));
+   
    fUseMPI = kFALSE;
    fGetDecoder = new GETDecoder;
    fRunHeaders = new TList;
@@ -172,6 +173,16 @@ void TGetEventStore::Process()
       SetEndOfRun();
       return;
    }
+
+
+   if (fIsReducedCobo) {
+      ProcessReducedCobo();
+   } else {
+      ProcessFullCobo();
+   }
+}
+
+void TGetEventStore::ProcessFullCobo() {
    GETCoboFrame *coboFrame = NULL;
    // get next event
    do {
@@ -202,58 +213,99 @@ void TGetEventStore::Process()
    ((TRunInfo*)fRunHeaders->Last())->IncrementEventNumber();
    for (Int_t iAsAd = 0; iAsAd < 4; ++iAsAd) {
       GETBasicFrame *asad = coboFrame->GetFrame(iAsAd);
-      Int_t coboId = asad->GetCoboID();
-      Int_t segid = TSegmentInfo::SegID::Build(63,asad->GetCoboID(),asad->GetAsadID(),0);;
-      TObjArray *seg = fSegmentedData->FindSegmentByID(segid);
-      if (!seg) seg = fSegmentedData->NewSegment(segid);
-      for (Int_t iAGET = 0; iAGET < 4; ++iAGET) {
-         bitset<72> hits = asad->GetHitPat(iAGET);
+      ProcessAsAd(asad);
+   }
+}
 
-         // calcurate FPN
-         if (fSubtractFPN) {
-            for (Int_t i = 0; i < 4; ++i) {
-               fFPN[i] = asad->GetSample(iAGET,kFPNIDs[i]);
-               if (fFPN[i] == NULL) continue;
-               Int_t ref = fFPN[i][fValidBucket[0]];
-               for (Int_t ip = 0; ip < 512; ++ip) {
-                  fFPN[i][ip] -= ref;
-               }
-            }
+void TGetEventStore::ProcessReducedCobo() {
+   GETBasicFrame *asad = NULL;
+   // get next event
+   do {
+#ifdef USE_MPI
+      if (fUseMPI) {
+         if (((fEventHeader->GetEventNumberTotal()) % fNPE) != fRankID) {
+            fEventHeader->IncrementEventNumber();
+            ((TRunInfo*)fRunHeaders->Last())->IncrementEventNumber();
+            continue;
          }
+      }
+#endif
+      asad = fGetDecoder->GetBasicFrame(fEventHeader->GetEventNumber());
+      if (asad == NULL) {
+         // data file with number suffix in same run will be automatically open by GETDecoder
+         // if there is no frame returned, finish loop
+         SetStopEvent();
+         SetStopLoop();
+         SetEndOfRun();
+         Info("Process","All data are analyzed in rank %d\n",fRankID);
+         return;
+      } else {
+         break;
+      }
+   } while (1);
 
+   fEventHeader->IncrementEventNumber();
+   ((TRunInfo*)fRunHeaders->Last())->IncrementEventNumber();
+   ProcessAsAd(asad);
+}
 
-         for (Int_t iCh = 0; iCh < 68; iCh++) {
-//            printf("cobo %d asad = %d aget = %d ch = %d [%d]\n",asad->GetCoboID(),asad->GetAsadID(),iAGET,67-iCh,hits[67-iCh] == 1);
-            if ( !fRequireHitBit || hits[67-iCh] ) {
-//               printf("hits in cobo = %d, asad = %d, aget = %d, ch = %d\n",asad->GetCoboID(),asad->GetAsadID(),iAGET,iCh);
-               Int_t* adc = asad->GetSample(iAGET,iCh);
-               if (!adc || adc[0] == 0) continue;
-               Int_t offset = asad->GetReadOffset() + fValidBucket[0];
-               Int_t timestamp = asad->GetEventTime();
-               Int_t pattern = 0;
-               TRawDataFadc *data = (TRawDataFadc*) fData->ConstructedAt(fData->GetEntriesFast());
-               data->Clear("C");
-//               data->SetSegInfo(seg->GetUniqueID(),iAGET+4*(iAsAd+4*coboId),iCh);
-               data->SetSegInfo(seg->GetUniqueID(),iAGET,iCh);
-               data->SetUniqueID(iAGET+4*(iAsAd+4*coboId));
-               data->SetFadcInfo(timestamp,offset,pattern);
-               Int_t *fpn = fFPN[fFPNID[iCh]];
-               if (kFPNIDs[fFPNID[iCh]] != iCh && fSubtractFPN && fpn != NULL) {
-                  for (Int_t i=fValidBucket[0]; i<= fValidBucket[1]; ++i) {
-                     data->Add(adc[i]-fpn[i]);
-//                     data->Add(fpn[i]);
-                  }
-               } else {
-                  for (Int_t i=fValidBucket[0]; i<= fValidBucket[1]; ++i) {
-                     data->Add(adc[i]);
-                  }
-               }
-
-               seg->Add(data);
+void TGetEventStore::ProcessAsAd(GETBasicFrame *asad) {
+   Int_t coboId = asad->GetCoboID();
+   Int_t iAsAd = asad->GetAsadID();
+   Int_t segid = TSegmentInfo::SegID::Build(63,asad->GetCoboID(),asad->GetAsadID(),0);;
+   printf("cobo = %d, asad = %d\n",coboId,iAsAd);
+   
+   TObjArray *seg = fSegmentedData->FindSegmentByID(segid);
+   if (!seg) seg = fSegmentedData->NewSegment(segid);
+   for (Int_t iAGET = 0; iAGET < 4; ++iAGET) {
+      bitset<72> hits = asad->GetHitPat(iAGET);
+      // calcurate FPN
+      if (fSubtractFPN) {
+         for (Int_t i = 0; i < 4; ++i) {
+            fFPN[i] = asad->GetSample(iAGET,kFPNIDs[i]);
+            if (fFPN[i] == NULL) continue;
+            Int_t ref = fFPN[i][fValidBucket[0]];
+            for (Int_t ip = 0; ip < 512; ++ip) {
+               fFPN[i][ip] -= ref;
             }
          }
       }
+
+
+      for (Int_t iCh = 0; iCh < 68; iCh++) {
+         //            printf("cobo %d asad = %d aget = %d ch = %d [%d]\n",asad->GetCoboID(),asad->GetAsadID(),iAGET,67-iCh,hits[67-iCh] == 1);
+         if ( !fRequireHitBit || hits[67-iCh] ) {
+            //               printf("hits in cobo = %d, asad = %d, aget = %d, ch = %d\n",asad->GetCoboID(),asad->GetAsadID(),iAGET,iCh);
+            Int_t* adc = asad->GetSample(iAGET,iCh);
+            printf("ich = %d, adc = %p, adc = %d\n",iCh, adc, adc ? adc [1] : -1);
+            
+            if (!adc || adc[0] == 0) continue;
+            Int_t offset = asad->GetReadOffset() + fValidBucket[0];
+            Int_t timestamp = asad->GetEventTime();
+            Int_t pattern = 0;
+            TRawDataFadc *data = (TRawDataFadc*) fData->ConstructedAt(fData->GetEntriesFast());
+            data->Clear("C");
+            //               data->SetSegInfo(seg->GetUniqueID(),iAGET+4*(iAsAd+4*coboId),iCh);
+            data->SetSegInfo(seg->GetUniqueID(),iAGET,iCh);
+            data->SetUniqueID(iAGET+4*(iAsAd+4*coboId));
+            data->SetFadcInfo(timestamp,offset,pattern);
+            Int_t *fpn = fFPN[fFPNID[iCh]];
+            if (kFPNIDs[fFPNID[iCh]] != iCh && fSubtractFPN && fpn != NULL) {
+               for (Int_t i=fValidBucket[0]; i<= fValidBucket[1]; ++i) {
+                  data->Add(adc[i]-fpn[i]);
+                  //                     data->Add(fpn[i]);
+               }
+            } else {
+               for (Int_t i=fValidBucket[0]; i<= fValidBucket[1]; ++i) {
+                  data->Add(adc[i]);
+               }
+            }
+
+            seg->Add(data);
+         }
+      }
    }
+      
 }
 
 

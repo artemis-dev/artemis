@@ -33,7 +33,12 @@
    cf->Register(new TCatCmdHstore);
    cf->Register(TCatCmdSave::Instance());
    cf->Register(TCatCmdXval::Instance());
-
+   cf->Register(new art::TCmdFileLs);
+   cf->Register(new art::TCmdFileCd);
+   cf->Register(new art::TCmdBranchInfo);
+   cf->Register(new art::TCmdClassInfo);
+   cf->Register(new art::TCmdProcessorDescription);
+   
    {
       TString path = gSystem->GetIncludePath();
       path.Append("-I./processors");

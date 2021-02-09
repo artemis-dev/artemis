@@ -2,7 +2,7 @@
 /**
  * @file   TOutputTreeProcessor.cc
  * @date   Created : Jul 11, 2013 17:11:41 JST
- *   Last Modified : 2021-02-09 23:23:55 JST (ota)
+ *   Last Modified : 2021-02-09 23:27:08 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -30,6 +30,7 @@ art::TOutputTreeProcessor::TOutputTreeProcessor()
    : fFile(NULL), fTree(NULL) {
    RegisterProcessorParameter("FileName","The name of output file",fFileName,TString("temp.root"));
    RegisterProcessorParameter("TreeName","The name of output tree",fTreeName,TString("tree"));
+   Register(fSplitLevel("SplitLevel", "Split level of tree defined in TTree (default is changed to be 0)",0));
    fObjects = new TList;
 }
 art::TOutputTreeProcessor::~TOutputTreeProcessor()
@@ -67,7 +68,7 @@ void art::TOutputTreeProcessor::Init(TEventCollection *col)
    TEventObject *obj;
    while ((obj = (TEventObject*)iter->Next())) {
       if (obj->IsPassive()) continue;
-      obj->SetBranch(fTree);
+      obj->SetBranch(fTree,fSplitLevel);
 #if 0      
       if (!obj->IsObject()) {
          // primitivee class
@@ -80,7 +81,7 @@ void art::TOutputTreeProcessor::Init(TEventCollection *col)
          }
          fTree->Branch(obj->GetName(),*obj->GetObjectRef(),leaflist);
       } else {
-         fTree->Branch(obj->GetName(),obj->GetClass()->GetName(),obj->GetObjectRef(),3200000,0);
+         fTree->Branch(obj->GetName(),obj->GetClass()->GetName(),obj->GetObjectRef(),3200000,fSplitLevel);
       }
 #endif   
       fObjects->Add(obj);

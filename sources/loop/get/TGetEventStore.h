@@ -3,7 +3,7 @@
  * @brief  get file event store
  *
  * @date   Created       : 2017-12-21 00:15:51 JST
- *         Last Modified : 2019-11-17 11:15:03 JST (ota)
+ *         Last Modified : 2021-01-17 22:23:24 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2017 Shinsuke OTA
@@ -31,6 +31,8 @@ namespace art {
 }
 
 class GETDecoder;
+class GETBasicFrame;
+
 
 class art::TGetEventStore : public TProcessor, public IEventStore {
 public:
@@ -49,9 +51,15 @@ public:
 
    virtual void Init(TEventCollection *col);
    virtual void Process();
+   virtual void ProcessFullCobo();
+   virtual void ProcessReducedCobo();
+   virtual void ProcessAsAd(GETBasicFrame *asad);
+   
 
 protected:
    virtual TRunInfo* GetRunInfo();
+   Parameter<bool> fIsReducedCobo;
+   
 
 #if USE_MPI
    Int_t fNPE;//!
