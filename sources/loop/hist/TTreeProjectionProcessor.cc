@@ -4,7 +4,7 @@
  * @brief  tree projection
  *
  * @date   Created       : 2014-03-05 22:30:06 JST
- *         Last Modified : 2019-06-10 14:56:06 JST (ota)
+ *         Last Modified : 2021-03-14 16:57:51 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -182,25 +182,13 @@ void TTreeProjectionProcessor::PostLoop()
    TCatCmdHstore hstore;
    hstore.Run(filename,"recreate");
 #ifdef USE_MPI
-   if (useMPI) {
+   if (useMPI && npe > 1) {
       MPI_Barrier(MPI_COMM_WORLD);   
    }
 #endif
    saved->cd();
 #ifdef USE_MPI
-   Util::MPIFileMerger(fOutputFilename.Data());
-   
-//   if (useMPI) {
-//      MPI_Barrier(MPI_COMM_WORLD);   
-//      if (npe > 0 && myrank == 0) {
-//         TString files;
-//         for (Int_t i = 0; i < npe; ++i) {
-//            files.Append(Form("%s%d ",fOutputFilename.Data(),i));
-//         }
-//         gSystem->Exec(Form("hadd -f %s %s",fOutputFilename.Data(),files.Data()));
-//      }
-//      MPI_Barrier(MPI_COMM_WORLD);   
-//   }
+   if (npe > 1) Util::MPIFileMerger(fOutputFilename.Data());
 #endif
    
 }
