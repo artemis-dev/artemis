@@ -2,14 +2,14 @@
 /**
  * @file   TCatCmdHstore.cc
  * @date   Created : Jul 13, 2012 10:13:10 JST
- *   Last Modified : 2018-07-30 10:17:39 JST (ota)
+ *   Last Modified : 2021-03-15 23:22:42 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
  *    Copyright (C)2012
  */
 #include "TCatCmdHstore.h"
-
+#include "TArtemisUtil.h"
 #include <TFile.h>
 #include <TH1FTreeProj.h>
 #include <TH2FTreeProj.h>
@@ -41,6 +41,7 @@ Long_t TCatCmdHstore::Run(const char* filename, const Option_t *opt)
    TList *objects = gDirectory->GetList();
    TDirectory *wkdir = gDirectory;
    // open file
+   art::Util::PrepareDirectoryFor(filename);   
    TFile *file = TFile::Open(filename,opt);
    // if file is not opened or writable return normal
    if (file && file->IsWritable()) {
