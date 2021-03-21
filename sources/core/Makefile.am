@@ -45,7 +45,8 @@ libcatcore_la_LDFLAGS = $(LDFLAGS)
 
 $(DICTSRC): $(SUBHDR) catcore_linkdef.h
 	@echo Making $(DICTSRC) ...
-	rootcint -f $@ -c -p $(DEFAULT_INCLUDES) $(MYINCLUDES) $^
+#	rootcint -f $@ -c -p $(DEFAULT_INCLUDES) $(MYINCLUDES) $^
+	rootcling -f $@ -c  $(DEFAULT_INCLUDES) $(MYINCLUDES) $^
 
 .header: $(include_HEADERS)
 	@echo Installing header to $(INCDIR)
