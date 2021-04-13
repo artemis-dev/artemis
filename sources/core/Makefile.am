@@ -57,6 +57,7 @@ if HAVE_ROOT_PCM
 DICTPCM = $(DICTSRC:.cc=_rdict.pcm)
 install-exec-local:
 	@echo Copying PCM file to $(libdir)
+	$(INSTALL) -d $(libdir)
 	$(INSTALL) $(DICTPCM) $(libdir)
 uninstall-local:
 	rm -f $(libdir)/$(DICTPCM)

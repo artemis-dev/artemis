@@ -25,7 +25,12 @@ Following features are not implemented, but we will make them in the future rele
 Installation
 ------------
 
-ARTEMIS depends on [YAML-CPP](https://code.google.com/p/yaml-cpp/) for loading steering and histgrum definition files. Please install it in advance.
+The artemis needs several root packages which may not be installed automatically in some operating suystem or distributions. Please check the existence of the packages or enable them.
+* Minuit2 (root-minuit2)
+* Geometry (root-geom)
+
+ARTEMIS depends on [YAML-CPP](https://code.google.com/p/yaml-cpp/) for loading steering and histgrum definition files. Please install it in advance as a shared object. (You have to cmake with -DBUILD_SHARED_LIBS=ON)
+
 
 1. Download latest **ARTEMIS** from [the release page](https://github.com/artemis-dev/artemis) or develop version
 1. run autoreconf with "--install" option
