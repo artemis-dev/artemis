@@ -207,8 +207,15 @@ void TTimestampEventReconstructor::Process()
                if (max < tdiff) max = tdiff;
             }
          }
+         const Int_t kTokens = 6;         
+         Double_t width = fInputLists[iList*kTokens + 4].Atof();
+         if (max - min > 1e6 * width) {
+            min = max - 1e6 * width;
+         }
          Int_t nbins = 1e6;
          fTimestampHistsAll[iList]->SetBins(nbins,min,max);
+         Info(__func__,"SetBins[%d] : nbins = %d, min = %f, max = %f, width = %g\n",iList,nbins,min,max,width );
+         
          for (Int_t i = 0, ni = fTimestampQueue[iList].size(); i < ni; ++i) {
             for (Int_t j = 0, nj = fTimestampQueue[iList].size(); j < nj; ++j) {
                Double_t tdiff = fTimestampQueue[iList][i] - fTimestampQueue[0][j];
