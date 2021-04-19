@@ -45,7 +45,7 @@ libcatcore_la_LDFLAGS = $(LDFLAGS)
 
 $(DICTSRC): $(SUBHDR) catcore_linkdef.h
 	@echo Making $(DICTSRC) ...
-	rootcint -f $@ -c -p $(DEFAULT_INCLUDES) $(MYINCLUDES) $^
+	rootcint -f $@ -c $(DEFAULT_INCLUDES) $(MYINCLUDES) $^
 
 .header: $(include_HEADERS)
 	@echo Installing header to $(INCDIR)
@@ -57,6 +57,7 @@ if HAVE_ROOT_PCM
 DICTPCM = $(DICTSRC:.cc=_rdict.pcm)
 install-exec-local:
 	@echo Copying PCM file to $(libdir)
+	$(INSTALL) -d $(libdir)
 	$(INSTALL) $(DICTPCM) $(libdir)
 uninstall-local:
 	rm -f $(libdir)/$(DICTPCM)

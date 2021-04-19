@@ -3,7 +3,7 @@
  * @brief  GET Event Store
  *
  * @date   Created       : 2017-12-21 00:29:39 JST
- *         Last Modified : 2021-01-17 22:39:49 JST (ota)
+ *         Last Modified : 2021-03-25 11:39:10 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2017 Shinsuke OTA
@@ -213,6 +213,7 @@ void TGetEventStore::ProcessFullCobo() {
    ((TRunInfo*)fRunHeaders->Last())->IncrementEventNumber();
    for (Int_t iAsAd = 0; iAsAd < 4; ++iAsAd) {
       GETBasicFrame *asad = coboFrame->GetFrame(iAsAd);
+      fEventHeader->SetTimestamp(asad->GetEventTime());
       ProcessAsAd(asad);
    }
 }
@@ -245,6 +246,7 @@ void TGetEventStore::ProcessReducedCobo() {
    } while (1);
 
    fEventHeader->IncrementEventNumber();
+   fEventHeader->SetTimestamp(asad->GetEventTime());
    ((TRunInfo*)fRunHeaders->Last())->IncrementEventNumber();
    ProcessAsAd(asad);
 }
@@ -270,7 +272,7 @@ void TGetEventStore::ProcessAsAd(GETBasicFrame *asad) {
             }
          }
       }
-
+      
 
       for (Int_t iCh = 0; iCh < 68; iCh++) {
          //            printf("cobo %d asad = %d aget = %d ch = %d [%d]\n",asad->GetCoboID(),asad->GetAsadID(),iAGET,67-iCh,hits[67-iCh] == 1);
