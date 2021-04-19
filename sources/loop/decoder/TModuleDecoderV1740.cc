@@ -2,7 +2,7 @@
 /**
  * @file   TModuleDecoderV1740.cc
  * @date   Created : Feb 06, 2013 15:06:29 JST
- *   Last Modified : 2018-07-09 16:15:24 JST (ota)
+ *   Last Modified : 2021-04-15 19:09:32 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -35,7 +35,7 @@ Int_t art::TModuleDecoderV1740::Decode(char* buf, const int &size, TObjArray *se
       if (bufi[0] ==0) return 0;
       if (bufi[0]&0xd0000000) {
          // global header
-         timestamp = bufi[2];
+         timestamp = (bufi[2]&0x7fffffff);
          nw        = (bufi[0]&0xfffffff);
          geo       = ((bufi[1]>>27)&0x1f);
          pattern   = ((bufi[1]>>8)&0xffff);
