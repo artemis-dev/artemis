@@ -65,7 +65,7 @@ Int_t TModuleDecoderV1190::Decode(char* buf, const int &size, TObjArray *seg)
             evtid = (evtdata[i]&kMaskEventCounter)>>kShiftEventCounter;
             break;
          case kTDCMeasurement:
-            if (!ghf || ! thf) continue;
+            if (ghf!=1) continue;
             ich = (evtdata[i]&kMaskChannel) >> kShiftChannel;
             edge = (evtdata[i]&kMaskEdgeType) >> kShiftEdgeType;
             idx = igeo * 128 + ich;
