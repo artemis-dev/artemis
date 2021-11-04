@@ -3,7 +3,7 @@
  * @brief  GET Event Store
  *
  * @date   Created       : 2017-12-21 00:29:39 JST
- *         Last Modified : 2021-03-25 11:39:10 JST (ota)
+ *         Last Modified : 2021-11-04 15:18:51 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2017 Shinsuke OTA
@@ -58,7 +58,9 @@ TGetEventStore::TGetEventStore()
    RegisterOptionalParameter("ValidBucket","range of valid time bucket",fValidBucket,IntVec_t(2,0));
    Register(fIsReducedCobo("IsReducedCobo","flag to deal with reduced cobo (default : false)",false));
    
+#if USE_MPI
    fUseMPI = kFALSE;
+#endif   
    fGetDecoder = new GETDecoder;
    fRunHeaders = new TList;
    fData = new TClonesArray(TRawDataFadc::Class_Name());
