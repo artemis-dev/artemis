@@ -2,7 +2,7 @@
 /**
  * @file   TRandomNumberEventStore.h
  * @date   Created : Jul 11, 2013 18:11:07 JST
- *   Last Modified : 2020-11-27 00:15:18 JST (ota)
+ *   Last Modified : 2021-12-08 13:57:18 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -13,6 +13,7 @@
 
 #include "TProcessor.h"
 #include "TConditionBit.h"
+#include "IEventStore.h"
 
 #include "TSimpleData.h"
 
@@ -22,7 +23,7 @@ namespace art {
 }
 
 
-class art::TRandomNumberEventStore  : public TProcessor {
+class art::TRandomNumberEventStore  : public TProcessor, public IEventStore {
 
 public:
    TRandomNumberEventStore();
