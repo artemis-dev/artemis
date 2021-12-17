@@ -19,12 +19,14 @@
 #include <TROOT.h>
 #include <TClonesArray.h>
 #include <TEventHeader.h>
+#include "TSystem.h"
+#include "TChain.h"
 ClassImp(art::TTreeEventStore);
 
 
 
 art::TTreeEventStore::TTreeEventStore()
-   : fEventHeader(NULL)
+   : fTree(NULL),fEventHeader(NULL),fFile(NULL)
 {
    RegisterProcessorParameter("FileName","The name of output file",fFileName,TString("temp.root"));
    RegisterProcessorParameter("TreeName","The name of output tree",fTreeName,TString("tree"));
@@ -43,29 +45,53 @@ art::TTreeEventStore::~TTreeEventStore()
 
 void art::TTreeEventStore::Init(TEventCollection *col)
 {
+   // extract files to be analyzed by this process 
+   std::vector<TString> files;
+   TString filelist = gSystem->GetFromPipe(Form("ls -tr %s",fFileName.Data()));
+   TObjArray *allfiles = (filelist.Tokenize("\n"));
+   if (!allfiles) {
+      Error("Init",Form("No such files %s",fFileName.Data()));
+      SetStateError("Init");
+      return;
+   } 
 #if USE_MPI
    int useMPI;
    MPI_Initialized(&useMPI);
    if (useMPI) {
       MPI_Comm_size(MPI_COMM_WORLD, &fNPE);
       MPI_Comm_rank(MPI_COMM_WORLD, &fRankID);
-      fFileName.Append(Form("%d",fRankID));
-   }
+      TChain *chain = new TChain(fTreeName);
+      for (Int_t i = fRankID, n = allfiles->GetEntriesFast(); i < n; i+=fNPE) {
+         Info("Init","Add '%s' to Rank %03d",static_cast<TObjString*>(allfiles->At(i))->GetName(),fRankID);
+         chain->Add(static_cast<TObjString*>(allfiles->At(i))->GetName());
+      }
+      fTree = chain;
+   }   
 #endif
-   
+   if (!fTree) {
+      TChain *chain = new TChain(fTreeName);
+      for (Int_t i = 0, n = allfiles->GetEntriesFast(); i < n; ++i) {
+         Info("Init","Add '%s'",static_cast<TObjString*>(allfiles->At(i))->GetName());
+         chain->Add(static_cast<TObjString*>(allfiles->At(i))->GetName());
+      }      
+      fTree = chain;
+   }
+
+   // TTreeが使える状況であるかのチェックをして、使えなければこのプロセスはストップするということにする。
+   // 万が一プロセス数がファイルの数を超えるような場合でも問題はない。ということは 144 以上のプロセスでくんでもよい。
+   // その場合は、Tree projection のマージで引っかからないように気をつけなければならない。か
    fEventNum = 0;
    fCondition = (TConditionBit**)(col->Get(TLoop::kConditionName)->GetObjectRef());
-   Info("Init","Input file = %s",fFileName.Data());
    TDirectory *saved = gDirectory;
-   fFile = TFile::Open(fFileName);
-   saved->cd();
-   if (!fFile) {
-      (*fCondition)->Set(TLoop::kStopLoop);
-      return ;
-   }
-   Info("Init","Input tree = %s",fTreeName.Data());
+//   fFile = TFile::Open(fFileNam);
+//   saved->cd();
+//   if (!fFile) {
+//      (*fCondition)->Set(TLoop::kStopLoop);
+//      return ;
+//   }
+//   Info("Init","Input tree = %s",fTreeName.Data());
    std::vector<TBranch*> useBranch;
-   fTree = (TTree*)fFile->Get(fTreeName);
+//   fTree = (TTree*)fFile->Get(fTreeName);
    if (!fTree) {
       Error("Init","Input tree '%s' does not exist in '%s'",fTreeName.Data(),
             fFileName.Data());

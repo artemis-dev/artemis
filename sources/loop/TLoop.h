@@ -69,7 +69,7 @@ private:
    TConditionBit *fCondition;
    
    TEventCollection   *fEventCollection;
-   std::list<TProcessor*>   fProcessors; //
+   std::list<TProcessor*>   fProcessors; //!
    Int_t fID;
 
    TString fBaseDir; //! base directory

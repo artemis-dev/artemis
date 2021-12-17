@@ -1,4 +1,5 @@
 
+
 /**
  * @file   TTreeProjectionProcessor.cc
  * @brief  tree projection
@@ -183,11 +184,14 @@ void TTreeProjectionProcessor::PostLoop()
    hstore.Run(filename,"recreate");
 #ifdef USE_MPI
    if (useMPI && npe > 1) {
+      Info("PostLoop","Waiting for all the process to be finished (myrank = %d)",myrank);
       MPI_Barrier(MPI_COMM_WORLD);   
+      Info("PostLoop","done %d",myrank);
    }
 #endif
    saved->cd();
 #ifdef USE_MPI
+   Info("PostLoop","MPI merge files");
    if (npe > 1) Util::MPIFileMerger(fOutputFilename.Data());
 #endif
    

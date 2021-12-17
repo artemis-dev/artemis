@@ -3,7 +3,7 @@
  * @brief
  *
  * @date   Created       : 2018-07-26 16:33:05 JST
- *         Last Modified : 2020-07-28 23:04:21 JST (ota)
+ *         Last Modified : 2018-09-05 13:57:25 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2018 Shinsuke OTA
@@ -86,8 +86,6 @@ void Util::GetPolygonFromSide(Int_t n, Double_t side, Double_t angle, Double_t *
 }
 
 
-
-
 #ifdef USE_MPI
 Bool_t Util::MPIFileMerger(const char* filename)
 {
@@ -113,6 +111,7 @@ Bool_t Util::MPIFileMerger(const char* filename)
       }
       TString files;
       for (Int_t i = 0; i < npe; ++i) {
+         // ファイルの存在の確認はしたほうが良い？mergerがやってくれているか？
          merger.AddFile(Form("%s%d ",filename,i));
       }
       status = merger.Merge();
