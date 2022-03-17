@@ -204,7 +204,11 @@ void TGetEventStore::ProcessFullCobo() {
          SetStopEvent();
          SetStopLoop();
          SetEndOfRun();
-         Info("Process","All data are analyzed in rank %d\n",fRankID);
+#ifdef USE_MPI
+	 if (fUseMPI) {
+	   Info("Process","All data are analyzed in rank %d\n",fRankID);
+#endif	 }
+
          return;
       } else {
          break;
@@ -240,7 +244,11 @@ void TGetEventStore::ProcessReducedCobo() {
          SetStopEvent();
          SetStopLoop();
          SetEndOfRun();
+#ifdef USE_MPI
+      if (fUseMPI) {
          Info("Process","All data are analyzed in rank %d\n",fRankID);
+      }      
+#endif
          return;
       } else {
          break;
