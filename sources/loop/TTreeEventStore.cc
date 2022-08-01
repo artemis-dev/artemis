@@ -21,6 +21,7 @@
 #include <TEventHeader.h>
 #include "TSystem.h"
 #include "TChain.h"
+#include "TObjString.h"
 ClassImp(art::TTreeEventStore);
 
 
