@@ -3,8 +3,7 @@
  * @brief  GET Event Store
  *
  * @date   Created       : 2017-12-21 00:29:39 JST
- *         Last Modified : 2022-10-12 16:55:03 JST (ota)
->>>>>>> Stashed changes
+ *         Last Modified : 2022-10-12 19:31:53 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2017 Shinsuke OTA
@@ -22,7 +21,7 @@
 #endif
 #include <sys/stat.h>
 #include <TFile.h>
-
+#include "TObjString.h"
 
 // GET
 #include <GETDecoder.hh>
@@ -208,8 +207,8 @@ void TGetEventStore::ProcessFullCobo() {
 #ifdef USE_MPI
 	 if (fUseMPI) {
 	   Info("Process","All data are analyzed in rank %d\n",fRankID);
-#endif	 }
-
+	 }
+#endif
          return;
       } else {
          break;
