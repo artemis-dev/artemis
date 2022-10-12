@@ -3,7 +3,8 @@
  * @brief  GET Event Store
  *
  * @date   Created       : 2017-12-21 00:29:39 JST
- *         Last Modified : 2021-11-04 15:18:51 JST (ota)
+ *         Last Modified : 2022-10-12 16:55:03 JST (ota)
+>>>>>>> Stashed changes
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2017 Shinsuke OTA
@@ -265,7 +266,7 @@ void TGetEventStore::ProcessAsAd(GETBasicFrame *asad) {
    Int_t coboId = asad->GetCoboID();
    Int_t iAsAd = asad->GetAsadID();
    Int_t segid = TSegmentInfo::SegID::Build(63,asad->GetCoboID(),asad->GetAsadID(),0);;
-   printf("cobo = %d, asad = %d\n",coboId,iAsAd);
+   // printf("cobo = %d, asad = %d\n",coboId,iAsAd);
    
    TObjArray *seg = fSegmentedData->FindSegmentByID(segid);
    if (!seg) seg = fSegmentedData->NewSegment(segid);
@@ -289,7 +290,7 @@ void TGetEventStore::ProcessAsAd(GETBasicFrame *asad) {
          if ( !fRequireHitBit || hits[67-iCh] ) {
             //               printf("hits in cobo = %d, asad = %d, aget = %d, ch = %d\n",asad->GetCoboID(),asad->GetAsadID(),iAGET,iCh);
             Int_t* adc = asad->GetSample(iAGET,iCh);
-            printf("ich = %d, adc = %p, adc = %d\n",iCh, adc, adc ? adc [1] : -1);
+            // printf("ich = %d, adc = %p, adc = %d\n",iCh, adc, adc ? adc [1] : -1);
             
             if (!adc || adc[0] == 0) continue;
             Int_t offset = asad->GetReadOffset() + fValidBucket[0];

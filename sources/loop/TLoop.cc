@@ -380,7 +380,7 @@ Bool_t art::TLoop::Resume()
       
       
    if (fCondition->IsSet(kEndOfRun)) {
-      fCondition->Unset(kEndOfRun);
+//      fCondition->Unset(kEndOfRun);
       for_each(itrBegin,itrEnd,std::mem_fun(&TProcessor::EndOfRun));
    }
    fCondition->Unset(kRunning);

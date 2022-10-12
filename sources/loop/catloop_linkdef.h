@@ -2,7 +2,7 @@
 /**
  * @file   catloop_linkdef.h
  * @date   Created : Feb 19, 2012 11:19:06 JST
- *   Last Modified :2019-03-04 23:11:52 JST (ota)
+ *   Last Modified : 2021-07-17 22:38:59 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -75,6 +75,8 @@
 #pragma link C++ class art::TFormulaData;
 #pragma link C++ class art::TFormulaDataGenerator;
 #pragma link C++ class art::TEventNumberConditionProcessor;
+#pragma link C++ class art::TArtTree-;
+   
 // #pragma link C++ class art::TAttParameter; 
 #endif /* __CINT__ */
 

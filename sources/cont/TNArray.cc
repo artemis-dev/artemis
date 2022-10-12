@@ -3,7 +3,7 @@
  * @brief
  *
  * @date   Created       : 2016-01-29 14:16:43 JST
- *         Last Modified : 2020-12-08 20:51:39 JST (ota)
+ *         Last Modified : 2021-04-12 18:30:06 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2016 Shinsuke OTA
@@ -321,7 +321,7 @@ bool TNArray::Load(int verbose)
 
       if (index >=  nEntries) {
          Error(__func__, "\nSomething goes wrong required index is larger than entries : index = %d, nEntries = %d",index,nEntries);
-#if 0         
+#if 1
          for (Int_t iVar = 0; iVar != nVars; ++iVar) {
             printf("vars[%d] = %f, IndexI = %d, GetMin() = %f, GetMax() = %f, GetStep() = %f, fTotalNumVals[%d] = %d\n",
                    iVar, vars[iVar], fVars[iVar].IndexI(vars[iVar]),

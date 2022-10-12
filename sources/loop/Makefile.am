@@ -54,6 +54,8 @@ SUBSRC+=IEventStore.cc
 SUBSRC+=TFormulaData.cc
 SUBSRC+=TFormulaDataGenerator.cc
 SUBSRC+=TEventNumberConditionProcessor.cc
+SUBSRC+=TArtTree.cc
+
 
 OPTSRC = 
 OPTSRC+=TAttParameter.cc
