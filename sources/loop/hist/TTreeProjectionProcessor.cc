@@ -5,7 +5,7 @@
  * @brief  tree projection
  *
  * @date   Created       : 2014-03-05 22:30:06 JST
- *         Last Modified : 2021-03-14 16:57:51 JST (ota)
+ *         Last Modified : 2023-01-28 22:41:41 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -88,12 +88,7 @@ void TTreeProjectionProcessor::Init(TEventCollection *col)
    
    TMacroReplacer replacer;
    if (!fReplacement.IsNull()) {
-      std::istringstream iss(fReplacement.Data());
-      printf("fReplacement %s\n",fReplacement.Data());
-      
-      YAML::Parser parser(iss);
-      YAML::Node doc;
-      parser.GetNextDocument(doc);
+      YAML::Node doc = YAML::Load(fReplacement.Data());
       replacer.Add(doc);
       input = replacer.Replace(input);
    }
@@ -107,11 +102,7 @@ void TTreeProjectionProcessor::Init(TEventCollection *col)
       return;
    }
 
-   ss.str("");
-   ss << input;
-   YAML::Parser parser(ss);
-   YAML::Node doc;
-   parser.GetNextDocument(doc);
+   YAML::Node doc = YAML::Load(input);
    if (!fParameter->LoadYAMLNode(doc)) {
       SetStateError("Error while loading histogram definitions.");
       return;

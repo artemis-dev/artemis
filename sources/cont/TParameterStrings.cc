@@ -2,7 +2,7 @@
 /**
  * @file   TParameterStrings.cc
  * @date   Created : May 18, 2012 14:18:07 JST
- *   Last Modified : 2016-07-22 08:38:50 JST (ota)
+ *   Last Modified : 2023-01-28 20:12:32 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *
@@ -130,21 +130,21 @@ Bool_t art::TParameterStrings::IsSet(const char* name)
 
 void operator >> (const YAML::Node &node, art::TParameterStrings *str) {
    std::string name,value;
-   for (YAML::Iterator it = node.begin(); it != node.end(); ++it) {
+   for (YAML::const_iterator it = node.begin(); it != node.end(); ++it) {
       std::vector <TString> prm;
-      it.first() >> name;
-      if (it.second().Type() == YAML::NodeType::Scalar) {
-	 it.second() >> value;
+      name = it->first.as<std::string>();
+      if (it->second.Type() == YAML::NodeType::Scalar) {
+	 value = it->second.as<std::string>();
 	 prm.push_back(value);
-      } else if (it.second().Type() == YAML::NodeType::Sequence) {
-	 for (YAML::Iterator itv = it.second().begin(); itv != it.second().end(); ++itv) {
+      } else if (it->second.Type() == YAML::NodeType::Sequence) {
+	 for (YAML::const_iterator itv = it->second.begin(); itv != it->second.end(); ++itv) {
 	    if (itv->Type() == YAML::NodeType::Scalar) {
-	       *itv >> value;
+               value = itv->as<std::string>();
 	       prm.push_back(value);
 	    } else if (itv->Type() == YAML::NodeType::Sequence) {
-               for (YAML::Iterator itv2 = itv->begin(); itv2 != itv->end(); ++itv2) {
+               for (YAML::const_iterator itv2 = itv->begin(); itv2 != itv->end(); ++itv2) {
                   if (itv2->Type() == YAML::NodeType::Scalar) {
-                     *itv2 >> value;
+                     value = itv2->as<std::string>();
 		     prm.push_back(value);
                   } else {
                      // NOT SUPPORTED

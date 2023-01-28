@@ -106,8 +106,8 @@ Bool_t art::TLoop::Load(const char* dirname, const char* basename, std::list<Lon
 #if 0
       // list keys
       TPRegexp patt("@[A-Z_]+@");
-      TObjArray *
-      patt.Match(lines,"",0,100,&pos
+
+
 #endif
       if (replace) {
          std::map<std::string,std::string>::const_iterator it = replace->begin();
@@ -119,14 +119,9 @@ Bool_t art::TLoop::Load(const char* dirname, const char* basename, std::list<Lon
             lines.ReplaceAll(Form("@%s@",key.c_str()),value.c_str());
          }
       }
-      std::istringstream iss(lines.Data());
-      YAML::Parser parser(iss);
-      YAML::Node doc;
+      YAML::Node doc = YAML::Load(lines.Data());
       std::string name, type, value;
-      
       loaded->push_back(fstat.fIno);
-      
-      parser.GetNextDocument(doc);
       if (!LoadYAMLNode(doc["Processor"],loaded)) {
          return kFALSE;
       }
@@ -148,10 +143,9 @@ Bool_t art::TLoop::Load(const char* dirname, const char* basename, std::list<Lon
 void ParseSequenceRecursive(const YAML::Node &node, TString& str)
 {
    if (node.Type() == YAML::NodeType::Sequence) {
-      for (YAML::Iterator itv = node.begin(); itv != node.end(); ++itv) {
+      for (YAML::const_iterator itv = node.begin(); itv != node.end(); ++itv) {
          if (itv->Type() == YAML::NodeType::Scalar) {
-            std::string value;
-            *itv >> value;
+            std::string value = itv->as<std::string>();
             str.Append(TString::Format("\"%s\",",value.c_str()));
          } else if (itv->Type() == YAML::NodeType::Sequence) {
             ParseSequenceRecursive(*itv,str);
@@ -165,19 +159,19 @@ Bool_t art::TLoop::LoadYAMLNode(const YAML::Node &node, std::list<Long_t>* loade
    std::string name, type, value;
    // iterate for all the processors
    TString dirsaved = fBaseDir;
-   for (YAML::Iterator it = node.begin(); it != node.end(); it++) {
-      if (const YAML::Node *include = (*it).FindValue("include")) {
-         if (include->Type() == YAML::NodeType::Map) {
+   for (YAML::const_iterator it = node.begin(); it != node.end(); it++) {
+      if (const YAML::Node include = (*it)["include"]) {
+         if (include.Type() == YAML::NodeType::Map) {
             //////////////////////////////////////////////////////////////////////
             // include template by replacing keywords
             //////////////////////////////////////////////////////////////////////
-            const YAML::Node *replaceNode = include->FindValue(kNodeKeyReplace);
-            const YAML::Node *nameNode = include->FindValue(kNodeKeyName);
+            const YAML::Node replaceNode = include[kNodeKeyReplace];
+            const YAML::Node nameNode = include[kNodeKeyName];
             if (!nameNode) {
                Error("LoadYAMLNode","no 'name' node is found in include node somewhere");
                return kFALSE;
             }
-            (*nameNode) >> name;
+            name = nameNode.as<std::string>();
             printf("loading %s\n",name.c_str());
             
             if (!replaceNode) {
@@ -199,17 +193,16 @@ Bool_t art::TLoop::LoadYAMLNode(const YAML::Node &node, std::list<Long_t>* loade
             TString lines;
             lines.ReadFile(fin);
             if (replaceNode) {
-               for (YAML::Iterator it = replaceNode->begin(), itend = replaceNode->end();
+               for (YAML::const_iterator it = replaceNode.begin(), itend = replaceNode.end();
                     it != itend; ++it) {
                   std::string key, value;
                   TString valstr;
-                  it.first() >> key;
-                  if (it.second().Type() == YAML::NodeType::Scalar) {
-                     it.second() >> value;
-                     valstr = value;
-                  } else if (it.second().Type() == YAML::NodeType::Sequence) {
+                  key = it->first.as<std::string>();
+                  if (it->second.Type() == YAML::NodeType::Scalar) {
+                     value = it->second.as<std::string>();
+                  } else if (it->second.Type() == YAML::NodeType::Sequence) {
                      valstr = "[";
-                     ParseSequenceRecursive(it.second(),valstr);
+                     ParseSequenceRecursive(it->second,valstr);
                      valstr.Remove(TString::kTrailing,',');
                      valstr.Append("]");
                   }
@@ -218,9 +211,7 @@ Bool_t art::TLoop::LoadYAMLNode(const YAML::Node &node, std::list<Long_t>* loade
             }
 //            printf("repalced\n");
 //            printf("%s\n",lines.Data());
-            std::istringstream iss(lines.Data());
-            YAML::Parser parser(iss);
-            parser.GetNextDocument(included_doc);
+            included_doc = YAML::Load(lines.Data());
             if (!LoadYAMLNode(included_doc["Processor"],loaded)) {
                Error("LoadYAMLNode","Error while loading %s",name.c_str());
                return kFALSE;
@@ -229,8 +220,7 @@ Bool_t art::TLoop::LoadYAMLNode(const YAML::Node &node, std::list<Long_t>* loade
             //////////////////////////////////////////////////////////////////////
             // include simple file
             //////////////////////////////////////////////////////////////////////
-            std::string name;
-            *include >> name;
+            std::string name = include.as<std::string>();
             const char* dir = gSystem->DirName(gSystem->ConcatFileName(fBaseDir,name.c_str()));
             const char* base = gSystem->BaseName(name.c_str());
             printf("%s %s %s %s\n",fBaseDir.Data(),name.c_str(),dir,base);
@@ -328,13 +318,13 @@ Bool_t art::TLoop::Resume()
    fCondition->Set(kRunning);
    // if the loop start at the first time, call BeginOfRun
    if (fCondition->IsSet(kBeginOfRun)) {
-      for_each(itrBegin,itrEnd,std::mem_fun(&TProcessor::BeginOfRun));
+      for_each(itrBegin,itrEnd,std::mem_fn(&TProcessor::BeginOfRun));
       fCondition->Unset(kBeginOfRun);
       fAnalysisInfo->SetAnalysisStartTime(TDatime().AsSQLString());
    }
    // do prerun
    // For the special call to remap branch etc.
-   for_each(itrBegin,itrEnd,std::mem_fun(&TProcessor::PreLoop));
+   for_each(itrBegin,itrEnd,std::mem_fn(&TProcessor::PreLoop));
    // start loop
    while (1) { 
      Int_t objectNumber = TProcessID::GetObjectCount();
@@ -374,14 +364,14 @@ Bool_t art::TLoop::Resume()
       printf("no event store\n");
    }
 
-   for_each(itrBegin,itrEnd,std::mem_fun(&TProcessor::PostLoop));
+   for_each(itrBegin,itrEnd,std::mem_fn(&TProcessor::PostLoop));
 
       
       
       
    if (fCondition->IsSet(kEndOfRun)) {
 //      fCondition->Unset(kEndOfRun);
-      for_each(itrBegin,itrEnd,std::mem_fun(&TProcessor::EndOfRun));
+      for_each(itrBegin,itrEnd,std::mem_fn(&TProcessor::EndOfRun));
    }
    fCondition->Unset(kRunning);
    ((TRint*)gApplication)->SetPrompt("artemis [%d] ");
@@ -396,6 +386,6 @@ Bool_t art::TLoop::Terminate()
    std::list<TProcessor*>::iterator itr;
    std::list<TProcessor*>::iterator itrBegin = fProcessors.begin();
    std::list<TProcessor*>::iterator itrEnd   = fProcessors.end();
-   for_each(itrBegin,itrEnd,std::mem_fun(&TProcessor::Terminate));   
+   for_each(itrBegin,itrEnd,std::mem_fn(&TProcessor::Terminate));   
    return kTRUE;
 }

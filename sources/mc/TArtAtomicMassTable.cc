@@ -2,7 +2,7 @@
 /**
  * @file   TArtAtomicMassTable.cc
  * @date   Created : Aug 04, 2011 19:04:38 JST
- *   Last Modified : 2019-03-12 03:12:56 JST (ota)
+ *   Last Modified : 2022-09-26 01:49:53 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -110,13 +110,13 @@ void TArtAtomicMassTable::SetMassTable(const char *filename, Int_t firstLine)
 
 Double_t TArtAtomicMassTable::GetAtomicMass(Int_t z, Int_t a)
 {
-   return fMass[z][a];
+   return fIsEvaluated[z][a] ? fMass[z][a] : fMass[1][1] * z + fMass[0][1] * (a - z) ;
 }
 
 Double_t TArtAtomicMassTable::GetNucleusMass(Int_t z, Int_t a)
 {
    Double_t electronMass = 0.511 * MeV;
-   if (!fIsEvaluated[z][a]) return -1.;
+   if (!fIsEvaluated[z][a]) return fMass[1][1] * z + fMass[0][1] * (a - z) - z * electronMass;
    return fMass[z][a] - z * electronMass;
 }
 

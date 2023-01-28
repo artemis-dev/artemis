@@ -39,14 +39,15 @@ bool TMacroReplacer::Add(const char* key, const char* value)
 
 bool TMacroReplacer::Add(const YAML::Node& node)
 {
-   for (YAML::Iterator it = node.begin(), itend = node.end(); it != itend; ++it) {
+   for (YAML::const_iterator it = node.begin(), itend = node.end(); it != itend; ++it) {
       std::string key,value;
-      it.first() >> key;
-      if (it.second().Type() != YAML::NodeType::Scalar) {
+      key = it->first.as<std::string>();
+      if (it->second.Type() != YAML::NodeType::Scalar) {
          printf("TMacroReplacer::Add : key '%s' has non scalar value",key.c_str());
          return false;
       }
-      it.second() >> value;
+      value = it->second.as<std::string>();
+      
       Add(key.c_str(),value.c_str());
    }
    return true;

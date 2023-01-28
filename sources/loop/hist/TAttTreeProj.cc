@@ -3,7 +3,7 @@
  * @brief  Attribute to fill the tree projection
  *
  * @date   Created       : 2014-03-03 23:30:16 JST
- *         Last Modified : 2020-04-30 11:26:26 JST (ota)
+ *         Last Modified : 2023-01-28 20:29:41 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -58,8 +58,10 @@ TAttTreeProj& TAttTreeProj::operator=(const TAttTreeProj& rhs)
    return *this;
 }
 
-void TAttTreeProj::Copy(TAttTreeProj &newatt) const
+void TAttTreeProj::Copy(TAttCut &newattin) const
 {
+   TAttTreeProj &newatt = (TAttTreeProj&)newattin;
+   
    newatt.fAxisAsync = fAxisAsync;
    newatt.fNeedSync  = kTRUE;
    TAttCut::Copy(newatt);

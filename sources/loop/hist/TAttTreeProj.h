@@ -3,7 +3,7 @@
  * @brief  Attribute to fill the tree projection histogram
  *
  * @date   Created       : 2014-03-03 23:29:51 JST
- *         Last Modified : Mar 05, 2014 17:18:10 JST
+ *         Last Modified : 2023-01-28 20:28:39 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -32,7 +32,7 @@ public:
    virtual ~TAttTreeProj();
 
    // copy this object
-   virtual void Copy(TAttTreeProj &newatt) const;
+   virtual void Copy(TAttCut &newatt) const;
    
    // fill each histogram
    inline virtual void FillProjection();

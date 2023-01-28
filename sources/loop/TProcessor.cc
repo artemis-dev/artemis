@@ -3,7 +3,7 @@
  * Base class for the user processors
  
  * @date   Created : Jul 10, 2013 17:10:19 JST
- *   Last Modified : 2020-11-27 00:03:34 JST (ota)
+ *   Last Modified : 2023-01-28 22:56:59 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *
@@ -394,8 +394,8 @@ void operator >> (const YAML::Node &node, art::TProcessor *&proc)
    std::string name, type;
    proc = NULL;
    try {
-      node["name"] >> name;
-      node["type"] >> type;
+      name = node["name"].as<std::string>();
+      type = node["type"].as<std::string>();
    } catch (YAML::KeyNotFound& e) {
       std::cout << e.what() << std::endl;
       proc->SetStateError("name and/or type is not defined");
@@ -419,16 +419,14 @@ void operator >> (const YAML::Node &node, art::TProcessor *&proc)
    proc->SetName(name.data());
 
    std::vector<TString> unknownKeyNames;
-   for (YAML::Iterator it = node.begin(), itend = node.end(); it != itend; ++it) {
-      std::string name;
-      it.first() >> name;
+   for (YAML::const_iterator it = node.begin(), itend = node.end(); it != itend; ++it) {
+      std::string name = it->first.as<std::string>();
       TString keyname = name;
       if (keyname != "name" &&
           keyname != "type" &&
           keyname != "parameter") {
          // unknown map keyname
          unknownKeyNames.push_back(keyname);
-
       }
    }
    

@@ -20,3 +20,4 @@
 /example/temp.root
 *.d
 *.so
+*.root

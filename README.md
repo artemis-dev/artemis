@@ -29,7 +29,7 @@ The artemis needs several root packages which may not be installed automatically
 * Minuit2 (root-minuit2)
 * Geometry (root-geom)
 
-ARTEMIS depends on [YAML-CPP](https://code.google.com/p/yaml-cpp/) 0.3.0 for loading steering and histgrum definition files. Please install it in advance as a shared object. (You have to cmake with -DBUILD_SHARED_LIBS=ON)
+ARTEMIS depends on [YAML-CPP](https://code.google.com/p/yaml-cpp/) 0.7.0 for loading steering and histgrum definition files. Please install it in advance as a shared object. (You have to cmake with -DYAML_BUILD_SHARED_LIBS=ON, -DBUILD_TESTING=OFF)
 
 
 1. Download latest **ARTEMIS** from [the release page](https://github.com/artemis-dev/artemis) with master branch 
