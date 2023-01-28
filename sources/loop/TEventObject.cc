@@ -2,7 +2,7 @@
 /**
  * @file   TEventObject.cc
  * @date   Created : Jul 10, 2013 14:10:50 JST
- *   Last Modified : 2016-07-15 10:55:01 JST (ota)
+ *   Last Modified : 2020-12-02 12:13:22 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -33,7 +33,7 @@ art::TEventObject::TEventObject(const char* name, void *obj, TString type, TStri
 
 }
 
-Bool_t art::TEventObject::SetBranch(TTree *tree)
+Bool_t art::TEventObject::SetBranch(TTree *tree,Int_t splitLevel)
 {
    if (!this->IsObject()) {
       // primitivee class
@@ -46,7 +46,7 @@ Bool_t art::TEventObject::SetBranch(TTree *tree)
       }
       tree->Branch(this->GetName(),*this->GetObjectRef(),leaflist);
    } else {
-      tree->Branch(this->GetName(),this->GetClass()->GetName(),this->GetObjectRef(),3200000,0);
+      tree->Branch(this->GetName(),this->GetClass()->GetName(),this->GetObjectRef(),3200000,splitLevel);
    }
    return kTRUE;
 }

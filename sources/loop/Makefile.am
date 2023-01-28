@@ -22,7 +22,6 @@ SUBSRC+=TModuleDecoderFactory.cc
 SUBSRC+=TModuleInfo.cc
 SUBSRC+=TModuleType.cc
 SUBSRC+=TOutputTreeProcessor.cc 
-SUBSRC+=TParameterStrings.cc 
 SUBSRC+=TProcessor.cc 
 SUBSRC+=TRandomNumberEventStore.cc 
 SUBSRC+=TRandomNumberProcessor.cc 
@@ -55,6 +54,8 @@ SUBSRC+=IEventStore.cc
 SUBSRC+=TFormulaData.cc
 SUBSRC+=TFormulaDataGenerator.cc
 SUBSRC+=TEventNumberConditionProcessor.cc
+SUBSRC+=TArtTree.cc
+
 
 OPTSRC = 
 OPTSRC+=TAttParameter.cc
@@ -68,7 +69,7 @@ DICTOBJ = $(DICTSRC:.cc=.o)
 DICTHDR = $(DICTSRC:.cc=.h)
 
 OPTHDR = $(OPTSRC:.cc=.h)
-OPTHDR+= TDataSource.h TArtTypes.h TProcessorParameter.h
+OPTHDR+= TDataSource.h 
 
 INCDIR = ../../include
 
@@ -99,6 +100,14 @@ $(DICTSRC): $(SUBHDR) catloop_linkdef.h
 	@cp -a $(include_HEADERS) $(INCDIR)
 	@touch .header
 
+if HAVE_ROOT_PCM
+DICTPCM = $(DICTSRC:.cc=_rdict.pcm)
+install-exec-local:
+	@echo Copying PCM file to $(libdir)
+	$(INSTALL) $(DICTPCM) $(libdir)
+uninstall-local:
+	rm -f $(libdir)/$(DICTPCM)
+endif
 
 .cc.o:
 

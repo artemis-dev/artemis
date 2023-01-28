@@ -2,7 +2,7 @@
 /**
  * @file   TRIDFEventStore.h
  * @date   Created : Jul 12, 2013 17:12:43 JST
- *   Last Modified : 2018-07-28 16:49:56 JST (ota)
+ *   Last Modified : 2021-04-12 13:51:55 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *
@@ -143,6 +143,8 @@ protected:
    // decode the scaler data
    static void ClassDecoderScaler(Char_t *buf, Int_t& offset, struct RIDFData* ridfdata);
 
+
+public:
    /*----------------------------------------
     * Structure for header 
     *

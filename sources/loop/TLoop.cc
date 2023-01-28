@@ -29,6 +29,7 @@
 #include <TROOT.h>
 #include <IEventStore.h>
 #include <TAnalysisInfo.h>
+#include "TDatime.h"
 
 const char* art::TLoop::kConditionName = "condition";
 const char* art::TLoop::kAnalysisInfoName = "analysisInfo";
@@ -49,10 +50,13 @@ art::TLoop::TLoop()
    fEventCollection = new TEventCollection;
    fCondition       = new TConditionBit;
    fAnalysisInfo    = new TAnalysisInfo;
+   fAnalysisInfo->SetBit(kMustCleanup);
+   
 }
 
 art::TLoop::~TLoop()
 {
+  Info("~TLoop","deconstruct");
    std::list<TProcessor*>::iterator itr;
    std::list<TProcessor*>::iterator itrBegin = fProcessors.begin();
    std::list<TProcessor*>::iterator itrEnd   = fProcessors.end();
@@ -238,6 +242,7 @@ Bool_t art::TLoop::LoadYAMLNode(const YAML::Node &node, std::list<Long_t>* loade
       TProcessor *proc = NULL;
       (*it) >> proc;
       if (!proc) return kFALSE;
+      printf("%s\n",proc->GetName());
       fProcessors.push_back(proc);
    }
    fBaseDir = dirsaved;
@@ -251,6 +256,7 @@ Bool_t art::TLoop::Init()
    std::list<TProcessor*>::iterator itr;
    std::list<TProcessor*>::iterator itrBegin = fProcessors.begin();
    std::list<TProcessor*>::iterator itrEnd   = fProcessors.end();
+   printf("itrBegin = %ld itrEnd = %ld\n",itrBegin, itrEnd);
    // initialization function
 //   fEventCollection->Clear();
    fEventCollection->Add(kConditionName,fCondition,kTRUE);
@@ -260,7 +266,7 @@ Bool_t art::TLoop::Init()
    TFolder *folder = (TFolder*) gROOT->FindObject(TString::Format("/artemis/loops/loop%d",fID));
    topfolder->Add(fAnalysisInfo);
 //   fAnalysisInfo->SetProcessors(fProcessors);
-   for (itr = itrBegin; itr!=itrEnd; itr++) {
+   for (itr = itrBegin; itr!=itrEnd; ++itr) {
       TProcessor *proc = (*itr);
       proc->InitProc(fEventCollection);
       if (proc->IsError()) {
@@ -374,7 +380,7 @@ Bool_t art::TLoop::Resume()
       
       
    if (fCondition->IsSet(kEndOfRun)) {
-      fCondition->Unset(kEndOfRun);
+//      fCondition->Unset(kEndOfRun);
       for_each(itrBegin,itrEnd,std::mem_fun(&TProcessor::EndOfRun));
    }
    fCondition->Unset(kRunning);
@@ -390,5 +396,6 @@ Bool_t art::TLoop::Terminate()
    std::list<TProcessor*>::iterator itr;
    std::list<TProcessor*>::iterator itrBegin = fProcessors.begin();
    std::list<TProcessor*>::iterator itrEnd   = fProcessors.end();
-   for_each(itrBegin,itrEnd,std::mem_fun(&TProcessor::Terminate));
+   for_each(itrBegin,itrEnd,std::mem_fun(&TProcessor::Terminate));   
+   return kTRUE;
 }

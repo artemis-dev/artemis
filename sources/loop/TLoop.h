@@ -3,7 +3,7 @@
 /**
  * @file   TLoop.h
  * @date   Created : Apr 26, 2012 19:26:12 JST
- *   Last Modified : 2019-04-26 10:38:42 JST (ota)
+ *   Last Modified : 2021-07-17 21:54:34 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -60,6 +60,8 @@ public:
 
    virtual Bool_t LoadYAMLNode(const YAML::Node& node, std::list<Long_t> *loaded);
 
+   Bool_t IsDone() const { return fCondition->IsSet(kEndOfRun); }
+   
    
    TConditionBit *GetCondition() { return fCondition; }
 
@@ -69,7 +71,7 @@ private:
    TConditionBit *fCondition;
    
    TEventCollection   *fEventCollection;
-   std::list<TProcessor*>   fProcessors; //
+   std::list<TProcessor*>   fProcessors; //!
    Int_t fID;
 
    TString fBaseDir; //! base directory

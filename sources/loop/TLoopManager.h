@@ -2,7 +2,7 @@
 /**
  * @file   TLoopManager.h
  * @date   Created : Apr 21, 2012 17:21:44 JST
- *   Last Modified :2019-02-28 21:58:54 JST (ota)
+ *   Last Modified : 2020-11-27 00:13:41 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -12,8 +12,8 @@
 #define ART_TLOOPMANAGER_H
 
 #include <TThreadPool.h>
-#include <TLoopControl.h>
-#include <TLoop.h>
+#include "TLoopControl.h"
+#include "TLoop.h"
 
 namespace art {
    class TLoopManager;

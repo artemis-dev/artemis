@@ -2,7 +2,7 @@
 /**
  * @file   TOutputTreeProcessor.h
  * @date   Created : Jul 11, 2013 17:11:09 JST
- *   Last Modified : Jul 22, 2013 18:47:32 JST
+ *   Last Modified : 2021-07-17 20:24:58 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -11,12 +11,14 @@
 #ifndef TOUTPUTTREEPROCESSOR_H
 #define TOUTPUTTREEPROCESSOR_H
 
-#include <TProcessor.h>
+#include "TProcessor.h"
 #include <TFile.h>
-#include <TTree.h>
+
 
 namespace art {
    class TOutputTreeProcessor;
+   class TArtTree;
+   
 }
 
 class art::TOutputTreeProcessor  : public TProcessor {
@@ -35,9 +37,11 @@ public:
 private:
    TString  fFileName;  // output file name
    TString  fTreeName;  // output tree name
-   TFile   *fFile;
-   TTree   *fTree;      //-> output tree
-   TList   *fObjects;
+   TFile   *fFile; //! output file
+   TArtTree   *fTree; //! output tree
+   TList   *fObjects; //! list of objects
+   Parameter<Int_t> fSplitLevel; // split level of tree
+   
 
    ClassDef(TOutputTreeProcessor,1);
 };

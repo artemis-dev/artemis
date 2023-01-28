@@ -16,4 +16,5 @@
 #pragma link C++ class art::TAnalysisInfo-;
 #pragma link C++ class art::TMacroReplacer-;
 #pragma link C++ namespace art::Util;
+#pragma link C++ namespace TArtSystemOfUnit;
 #endif /* __CINT__ */

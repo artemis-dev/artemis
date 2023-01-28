@@ -3,7 +3,7 @@
  * @brief  generate timestamp pulse shape with slow sacler
  *
  * @date   Created       : 2018-07-06 15:51:35 JST
- *         Last Modified : 2018-07-06 19:08:37 JST (ota)
+ *         Last Modified : 2021-04-19 15:46:26 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2018 Shinsuke OTA
@@ -85,9 +85,10 @@ void TPulseShapeTimestampProcessor::Init(TEventCollection* col)
    Info("Init","Slow: ID %d, Freq %.5g",fSlowID,fSlowFrequency);
 
    Int_t size = fMaxFastID + 1;
-   fFastSaved = DoubleVec_t(size);
+   fFastSaved = DoubleVec_t(size,0);
    fMaxTimeByFastClock = DoubleVec_t(size);
    fFirstTimestamp = DoubleVec_t(size,-1.);
+   fFirstTimestampSlow = DoubleVec_t(size,-1.);
    for (Int_t i = 0; i < size; ++i) {
       fMaxTimeByFastClock[i] = TMath::Power(2,fBits)/fFastFrequency[i];
    }
@@ -103,17 +104,44 @@ void TPulseShapeTimestampProcessor::BeginOfRun()
 void TPulseShapeTimestampProcessor::Process() {
    fOutput->Clear("C");
    Double_t times = 0.;
-   const Double_t slow = (*fScalerInput)->GetValue(fSlowID);
+   Double_t slow = (*fScalerInput)->GetValue(fSlowID);
    const Int_t nHits = (*fInput)->GetEntriesFast();
    Int_t nUsed = 0;
    for (Int_t iHit = 0; iHit < nHits; ++iHit) {
       art::TCatPulseShape *pulse = static_cast<art::TCatPulseShape*>((*fInput)->UncheckedAt(iHit));
       const Int_t id = pulse->GetID();
-      const Double_t fast = pulse->GetTime();
       if (fFastID >= 0 && id != fFastID) {
          continue;
       }
       nUsed++;
+#if 0
+      Double_t fast = pulse->GetTime() / fFastFrequency[id];
+      slow /= fSlowFrequency;
+      if (fFirstTimestamp[id] < 0 && fast > 0) {
+         fFirstTimestamp[id] = fast;
+         fFirstTimestampSlow[id] = slow;
+         fast = 0.;
+         slow = 0.;
+      } else {
+         fast -= fFirstTimestamp[id] ;
+         slow -= fFirstTimestampSlow[id];
+      }
+      
+      while (fast < fFastSaved[id]) {
+         fast += fMaxTimeByFastClock[id];
+      }
+      while (fast + fMaxTimeByFastClock[id] < slow) {
+         fast += fMaxTimeByFastClock[id];
+      }
+      
+      fFastSaved[id] = fast;
+      fSlowSaved = slow;
+      times += fast;
+      
+      
+#else      
+      Double_t fast = pulse->GetTime();
+      
       if (fFirstTimestamp[id] < 0) {
          fFirstTimestamp[id] = fast;
       }
@@ -129,6 +157,7 @@ void TPulseShapeTimestampProcessor::Process() {
       fFastSaved[id] = fast;
       fSlowSaved = slow;
       times += (fast - fFirstTimestamp[id]) / fFastFrequency[id]  + fNumCycles * fMaxTimeByFastClock[id];
+#endif      
    }
    fOutput->SetValue(times / nUsed);
 }

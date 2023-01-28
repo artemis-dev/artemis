@@ -111,6 +111,7 @@ Bool_t Util::MPIFileMerger(const char* filename)
       }
       TString files;
       for (Int_t i = 0; i < npe; ++i) {
+         // ファイルの存在の確認はしたほうが良い？mergerがやってくれているか？
          merger.AddFile(Form("%s%d ",filename,i));
       }
       status = merger.Merge();

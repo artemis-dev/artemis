@@ -3,7 +3,7 @@
  * @brief  generate timestamp using pulse shape
  *
  * @date   Created       : 2018-07-06 15:37:09 JST
- *         Last Modified : 2018-07-06 18:56:23 JST (ota)
+ *         Last Modified : 2021-04-19 12:00:40 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2018 Shinsuke OTA
@@ -54,6 +54,7 @@ protected:
    Double_t fSlowSaved;
    DoubleVec_t fFastFrequency;
    DoubleVec_t fFirstTimestamp;
+   DoubleVec_t fFirstTimestampSlow;
    DoubleVec_t fMaxTimeByFastClock;
    Int_t fMaxFastID; // maximum id of input pulse (zero origin)
 

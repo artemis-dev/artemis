@@ -30,6 +30,7 @@
 #pragma link C++ class art::TModuleDecoderV1190;
 #pragma link C++ class art::TModuleDecoderV1290;
 #pragma link C++ class art::TModuleDecoderMXDC32;
+#pragma link C++ class art::TModuleDecoderV550;
 
 #endif /* __CINT__ */
 

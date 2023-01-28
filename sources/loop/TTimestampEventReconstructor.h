@@ -3,7 +3,7 @@
  * @brief  event reconstruction using timestamp
  *
  * @date   Created       : 2018-06-27 15:37:06 JST
- *         Last Modified : 2018-07-17 12:52:21 JST (ota)
+ *         Last Modified : 2021-04-19 11:26:53 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2018 Shinsuke OTA
@@ -54,7 +54,7 @@ protected:
    TString fOutputFileName; // vector of file names
 
    Int_t fDoUpdateOffset; // update offset
-   DoubleVec_t fAdditionalOffset;
+   std::vector<std::deque<double> > fAdditionalOffset;
 
    std::vector<TSimpleData**> fTimestamps;
    std::vector<TEventHeader**> fEventHeaders;

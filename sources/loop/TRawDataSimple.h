@@ -2,7 +2,7 @@
 /**
  * @file   TRawDataSimple.h
  * @date   Created : Jul 22, 2013 18:22:01 JST
- *   Last Modified : 2016-08-17 14:47:06 JST (ota)
+ *   Last Modified : 2020-11-27 00:15:32 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -11,7 +11,7 @@
 #ifndef TRAWDATASIMPLE_H
 #define TRAWDATASIMPLE_H
 
-#include <TRawDataObject.h>
+#include "TRawDataObject.h"
 
 namespace art {
 

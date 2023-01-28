@@ -2,7 +2,7 @@
 /**
  * @file   TRandomNumberProcessor.h
  * @date   Created : Jul 11, 2013 22:11:10 JST
- *   Last Modified : 2018-02-04 11:04:43 JST (ota)
+ *   Last Modified : 2020-11-27 00:14:49 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -11,8 +11,8 @@
 #ifndef TRANDOMNUMBERPROCESSOR_H
 #define TRANDOMNUMBERPROCESSOR_H
 
-#include <TProcessor.h>
-#include <TSimpleData.h>
+#include "TProcessor.h"
+#include "TSimpleData.h"
 
 
 namespace art {

@@ -2,7 +2,7 @@
 /**
  * @file   TLoopControl.h
  * @date   Created : Jul 10, 2013 17:10:33 JST
- *   Last Modified : Sep 17, 2013 15:01:50 JST
+ *   Last Modified : 2020-11-27 00:13:29 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -12,7 +12,7 @@
 #define TLOOPCONTROL_H
 
 #include <TThreadPool.h>
-#include <TLoop.h>
+#include "TLoop.h"
 
 namespace art {
    class TLoopControl;

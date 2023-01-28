@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.59])
-AC_INIT(artemis, 1.0.0, [artemis-dev@cns.s.u-tokyo.ac.jp])
+AC_INIT(artemis, 1.1.0, [artemis-dev@cns.s.u-tokyo.ac.jp])
 AM_INIT_AUTOMAKE([foreign])
 AC_CONFIG_SRCDIR([sources/main/main.cc])
 AC_CONFIG_HEADERS([config.h])
@@ -58,7 +58,13 @@ AC_SUBST([YAML_CPP_LIB],["-L$WITH_YAML_CPP/lib -lyaml-cpp"])
 fi
 
 ROOTLIBS="`$ROOTSYS/bin/root-config --glibs`"
+ROOTVER="`$ROOTSYS/bin/root-config --version`"
+ROOTVER="${ROOTVER:0:1}"
 AC_SUBST(ROOTLIBS)
+AC_SUBST(ROOTVER)
+AM_CONDITIONAL(HAVE_ROOT_PCM, test $ROOTVER -ge 6)
+
+
 
 # check for get decoder
 AC_ARG_WITH([get-decoder],

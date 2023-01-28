@@ -3,7 +3,7 @@
  * @brief
  *
  * @date   Created       : 2014-05-15 13:08:41 JST
- *         Last Modified : May 15, 2014 14:04:11 JST
+ *         Last Modified : 2020-10-04 18:19:55 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -17,7 +17,6 @@
 #pragma link off all classes;
 #pragma link off all functions;
 // tree projection
-#pragma link C++ class art::TParameterObject+;
 #pragma link C++ class art::TParameterLoader;
 #pragma link C++ class art::TParameterArrayLoader;
 #endif

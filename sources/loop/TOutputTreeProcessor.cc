@@ -2,7 +2,7 @@
 /**
  * @file   TOutputTreeProcessor.cc
  * @date   Created : Jul 11, 2013 17:11:41 JST
- *   Last Modified : 2018-10-03 04:37:45 JST (ota)
+ *   Last Modified : 2021-07-17 20:25:19 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -14,6 +14,7 @@
 #include <TROOT.h>
 #include <TArtemisUtil.h>
 #include <TAnalysisInfo.h>
+#include "TArtTree.h"
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -30,12 +31,15 @@ art::TOutputTreeProcessor::TOutputTreeProcessor()
    : fFile(NULL), fTree(NULL) {
    RegisterProcessorParameter("FileName","The name of output file",fFileName,TString("temp.root"));
    RegisterProcessorParameter("TreeName","The name of output tree",fTreeName,TString("tree"));
+   Register(fSplitLevel("SplitLevel", "Split level of tree defined in TTree (default is changed to be 0)",0));
    fObjects = new TList;
 }
 art::TOutputTreeProcessor::~TOutputTreeProcessor()
 {
-   if (fTree) fTree->GetUserInfo()->Clear();
-   if (fFile) fFile->Close();
+   if (gROOT->GetListOfFiles()->FindObject(fFile)) {
+      if (fTree) fTree->GetUserInfo()->Clear();
+      fFile->Close();
+   }
    delete fObjects;
 }
 
@@ -59,13 +63,13 @@ void art::TOutputTreeProcessor::Init(TEventCollection *col)
       return;
    }
    TAnalysisInfo::AddTo(fFile);
-   fTree = new TTree(fTreeName,fTreeName);
+   fTree = new TArtTree(fTreeName,fTreeName);
    // assume all of the objects inherit from TObject
    TIter *iter = col->GetIter();
    TEventObject *obj;
    while ((obj = (TEventObject*)iter->Next())) {
       if (obj->IsPassive()) continue;
-      obj->SetBranch(fTree);
+      obj->SetBranch(fTree,fSplitLevel);
 #if 0      
       if (!obj->IsObject()) {
          // primitivee class
@@ -78,7 +82,7 @@ void art::TOutputTreeProcessor::Init(TEventCollection *col)
          }
          fTree->Branch(obj->GetName(),*obj->GetObjectRef(),leaflist);
       } else {
-         fTree->Branch(obj->GetName(),obj->GetClass()->GetName(),obj->GetObjectRef(),3200000,0);
+         fTree->Branch(obj->GetName(),obj->GetClass()->GetName(),obj->GetObjectRef(),3200000,fSplitLevel);
       }
 #endif   
       fObjects->Add(obj);

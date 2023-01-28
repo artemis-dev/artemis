@@ -12,7 +12,7 @@
 #ifndef TRAWTIMINGWITHEDGE_H
 #define TRAWTIMINGWITHEDGE_H
 
-#include <TRawTiming.h>
+#include "TRawTiming.h"
 
 namespace art{
 

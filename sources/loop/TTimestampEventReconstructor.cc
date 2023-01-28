@@ -3,7 +3,7 @@
  * @brief  event reconstruction using timestamp
  *
  * @date   Created       : 2018-06-27 15:37:30 JST
- *         Last Modified : 2018-08-20 18:42:46 JST (ota)
+ *         Last Modified : 2021-04-19 19:29:53 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2018 Shinsuke OTA
@@ -19,6 +19,7 @@
 #include <TROOT.h>
 #include <TMath.h>
 #include <TArtemisUtil.h>
+#include <numeric>
 
 using art::TTimestampEventReconstructor;
 
@@ -91,7 +92,7 @@ void TTimestampEventReconstructor::Init(TEventCollection *col)
    fNumLists = fFileNames.size();
    fHeaderQueue.resize(fNumLists);
    fTimestampQueue.resize(fNumLists);
-   fAdditionalOffset.resize(fNumLists,0);
+   fAdditionalOffset.resize(fNumLists,std::deque<double>());
 
    //////////////////////////////////////////////////////////////////////
    // set output file
@@ -195,7 +196,9 @@ void TTimestampEventReconstructor::Process()
    }
 
    if (fMaxAllCombination) {
+      
       if (fMaxAllCombination > fTimestampQueue[0].size()) return;
+      
       // make all the combination
       for (Int_t iList = 0; iList < fNumLists; ++iList) {
          Double_t min = TMath::Limits<Double_t>::Max();
@@ -207,8 +210,15 @@ void TTimestampEventReconstructor::Process()
                if (max < tdiff) max = tdiff;
             }
          }
+         const Int_t kTokens = 6;         
+         Double_t width = fInputLists[iList*kTokens + 4].Atof();
+         if (max - min > 1e6 * width) {
+            min = max - 1e6 * width;
+         }
          Int_t nbins = 1e6;
          fTimestampHistsAll[iList]->SetBins(nbins,min,max);
+         Info(__func__,"SetBins[%d] : nbins = %d, min = %f, max = %f, width = %g\n",iList,nbins,min,max,width );
+         
          for (Int_t i = 0, ni = fTimestampQueue[iList].size(); i < ni; ++i) {
             for (Int_t j = 0, nj = fTimestampQueue[iList].size(); j < nj; ++j) {
                Double_t tdiff = fTimestampQueue[iList][i] - fTimestampQueue[0][j];
@@ -256,10 +266,16 @@ void TTimestampEventReconstructor::Process()
       for (Int_t i = 1; i < fNumLists; ++i) {
          while (fTimestampQueue[i].size()) {
             Double_t timestamp = fTimestampQueue[i].front();
-            Double_t tdiff = timestamp - timestampOrigin + fAdditionalOffset[i];
+            double offset = 0.;
+            if (int size = fAdditionalOffset[i].size()) {
+               offset = std::accumulate(fAdditionalOffset[i].begin(),fAdditionalOffset[i].end(),0.)/size;
+            }
+            Double_t tdiff = timestamp - timestampOrigin + offset;
             if (tdiff < fSearchWindowStarts[i]) {
                // pop timestamp because it becomes old
                Pop(i);
+//               Warning(__func__,"old ts [%d] ts = %f, ref = %f, off = %f, diff = %f\n",i,timestamp, timestampOrigin, offset, tdiff);
+               
                fTimestampHistsAll[i]->Fill(tdiff);
                if (fTimestampQueue[i].size() == 0) {
                   // no more loop is available
@@ -267,6 +283,7 @@ void TTimestampEventReconstructor::Process()
                }
             } else if (tdiff > fSearchWindowEnds[i]) {
                // pop timestamp reference because it becomes old
+//               Warning(__func__,"old tref [%d] ts = %f, ref = %f, off = %f, diff = %f\n",i,timestamp, timestampOrigin, offset, tdiff);
                Pop(0);
                fTimestampHistsAll[0]->Fill(0);
                if (fTimestampQueue[0].size() == 0) {
@@ -275,16 +292,37 @@ void TTimestampEventReconstructor::Process()
                }
                // get new timestamp origin
                timestampOrigin = fTimestampQueue[0].front();
+               // reset found 
+               foundTimestamps = 1;
             } else {
                // timestamp is within the search window
+//               Warning(__func__,"found [%d] ts = %f, ref = %f, off = %f, diff = %f\n",i,timestamp, timestampOrigin, offset, tdiff);
                foundTimestamps++;
                break;
             }
          }
       }
 
-      if (foundTimestamps != fNumLists) return;
+      if (foundTimestamps != fNumLists) {
+         foundTimestamps = 1;
+         bool needNextEvent = false;
+         for (int i = 0; i < fNumLists; ++i) {
+            if (fTimestampQueue[i].size() == 0) {
+               needNextEvent = true;
+            }
+         }
+         if (needNextEvent) {
+            return;            
+         } else {
+            continue;
+         }
+         
+      }
+      
+
+
       Double_t timeref = fTimestampQueue[0].front();
+      
 #if 0      
       Info("Process","Match found");
 #endif      
@@ -296,12 +334,26 @@ void TTimestampEventReconstructor::Process()
 #endif         
          Pop(i);
          fOutputEventLists[i]->AddEntry(entry,timestamp);
-         fTimestampHists[i]->Fill(timestamp-timeref + fAdditionalOffset[i]);
-         fTimestampHistsAll[i]->Fill(timestamp-timeref + fAdditionalOffset[i]);
+         double offset = 0.;
+         if (int size = fAdditionalOffset[i].size()) {
+            offset = std::accumulate(fAdditionalOffset[i].begin(),fAdditionalOffset[i].end(),0.) / size;
+         }
+         fTimestampHists[i]->Fill(timestamp-timeref + offset);
+#if 0
+         if (timestamp - timeref + offset < fSearchWindowStarts[i]) {
+            Warning(__func__,"[%d] ts = %f, ref = %f, off = %f, diff = %f, ws = %f, we = %f\n",
+                    i, timestamp, timeref, offset, timestamp - timeref + offset, fSearchWindowStarts[i], fSearchWindowEnds[i]
+               );
+         }
+#endif         
+         fTimestampHistsAll[i]->Fill(timestamp-timeref + offset);
          Double_t mean = (fSearchWindowStarts[i] + fSearchWindowEnds[i]) * 0.5;
          Double_t halfwidth = (fSearchWindowEnds[i] - fSearchWindowStarts[i]) * 0.5;
-         if (fDoUpdateOffset && i > 0 && TMath::Abs(timestamp - timeref + fAdditionalOffset[i] - mean) < halfwidth) {
-            fAdditionalOffset[i] = mean + timeref - timestamp;
+         if (fDoUpdateOffset && i > 0 && TMath::Abs(timestamp - timeref + offset - mean) < halfwidth) {
+            if (fAdditionalOffset[i].size() > 10.) {
+               fAdditionalOffset[i].pop_front();
+            }
+            fAdditionalOffset[i].push_back(mean + timeref - timestamp);
 //            printf("offset[%d] = %f\n",i,fAdditionalOffset[i]);
          }
       }

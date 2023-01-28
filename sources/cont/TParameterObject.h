@@ -76,7 +76,7 @@ protected:
    }
 
    typedef std::map<TString,TProcessorParameter*> ParameterMap_t;
-   ParameterMap_t fParameterMap;
+   ParameterMap_t fParameterMap; //!
    TParameterStrings fParameterStrings; //!
    
 

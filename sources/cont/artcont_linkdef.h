@@ -3,7 +3,7 @@
  * @brief
  *
  * @date   Created       : 2014-10-29 18:10:16 JST
- *         Last Modified : 2019-05-15 11:16:07 JST (ota)
+ *         Last Modified : 2020-12-08 20:57:09 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -17,6 +17,7 @@
 #pragma link off all classes;
 #pragma link off all functions;
 
+#pragma link C++ class art::TParameterObject+;
 #pragma link C++ class art::TCatReadoutPad;
 #pragma link C++ class art::TCatReadoutPadArray;
 #pragma link C++ class art::TCatPulseShape-;
@@ -34,6 +35,8 @@
 #pragma link C++ class art::TNArray+;
 #pragma link C++ class art::TNArray::Variable+;
 #pragma link C++ class art::TDetectorGeometryInfo+;
+#pragma link C++ class art::TTpcStaticGasProperty+;   
+#pragma link C++ class art::TParameterStrings;
 
 #endif /* __CINT__ */
 
