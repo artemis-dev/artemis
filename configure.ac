@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.59])
-AC_INIT(artemis, 1.0.0, [artemis-dev@cns.s.u-tokyo.ac.jp])
+AC_INIT(artemis, 1.1.0, [artemis-dev@cns.s.u-tokyo.ac.jp])
 AM_INIT_AUTOMAKE([foreign])
 AC_CONFIG_SRCDIR([sources/main/main.cc])
 AC_CONFIG_HEADERS([config.h])
