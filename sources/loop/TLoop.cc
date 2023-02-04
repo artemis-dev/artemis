@@ -18,6 +18,7 @@
 #include <yaml-cpp/yaml.h>
 
 #include <algorithm>
+#include <functional>
 
 #include <TProcessID.h>
 #include <TRint.h>

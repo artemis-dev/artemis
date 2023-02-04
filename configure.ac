@@ -54,7 +54,7 @@ else
 AC_DEFINE([HAVE_YAML_CPP],[1],[Define to 1 if you have the yaml-cpp library])
 AC_SUBST([YAML_CPP_INCLUDE_DIR],["$WITH_YAML_CPP/include"])
 AC_SUBST([YAML_CPP_INCLUDE],["-I$WITH_YAML_CPP/include"])
-AC_SUBST([YAML_CPP_LIB],["-L$WITH_YAML_CPP/lib -lyaml-cpp"])
+AC_SUBST([YAML_CPP_LIB],["-L$WITH_YAML_CPP/lib -L$WITH_YAML_CPP/lib64 -lyaml-cpp"])
 fi
 
 ROOTLIBS="`$ROOTSYS/bin/root-config --glibs`"
