@@ -11,14 +11,14 @@
 #include "TLoopManager.h"
 #include "TSystem.h"
 
-// ClassImp(art::TArtTree)
+ClassImp(art::TArtTree)
 
 using art::TArtTree;
 
 TArtTree::TArtTree()
 {
    
-}
+ }
 
 TArtTree::TArtTree (const char *name, const char *title, Int_t splitlevel, TDirectory *diry)
    : TTree(name,title,splitlevel,diry)
@@ -55,16 +55,16 @@ Long64_t TArtTree::Scan(const char *varexp, const char *selection, Option_t *opt
 }
 
 
-Int_t TArtTree::Write (const char *name, Int_t option, Int_t bufsize)
-{
-   TTree::Write(name,option,bufsize);
-}
-
-Int_t TArtTree::Write (const char *name, Int_t option, Int_t bufsize) const
-{
-   TTree::Write(name,option,bufsize);
-}
-
+//Int_t TArtTree::Write (const char *name, Int_t option, Int_t bufsize)
+//{
+//   TTree::Write(name,option,bufsize);
+//}
+//
+//Int_t TArtTree::Write (const char *name, Int_t option, Int_t bufsize) const
+//{
+//   TTree::Write(name,option,bufsize);
+//}
+//
 void TArtTree::SuspendLoop() {
    TLoop *loop = TLoopManager::Instance()->GetLoop(0);
    if (!loop) return;

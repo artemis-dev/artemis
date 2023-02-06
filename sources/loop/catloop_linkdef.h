@@ -75,7 +75,7 @@
 #pragma link C++ class art::TFormulaData;
 #pragma link C++ class art::TFormulaDataGenerator;
 #pragma link C++ class art::TEventNumberConditionProcessor;
-#pragma link C++ class art::TArtTree-;
+#pragma link C++ class art::TArtTree+;
    
 // #pragma link C++ class art::TAttParameter; 
 #endif /* __CINT__ */

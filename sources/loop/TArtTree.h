@@ -27,14 +27,14 @@ public:
    virtual Long64_t Draw(const char *varexp, const char *selection="", Option_t *option="", Long64_t nentries=kMaxEntries, Long64_t firstentry=0);
    virtual Long64_t Draw(const char *varexp, const TCut &selection, Option_t *option="", Long64_t nentries=kMaxEntries, Long64_t firstentry=0);
    virtual Long64_t Scan(const char *varexp="", const char *selection="", Option_t *option="", Long64_t nentries=kMaxEntries, Long64_t firstentry=0);
-   virtual Int_t 	Write (const char *name=0, Int_t option=0, Int_t bufsize=0);
-   virtual Int_t 	Write (const char *name=0, Int_t option=0, Int_t bufsize=0) const;
+//   virtual Int_t 	Write (const char *name=0, Int_t option=0, Int_t bufsize=0);
+//   virtual Int_t 	Write (const char *name=0, Int_t option=0, Int_t bufsize=0) const;
 
    virtual void SuspendLoop();
    virtual void ResumeLoop();
    
 
-//   ClassDef(TArtTree,1)
+   ClassDef(TArtTree,1)
 }; // end of TArtTree
 
 #endif // #ifndef INCLUDE_GUARD_UUID_552D1ACF_1583_40A0_82BC_47674BD95155}
