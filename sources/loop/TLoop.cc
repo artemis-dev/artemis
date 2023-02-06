@@ -201,6 +201,7 @@ Bool_t art::TLoop::LoadYAMLNode(const YAML::Node &node, std::list<Long_t>* loade
                   key = it->first.as<std::string>();
                   if (it->second.Type() == YAML::NodeType::Scalar) {
                      value = it->second.as<std::string>();
+                     valstr = value;
                   } else if (it->second.Type() == YAML::NodeType::Sequence) {
                      valstr = "[";
                      ParseSequenceRecursive(it->second,valstr);
