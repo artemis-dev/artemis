@@ -3,7 +3,7 @@
  * @brief  Tree projection definitions
  *
  * @date   Created       : 2014-03-05 10:15:05 JST
- *         Last Modified : 2023-01-28 21:02:02 JST (ota)
+ *         Last Modified : 2023-02-09 14:11:14 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -100,7 +100,7 @@ Bool_t TTreeProjection::LoadYAMLNode(const YAML::Node &node)
    if (!groupNode && !includeNode) {
    }
 #endif
-   if (groupNode.IsNull() && includeNode.IsNull()) {
+   if (!groupNode && !includeNode) {
       
       Error(kMethodName,"At least one group or include node should be contained");
       return kFALSE;
