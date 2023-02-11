@@ -25,6 +25,7 @@ LDFLAGS = -O \
 	-L../loop/rdf/.libs -lartrdf \
 	-L../loop/ridf/.libs -lartridf \
 	-L../loop/decoder/.libs -lartdecoder  \
+	-L../loop/streaming/.libs -lartstreaming  \
 	-L../loop/param/.libs -lartparam   \
 	-L../cont/.libs -lartcont \
 	-L../core/.libs -lcatcore \
