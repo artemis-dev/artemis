@@ -20,18 +20,18 @@ public:
    void SetID(int id) { T::fgID = id; }
 
 protected:
-   static const bool fgIsRegistered;
+   static const bool kIsRegistered;
    TStreamingModuleDecoderImpl();
 };
 
 template <typename T>
 art::TStreamingModuleDecoderImpl<T>::TStreamingModuleDecoderImpl()
-: TStreamingModuleDecoder(fgIsRegistered)
+: TStreamingModuleDecoder(kIsRegistered)
 {
 }
 
 template <typename T>
-const bool art::TStreamingModuleDecoderImpl<T>::fgIsRegistered =
+const bool art::TStreamingModuleDecoderImpl<T>::kIsRegistered =
    art::TStreamingModuleDecoderFactory::Register(T::fgName, &art::TStreamingModuleDecoderImpl<T>::Create);
 
 

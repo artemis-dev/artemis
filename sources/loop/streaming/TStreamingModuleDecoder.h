@@ -27,6 +27,9 @@ public:
    // clear hits
    virtual void Clear() = 0;
 
+
+   
+
 public:
 
 private:

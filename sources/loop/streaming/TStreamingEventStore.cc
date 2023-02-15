@@ -2,8 +2,8 @@
  * @file   TStreamingEventStore.cc
  * @brief  Streaming Data Event Store
  *
- * @date   Created       : 2017-12-21 00:29:39 JST
- *         Last Modified : 2023-02-11 15:15:10 JST
+ * @date   Created       : 2023-02-11 12:00:00 JST
+ *         Last Modified : 2023-02-15 14:34:52 JST
  * @author Shinsuke OTA <ota@rcnp.osaka-u.ac.jp>
  *
  *    (C) 2023 Shinsuke OTA
@@ -12,15 +12,19 @@
 #include "TStreamingEventStore.h"
 
 #include "TSystem.h"
+#include "TObjArray.h"
+
 #include "TEventHeader.h"
 #include "TRunInfo.h"
 #include "TSegmentedData.h"
 #include "TFileDataSource.h"
+#include "TStreamingModuleDecoderFactory.h"
 
 ClassImp(art::TStreamingEventStore)
 
 
 art::TStreamingEventStore::TStreamingEventStore()
+: fDataSource(NULL), fBuffer(NULL)
 {
 
    Register(fSegmentedData("SegmentedData","The name of output segmented data","segdata"));
@@ -74,12 +78,16 @@ void art::TStreamingEventStore::Init(TEventCollection *col)
 //   printf("%p\n",fEventHeader.Data());
    fEventHeader->SetEventNumber(fStartFrame);
    fEventHeader->SetEventNumberTotal(fStartFrame);
+
+   fIsEOB = true;
 }
 
 void art::TStreamingEventStore::Process()
 {
    // where the segmented data is cleared in RIDFEventStore ?
    fSegmentedData->Clear("C");
+   // clear data
+   TStreamingModuleDecoderFactory::Clear();
 //   fData->Clear("C");
 
    // stop after exceeding maximum number of event
@@ -90,6 +98,54 @@ void art::TStreamingEventStore::Process()
       return;
    }
 
+
+   while (1) {
+      // get next event
+      // HRTDC であればここで読むという条件分岐が必要
+      TStreamingModuleDecoder* decoder = TStreamingModuleDecoderFactory::Find(1);
+      int segid = 0;
+      int femid = ((0x200) | 168);
+      TObjArray *seg = fSegmentedData->FindSegmentByID(segid);
+      if (!seg) seg = fSegmentedData->NewSegment(segid);
+      while (fDataSource) {
+         int nw = 100;
+         int oneLength = sizeof(unsigned long long);
+         int length = oneLength * nw;
+#if 0            
+         for (int i = 0; i < nw; ++i) {
+            fDataSource->Read(fBuffer+oneLength*i,oneLength);
+            printf("%lx\n",*(unsigned long long*)(fBuffer+oneLength*i));
+         }
+         printf("%p\n",decoder);
+#endif
+         if (int readLength = fDataSource->Read(fBuffer,length)) {
+            readLength *= sizeof(char);
+            int used = decoder->Decode(fBuffer,readLength,seg,femid);
+            printf("used = %d\n",used);
+            if (used > 0) {
+               // all data is used otherwise heartbeat frame is found
+               fDataSource->Seek(used - readLength ,SEEK_CUR);
+            }
+            fIsEOB = kFALSE;
+            break;
+         } else {
+            fIsEOB = kTRUE;
+            break;
+         }
+      }
+      if (!fIsEOB) break;
+      delete fDataSource;
+      fDataSource = NULL;
+      if (!Open()) {
+         Info("Process","No more file is available");
+         SetStopEvent();
+         SetStopLoop();
+         SetEndOfRun();
+//      NotifyEndOfRun();
+         return;
+      }
+   }
+   
    fEventHeader->IncrementEventNumber();
    printf("Event %d\n",fEventHeader->GetEventNumberTotal());
 
@@ -187,6 +243,12 @@ Bool_t art::TStreamingEventStore::ReadData(int length, int femid, int femtype) {
 
 Bool_t art::TStreamingEventStore::Open()
 {
+
+   if (fDataSource) {
+      Error("Open","Data source is already preapared");
+      return kFALSE;
+   }
+
    TString filename = "";
    StringVec_t& files = fFileName.Value();
    
@@ -201,6 +263,7 @@ Bool_t art::TStreamingEventStore::Open()
       return kFALSE;
    }
    fDataSource = new TFileDataSource(filename);
+   Info("Open","DataSource with %s is preapred\n",filename.Data());
 #if 0 // file sink comment is disabled
    // @TODO how long we have to read
    constexpr int length = 100;

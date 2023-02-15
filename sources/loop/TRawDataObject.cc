@@ -2,7 +2,7 @@
 /**
  * @file   TRawDataObject.cc
  * @date   Created : Jul 16, 2013 17:16:29 JST
- *   Last Modified : 
+ *   Last Modified : 2023-02-13 17:01:50 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -24,4 +24,18 @@ TRawDataObject::TRawDataObject()
 
 TRawDataObject::~TRawDataObject()
 {
+}
+
+
+void TRawDataObject::Copy(TObject& obj) const
+{
+   TObject::Copy(obj);
+   TRawDataObject& out = (TRawDataObject&)obj;
+   out.fSegID = fSegID;
+   out.fGeo   = fGeo;
+   out.fCh    = fCh;
+
+   out.fCatID = fCatID;
+   out.fDetID = fDetID;
+   out.fType  = fType;
 }

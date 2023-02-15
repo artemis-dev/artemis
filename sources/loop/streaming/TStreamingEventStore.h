@@ -1,6 +1,6 @@
 /**
  *   Created       : 2023-02-09 08:41:43 JST
- *   Last Modified : 2023-02-11 14:59:26 JST
+ *   Last Modified : 2023-02-15 14:27:32 JST
  * @author Shinsuke OTA <ota@rcnp.osaka-u.ac.jp>
  */
 
@@ -47,11 +47,14 @@ public:
    virtual Bool_t ReadData(int length, int femid, int femtype);
 
 
+
+
 protected:
    virtual TRunInfo* GetRunInfo() { ; }
 
    TDataSource      *fDataSource; //!
-   char *fBuffer; //!
+   char             *fBuffer; //!
+   bool              fIsEOB; //!
    
    OutputData<TSegmentedData> fSegmentedData; //!
    OutputInfo<TList> fRunHeader; //!

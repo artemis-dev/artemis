@@ -2,7 +2,7 @@
 /**
  * @file   TRawDataObject.h
  * @date   Created : Jul 16, 2013 17:16:51 JST
- *   Last Modified : 2016-08-17 14:41:38 JST (ota)
+ *   Last Modified : 2023-02-13 16:57:53 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -25,6 +25,8 @@ public:
    static const Int_t kInvalid;
    TRawDataObject();
    virtual ~TRawDataObject();
+
+   virtual void Copy(TObject& obj) const; 
 
    virtual Int_t GetSegID() const { return fSegID; }
    virtual Int_t GetGeo() const { return fGeo; }

@@ -3,7 +3,7 @@
  * Base class for the user processors
  
  * @date   Created : Jul 10, 2013 17:10:19 JST
- *   Last Modified : 2023-01-28 22:56:59 JST (ota)
+ *   Last Modified : 2023-02-13 16:45:08 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *
@@ -168,7 +168,8 @@ void art::TProcessor::InitProc(TEventCollection *col)
          return;
       }
       // check output data class exists
-      if (cls == TClonesArray::Class() && 
+      if (cls == TClonesArray::Class() &&
+          !output.fDataClassName.IsNull() && 
           !TClass::GetClass(output.fDataClassName)) {
          SetStateError(TString::Format(ErrMsgFmt::NOT_EXIST_DATA_CLASS,output.fDataClassName.Data()));
          return;
@@ -184,7 +185,9 @@ void art::TProcessor::InitProc(TEventCollection *col)
       if (cls == TClonesArray::Class()) {
          TClonesArray *arr = static_cast<TClonesArray*>(*(void**)output.fP);
          // printf("setting %s%p\n",output.fDataClassName.Data(),TClass::GetClass(output.fDataClassName));
-         arr->SetClass(TClass::GetClass(output.fDataClassName));
+         if (!output.fDataClassName.IsNull()) {
+            arr->SetClass(TClass::GetClass(output.fDataClassName));
+         }
          // printf("set\n");
       }
       col->Add(*output.fName,(TObject*)*(void**)output.fP,fOutputIsTransparent);

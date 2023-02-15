@@ -1,6 +1,6 @@
 /*
  * Created       : 2023-02-11 11:54:42 JST
- * Last Modified : 2023-02-11 12:10:29 JST
+ * Last Modified : 2023-02-15 14:40:29 JST
  */
 
 #include "TStreamingHeartBeatDelimiter.h"
@@ -16,3 +16,11 @@ art::TStreamingHeartBeatDelimiter::~TStreamingHeartBeatDelimiter()
 {
 }
 
+void art::TStreamingHeartBeatDelimiter::Copy(TObject& obj) const
+{
+   TRawDataObject::Copy(obj);
+   TStreamingHeartBeatDelimiter& out = (TStreamingHeartBeatDelimiter&) obj;
+   out.fFlag = fFlag;
+   out.fSpillNumber = fSpillNumber;
+   out.fHeartBeatFrameNumber = fHeartBeatFrameNumber;
+}

@@ -1,6 +1,6 @@
 /*
  * Created       : 2023-02-11 11:54:42 JST
- * Last Modified : 2023-02-11 12:14:14 JST
+ * Last Modified : 2023-02-13 17:06:42 JST
  */
 
 
@@ -24,6 +24,8 @@ public:
    virtual Int_t GetHeartBeatFrameNumber() { return fHeartBeatFrameNumber; }
    virtual Int_t GetHeartBeatFrameCounter() { return fHeartBeatFrameCounter; }
    virtual Int_t GetOnOff() { return fOnOff; }
+
+   virtual void Copy(TObject& obj) const;
 
    void  SetFlag(int flag ) { fFlag = flag; }
    void  SetSpillNumber(int number) { fSpillNumber = number; }

@@ -1,12 +1,11 @@
 SUBSRC = \
 	TStreamingEventStore.cc \
-	TModuleDecoderHRTDC.cc \
 	TStreamingHeartBeatDelimiter.cc \
 	TStreamingSpillDelimiter.cc \
 	TStreamingModuleDecoder.cc \
 	TStreamingModuleDecoderFactory.cc \
-	TStreamingModuleDecoderLRTDC.cc 
-
+	TStreamingModuleDecoderLRTDC.cc \
+	TStreamingModuleDecoderHRTDC.cc
 
 SUBOBJ = $(SUBSRC:.cc=.o)
 SUBHDR = $(SUBSRC:.cc=.h) 

@@ -2,7 +2,7 @@
 /**
  * @file   artstreaming_linkdef.h
  * @date   Created : Feb 07, 2023 22:53:00 JST
- *   Last Modified : 2023-02-11 14:51:27 JST
+ *   Last Modified : 2023-02-12 06:55:06 JST
  * @author Shinsuke OTA <ota@rcnp.osaka-u.ac.jp>
  *  
  *  
@@ -17,7 +17,7 @@
 #pragma link off all functions;
 
 
-#pragma link C++ class art::TModuleDecoderHRTDC;
+//#pragma link C++ class art::TModuleDecoderHRTDC;
 #pragma link C++ class art::TStreamingHeartBeatDelimiter;
 #pragma link C++ class art::TStreamingSpillDelimiter;
 #pragma link C++ class art::TStreamingEventStore;

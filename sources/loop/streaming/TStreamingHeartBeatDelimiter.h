@@ -1,6 +1,6 @@
 /*
  * Created       : 2023-02-11 11:54:42 JST
- * Last Modified : 2023-02-11 11:54:58 JST
+ * Last Modified : 2023-02-15 14:39:24 JST
  */
 
 #ifndef TSTREAMINGHEARTBEATDELIMITER_H
@@ -25,6 +25,8 @@ public:
    void  SetFlag(int flag ) { fFlag = flag; }
    void  SetSpillNumber(int number) { fSpillNumber = number; }
    void  SetHeartBeatFrameNumber(int number) { fHeartBeatFrameNumber = number; }
+
+   virtual void Copy(TObject& obj) const;
    
 private:
    Int_t fFlag; // flag

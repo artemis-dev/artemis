@@ -2,7 +2,7 @@
 /**
  * @file   TMappingProcessor.cc
  * @date   Created : Nov 22, 2013 17:22:19 JST
- *   Last Modified : 2018-07-24 16:51:10 JST (ota)
+ *   Last Modified : 2023-02-15 14:59:26 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -75,7 +75,7 @@ void TMappingProcessor::Init(TEventCollection *col)
    const Int_t nids = 5;
    while (1) {
       const TString& mapfilename = file.GetNextToken();
-      const Int_t&   ndata       = file.GetNextToken().Atoi();
+      const Int_t&   ndata       = strtol(file.GetNextToken(),NULL,0);//.Atoi();
       if (!mapfilename.Length() || !ndata) {
          // no more map file is available 
          break;
@@ -85,12 +85,12 @@ void TMappingProcessor::Init(TEventCollection *col)
          const TString& cidstr = mapfile.GetNextToken();
          const TString& didstr = mapfile.GetNextToken();
          if (!cidstr.Length() || !didstr.Length()) break;
-         const Int_t& cid = cidstr.Atoi();
-         const Int_t& did = didstr.Atoi();
+         const Int_t& cid = strtol(cidstr,NULL,0);
+         const Int_t& did = strtol(didstr,NULL,0);
          Int_t ids[nids];
          for (Int_t i = 0; i!=ndata; i++) {
             for (Int_t j=0; j!=nids; j++) {
-               ids[j] = mapfile.GetNextToken().Atoi();
+               ids[j] = strtol(mapfile.GetNextToken(),NULL,0);
             }
             Int_t segid;
             if (fgFormatType == RIDF) {

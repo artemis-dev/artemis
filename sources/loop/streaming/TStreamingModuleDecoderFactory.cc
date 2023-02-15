@@ -5,6 +5,7 @@
 #include <cstdio>
 
 std::map<std::string, factoryMethod> art::TStreamingModuleDecoderFactory::fgRegisteredNames = { };
+std::map<int,art::TStreamingModuleDecoder*> art::TStreamingModuleDecoderFactory::fgDecoders = { };
 
 bool art::TStreamingModuleDecoderFactory::Register(std::string name, factoryMethod method)
 {
@@ -30,7 +31,30 @@ art::TStreamingModuleDecoder* art::TStreamingModuleDecoderFactory::Create(std::s
 void art::TStreamingModuleDecoderFactory::CreateAll()
 {
    for (std::pair<std::string,factoryMethod> pair : fgRegisteredNames) {
-      printf("Creating %s\n",pair.first.c_str());
-      pair.second();
+      TStreamingModuleDecoder* decoder = pair.second();
+      TStreamingModuleDecoderFactory::fgDecoders.insert(std::make_pair(decoder->GetID(),decoder));
+      printf("Created %s with decoder ID %d\n",pair.first.c_str(),decoder->GetID());
    }
 }
+
+
+art::TStreamingModuleDecoder* art::TStreamingModuleDecoderFactory::Find(int id)
+{
+   
+   decltype(TStreamingModuleDecoderFactory::fgDecoders)& m = TStreamingModuleDecoderFactory::fgDecoders;
+   decltype(TStreamingModuleDecoderFactory::fgDecoders)::iterator it = TStreamingModuleDecoderFactory::fgDecoders.find(id);
+   if (it != m.end()) {
+      return it->second;
+   } else {
+      return NULL;
+   }
+}
+
+void art::TStreamingModuleDecoderFactory::Clear()
+{
+   for (auto& e : fgDecoders) {
+      e.second->Clear();
+   }
+}
+
+
