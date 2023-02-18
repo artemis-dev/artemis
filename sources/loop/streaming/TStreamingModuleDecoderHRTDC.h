@@ -1,6 +1,6 @@
 /*
  * Created       : 2023-02-11 11:54:42 JST
- * Last Modified : 2023-02-15 14:11:40 JST
+ * Last Modified : 2023-02-17 21:06:56 JST
  */
 
 #ifndef TSTREAMINGMODULEDECODERHRTDC_H
@@ -28,7 +28,7 @@ public:
    
    static const std::string fgName;
    static int fgID;
-   static const int kID = {1};
+   static const int kID = {2};
    static const int fgChannelHBD = {128};
    static const int fgChannelSD = {129};
 

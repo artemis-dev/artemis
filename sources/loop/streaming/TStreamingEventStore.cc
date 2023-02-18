@@ -3,7 +3,7 @@
  * @brief  Streaming Data Event Store
  *
  * @date   Created       : 2023-02-11 12:00:00 JST
- *         Last Modified : 2023-02-15 14:34:52 JST
+ *         Last Modified : 2023-02-18 19:28:40 JST
  * @author Shinsuke OTA <ota@rcnp.osaka-u.ac.jp>
  *
  *    (C) 2023 Shinsuke OTA
@@ -19,6 +19,9 @@
 #include "TSegmentedData.h"
 #include "TFileDataSource.h"
 #include "TStreamingModuleDecoderFactory.h"
+#include "TStreamingHeaderFS.h"
+#include "TStreamingHeaderSTF.h"
+#include "TStreamingHeaderTF.h"
 
 ClassImp(art::TStreamingEventStore)
 
@@ -35,12 +38,18 @@ art::TStreamingEventStore::TStreamingEventStore()
    Register(fFileName("FileName","names of input files",StringVec_t()));
 
    fBuffer = new char[1024*1024*1024];
-   
+   fHeaderFS = new TStreamingHeaderFS;
+   fHeaderTF = new TStreamingHeaderTF;
+   fHeaderSTF = new TStreamingHeaderSTF;
+   fSTFClones = new TClonesArray(art::TStreamingHeaderSTF::Class());
 }
 
 art::TStreamingEventStore::~TStreamingEventStore()
 {
    delete fBuffer;
+   delete fHeaderFS;
+   delete fHeaderTF;
+   delete fHeaderSTF;
 }
 
 art::TStreamingEventStore::TStreamingEventStore(const art::TStreamingEventStore& rhs)
@@ -52,6 +61,14 @@ art::TStreamingEventStore& art::TStreamingEventStore::operator=(const art::TStre
 {
    return *this;
 }
+
+void art::TStreamingEventStore::NotifyEndOfRun()
+{
+   SetStopEvent();
+   SetStopLoop();
+   SetEndOfRun();
+}
+
 
 void art::TStreamingEventStore::Init(TEventCollection *col)
 {
@@ -82,13 +99,17 @@ void art::TStreamingEventStore::Init(TEventCollection *col)
    fIsEOB = true;
 }
 
+void art::TStreamingEventStore::PreLoop()
+{
+   TStreamingModuleDecoderFactory::Clear();
+}
+
 void art::TStreamingEventStore::Process()
 {
+   // Info("Process","++++++++++++++++++++++++++++++ Loop ++++++++++++++++++++++++++++++");
    // where the segmented data is cleared in RIDFEventStore ?
    fSegmentedData->Clear("C");
-   // clear data
-   TStreamingModuleDecoderFactory::Clear();
-//   fData->Clear("C");
+   // clear rawdata array
 
    // stop after exceeding maximum number of event
    if (fMaxFrames > 0 && fEventHeader->GetEventNumberTotal() > fMaxFrames) {
@@ -98,147 +119,170 @@ void art::TStreamingEventStore::Process()
       return;
    }
 
-
+   GetHeartBeatFrame();
+   
+   
    while (1) {
-      // get next event
-      // HRTDC であればここで読むという条件分岐が必要
-      TStreamingModuleDecoder* decoder = TStreamingModuleDecoderFactory::Find(1);
-      int segid = 0;
-      int femid = ((0x200) | 168);
-      TObjArray *seg = fSegmentedData->FindSegmentByID(segid);
-      if (!seg) seg = fSegmentedData->NewSegment(segid);
-      while (fDataSource) {
-         int nw = 100;
-         int oneLength = sizeof(unsigned long long);
-         int length = oneLength * nw;
-#if 0            
-         for (int i = 0; i < nw; ++i) {
-            fDataSource->Read(fBuffer+oneLength*i,oneLength);
-            printf("%lx\n",*(unsigned long long*)(fBuffer+oneLength*i));
-         }
-         printf("%p\n",decoder);
-#endif
-         if (int readLength = fDataSource->Read(fBuffer,length)) {
-            readLength *= sizeof(char);
-            int used = decoder->Decode(fBuffer,readLength,seg,femid);
-            printf("used = %d\n",used);
-            if (used > 0) {
-               // all data is used otherwise heartbeat frame is found
-               fDataSource->Seek(used - readLength ,SEEK_CUR);
-            }
-            fIsEOB = kFALSE;
-            break;
-         } else {
-            fIsEOB = kTRUE;
-            break;
-         }
-      }
-      if (!fIsEOB) break;
       delete fDataSource;
       fDataSource = NULL;
       if (!Open()) {
          Info("Process","No more file is available");
-         SetStopEvent();
-         SetStopLoop();
-         SetEndOfRun();
-//      NotifyEndOfRun();
+         NotifyEndOfRun();
          return;
+      } else {
+         // SetStopEvent();
+         break;
+      }
+   }
+
+   
+   fEventHeader->IncrementEventNumber();
+}
+
+
+Bool_t art::TStreamingEventStore::GetTimeFrame()
+{
+   if (!fDataSource) return kFALSE;
+   if (!fDataSource->IsPrepared()) return kFALSE;
+
+   // read header and check if it is time frame header
+   fDataSource->Read(fBuffer,sizeof(uint64_t));
+   fDataSource->Seek(-sizeof(uint64_t),SEEK_CUR);
+   // Info("GetTimeFrame","%lx",*(uint64_t*)fBuffer);
+   if(!TStreamingHeaderTF::IsHeaderTF(*(uint64_t*)fBuffer)) {
+      // this is not the header, ignore
+      return kFALSE;
+   }
+
+   fDataSource->Read(fBuffer,TStreamingHeaderTF::kHeaderSize);
+   fHeaderTF->ReadFrom(fBuffer);
+   fNumSources = fHeaderTF->GetNumSources();
+   if (fSubTimeFrameSize.size() != fNumSources) {
+      fSubTimeFrameSize.resize(fNumSources);
+      fSubTimeFrameBuffers.resize(fNumSources);
+      fSubTimeFrameHeaders.resize(fNumSources);
+      for (int i = 0; i < fNumSources; ++i) {
+         fSubTimeFrameHeaders[i] = (TStreamingHeaderSTF*)fSTFClones->ConstructedAt(i);
       }
    }
    
-   fEventHeader->IncrementEventNumber();
-   printf("Event %d\n",fEventHeader->GetEventNumberTotal());
+   // fHeaderTF->Print();
 
-//   while (!GetFrame()) {
-//      if ((*fCondition)->IsSet(TLoop::kStopLoop)) {
-//         SetStopEvent();
-//         return;
-//      }
-//
-//      if (!Open()) {
-//         NotifyEndOfRun();
-//         return;
-//      }
-//   }
-}
-
-Bool_t art::TStreamingEventStore::ReadTimeFrame()
-{
-#if 0   
-   constexpr int length = 100;
-   fDataSource->Read(fBuffer,length);
-   int used = 0;
-   if (!(used = fTimeFrameHeader->ReadFrom(fBuffer))) {
-      // no time frame header is found but may not be error
-      return  kFALSE;
-   }
-   fDataSource->Seek(used - length, SEEK_CUR);
-#endif
-   return kTRUE;
-}
-
-Bool_t art::TStreamingEventStore::ReadSubTimeFrame()
-{
-#if 0   
-   // @TODO subtime frame should be read until the end of time frame or its own length
-   int totalLength = fTimeFrameHeader->IsPrepared() ? fTimeFrameHeader->GetLength() : 0;
-   if (fTimeFrameHeader->IsPrepared()) {
-   } else {
-      ReadSubTimeFrameOnce();
-   }
-#endif   
-}
-
-
-Bool_t art::TStreamingEventStore::ReadSubTimeFrameOnce()
-{
-   #if 0
-   constexpr int hsize = TSubTimeFrameHeader::fgSize;
-   int used = 0;
-   if (fDataSource->Read(fBuffer,hsize) != hsize) {
-      // end of file
-      fEOB = kTRUE;
-      return 0;
-   }
-      
-   if (!(used = fSubTimeFrameHeader->ReadFrom(fBuffer))) {
-      // no subtime frame header is found but may not be error
-      fDataSource->Seek(used - length, SEEK_CUR);
-      return 0;
-   }
-   // @TODO here the subtime frame header should be copied
-
-   // reading data
-   ReadData(fSubTimeFrameHeader->GetLength(),
-            fSubTimeFrameHeader->GetFEMID(),
-            fSubTimeFrameHeader->GetFEMType());
-#endif
-   return kTRUE;
-}
-/// header のデコーダをマップしておいて、まずはヘッダの解析をしてからその後を考えさせるか
-/// Streaming (fairmq 自体はデータフォーマットの構造化を前提としていない）
-Bool_t art::TStreamingEventStore::ReadData(int length, int femid, int femtype) {
-
-#if 0   
-   int used = 0;
-   // use only segid = 0 for now
-   constexpr int segid = 0;
-
-   fDataSource->Read(fBuffer,length);
+   int read = fDataSource->Read(fBuffer,fHeaderTF->GetLength());
    
-   TObjArray *seg = fSegmentedData->FindSegmentByID(segid);
-   if (!seg) seg =  fSegmentedData->NewSegment(segid);
-   TStreamingModuleDecoder *decoder = fDecoderFactory->Get(femtype);
-   if (decoder) {
-      // each decoder may output HBD and SDs with channels over the last channel of each module
-      decoder->Decode(fBuffer,length,seg,femid);
-   } else {
-      printf("No such decoder for Module %d\n",fFENType);
-      return kFALSE;
+   if (read != fHeaderTF->GetLength()) {
+      // enough data is not available
+      NotifyEndOfRun();
    }
-#endif   
+}
+
+Bool_t art::TStreamingEventStore::GetSubTimeFrame()
+{
+   // Info("GetSubTimeFrame","size = %d",fSubTimeFrameBuffers.size());
+   if (fSubTimeFrameBuffers.size() > 0) {
+      // Info("GetSubTimeFrame","Checking all the data is read");
+      int done = 0;
+      int n  = fSubTimeFrameBuffers.size();
+      for (int i = 0;  i < n; ++i ) {
+         if (fSubTimeFrameSize[i]) continue;
+         done ++;
+      }
+      if (!done) {
+         // data to be analyzed exists      
+         return kTRUE;
+      } else if (done != n) {
+         Error("GetSubtimeframe","Broken subtime frames, try to reset");
+      }
+   }
+   // Info("GetSubTimeFrame","reading time frame");
+   if (!GetTimeFrame()) {
+      // Info("GetSubTimeFrame","reading subtime frame directly");
+      // get subtime frame buffer by myself since no time frame is ready
+      if (!fDataSource) return kFALSE;
+      if (!fDataSource->IsPrepared()) return kFALSE;
+      fDataSource->Read(fBuffer,sizeof(uint64_t));
+      fDataSource->Seek(-sizeof(uint64_t),SEEK_CUR);
+      if(!TStreamingHeaderSTF::IsHeaderSTF(*(uint64_t*)fBuffer)) {
+         // no time frame nor subtime frame is found, buffer is not ready
+         Warning("","Header may not be ready %lx",*(uint64_t*)fBuffer);
+         return kFALSE;
+      }
+      // sub time frame is found but only one
+      fNumSources = 1;
+      if (fSubTimeFrameBuffers.size() == 0) {
+         fSubTimeFrameBuffers.resize(1);
+         fSubTimeFrameHeaders.resize(1);
+         fSubTimeFrameSize.resize(1);
+         fSubTimeFrameHeaders[0] = (TStreamingHeaderSTF*)fSTFClones->ConstructedAt(0);
+      }
+      
+      int nread = fDataSource->Read(fBuffer,TStreamingHeaderSTF::kHeaderSize);
+      if (nread != TStreamingHeaderSTF::kHeaderSize) {
+         NotifyEndOfRun();
+         return kFALSE;
+      }
+      auto& header = fSubTimeFrameHeaders[0];
+      header->ReadFrom(fBuffer);
+      // header->Print();
+      int payloadSize = header->GetLength() - TStreamingHeaderSTF::kHeaderSize;
+      nread = fDataSource->Read(fBuffer,payloadSize);
+      if (nread != payloadSize) {
+         NotifyEndOfRun();
+         return kFALSE;
+      }
+      fSubTimeFrameBuffers[0] = fBuffer;
+      fSubTimeFrameSize[0] = payloadSize;
+   } else {
+      char *buffer = fBuffer;
+      for (int i = 0; i < fNumSources; ++i) {
+         auto& header = fSubTimeFrameHeaders[i];
+         header->ReadFrom(buffer);
+         fSubTimeFrameBuffers[i] = buffer+TStreamingHeaderSTF::kHeaderSize;
+         fSubTimeFrameSize[i] = header->GetLength() - TStreamingHeaderSTF::kHeaderSize;
+         buffer += header->GetLength();
+      }
+   }
    return kTRUE;
 }
+
+
+Bool_t art::TStreamingEventStore::GetHeartBeatFrame()
+{
+   if (!GetSubTimeFrame()) {
+      // no subtime frame is found
+      return kFALSE;
+   } else {
+      for (int i = 0; i < fNumSources; ++i) {
+         auto headerSTF = fSubTimeFrameHeaders[i];
+         auto buffer    = fSubTimeFrameBuffers[i];
+         auto size    = fSubTimeFrameSize[i];
+         if (size <= 0) {
+            Error("GetHeartbeatframe","Unexpected size %d",fSubTimeFrameSize[i]);
+            return kFALSE;
+         }
+         int femid = (headerSTF->GetFEMId() & 0xffff);
+         int femtype = headerSTF->GetFEMType();
+         int segid = 0;
+         TObjArray *seg = fSegmentedData->FindSegmentByID(segid);
+         if (!seg) seg = fSegmentedData->NewSegment(segid);
+         
+         TStreamingModuleDecoder *decoder = TStreamingModuleDecoderFactory::Find(femtype);
+         int used = decoder->Decode(buffer,size,seg,femid);
+         if (used > 0) {
+            fSubTimeFrameSize[i] -= used;
+            fSubTimeFrameBuffers[i] += used;
+            // printf("size = %d, buffer = %p\n",fSubTimeFrameSize[i],fSubTimeFrameBuffers[i]);
+         } else {
+            fSubTimeFrameSize[i] = 0;
+            // Info("GetHeartBeatFrame","used all");
+         }
+      }
+   }
+   return kTRUE;
+}
+
+//////////////////////////////////////////////////////////////////////
+
 
 
 Bool_t art::TStreamingEventStore::Open()
@@ -264,6 +308,12 @@ Bool_t art::TStreamingEventStore::Open()
    }
    fDataSource = new TFileDataSource(filename);
    Info("Open","DataSource with %s is preapred\n",filename.Data());
+
+   // read file sink header block
+   fDataSource->Read(fBuffer,0x130);
+   fHeaderFS->ReadFrom(fBuffer);
+   fHeaderFS->Print();
+   fIsEOB = false;
 #if 0 // file sink comment is disabled
    // @TODO how long we have to read
    constexpr int length = 100;
@@ -281,6 +331,4 @@ Bool_t art::TStreamingEventStore::Open()
 
    return kTRUE;
 }
-
-
 

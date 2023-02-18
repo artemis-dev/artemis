@@ -1,6 +1,6 @@
 /*
  * Created       : 2023-02-11 11:54:42 JST
- * Last Modified : 2023-02-11 12:17:15 JST
+ * Last Modified : 2023-02-17 21:27:19 JST
  */
 
 #include "TStreamingModuleDecoderLRTDC.h"
@@ -12,10 +12,8 @@
 #include "TObjArray.h"
 
 const std::string art::TStreamingModuleDecoderLRTDC::fgName = "art::TStreamingModuleDecoderLRTDC";
-const int art::TStreamingModuleDecoderLRTDC::fgChannelHBD = 128;
-const int art::TStreamingModuleDecoderLRTDC::fgChannelSD = 129;
 
-int art::TStreamingModuleDecoderLRTDC::fgID = 2;
+int art::TStreamingModuleDecoderLRTDC::fgID = art::TStreamingModuleDecoderLRTDC::kID;
 
 art::TStreamingModuleDecoderLRTDC::TStreamingModuleDecoderLRTDC()
    : art::TStreamingModuleDecoderImpl<art::TStreamingModuleDecoderLRTDC>()
@@ -45,6 +43,7 @@ int art::TStreamingModuleDecoderLRTDC::Decode(char *buf, const int& size, TObjAr
 {
    static TStreamingSpillDelimiter* savedSPND = NULL; // spill on 
    static TStreamingSpillDelimiter* savedSPFD = NULL; // spill off
+   static TStreamingHeartBeatDelimiter* savedHBD  = NULL; // heartbeat
    // assume 64 bit data
    ULong64_t *evtdata = reinterpret_cast<ULong64_t*>(buf);
    UInt_t evtsize = size/sizeof(ULong64_t);
@@ -86,9 +85,17 @@ int art::TStreamingModuleDecoderLRTDC::Decode(char *buf, const int& size, TObjAr
          UInt_t hb = DecodeBits(data,kShiftFlag,kMaskFlag);
          
          datatype *hbd = static_cast<datatype*>(fHBD->ConstructedAt(fHBD->GetEntriesFast()));
+         hbd->SetSegInfo(seg->GetUniqueID(),femid,fgChannelHBD);
          hbd->SetFlag(flag);
          hbd->SetSpillNumber(spill);
          hbd->SetHeartBeatFrameNumber(hb);
+         if (savedHBD) {
+            savedHBD = NULL;
+            return (iw+1) * sizeof(ULong64_t);
+         } else {
+            savedHBD = hbd;
+         }
+         seg->Add(hbd);
       }
       break;
       case kHeaderSPND:

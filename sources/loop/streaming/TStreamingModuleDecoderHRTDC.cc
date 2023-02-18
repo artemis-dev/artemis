@@ -1,6 +1,6 @@
 /*
  * Created       : 2023-02-11 11:54:42 JST
- * Last Modified : 2023-02-15 14:12:20 JST
+ * Last Modified : 2023-02-18 16:08:57 JST
  */
 
 #include "TStreamingModuleDecoderHRTDC.h"
@@ -58,9 +58,10 @@ int art::TStreamingModuleDecoderHRTDC::Decode(char *buf, const int& size, TObjAr
 
    for (UInt_t iw = 0; iw < evtsize; ++iw) {
       ULong64_t& data = evtdata[iw];
+      // printf("%lx\n",data);
       ih = ((data >> kShiftHeader) & kHeaderMask);
 
-      printf("ih = %x\n",ih);
+//      printf("ih = %x iw %d evtsize %u\n",ih,iw,evtsize);
 
       if (savedHBD && ih != kHeaderHBD) {
          printf("Error in TStreamingModuleDecoderHRTDC : no second kHeaderHBD\n");
@@ -91,7 +92,7 @@ int art::TStreamingModuleDecoderHRTDC::Decode(char *buf, const int& size, TObjAr
          odatal->SetSegInfo(seg->GetUniqueID(),femid,ch);
          odatat->SetSegInfo(seg->GetUniqueID(),femid,ch);
 
-            printf("decoding %lx HR-TDC segid = %d, femid = %x, ch = %d, tdc = %d, tot = %d\n",data, seg->GetUniqueID(),femid,ch,time,tot);
+         // printf("decoding %lx HR-TDC segid = %d, femid = %x, ch = %d, tdc = %d, tot = %d\n",data, seg->GetUniqueID(),femid,ch,time,tot);
          
 
          odatal->Set(time);
@@ -115,7 +116,6 @@ int art::TStreamingModuleDecoderHRTDC::Decode(char *buf, const int& size, TObjAr
          hbd->SetFlag(flag);
          hbd->SetSpillNumber(spill);
          hbd->SetHeartBeatFrameNumber(hb);
-
          if (savedHBD) {
             savedHBD = NULL;
             return (iw+1) * sizeof(ULong64_t);
@@ -142,12 +142,15 @@ int art::TStreamingModuleDecoderHRTDC::Decode(char *buf, const int& size, TObjAr
             odata->SetOnOff(datatype::kON);
             savedSPND = odata;
             seg->Add(odata);
-               printf("decoding %lx, flag = %d, spill = %d, hbfn = %d, onoff = %d\n",
-                      data,
-                      flag, spill, hb, datatype::kON);
-            
+#if 0            
+            printf("decoding %lx, flag = %d, spill = %d, hbfn = %d, onoff = %d\n",
+                   data,
+                   flag, spill, hb, datatype::kON);
+#endif            
          } else {
+#if 0            
             printf("decoding %lx, hbfc = %d\n",data,hb);
+#endif            
             savedSPND->SetHeartBeatFrameCounter(hb);
             savedSPND = NULL;
          }
