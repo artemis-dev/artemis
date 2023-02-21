@@ -6,7 +6,7 @@
  *
  *
  * @date   Created : Apr 26, 2012 20:26:47 JST
- *   Last Modified : 2016-08-23 17:02:06 JST (ota)
+ *   Last Modified : 2023-02-18 20:03:47 JST
  *
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *    Copyright (C) 2012 
@@ -332,10 +332,16 @@ Bool_t art::TLoop::Resume()
      Int_t objectNumber = TProcessID::GetObjectCount();
      // increment event number
       for (itr = itrBegin; itr != itrEnd; itr++) {
+         (*itr)->PreProcess();
+      }
+      for (itr = itrBegin; itr != itrEnd; itr++) {
          (*itr)->Process();
          if (fCondition->IsSet(kStopEvent)) {
             break;
          }
+      }
+      for (itr = itrBegin; itr != itrEnd; itr++) {
+         (*itr)->PostProcess();
       }
       if (fCondition->IsSet(kStopEvent)) {
          fCondition->Unset(kStopEvent);

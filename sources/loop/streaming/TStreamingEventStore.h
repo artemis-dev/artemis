@@ -1,6 +1,6 @@
 /**
  *   Created       : 2023-02-09 08:41:43 JST
- *   Last Modified : 2023-02-18 15:16:43 JST
+ *   Last Modified : 2023-02-18 20:04:39 JST
  * @author Shinsuke OTA <ota@rcnp.osaka-u.ac.jp>
  */
 
@@ -39,7 +39,7 @@ public:
    const char* GetRunName() const {return "";}
 
    virtual void Init(TEventCollection *col);
-   virtual void PreLoop();
+   virtual void PreProcess();
    virtual void Process();
 //   virtual void ProcessRawStremingData();
 //   virtual void ProcessSubTimeFrame();
@@ -61,6 +61,8 @@ public:
 protected:
    virtual TRunInfo* GetRunInfo() { ; }
    virtual void NotifyEndOfRun();
+
+   bool fIsMaster;
 
    TDataSource      *fDataSource; //!
    char             *fBuffer; //!

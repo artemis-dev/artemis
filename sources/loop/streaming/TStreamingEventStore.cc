@@ -3,7 +3,7 @@
  * @brief  Streaming Data Event Store
  *
  * @date   Created       : 2023-02-11 12:00:00 JST
- *         Last Modified : 2023-02-18 19:28:40 JST
+ *         Last Modified : 2023-02-18 20:12:50 JST
  * @author Shinsuke OTA <ota@rcnp.osaka-u.ac.jp>
  *
  *    (C) 2023 Shinsuke OTA
@@ -29,8 +29,10 @@ ClassImp(art::TStreamingEventStore)
 art::TStreamingEventStore::TStreamingEventStore()
 : fDataSource(NULL), fBuffer(NULL)
 {
+   auto segdata = fSegmentedData("SegmentedData","The name of output segmented data","segdata");
+   dynamic_cast<OutputData<TSegmentedData>*>(segdata)->SetDoAuto(kFALSE);
 
-   Register(fSegmentedData("SegmentedData","The name of output segmented data","segdata"));
+   Register(segdata);
    Register(fRunHeader("RunHeadersName","the name of output array for run headers","runheader"));
    Register(fEventHeader("EventHeaderName","the name of event header","eventheader"));
    Register(fMaxFrames("MaxFrames","maximum number of frames (no limit if 0)",0));
@@ -83,13 +85,20 @@ void art::TStreamingEventStore::Init(TEventCollection *col)
          SetStateError("Init");
          return;
       } 
-
-//      for (Int_t i = 0, n = files->GetEntries(); i < n; ++i) {
-//         TString file = static_cast<TObjString*>(files->At(i))->GetName();
-//         Info("Init","Adding file %s",file.Data());
-//      }
    }
 
+   // initialize segmented data
+   if (void **objref = col->GetObjectRef(fSegmentedData.Value())) {
+      Info("Init","Using output segmented data %s\n",fSegmentedData.Value().Data());
+      *(TSegmentedData**)fSegmentedData.PtrRef() = *(TSegmentedData**)objref;
+      fIsMaster = true;
+   } else {
+      Info("Init","Createing output segmented data\n");
+      *(TSegmentedData**)fSegmentedData.PtrRef() = new TSegmentedData;
+      col->Add(fSegmentedData.Value(),fSegmentedData.Data(),fOutputIsTransparent);
+      fIsMaster = false;
+   }
+      
 //   // set run header name
 //   fRunHeader->SetName(fRunHeader->GetName());
 //   printf("%p\n",fEventHeader.Data());
@@ -99,16 +108,18 @@ void art::TStreamingEventStore::Init(TEventCollection *col)
    fIsEOB = true;
 }
 
-void art::TStreamingEventStore::PreLoop()
+void art::TStreamingEventStore::PreProcess()
 {
    TStreamingModuleDecoderFactory::Clear();
+   fSegmentedData->Clear("C");
 }
+
+
 
 void art::TStreamingEventStore::Process()
 {
    // Info("Process","++++++++++++++++++++++++++++++ Loop ++++++++++++++++++++++++++++++");
    // where the segmented data is cleared in RIDFEventStore ?
-   fSegmentedData->Clear("C");
    // clear rawdata array
 
    // stop after exceeding maximum number of event
@@ -119,7 +130,10 @@ void art::TStreamingEventStore::Process()
       return;
    }
 
-   GetHeartBeatFrame();
+   if (GetHeartBeatFrame()) {
+      fEventHeader->IncrementEventNumber();
+      return;
+   }
    
    
    while (1) {
@@ -136,7 +150,6 @@ void art::TStreamingEventStore::Process()
    }
 
    
-   fEventHeader->IncrementEventNumber();
 }
 
 
