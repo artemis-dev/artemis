@@ -55,6 +55,23 @@ int art::TStreamingModuleDecoderLRTDC::Decode(char *buf, const int& size, TObjAr
       ULong64_t& data = evtdata[iw];
       ih = ((data >> kShiftHeader) & kHeaderMask);
 
+      if (savedHBD && ih != kHeaderHBD) {
+         printf("Error in TStreamingModuleDecoderHRTDC : no second kHeaderHBD\n");
+         savedHBD = NULL;
+         return (iw+1) * sizeof(ULong64_t);
+      } 
+      
+      if (savedSPND && ih != kHeaderSPND) {
+         printf("Error in TStreamingModuleDecoderHRTDC : no second kHeaderSPND\n");
+         savedSPND = NULL;
+      }
+
+      if (savedSPFD && ih != kHeaderSPFD) {
+         printf("Error in TStreamingModuleDecoderHRTDC : no second kHeaderSPFD\n");
+         savedSPFD = NULL;
+         return (iw+1) * sizeof(ULong64_t);
+      }
+
       switch (ih) {
       case kHeaderTDC:
       {
@@ -102,16 +119,19 @@ int art::TStreamingModuleDecoderLRTDC::Decode(char *buf, const int& size, TObjAr
       {
          using datatype = TStreamingSpillDelimiter;
          UInt_t flag = DecodeBits(data,kShiftFlag,kMaskFlag);
-         UInt_t spill = DecodeBits(data,kShiftFlag,kMaskFlag);
-         UInt_t hb = DecodeBits(data,kShiftFlag,kMaskFlag);
+         UInt_t spill = DecodeBits(data,kShiftSN,kMaskSN);
+         UInt_t hb = DecodeBits(data,kShiftHB,kMaskHB);
          if (!savedSPND) {
             datatype* odata = static_cast<datatype*>(fSD->ConstructedAt(fSD->GetEntriesFast()));
+            odata->SetSegInfo(seg->GetUniqueID(),femid,fgChannelSD);
             odata->SetCh(fgChannelSD);
             odata->SetGeo(femid);
             odata->SetFlag(flag);
             odata->SetSpillNumber(spill);
             odata->SetHeartBeatFrameNumber(hb);
             odata->SetOnOff(datatype::kON);
+	    seg->Add(odata);
+
             savedSPND = odata;
          } else {
             savedSPND->SetHeartBeatFrameCounter(hb);
@@ -123,10 +143,11 @@ int art::TStreamingModuleDecoderLRTDC::Decode(char *buf, const int& size, TObjAr
       {
          using datatype = TStreamingSpillDelimiter;
          UInt_t flag = DecodeBits(data,kShiftFlag,kMaskFlag);
-         UInt_t spill = DecodeBits(data,kShiftFlag,kMaskFlag);
-         UInt_t hb = DecodeBits(data,kShiftFlag,kMaskFlag);
+         UInt_t spill = DecodeBits(data,kShiftSN,kMaskSN);
+         UInt_t hb = DecodeBits(data,kShiftHB,kMaskHB);
          if (!savedSPFD) {
             datatype *odata = static_cast<datatype*>(fSD->ConstructedAt(fSD->GetEntriesFast()));
+            odata->SetSegInfo(seg->GetUniqueID(),femid,fgChannelSD);
             odata->SetCh(fgChannelSD);
             odata->SetGeo(femid);
             odata->SetFlag(flag);
@@ -134,6 +155,7 @@ int art::TStreamingModuleDecoderLRTDC::Decode(char *buf, const int& size, TObjAr
             odata->SetHeartBeatFrameNumber(hb);
             odata->SetOnOff(datatype::kOFF);
             savedSPFD = odata;
+	    seg->Add(odata);
          } else {
             savedSPFD->SetHeartBeatFrameCounter(hb);
             savedSPFD = NULL;

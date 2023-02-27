@@ -66,17 +66,18 @@ int art::TStreamingModuleDecoderHRTDC::Decode(char *buf, const int& size, TObjAr
       if (savedHBD && ih != kHeaderHBD) {
          printf("Error in TStreamingModuleDecoderHRTDC : no second kHeaderHBD\n");
          savedHBD = NULL;
+         return (iw+1) * sizeof(ULong64_t);
       } 
       
       if (savedSPND && ih != kHeaderSPND) {
          printf("Error in TStreamingModuleDecoderHRTDC : no second kHeaderSPND\n");
          savedSPND = NULL;
-         return (iw+1) * sizeof(ULong64_t);
       }
 
       if (savedSPFD && ih != kHeaderSPFD) {
          printf("Error in TStreamingModuleDecoderHRTDC : no second kHeaderSPFD\n");
          savedSPFD = NULL;
+         return (iw+1) * sizeof(ULong64_t);
       }
          
       switch (ih) {
@@ -160,10 +161,11 @@ int art::TStreamingModuleDecoderHRTDC::Decode(char *buf, const int& size, TObjAr
       {
          using datatype = TStreamingSpillDelimiter;
          UInt_t flag = DecodeBits(data,kShiftFlag,kMaskFlag);
-         UInt_t spill = DecodeBits(data,kShiftFlag,kMaskFlag);
-         UInt_t hb = DecodeBits(data,kShiftFlag,kMaskFlag);
+         UInt_t spill = DecodeBits(data,kShiftSN,kMaskSN);
+         UInt_t hb = DecodeBits(data,kShiftHB,kMaskHB);
          if (!savedSPFD) {
             datatype *odata = static_cast<datatype*>(fSD->ConstructedAt(fSD->GetEntriesFast()));
+            odata->SetSegInfo(seg->GetUniqueID(),femid,fgChannelSD);
             odata->SetCh(fgChannelSD);
             odata->SetGeo(femid);
             odata->SetFlag(flag);
