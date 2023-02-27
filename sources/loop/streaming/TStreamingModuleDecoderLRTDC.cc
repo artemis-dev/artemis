@@ -1,6 +1,6 @@
 /*
  * Created       : 2023-02-11 11:54:42 JST
- * Last Modified : 2023-02-17 21:27:19 JST
+ * Last Modified : 2023-02-22 16:42:42 JST
  */
 
 #include "TStreamingModuleDecoderLRTDC.h"
@@ -81,8 +81,8 @@ int art::TStreamingModuleDecoderLRTDC::Decode(char *buf, const int& size, TObjAr
       {
          using datatype = TStreamingHeartBeatDelimiter;
          UInt_t flag = DecodeBits(data,kShiftFlag,kMaskFlag);
-         UInt_t spill = DecodeBits(data,kShiftFlag,kMaskFlag);
-         UInt_t hb = DecodeBits(data,kShiftFlag,kMaskFlag);
+         UInt_t spill = DecodeBits(data,kShiftSN,kMaskSN);
+         UInt_t hb = DecodeBits(data,kShiftHB,kMaskHB);
          
          datatype *hbd = static_cast<datatype*>(fHBD->ConstructedAt(fHBD->GetEntriesFast()));
          hbd->SetSegInfo(seg->GetUniqueID(),femid,fgChannelHBD);
