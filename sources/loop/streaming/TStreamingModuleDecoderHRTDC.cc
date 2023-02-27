@@ -43,9 +43,13 @@ void art::TStreamingModuleDecoderHRTDC::Clear()
 
 int art::TStreamingModuleDecoderHRTDC::Decode(char *buf, const int& size, TObjArray *seg, int femid)
 {
-   static TStreamingSpillDelimiter* savedSPND = NULL; // spill on 
-   static TStreamingSpillDelimiter* savedSPFD = NULL; // spill off
-   static TStreamingHeartBeatDelimiter* savedHBD  = NULL; // heartbeat
+  static std::map<int,TStreamingSpillDelimiter*> savedSPNDmap; // spill on 
+  static std::map<int,TStreamingSpillDelimiter*> savedSPFDmap; // spill on 
+  static std::map<int,TStreamingHeartBeatDelimiter*> savedHBDmap; // heartbeat
+
+  TStreamingSpillDelimiter*& savedSPND = savedSPNDmap[femid];
+  TStreamingSpillDelimiter*& savedSPFD = savedSPFDmap[femid];
+  TStreamingHeartBeatDelimiter*& savedHBD = savedHBDmap[femid];
    // assume 64 bit data
    ULong64_t *evtdata = reinterpret_cast<ULong64_t*>(buf);
    UInt_t evtsize = size/sizeof(ULong64_t);
