@@ -3,7 +3,7 @@
  * @brief  Streaming Header for File sink
  *
  * @date   Created       : 2023-02-16 18:34:48 JST
- *         Last Modified : 2023-02-16 22:20:45 JST
+ *         Last Modified : 2023-03-01 18:57:26 JST
  * @author Shinsuke OTA <ota@rcnp.osaka-u.ac.jp>
  *
  *    (C) 2023 Shinsuke OTA
@@ -12,6 +12,7 @@
 #define TSTREAMINGHEADERFS_H
 
 #include <cstdint>
+#include <ctime>
 
 #include "TNamed.h"
 
