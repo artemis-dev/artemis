@@ -118,7 +118,7 @@ void art::TStreamingEventStore::PreProcess()
 
 void art::TStreamingEventStore::Process()
 {
-   // Info("Process","++++++++++++++++++++++++++++++ Loop ++++++++++++++++++++++++++++++");
+  if (fVerboseLevel > 2) Info("Process","++++++++++++++++++++++++++++++ Loop ++++++++++++++++++++++++++++++");
    // where the segmented data is cleared in RIDFEventStore ?
    // clear rawdata array
 
@@ -161,7 +161,7 @@ Bool_t art::TStreamingEventStore::GetTimeFrame()
    // read header and check if it is time frame header
    fDataSource->Read(fBuffer,sizeof(uint64_t));
    fDataSource->Seek(-sizeof(uint64_t),SEEK_CUR);
-   // Info("GetTimeFrame","%lx",*(uint64_t*)fBuffer);
+   if (fVerboseLevel > 2)  Info("GetTimeFrame","%lx",*(uint64_t*)fBuffer);
    if(!TStreamingHeaderTF::IsHeaderTF(*(uint64_t*)fBuffer)) {
       // this is not the header, ignore
       return kFALSE;
@@ -179,21 +179,24 @@ Bool_t art::TStreamingEventStore::GetTimeFrame()
       }
    }
    
-   // fHeaderTF->Print();
+   if (fVerboseLevel > 2)  fHeaderTF->Print();
 
-   int read = fDataSource->Read(fBuffer,fHeaderTF->GetLength());
+   int payloadLength = fHeaderTF->GetLength() - TStreamingHeaderTF::kHeaderSize;
+   int read = fDataSource->Read(fBuffer,payloadLength);
    
-   if (read != fHeaderTF->GetLength()) {
+   if (read != payloadLength) {
       // enough data is not available
       NotifyEndOfRun();
+      return false;
    }
+   return true;
 }
 
 Bool_t art::TStreamingEventStore::GetSubTimeFrame()
 {
-   // Info("GetSubTimeFrame","size = %d",fSubTimeFrameBuffers.size());
+   if (fVerboseLevel > 2) Info("GetSubTimeFrame","size = %d",fSubTimeFrameBuffers.size());
    if (fSubTimeFrameBuffers.size() > 0) {
-      // Info("GetSubTimeFrame","Checking all the data is read");
+     if (fVerboseLevel > 2)  Info("GetSubTimeFrame","Checking all the data is read");
       int done = 0;
       int n  = fSubTimeFrameBuffers.size();
       for (int i = 0;  i < n; ++i ) {
@@ -207,19 +210,27 @@ Bool_t art::TStreamingEventStore::GetSubTimeFrame()
          Error("GetSubtimeframe","Broken subtime frames, try to reset");
       }
    }
-   // Info("GetSubTimeFrame","reading time frame");
+   if (fVerboseLevel > 2) Info("GetSubTimeFrame","reading time frame");
    if (!GetTimeFrame()) {
-      // Info("GetSubTimeFrame","reading subtime frame directly");
+     if (fVerboseLevel > 2)  Info("GetSubTimeFrame","reading subtime frame directly");
       // get subtime frame buffer by myself since no time frame is ready
       if (!fDataSource) return kFALSE;
       if (!fDataSource->IsPrepared()) return kFALSE;
-      fDataSource->Read(fBuffer,sizeof(uint64_t));
-      fDataSource->Seek(-sizeof(uint64_t),SEEK_CUR);
-      if(!TStreamingHeaderSTF::IsHeaderSTF(*(uint64_t*)fBuffer)) {
-         // no time frame nor subtime frame is found, buffer is not ready
-         Warning("","Header may not be ready %lx",*(uint64_t*)fBuffer);
-         return kFALSE;
+      while (1) {
+	int read = fDataSource->Read(fBuffer,sizeof(uint64_t));
+	if (read == 0) {
+	  Warning("GetSubTimeFrame","No more data is available");
+	  return kFALSE;
+	}
+	if(!TStreamingHeaderSTF::IsHeaderSTF(*(uint64_t*)fBuffer)) {
+	  // no time frame nor subtime frame is found, buffer is not ready
+	  Warning("GetSubTimeFrame","Header may not be ready %lx",*(uint64_t*)fBuffer);
+	} else {
+	  break;
+	}
       }
+      fDataSource->Seek(-sizeof(uint64_t),SEEK_CUR);
+
       // sub time frame is found but only one
       fNumSources = 1;
       if (fSubTimeFrameBuffers.size() == 0) {
@@ -246,6 +257,9 @@ Bool_t art::TStreamingEventStore::GetSubTimeFrame()
       fSubTimeFrameBuffers[0] = fBuffer;
       fSubTimeFrameSize[0] = payloadSize;
    } else {
+     if (fVerboseLevel > 2) {
+       Info("GetSubtimeFrame","Read from time frame with %d sources",fNumSources);
+     }
       char *buffer = fBuffer;
       for (int i = 0; i < fNumSources; ++i) {
          auto& header = fSubTimeFrameHeaders[i];
@@ -253,6 +267,9 @@ Bool_t art::TStreamingEventStore::GetSubTimeFrame()
          fSubTimeFrameBuffers[i] = buffer+TStreamingHeaderSTF::kHeaderSize;
          fSubTimeFrameSize[i] = header->GetLength() - TStreamingHeaderSTF::kHeaderSize;
          buffer += header->GetLength();
+	 if (fVerboseLevel > 2) {
+	   header->Print();
+	 }
       }
    }
    return kTRUE;
@@ -262,6 +279,7 @@ Bool_t art::TStreamingEventStore::GetSubTimeFrame()
 Bool_t art::TStreamingEventStore::GetHeartBeatFrame()
 {
    if (!GetSubTimeFrame()) {
+     if (fVerboseLevel > 1) Info("GetHeartBeatFrame","No subtime frame found");
       // no subtime frame is found
       return kFALSE;
    } else {
@@ -281,10 +299,11 @@ Bool_t art::TStreamingEventStore::GetHeartBeatFrame()
          
          TStreamingModuleDecoder *decoder = TStreamingModuleDecoderFactory::Find(femtype);
          int used = decoder->Decode(buffer,size,seg,femid);
+	 
          if (used > 0) {
             fSubTimeFrameSize[i] -= used;
             fSubTimeFrameBuffers[i] += used;
-            // printf("size = %d, buffer = %p\n",fSubTimeFrameSize[i],fSubTimeFrameBuffers[i]);
+            if (fVerboseLevel > 2)  printf("size = %d, buffer = %p\n",fSubTimeFrameSize[i],fSubTimeFrameBuffers[i]);
          } else {
             fSubTimeFrameSize[i] = 0;
             // Info("GetHeartBeatFrame","used all");
