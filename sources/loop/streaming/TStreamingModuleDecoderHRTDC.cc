@@ -7,7 +7,7 @@
 #include "TStreamingHeartBeatDelimiter.h"
 #include "TStreamingSpillDelimiter.h"
 
-#include "TRawTimingWithEdge.h"
+#include "TRawDataTimingCharge.h"
 #include "TClonesArray.h"
 #include "TObjArray.h"
 
@@ -20,7 +20,7 @@ int art::TStreamingModuleDecoderHRTDC::fgID = art::TStreamingModuleDecoderHRTDC:
 art::TStreamingModuleDecoderHRTDC::TStreamingModuleDecoderHRTDC()
    : art::TStreamingModuleDecoderImpl<art::TStreamingModuleDecoderHRTDC>()
 {
-   fTDC = new TClonesArray(art::TRawTimingWithEdge::Class());
+   fTDC = new TClonesArray(art::TRawDataTimingCharge::Class());
    fHBD = new TClonesArray(art::TStreamingHeartBeatDelimiter::Class());
    fSD  = new TClonesArray(art::TStreamingSpillDelimiter::Class());
 }
@@ -91,22 +91,15 @@ int art::TStreamingModuleDecoderHRTDC::Decode(char *buf, const int& size, TObjAr
          UInt_t tot = DecodeBits(data,kShiftTOT,kMaskTOT);
          UInt_t time = DecodeBits(data,kShiftTime,kMaskTime);
 
-         TRawTimingWithEdge *odatal = static_cast<TRawTimingWithEdge*>(fTDC->ConstructedAt(fTDC->GetEntriesFast()));
-         TRawTimingWithEdge *odatat = static_cast<TRawTimingWithEdge*>(fTDC->ConstructedAt(fTDC->GetEntriesFast()));
+         TRawDataTimingCharge *odatal = static_cast<TRawDataTimingCharge*>(fTDC->ConstructedAt(fTDC->GetEntriesFast()));
 
          odatal->SetSegInfo(seg->GetUniqueID(),femid,ch);
-         odatat->SetSegInfo(seg->GetUniqueID(),femid,ch);
 
          // printf("decoding %lx HR-TDC segid = %d, femid = %x, ch = %d, tdc = %d, tot = %d\n",data, seg->GetUniqueID(),femid,ch,time,tot);
          
-
-         odatal->Set(time);
-         odatat->Set(time + tot);
-         odatal->SetEdge(TRawTimingWithEdge::kLeading);
-         odatat->SetEdge(TRawTimingWithEdge::kTrailing);
-
+         odatal->SetTiming(time);
+         odatal->SetCharge(tot);
          seg->Add(odatal);
-         seg->Add(odatat);
       }
       break;
       case kHeaderHBD:
