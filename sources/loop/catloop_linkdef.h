@@ -48,6 +48,7 @@
 #pragma link C++ class art::TRawDataSimple<UInt_t>;
 #pragma link C++ class art::TRawDataSimple<ULong64_t>;
 #pragma link C++ class art::TRawTiming;
+#pragma link C++ class art::TRawDataTimingCharge;
 #pragma link C++ class art::TRawTimingWithEdge;
 #pragma link C++ class art::TEventHeader;
 #pragma link C++ class art::TMappingProcessor;
