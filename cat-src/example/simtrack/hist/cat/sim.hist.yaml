@@ -1,0 +1,93 @@
+include:
+  - track.hist.yaml
+group:
+  - name: sim
+    title: simulated result
+    contents:
+      - name: Chi2
+        title: chi2
+        x: ["track_true.fChi2/track_true.fHits@.size()",100,0.,10.]
+        y: ["track3.fChi2/track3.fHits@.size()",100,0.,10.]
+      - name: diffChi2
+        title: diff chi2
+        x: ["track3.fChi2 - track_true.fChi2",100,-10.,10.]
+      - name: Xend
+        title: X end correlation
+        x: ["track3.fEndPoint.X()",200,-200.,200.]
+        y: ["track_true.fEndPoint.X()",200,-200.,200.]
+      - name: Yend
+        title: Y end correlation
+        x: ["track3.fEndPoint.Y()",200,-200.,200.]
+        y: ["track_true.fEndPoint.Y()",200,-200.,200.]
+      - name: Zend
+        title: Z end correlation
+        x: ["track3.fEndPoint.Z()",200,-200.,200.]
+        y: ["track_true.fEndPoint.Z()",200,-200.,200.]
+      - name: Xdirection
+        title: X direction correlation
+        x: ["track3.fDirection.X()",200,-200.,200.]
+        y: ["track_true.fDirection.X()",200,-200.,200.]
+      - name: Ydirection
+        title: Y direction correlation
+        x: ["track3.fDirection.Y()",200,-200.,200.]
+        y: ["track_true.fDirection.Y()",200,-200.,200.]
+      - name: Zdirection
+        title: Z direction correlation
+        x: ["track3.fDirection.Z()",200,-200.,200.]
+        y: ["track_true.fDirection.Z()",200,-200.,200.]
+      - name: Theta_direction
+        title: Z direction correlation
+        x: ["track3.fDirection.Theta()",200,0.,3.14159]
+        y: ["track_true.fDirection.Theta()",200,0.,3.14159]
+      - name: Phi_direction
+        title: Phi direction correlation
+        x: ["track3.fDirection.Phi()",200,-3.14159,3.14159]
+        y: ["track_true.fDirection.Phi()",200,-3.14159,3.14159]
+      - name: diff_Xend
+        title: diff Xend
+        x: ["track3.fEndPoint.X() - track_true.fEndPoint.X()",100,-10.,10.]
+      - name: diff_Yend
+        title: diff Yend
+        x: ["track3.fEndPoint.Y() - track_true.fEndPoint.Y()",100,-10.,10.]
+      - name: diff_Zend
+        title: diff Zend
+        x: ["track3.fEndPoint.Z() - track_true.fEndPoint.Z()",100,-10.,10.]
+      - name: diff_Xdirection
+        title: diff Xdirection
+        x: ["track3.fDirection.X() - track_true.fDirection.X()",100,-10.,10.]
+      - name: diff_Ydirection
+        title: diff Ydirection
+        x: ["track3.fDirection.Y() - track_true.fDirection.Y()",100,-10.,10.]
+      - name: diff_Zdirection
+        title: diff Zdirection
+        x: ["track3.fDirection.Z() - track_true.fDirection.Z()",100,-10.,10.]
+      - name: diff_Thetadirection
+        title: diff Thetadirection
+        x: ["track3.fDirection.Theta() - track_true.fDirection.Theta()",100,-0.1,0.1]
+      - name: diff_Phidirection
+        title: diff Phidirection
+        x: ["track3.fDirection.Phi() - track_true.fDirection.Phi()",100,-0.1,0.1]
+      - name: ExEx
+        title: Ex vs ExTrue
+        x: ["ExTrue",100,0.,20.]
+        y: ["Ex3",100,0.,20.]
+      - name: ThetaCMThetaCM
+        title: ThetaCM3 vs ThetaCMTrue
+        x: ["ThetaCMtrue/TMath::Pi()*180",100,1.,4.]
+        y: ["ThetaCM3/TMath::Pi()*180.",100,1.,4.]
+      - name: diffEx
+        title: diff Ex
+        x: ["Ex3 - ExTrue",100,-1.,1.]
+      - name: diffTheta
+        title: diff Theta (deg)
+        x: ["(ThetaCM3 - ThetaCMtrue)/TMath::Pi()*180.",100,-1.,1.]
+  - name: sim_gChi2
+    title: sim cut with chi2
+    clone: sim
+    cut: "track3.fChi2/track3.fHits@.size() < 10."
+    
+  
+        
+
+        
+    

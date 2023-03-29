@@ -1,0 +1,181 @@
+Anchor:
+  - &dc 0.04
+#  - &dc 0.000000004
+
+Processor:
+  - name: timer
+    type: art::TTimerProcessor
+#----------------------------------------------------------------------
+  - name: rangetable
+    type: art::TRangeTableConditionProcessor
+    parameter:
+      OutputTransparency: 0  # [Bool_t] Output is persistent if false (default) 
+      RangeTable: rangeTable  # [TString] name of range table
+      RangeTableFile: data/DeuteronDeuterium/DeuteronDeuterium064.txt.out  # [TString] Name of range table file
+      Verbose: 1  # [Int_t] verbose level (default 1 : non quiet)
+      RangeStep: 0.01
+  - name: proc:rangetable
+    type: art::TRangeTableConditionProcessor
+    parameter:
+      RangeTableFile: data/ProtonDeuterium/ProtonDeuterium064.txt.out
+      RangeTable: rangeTable2
+      RangeStep: 0.01      
+  - name: pad
+    type: art::TCatReadoutPadConditionProcessor
+    parameter:
+      Type: 2
+                              
+#----------------------------------------------------------------------
+  - name: timer
+    type: art::TTimerProcessor
+  - name: recoilgen
+    type: art::TBinaryReactionGenerator
+    parameter:
+      MaxLoop: 100000
+      Particle1: [132.,50.]
+      Particle2: [2,1]
+      Particle3: [132,50.]
+      KinMean: 114.
+      ExRange: [0.,20.]
+      AngMom: -1
+      AngRange: [1.5,2.4001]
+  - name: trackgen
+    type: art::TCatRecoilEventGenerator
+    parameter:
+      Attachment: 9.9999999999999995e-08  # [Double_t] attachment coeffcient (cm^{-1})
+#      DiffusionCoefficient: 0.04  # [Double_t] diffusion coefficient in cm1/2
+      DiffusionCoefficient: *dc  # [Double_t] diffusion coefficient in cm1/2
+      EventHeaderName: eventheader  # [TString] the name of event header
+      WorkFunction: 37e-6
+      Input: recoil  # [TString] input collection (TClonesArray of TArtParticle)
+      Output: mcpulse  # [TString] output collection (TClonesArray of TCatPulseShape)
+      OutputTrackResult: track_true  # [TString] true track result to be compared with the tracking result
+      OutputTransparency: 0  # [Bool_t] Output is persistent if false (default)
+      RangeTable: rangeTable  # [TString] name of range table
+      ReadoutPad: readoutPad  # [TString] array of readout pad
+      RunHeadersName: runheader  # [TString] the name of output array for run headers, run header will be stored once
+      Verbose: 1  # [Int_t] verbose level (default 1 : non quiet)
+      Zrange: [-1.,-1.]  # [FloatVec_t] simulate range for z axis
+      PhiRange: [0., 6.28]
+#      SigmaCoeff: [0.,0.,1.]
+      SigmaCoeff: [0.,0.00001,0.]
+      ChargeThreshold: 0.01
+      BeamRegion: [-12.1,12.1]
+      DefaultIntegrateStep: 0.1
+      ResponseTableFileName: data/restable_7mm_10um_finedev.root
+      WaitTime: 1000000
+      DisplayMode: 0
+#  - name: tree
+#    type: art::TOutputTreeProcessor
+#    parameter:
+#      FileName: simtrack.root
+#---      
+  - name: cluster:recoil
+    type: art::TCatTpcHitClusterProcessor
+    parameter:
+      ClusterRadius: [8.1, 21]  # [vector<Double_t>] radius of cluster
+      InputCollection: mcpulse  # [TString] input pulse collection (for a specific region)
+      IsSingle: 1  # [Bool_t] select maximum size cluster if 1 (default: 0)
+      MinClusterSize: 5  # [Double_t] required minimum cluster size
+      OutputCollection: mcrc # [TString] output pulse collection as a candidate of recoil track
+      OutputTransparency: 0  # [Bool_t] Output is persistent if false (default)
+      ReadoutPad: readoutPad  # [TString] Name of readout pad array
+      Verbose: 1  # [Int_t] verbose level (default 1 : non quiet)
+
+  - name: gate_array_init
+    type: art::TGateArrayInitializer
+  - name: trueevent
+    type: art::TTreeFormulaGateProcessor
+    parameter:
+      Definitions:
+        - "hasHit; mcrc.fHits@.size() >4 && (TMath::Abs(recoil.Phi())>TMath::Pi()*3./4. || TMath::Abs(recoil.Phi())<TMath::Pi()/4.)"
+  - name: stop_trueevent
+    type: art::TGateStopProcessor
+    parameter:
+      GateName: "hasHit"
+  - name: trackWithDiffusedCharge_d
+    type: art::TCatTrackingWithDiffusedChargeProcessor
+    parameter:
+      InputCollection: mcrc
+#      RangeTableFile: data/DeuteronInDeuterium0.4atm.txt.out
+      RangeTableFile: data/DeuteronDeuterium/DeuteronDeuterium064.txt.out
+      RangeTable: rangeTable      
+#      FieldCageOffset: -60.
+      FileNameResponseTable: data/test.root
+      OutputCollection: track3
+      Attachment: 0.
+      SigmaCoeff: [0, 1.,0.]
+      DefaultIntegrateStep: 0.1
+      DiffusionCoefficient: *dc
+      ResponseTableFileName: data/restable_7mm_10um_finedev.root      
+      UseRandom: 0
+      MeshDim: [10,10,10]
+      MeshStep: [1.,0.1,0.01]
+      DoMeshSearch: 0
+      WaitTime: 1000000
+      DisplayMode: 0
+      
+  - name: trackWithDiffusedCharge_p
+    type: art::TCatTrackingWithDiffusedChargeProcessor
+    parameter:
+      InputCollection: mcrc
+      RangeTable: rangeTable2
+#      ReadoutPlaneOffset: -45.5
+      OutputCollection: track4
+      FixedOrigin: 0.
+#      InitialRange: 490.
+      IndependentVariable: 0
+      Attachment: 0.
+      DefaultIntegrateStep: 0.1
+      DiffusionCoefficient: *dc
+#      DiffusionCoefficient: 0.
+      SigmaCoeff: [0., 1., 0.]
+      ResponseTableFileName: data/restable_7mm_10um_finedev.root      
+      UseRandom: 0
+      MeshDim: [10,1,1]
+      MeshStep: [0.01,0.001,0.001]
+      DoMeshSearch: 0
+#  - name: displayTrack
+#    type: art::TCatTrackResultDisplayProcessor
+#    parameter:
+#      DisplayMode: 1
+#      InputCollection: ["track_true"]
+#      WaitTime: 1000000
+      
+  - name: missingmass
+    type: art::TCatMissingMassProcessor
+    parameter:
+      RecoilInput: track3
+      RangeTableFile: data/DeuteronDeuterium/DeuteronDeuterium064.txt.out      
+      Ex: Ex3
+      ThetaCM: ThetaCM3
+  - name: missingmass
+    type: art::TCatMissingMassProcessor
+    parameter:
+      RecoilInput: track_true
+      RangeTableFile: data/DeuteronDeuterium/DeuteronDeuterium064.txt.out      
+      Ex: ExTrue
+      ThetaCM: ThetaCMtrue
+      RecoilOutput: recoilmom_true
+      
+  - name: projcat
+    type: art::TTreeProjectionProcessor
+    parameter:
+      FileName: hist/cat/sim.hist.yaml
+#      FileName: hist/cat/phys.hist.yaml
+      Name: projection
+      OutputTransparency: 1
+      Type: art::TTreeProjection
+      Verbose: 1
+#  - name: pat3
+#    type: art::TCatAtHitPatternProcessor
+#    parameter:
+#      InputCollection: mcrc
+#      WaitTime: 500000
+  - name: timer
+    type: art::TTimerProcessor
+  - name: tree
+    type: art::TOutputTreeProcessor
+    parameter:
+      FileName: simtrack.root
+      

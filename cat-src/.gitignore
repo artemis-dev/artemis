@@ -1,0 +1,12 @@
+.deps
+.objects
+*~
+*dict*
+*.so
+*.o
+*.lo
+*.d
+*~
+*.so
+*_dict.cc
+*_dict.h
