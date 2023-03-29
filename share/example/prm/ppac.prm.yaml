@@ -1,0 +1,83 @@
+Type: art::TPPACParameter
+Contents:  
+  f1ppac:
+    ns2mm: [1.275, 1.251]
+    delayoffset: [1.612, 0.850]
+    linecalib: [3.9088, 1.5531]
+    exchange: 0
+    reflectx: 0
+    geometry: [5.463, 0.0, -1000.]
+    TXSumLimit: [0., 1000.]
+    TYSumLimit: [0., 1000.]
+  f2ppac:
+    ns2mm: [1.242, 1.248]
+    delayoffset: [0.576, 0.311]
+    linecalib: [4.0172, 2.3266]
+    exchange: 0.
+    reflectx: 0
+    geometry: [2.887, 0.0, -5742.7]
+    TXSumLimit: [102.39, 109.66]
+    TYSumLimit: [89.06, 95.50]
+  f3ppaca:
+    ns2mm: [1.252, 1.248]
+    delayoffset: [0.633, 0.200]
+    linecalib: [-0.89819, -4.2730]
+    exchange: 0.
+    reflectx: 1
+    geometry: [-0.75, -0.85, -1603.2]
+    TXSumLimit: [71.02, 79.60]
+    TYSumLimit: [87.34, 95.50]
+  f3ppacb:
+    ns2mm: [1.256, 1.255]
+    delayoffset: [0.881, 0.384]
+    linecalib: [2.9383, -4.4908]
+    exchange: 0.
+    reflectx: 1
+    geometry: [0.2667,-1.284,-1303.2]
+    TXSumLimit: [89.90, 98.92]
+    TYSumLimit: [92.44, 101.10]
+  f3ppacc:
+    ns2mm: [1.240, 1.240]
+    delayoffset: [0.766, 0.113]
+    linecalib: [1.0913, 1.6942]
+    exchange: 1
+    reflectx: 0
+    geometry: [-0.8558, -2.332,-520.]
+    TXSumLimit: [95.06, 104.5]
+    TYSumLimit: [78.76, 87.34]
+  f3ppacd:
+    ns2mm: [1.241, 1.233]
+    delayoffset: [0.170, 0.110]
+    linecalib: [10.649, 2.9082]
+    exchange: 1
+    reflectx: 0
+    geometry: [0.4377, 1.322,436.]
+    TXSumLimit: [70.16, 78.76]
+    TYSumLimit: [79.90, 85.18]
+  f3ppace:
+    ns2mm: [1.272, 1.272]
+    delayoffset: [0.720, 1.170]
+    linecalib: [1.4749, -2.7966]
+    exchange: 0
+    reflectx: 1
+    geometry: [-1.5,0.5,788.]  
+    TXSumLimit: [120.82, 129.40]
+    TYSumLimit: [119.94, 128.54]
+  f4ppaca:
+    ns2mm: [1.270, 1.275]
+    delayoffset: [1.040, 1.100]
+    linecalib: [-3.2683, -0.26331]
+    exchange: 1
+    reflectx: 1
+    geometry: [0.,0.,4419.9]
+    TXSumLimit: [130.70, 139.28]
+    TYSumLimit: [119.10, 128.12]
+  f4ppacb:
+    ns2mm: [1.243, 1.241]
+    delayoffset: [0.620, 0.460]
+    linecalib: [-1.8859,5.7201]
+    exchange: 1
+    reflectx: 1
+    geometry: [0.,0.,4719.9]
+    TXSumLimit: [71.02, 81,32]
+    TYSumLimit: [91.62, 101.08]

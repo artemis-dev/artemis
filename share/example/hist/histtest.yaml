@@ -1,0 +1,53 @@
+Processor:
+# just for creating the output 
+  - name: ridfevent
+    type: art::TRIDFEventStore
+  - name: map
+    type: art::TMappingProcessor
+  - name: catmapping
+    type: art::TCatAtMappingProcessor
+    parameter:
+      - name: OutputCollection
+        value: at
+  - name: atpulsefinder
+    type: art::TPulseFinder
+    parameter:
+      - name: InputCollection
+        value: at
+      - name: OutputCollection
+        value: atpulse
+#  - name: inputtree
+#    type: art::TTreeEventStore
+#    parameter:
+#      - name: FileName
+#        value:
+#          - alpha2701.root
+  - name: projectionloader
+    type: art::TTreeProjectionProcessor
+    parameter:
+      - name: FileName  # input filename
+        type: TString
+        size: 0
+        value:
+          - hist.yaml
+      - name: Name  # name of parameter output
+        type: TString
+        size: 0
+        value:
+          - projection
+      - name: OutputTransparency  # Output is persistent if false (default)
+        type: Bool_t
+        size: 0
+        value: 1
+      - name: Type  # type(class) of parameter
+        type: TString
+        size: 0
+        value:
+          - art::TTreeProjection
+      - name: Verbose  # verbose level (default 1 : non quiet)
+        type: Int_t
+        size: 0
+        value:
+          - 1
+              
+              
