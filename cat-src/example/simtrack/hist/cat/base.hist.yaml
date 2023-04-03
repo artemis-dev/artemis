@@ -1,0 +1,72 @@
+group:
+  - name: cat_base
+    title: CAT Basic
+    contents:
+      - name: mult
+        title: multiplicity of hits
+        x: ["at@.GetEntriesFast()",2000,0.,2000]
+      - name: mult_pulse
+        title: multiplicity of pulse
+        x: ["atpulse@.GetEntriesFast()",2000,0.,2000]
+      - name: mult_pulse_low
+        title: multiplicity of pulse with low threshold
+        x: ["atpulselow@.GetEntriesFast()",2000,0.,2000]
+      - name: charge
+        title: charge of pulses
+        x: ["atpulse.fCharge",2000,0.,20000]
+      - name: charge_low
+        title: charge of pulses (low threshold)
+        x: ["atpulselow.fCharge",2000,0.,20000]
+      - name: charge_recoil
+        title: charge of recoil candidates
+        x: ["atrc.fCharge",2000,0.,500]
+  - name: beam
+    title: CAT Beam
+    contents:
+      - name: charge
+        title: charge
+        x: ["beam.fCharge",100,0.,30.]
+      - name: ratio_id
+        title: id vs ratio
+        x: ["beam.fHits.fID",416,-0.5,415.5]
+        y: ["beam.fHits.fCharge/beam.fHits.fEnergyDeposit",1000,0.,10.]
+      - name: charge_id
+        title: id vs charge
+        x: ["beam.fHits.fID",416,-0.5,415.5]
+        y: ["beam.fHits.fCharge",100,0.,1.]
+      - name: hX_Y
+        title: X vs Y
+        x: ["beam.X(0)",100,-10.,10.]
+        y: ["beam.Y(0)",100,-100.,100.]
+      - name: hA_B
+        title: A vs B
+        x: ["beam.A()",100,-0.1,0.1]
+        y: ["beam.B()",100,-0.1,0.1]
+      - name: hX_A
+        title: X vs A
+        x: ["beam.X(0)",100,-7.,7.]        
+        y: ["beam.A()",100,-0.05,0.05]
+      - name: hChi2_X
+        title: Chi2 vs X
+        x: ["beam.X(0)",100,-7.,7.]
+        y: ["beam.fChi2",100,-0.,500.]        
+      - name: hRedChi2_X
+        title: Reduced Chi2 vs X
+        x: ["beam.X(0)",100,-7.,7.]
+        y: ["beam.fChi2/beam.fHits@.size()",100,-0.,100.]
+  - name: beam_good
+    title: Cat Beam GOOD
+    clone: beam
+    cut: "beam.fChi2/beam.fHits@.size()<10."
+  - name: beam_good_charge
+    title: Cat Beam Charge
+    clone: beam
+    cut: "5< beam.fCharge && beam.fCharge < 10."
+  - name: beam_good_charge_x
+    title: Cat Beam Charge
+    clone: beam
+    cut: "5< beam.fCharge && beam.fCharge < 10. && TMath::Abs(beam.X(0)) < 1."
+  - include: track.hist.yaml
+        
+        
+        

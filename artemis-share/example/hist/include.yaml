@@ -1,0 +1,15 @@
+alias:
+  validpulse : "atpulse.IsValid() == kTRUE"
+  cut_charge: "atpulse.fCharge > 100"
+  id1: "25./1."
+  id2: "35./1."
+group:
+  - name: tpcbasic_include
+    title: tpc basic
+    contents:
+      - name: id
+        title: id
+        x: ["atpulse.fID",100,0.,100.,"",validpulse]
+      - name: id_clone
+        title: id cloned
+        clone: id

@@ -12,6 +12,9 @@
 !README.md
 !m4
 !documentation
+!CMakeLists.txt
+!/cat-src
+!/artemis-share
 
 # additional exception
 *~

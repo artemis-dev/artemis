@@ -1,0 +1,228 @@
+set(LIB_NAME CAT)
+
+add_library(${LIB_NAME} SHARED
+    TModuleDecoderA3100.cc
+    TModuleDecoderA3100TriggeredList.cc
+    TModuleDecoderHINP.cc
+    TSimpleDataMappingProcessor.cc
+    TChargeValidateProcessor.cc
+    TCatGainEvaluationProcessor.cc
+    TCmdXsta.cc
+    TCatAtSaveHitPatternProcessor.cc
+    TCatAtEventSelectionByRecoilHitPattern.cc
+    TCatAtRoughEventCounter.cc
+    TCatAtPedestalSubtractTester.cc
+    TPulseUnfoldHighPassTester.cc
+    TSampleCalibratorTester.cc
+    TPulseFindTester.cc
+    TGraphDrawer.cc
+    TPulseDrawer.cc
+    TModuleDecoderSIS3301.cc
+    TMonitorMappingProcessor.cc
+    TCatBeamTrackSimulator.cc
+    TModuleDecoderV1740_mod.cc
+    TCatAtSaveChargePatternProcessor.cc
+    TCatHitFinderByCharge.cc
+    THogeProcessor.cc
+    TCatBeamXProcessor.cc
+    TCatRefineRecoilClusterProcessor.cc
+    TEventSkipProcessor.cc
+    TCatTrackResultPulse.cc
+    TCatAtClusteringProcessor.cc
+    TCoinRegUnGateProcessor.cc
+    TBetaDecomposeProcessor.cc
+    TBrhoReconstructProcessor.cc
+    TPIDProcessor.cc
+    TCatTPCRecoilCandidateSelectProcessor.cc
+    TCatTPCRecoilCandidateRescanByDistanceProcessor.cc
+    TEventDisplayProcessorHelper.cc
+    TRangeTableHelper.cc
+    TCatTrackMinuitHelper.cc
+    TCatTrackDiffusedMinuitHelper.cc
+    TCatTrackingWithDiffusedChargeProcessor.cc
+    TCatTrackResult.cc
+    TCatTrackResultDisplayProcessor.cc
+    TCatMissingMassProcessor.cc
+    TCatAtBeamInRecoilRegionCounter.cc
+    TCatAtSaveMaxSamplePatternProcessor.cc
+    TCatRegionHitsDivider.cc
+    TPPACAnodeTimingProcessor.cc
+    TPPACProcessorQTC.cc
+    TRawDataTriggeredList.cc
+    TCatDiffusedChargeResponseHelper.cc
+    TCatFunctionChargeResidual.cc
+    TRangeTableConditionProcessor.cc
+    TCatRecoilEventGenerator.cc
+    TAffineConverterConditionProcessor.cc
+    TCatTpcHitClusterProcessor.cc
+    TCatTpcTrack.cc
+    TCatBeamHitsFinderWithRecoil.cc
+    TParticleGenerateProcessor.cc
+    TUpdateParticleMomentumProcessor.cc
+    TMissingMassProcessor.cc
+    TTimingChargeTriggeredListMappingProcessor.cc
+    TArtemisCanvas.cc
+    TPulsePoleZeroCancellationProcessor.cc
+    TCatTpcTrackUpdateHelper.cc
+    TNArrayLoader.cc
+    TTrackGenerator.cc
+    TEventInfoGenerator.cc
+    TTpcEventGenerator.cc
+    TArtMathUtil.cc
+    TPIDwSinglePlaneProcessor.cc
+    TPIDwSinglePPACPlaneProcessor.cc
+    TGenerateParticleFromPID.cc
+    TUpdateParticleMomentumByBrho.cc
+    TUpdateParticleMomentumByTable.cc
+    TCatTrackFittingWithSiliconProcessor.cc
+    TSiliconEventGenerator.cc
+    TEnergyCorrectionInMaterial.cc
+    TDetectorGeometryUpdateProcessor.cc
+# ribf113
+    TCatGlastPositionConditionProcessor.cc
+    TCatTrackFindWithSiliconProcessor.cc
+    TChargeRiseTimeCompensateProcessor.cc
+    TTimestampCalibrationProcessor.cc
+    TCatClusterSumProcessor.cc
+# srppac related
+    TSRPPACPlaneData.cc
+    TSRPPACParameter.cc
+    TSRPPACPlaneProcessor.cc
+    TSRPPACPlaneDqdxProcessor.cc
+    TSRPPACPlaneSideDqdxProcessor.cc
+    TSRPPACCalibrationProcessor.cc
+    TSRPPACPlaneCalibrationTask.cc
+
+    TGSRPPACCalibration.cc
+    TTpcStaticGasPropertyConditionProcessor.cc
+    TResponseFunctionNArray.cc
+    TCatEvalTpcChargeResolution.cc
+    TCatEvalGainShiftProcessor.cc
+    TArtLocalUtil.cc
+    TUnsharpMask.cc
+)
+
+target_include_directories(${LIB_NAME}
+    PUBLIC ${yaml_cpp_INCLUDEDIR} ${ARTEMIS_INCLUDE_DIRS} ${SHARE_INCLUDE_DIRS} ${CMAKE_SOURCE_DIR}/cat-src
+)
+
+target_link_libraries(${LIB_NAME} ${ROOT_LIBRARIES} ${YAML_CPP_LIBRARIES} ${ARTEMIS_LIBRARIES})
+
+
+ROOT_GENERATE_DICTIONARY(G__${LIB_NAME}
+    TUpdateParticleMomentumProcessor.h
+    TUpdateParticleMomentumByTable.h
+    TUpdateParticleMomentumByBrho.h
+    TUnsharpMask.h
+    TTrackGenerator.h
+    TTpcStaticGasPropertyConditionProcessor.h
+    TTpcEventGenerator.h
+    TTimingChargeTriggeredListMappingProcessor.h
+    TTimestampCalibrationProcessor.h
+    TSRPPACPlaneSideDqdxProcessor.h
+    TSRPPACPlaneProcessor.h
+    TSRPPACPlaneDqdxProcessor.h
+    TSRPPACPlaneData.h
+    TSRPPACPlaneCalibrationTask.h
+    TSRPPACParameter.h
+    TSRPPACCalibrationProcessor.h
+    TSimpleDataMappingProcessor.h
+    TSiliconEventGenerator.h
+    TSampleCalibratorTester.h
+    TResponseFunctionNArray.h
+    TRawDataTriggeredList.h
+    TRangeTableHelper.h
+    TRangeTableConditionProcessor.h
+    TPulseUnfoldHighPassTester.h
+    TPulsePoleZeroCancellationProcessor.h
+    TPulseFindTester.h
+    TPulseDrawer.h
+    TPPACProcessorQTC.h
+    TPPACAnodeTimingProcessor.h
+    TPIDwSinglePPACPlaneProcessor.h
+    TPIDwSinglePlaneProcessor.h
+    TPIDProcessor.h
+    TParticleGenerateProcessor.h
+    TNArrayLoader.h
+    TMonitorMappingProcessor.h
+    TModuleDecoderV1740_mod.h
+    TModuleDecoderSIS3301.h
+    TModuleDecoderHINP.h
+    TModuleDecoderA3100TriggeredList.h
+    TModuleDecoderA3100.h
+    TMissingMassProcessor.h
+    THogeProcessor.h
+    TGSRPPACConfig.h
+    TGSRPPACCalibration.h
+    TGraphDrawer.h
+    TGenerateParticleFromPID.h
+    TGainCalibratorProcessor.h
+    TEventSkipProcessor.h
+    TEventInfoGenerator.h
+    TEventDisplayProcessorHelper.h
+    TEnergyCorrectionInMaterial.h
+    TDetectorGeometryUpdateProcessor.h
+    TCoinRegUnGateProcessor.h
+    TCmdXsta.h
+    TChargeValidateProcessor.h
+    TChargeRiseTimeCompensateProcessor.h
+    TCatTrackResultPulse.h
+    TCatTrackResult.h
+    TCatTrackResultDisplayProcessor.h
+    TCatTrackMinuitHelper.h
+    TCatTrackingWithDiffusedChargeProcessor.h
+    TCatTrackFittingWithSiliconProcessor.h
+    TCatTrackFindWithSiliconProcessor.h
+    TCatTrackDiffusedMinuitHelper.h
+    #TCatTrackDiffusedMinuit.h
+    TCatTpcTrackUpdateHelper.h
+    TCatTpcTrack.h
+    TCatTPCRecoilCandidateSelectProcessor.h
+    TCatTPCRecoilCandidateRescanByDistanceProcessor.h
+    TCatTpcHitClusterProcessor.h
+    TCatSimpleTrackingByChargeDivision.h
+    TCatRegionHitsDivider.h
+    TCatRefineRecoilClusterProcessor.h
+    TCatRecoilEventGenerator.h
+    TCatMissingMassProcessor.h
+    TCatHitSelectionHough.h
+    TCatHitFinderByCharge.h
+    TCatGlastPositionConditionProcessor.h
+    TCatGainEvaluationProcessor.h
+    TCatFunctionChargeResidual.h
+    TCatEvalTpcChargeResolution.h
+    TCatEvalGainShiftProcessor.h
+    TCatDiffusedChargeResponseHelper.h
+    TCatClusterSumProcessor.h
+    TCatCentroidTrackingProcessor.h
+    TCatBeamXProcessor.h
+    TCatBeamTrackSimulator.h
+    TCatBeamHitsFinderWithRecoil.h
+    TCatAtSaveMaxSamplePatternProcessor.h
+    TCatAtSaveHitPatternProcessor.h
+    TCatAtSaveChargePatternProcessor.h
+    TCatAtRoughEventCounter.h
+    TCatAtPedestalSubtractTester.h
+    TCatAtEventSelectionByRecoilHitPattern.h
+    TCatAtClusteringProcessor.h
+    TCatAtBeamInRecoilRegionCounter.h
+    TBrhoReconstructProcessor.h
+    TBetaDecomposeProcessor.h
+    TArtMathUtil.h
+    TArtLocalUtil.h
+    TArtemisCanvas.h
+    TAffineConverterConditionProcessor.h
+    LINKDEF linkdef_user.h
+    MODULE ${LIB_NAME}
+)
+
+install(TARGETS ${LIB_NAME}
+    LIBRARY DESTINATION lib
+)
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/
+    DESTINATION include
+    FILES_MATCHING PATTERN "*.h"
+)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/lib${LIB_NAME}_rdict.pcm
+    DESTINATION lib
+)

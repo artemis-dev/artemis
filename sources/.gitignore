@@ -14,6 +14,7 @@
 !*.h
 !Makefile.am
 !*.in
+!CMakeLists.txt
 
 # except for Makefile.in since it is made from Makefile.am
 Makefile.in
