@@ -3,7 +3,6 @@ project(artemis)
 
 # ROOT 6 installation
 list(APPEND CMAKE_PREFIX_PATH $ENV{ROOTSYS})
-list(APPEND CMAKE_PREFIX_PATH /home/ryokoyam/opt/openMPI)
 
 # Default installation dir
 set(CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/install/ CACHE PATH "install dir" FORCE)
@@ -27,8 +26,18 @@ if(MPI_CXX_FOUND)
     add_compile_definitions(HAVE_MPI_H)
     include_directories(SYSTEM ${MPI_CXX_INCLUDE_PATH})
 endif()
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(yaml_cpp REQUIRED yaml-cpp)
+
+find_package(yaml-cpp)
+if(yaml-cpp_FOUND)
+    set(yaml_cpp_INCLUDEDIR ${YAML_CPP_INCLUDE_DIRS})
+    set(yaml_cpp_LIBRARIES ${YAML_CPP_LIBRARIES})
+    set(yaml_cpp_LIBDIR ${YAML_CPP_CMAKE_DIR}/../../../lib)
+else()
+    find_package(PkgConfig)
+    if(PkgConfig_FOUND)
+        pkg_check_modules(yaml_cpp yaml-cpp)
+    endif()
+endif()
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 #---Define useful ROOT functions and macros (e.g. ROOT_GENERATE_DICTIONARY)
