@@ -1,0 +1,16 @@
+#%Module1.0
+# Modulefiles/artemis
+#
+
+proc ModulesHelp {} {
+    global version modroot
+    puts stderr "A RooT Extension with Modular processors for Instant Swiching"
+}
+
+module-whatis "A RooT Extension with Modular processors for Instant Swiching"
+
+set topdir  @CMAKE_INSTALL_PREFIX@
+
+prepend-path PATH   $topdir/bin
+prepend-path LD_LIBRARY_PATH    $topdir/lib
+prepend-path LIBRARY_PATH    $topdir/lib
