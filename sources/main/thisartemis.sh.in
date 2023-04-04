@@ -1,0 +1,16 @@
+source @ROOT_DIR@/../bin/thisroot.sh
+
+export LD_LIBRARY_PATH=@yaml_cpp_LIBDIR@:$LD_LIBRARY_PATH
+export ARTSYS=@CMAKE_INSTALL_PREFIX@
+export PATH=$ARTSYS/bin:$PATH
+export LD_LIBRARY_PATH=$ARTSYS/lib:$LD_LIBRARY_PATH
+
+if [ "@BUILD_GET@" == "ON" ]; then 
+    export LD_LIBRARY_PATH=@GET_LIB_DIR@:$LD_LIBRARY_PATH
+fi
+
+if [ "@MPI_CXX_FOUND@" == "TRUE" ]; then 
+    dir=@MPI_CXX_LIBRARIES@
+    libdir="$(dirname $dir)"
+    export LD_LIBRARY_PATH=$libdir:$LD_LIBRARY_PATH
+fi

@@ -15,6 +15,7 @@
 !CMakeLists.txt
 !/cat-src
 !/artemis-share
+!/share
 
 # additional exception
 *~
