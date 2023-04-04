@@ -49,5 +49,5 @@ endif()
 link_directories(${ROOTSYS}/lib)
 
 add_subdirectory(sources)
-add_subdirectory(artemis-share)
 add_subdirectory(cat-src)
+add_subdirectory(artemis-share)

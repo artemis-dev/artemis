@@ -70,7 +70,7 @@ add_library( ${LOOPLIB_NAME} SHARED
 target_include_directories(${LOOPLIB_NAME}
     PUBLIC ${yaml_cpp_INCLUDEDIR} ${ARTEMIS_INCLUDE_DIRS})
 
-target_link_libraries(${LOOPLIB_NAME} ${ROOT_LIBRARIES} ${YAML_CPP_LIBRARIES})
+target_link_libraries(${LOOPLIB_NAME} ${ROOT_LIBRARIES} ${YAML_CPP_LIBRARIES} catcore artcont)
 
 if(MPI_CXX_FOUND)
         target_include_directories(${LOOPLIB_NAME} PRIVATE ${MPI_CXX_INCLUDE_PATH})

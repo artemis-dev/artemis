@@ -64,7 +64,7 @@ add_library( ${LIB_NAME} SHARED
 
 target_include_directories(${LIB_NAME}
     PUBLIC ${yaml_cpp_INCLUDEDIR} ${ARTEMIS_INCLUDE_DIRS})
-target_link_libraries(${LIB_NAME} ${ROOT_LIBRARIES} ${YAML_CPP_LIBRARIES})
+target_link_libraries(${LIB_NAME} ${ROOT_LIBRARIES} ${YAML_CPP_LIBRARIES} catcore)
 
 ROOT_GENERATE_DICTIONARY(G__${LIB_NAME}
     TCmdUpload.h
