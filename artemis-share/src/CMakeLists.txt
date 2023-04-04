@@ -1,4 +1,4 @@
-set(LIB_NAME user)
+set(LIB_NAME artshare)
 
 set(SHARE_INCLUDE_DIRS
     ${CMAKE_SOURCE_DIR}/artemis-share/src
@@ -167,7 +167,7 @@ add_library(${LIB_NAME} SHARED
 target_include_directories(${LIB_NAME}
     PUBLIC ${yaml_cpp_INCLUDEDIR} ${ARTEMIS_INCLUDE_DIRS} ${SHARE_INCLUDE_DIRS} ${CMAKE_SOURCE_DIR}/cat-src)
 
-target_link_libraries(${LIB_NAME} ${ROOT_LIBRARIES} ${YAML_CPP_LIBRARIES} ${ARTEMIS_LIBRARIES})
+target_link_libraries(${LIB_NAME} ${ROOT_LIBRARIES} ${YAML_CPP_LIBRARIES} ${ARTEMIS_LIBRARIES} CAT)
 
 ROOT_GENERATE_DICTIONARY(G__${LIB_NAME}
     TWalkCorrectionProcessor.h
