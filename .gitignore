@@ -16,6 +16,7 @@
 !/cat-src
 !/artemis-share
 !/share
+!artemis-config.cmake.in
 
 # additional exception
 *~
