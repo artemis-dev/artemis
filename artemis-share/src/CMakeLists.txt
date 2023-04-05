@@ -1,6 +1,5 @@
-set(LIB_NAME artshare)
-
-set(SHARE_INCLUDE_DIRS
+set(ARTEMIS_INCLUDE_DIRS
+    ${ARTEMIS_INCLUDE_DIRS}
     ${CMAKE_SOURCE_DIR}/artemis-share/src
     ${CMAKE_SOURCE_DIR}/artemis-share/src/cat
     ${CMAKE_SOURCE_DIR}/artemis-share/src/coin
@@ -18,7 +17,7 @@ set(SHARE_INCLUDE_DIRS
     CACHE INTERNAL ""
 )
 
-add_library(${LIB_NAME} SHARED
+set(OBJECTS
 # cat
     cat/TSampleCalibratorProcessor.cc
     cat/TCatAtMappingProcessor.cc
@@ -164,12 +163,7 @@ add_library(${LIB_NAME} SHARED
 
 )
 
-target_include_directories(${LIB_NAME}
-    PUBLIC ${yaml_cpp_INCLUDEDIR} ${ARTEMIS_INCLUDE_DIRS} ${SHARE_INCLUDE_DIRS} ${CMAKE_SOURCE_DIR}/cat-src)
-
-target_link_libraries(${LIB_NAME} ${ROOT_LIBRARIES} ${YAML_CPP_LIBRARIES} ${ARTEMIS_LIBRARIES} CAT)
-
-ROOT_GENERATE_DICTIONARY(G__${LIB_NAME}
+set(HEADERS
     TWalkCorrectionProcessor.h
     TTimingSubtractionProcessor.h
     TTimingChargePositionMappingProcessor.h
@@ -317,18 +311,6 @@ ROOT_GENERATE_DICTIONARY(G__${LIB_NAME}
     sh04/TBeamZProcessor.h
     sh04/TBeamZ.h
     sh04/TBeamParameter.h
-
-    LINKDEF linkdef_user.h
-    MODULE ${LIB_NAME}
 )
 
-install(TARGETS ${LIB_NAME}
-    LIBRARY DESTINATION lib
-)
-install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/
-    DESTINATION include
-    FILES_MATCHING PATTERN "*.h"
-)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/lib${LIB_NAME}_rdict.pcm
-    DESTINATION lib
-)
+art_lib(artshare "${OBJECTS}" "${HEADERS}" "linkdef_user.h" "artemis-share")

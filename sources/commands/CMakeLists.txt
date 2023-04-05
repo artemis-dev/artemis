@@ -1,7 +1,4 @@
-set(LIB_NAME catcmd)
-
-
-add_library( ${LIB_NAME} SHARED
+set(OBJECTS
 	TCatCmdFactory.cc
 	TCatCmd.cc
 	TCatCmdHelp.cc
@@ -62,11 +59,7 @@ add_library( ${LIB_NAME} SHARED
 	TCmdUpload.cc
 )
 
-target_include_directories(${LIB_NAME}
-    PUBLIC ${yaml_cpp_INCLUDEDIR} ${ARTEMIS_INCLUDE_DIRS})
-target_link_libraries(${LIB_NAME} ${ROOT_LIBRARIES} ${YAML_CPP_LIBRARIES} catcore)
-
-ROOT_GENERATE_DICTIONARY(G__${LIB_NAME}
+set(HEADERS 
     TCmdUpload.h
     TCmdUpdateCanvas.h
     TCmdUnZoom.h
@@ -124,18 +117,7 @@ ROOT_GENERATE_DICTIONARY(G__${LIB_NAME}
     TCatCmdBn.h
     TCatCmdAvy.h
     TCatCmdAvx.h
-    TCatCmdAv.h    
-    LINKDEF catcmd_linkdef.h
-    MODULE ${LIB_NAME}
+    TCatCmdAv.h
 )
 
-install(TARGETS ${LIB_NAME}
-    LIBRARY DESTINATION lib
-)
-install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-    DESTINATION include
-    FILES_MATCHING PATTERN "*.h"
-)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/lib${LIB_NAME}_rdict.pcm
-    DESTINATION lib
-)
+art_lib(catcmd "${OBJECTS}" "${HEADERS}"  "catcmd_linkdef.h" "sources/commands")

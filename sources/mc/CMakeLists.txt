@@ -1,6 +1,4 @@
-set(LIB_NAME catmc)
-
-add_library( ${LIB_NAME} SHARED
+set(OBJECTS
 	TArtEventCollections.cc
 	TArtParticle.cc
 	TArtAtomicMassTable.cc
@@ -10,30 +8,14 @@ add_library( ${LIB_NAME} SHARED
 	TRandomGraph.cc 
 )
 
-target_include_directories(${LIB_NAME}
-    PUBLIC ${yaml_cpp_INCLUDEDIR} ${ARTEMIS_INCLUDE_DIRS})
-
-target_link_libraries(${LIB_NAME} ${ROOT_LIBRARIES} ${YAML_CPP_LIBRARIES})
-
-ROOT_GENERATE_DICTIONARY(G__${LIB_NAME}
+set(HEADERS
     TTrackG4.h
     TRandomGraph.h
     TCatTwoBodyKinematics.h
     TBinaryReactionGenerator.h
     TArtParticle.h
     TArtEventCollections.h
-    TArtAtomicMassTable.h    
-    LINKDEF catmc_linkdef.h
-    MODULE ${LIB_NAME}
+    TArtAtomicMassTable.h
 )
 
-install(TARGETS ${LIB_NAME}
-    LIBRARY DESTINATION lib
-)
-install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-    DESTINATION include
-    FILES_MATCHING PATTERN "*.h"
-)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/lib${LIB_NAME}_rdict.pcm
-    DESTINATION lib
-)
+art_lib(catmc "${OBJECTS}" "${HEADERS}"  "catmc_linkdef.h" "mc")

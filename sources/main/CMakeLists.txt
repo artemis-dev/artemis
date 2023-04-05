@@ -6,8 +6,17 @@ if(MPI_CXX_FOUND)
         target_link_libraries(artemis ${MPI_CXX_LIBRARIES})
 endif()
 
+set_target_properties(
+        artemis
+        PROPERTIES
+                PUBLIC_HEADER "TArtRint.h"        
+)
+
 install(TARGETS artemis
+        EXPORT artemisTargets
         RUNTIME DESTINATION bin
+        INCLUDES DESTINATION include
+        PUBLIC_HEADER DESTINATION include/main
         LIBRARY DESTINATION lib
 )
 

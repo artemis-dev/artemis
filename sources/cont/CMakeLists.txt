@@ -1,6 +1,4 @@
-set(LIB_NAME artcont)
-
-add_library( ${LIB_NAME} SHARED
+set(OBJECTS
     TParameterObject.cc
     TCatReadoutPad.cc
     TCatReadoutPadArray.cc
@@ -16,11 +14,7 @@ add_library( ${LIB_NAME} SHARED
     TParameterStrings.cc   
 )
 
-target_include_directories(${LIB_NAME}
-    PUBLIC ${yaml_cpp_INCLUDEDIR} ${ARTEMIS_INCLUDE_DIRS})
-target_link_libraries(${LIB_NAME} ${ROOT_LIBRARIES} ${YAML_CPP_LIBRARIES})
-
-ROOT_GENERATE_DICTIONARY(G__${LIB_NAME}
+set(HEADERS
     TTrack.h
     TTpcStaticGasProperty.h
     TTimingData.h
@@ -41,18 +35,7 @@ ROOT_GENERATE_DICTIONARY(G__${LIB_NAME}
     ITrack.h
     ITiming.h
     IPosition.h
-    ICharge.h    
-    LINKDEF artcont_linkdef.h
-    MODULE ${LIB_NAME}
+    ICharge.h
 )
 
-install(TARGETS ${LIB_NAME}
-    LIBRARY DESTINATION lib
-)
-install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-    DESTINATION include
-    FILES_MATCHING PATTERN "*.h"
-)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/lib${LIB_NAME}_rdict.pcm
-    DESTINATION lib
-)
+art_lib(artcont "${OBJECTS}" "${HEADERS}"  "artcont_linkdef.h" "sources/cont")

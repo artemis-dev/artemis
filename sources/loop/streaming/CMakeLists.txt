@@ -1,6 +1,4 @@
-set(LIB_NAME artstreaming)
-
-add_library( ${LIB_NAME} SHARED
+set(OBJECTS
     TStreamingEventStore.cc
     TStreamingHeartBeatDelimiter.cc
     TStreamingSpillDelimiter.cc
@@ -13,12 +11,7 @@ add_library( ${LIB_NAME} SHARED
     TStreamingHeaderTF.cc
 )
 
-target_include_directories(${LIB_NAME}
-    PUBLIC ${yaml_cpp_INCLUDEDIR} ${ARTEMIS_INCLUDE_DIRS})
-
-target_link_libraries(${LIB_NAME} ${ROOT_LIBRARIES} ${YAML_CPP_LIBRARIES})
-
-ROOT_GENERATE_DICTIONARY(G__${LIB_NAME}
+set(HEADERS
     TStreamingSpillDelimiter.h
     TStreamingModuleDecoderLRTDC.h
     TStreamingModuleDecoderImpl.h
@@ -31,17 +24,6 @@ ROOT_GENERATE_DICTIONARY(G__${LIB_NAME}
     TStreamingHeaderFS.h
     TStreamingEventStore.h
     #TStreamingDataFileSinkComment.h    
-    LINKDEF artstreaming_linkdef.h
-    MODULE ${LIB_NAME}
 )
 
-install(TARGETS ${LIB_NAME}
-    LIBRARY DESTINATION lib
-)
-install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-    DESTINATION include
-    FILES_MATCHING PATTERN "*.h"
-)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/lib${LIB_NAME}_rdict.pcm
-    DESTINATION lib
-)
+art_lib(artstreaming "${OBJECTS}" "${HEADERS}"  "artstreaming_linkdef.h" "sources/loop/streaming")

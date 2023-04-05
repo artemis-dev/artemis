@@ -8,9 +8,7 @@ add_subdirectory(rdf)
 add_subdirectory(ridf)
 add_subdirectory(streaming)
 
-set(LOOPLIB_NAME catloop)
-
-add_library( ${LOOPLIB_NAME} SHARED
+set(OBJECTS
     TCategorizedData.cc 
     TConditionBit.cc 
     TCounterEventStore.cc 
@@ -67,17 +65,7 @@ add_library( ${LOOPLIB_NAME} SHARED
     TAttParameter.cc
 )
 
-target_include_directories(${LOOPLIB_NAME}
-    PUBLIC ${yaml_cpp_INCLUDEDIR} ${ARTEMIS_INCLUDE_DIRS})
-
-target_link_libraries(${LOOPLIB_NAME} ${ROOT_LIBRARIES} ${YAML_CPP_LIBRARIES} catcore artcont)
-
-if(MPI_CXX_FOUND)
-        target_include_directories(${LOOPLIB_NAME} PRIVATE ${MPI_CXX_INCLUDE_PATH})
-        target_link_libraries(${LOOPLIB_NAME} ${MPI_CXX_LIBRARIES})
-endif()
-
-ROOT_GENERATE_DICTIONARY(G__${LOOPLIB_NAME}
+set(HEADERS
     TTreeEventStore.h
     TTimingTimestampAdapter.h
     TTimeValidator.h
@@ -135,17 +123,6 @@ ROOT_GENERATE_DICTIONARY(G__${LOOPLIB_NAME}
     TArtTree.h
     IProcessorHelper.h
     IEventStore.h
-    LINKDEF catloop_linkdef.h
-    MODULE ${LOOPLIB_NAME}
 )
 
-install(TARGETS ${LOOPLIB_NAME}
-    LIBRARY DESTINATION lib
-)
-install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-    DESTINATION include
-    FILES_MATCHING PATTERN "*.h"
-)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/lib${LOOPLIB_NAME}_rdict.pcm
-    DESTINATION lib
-)
+art_lib(catloop "${OBJECTS}" "${HEADERS}"  "catloop_linkdef.h" "sources/loop")

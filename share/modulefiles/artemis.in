@@ -11,6 +11,7 @@ module-whatis "A RooT Extension with Modular processors for Instant Swiching"
 
 set topdir  @CMAKE_INSTALL_PREFIX@
 
+setenv TARTSYS  $topdir
 prepend-path PATH   $topdir/bin
 prepend-path LD_LIBRARY_PATH    $topdir/lib
 prepend-path LIBRARY_PATH    $topdir/lib

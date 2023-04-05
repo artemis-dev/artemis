@@ -1,6 +1,10 @@
-set(LIB_NAME CAT)
+set(ARTEMIS_INCLUDE_DIRS
+    ${ARTEMIS_INCLUDE_DIRS}
+    ${CMAKE_SOURCE_DIR}/cat-src
+    CACHE INTERNAL ""
+)
 
-add_library(${LIB_NAME} SHARED
+set(OBJECTS
     TModuleDecoderA3100.cc
     TModuleDecoderA3100TriggeredList.cc
     TModuleDecoderHINP.cc
@@ -102,14 +106,7 @@ add_library(${LIB_NAME} SHARED
     TUnsharpMask.cc
 )
 
-target_include_directories(${LIB_NAME}
-    PUBLIC ${yaml_cpp_INCLUDEDIR} ${ARTEMIS_INCLUDE_DIRS} ${SHARE_INCLUDE_DIRS} ${CMAKE_SOURCE_DIR}/cat-src
-)
-
-target_link_libraries(${LIB_NAME} ${ROOT_LIBRARIES} ${YAML_CPP_LIBRARIES} ${ARTEMIS_LIBRARIES})
-
-
-ROOT_GENERATE_DICTIONARY(G__${LIB_NAME}
+set(HEADERS 
     TUpdateParticleMomentumProcessor.h
     TUpdateParticleMomentumByTable.h
     TUpdateParticleMomentumByBrho.h
@@ -174,7 +171,6 @@ ROOT_GENERATE_DICTIONARY(G__${LIB_NAME}
     TCatTrackFittingWithSiliconProcessor.h
     TCatTrackFindWithSiliconProcessor.h
     TCatTrackDiffusedMinuitHelper.h
-    #TCatTrackDiffusedMinuit.h
     TCatTpcTrackUpdateHelper.h
     TCatTpcTrack.h
     TCatTPCRecoilCandidateSelectProcessor.h
@@ -212,17 +208,6 @@ ROOT_GENERATE_DICTIONARY(G__${LIB_NAME}
     TArtLocalUtil.h
     TArtemisCanvas.h
     TAffineConverterConditionProcessor.h
-    LINKDEF linkdef_user.h
-    MODULE ${LIB_NAME}
 )
 
-install(TARGETS ${LIB_NAME}
-    LIBRARY DESTINATION lib
-)
-install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/
-    DESTINATION include
-    FILES_MATCHING PATTERN "*.h"
-)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/lib${LIB_NAME}_rdict.pcm
-    DESTINATION lib
-)
+art_lib(CAT "${OBJECTS}" "${HEADERS}"  "linkdef_user.h" "cat-src")
