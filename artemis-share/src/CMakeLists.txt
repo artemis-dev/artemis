@@ -69,6 +69,7 @@ set(OBJECTS
     converter/TSplineConverter.cc
     converter/TAffineConverterCombinator.cc
     converter/TWalkConverter.cc
+    converter/TFixedNumberParameter.cc
 # gate
     gate/TGateArray.cc
     gate/TGateObject.cc
