@@ -128,16 +128,22 @@ install(EXPORT artemisTargets
     DESTINATION lib/cmake/artemis
 )
 
-#include(CMakePackageConfigHelpers)
-#configure_package_config_file(
-#    "artemis-config.cmake.in"
-#    "artemis-config.cmake"
-#    INSTALL_DESTINATION lib/cmake/artemis
-#)
+
 configure_file(
     "${CMAKE_CURRENT_SOURCE_DIR}/artemis-config.cmake.in"
-    "${CMAKE_CURRENT_SOURCE_DIR}/artemis-config.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/artemis-config.cmake"
     @ONLY
+)
+
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/artemis-config.cmake"
+    DESTINATION lib/cmake/artemis
+)
+
+include(CMakePackageConfigHelpers)
+configure_package_config_file(
+    "artemis-config.cmake.in"
+    "artemis-config.cmake"
+    INSTALL_DESTINATION lib/cmake/artemis
 )
 
 # Install artemis-config.cmake so find_package(artemis) works
