@@ -19,7 +19,7 @@ if(BUILD_GET)
 endif()
 
 #---Locate the ROOT package and defines a number of variables (e.g. ROOT_INCLUDE_DIRS)
-find_package(ROOT REQUIRED COMPONENTS RIO Net Physics Geom Minuit2)
+find_package(ROOT REQUIRED COMPONENTS RIO Net Physics Geom Minuit2 Gui)
 find_package(MPI)
 if(MPI_CXX_FOUND)
     add_compile_definitions(USE_MPI)
