@@ -67,7 +67,13 @@ function(art_lib lib_name objects headers linkdef_name header_destination)
     add_library(${lib_name} SHARED ${objects})
 
     target_include_directories(${lib_name}
-        PUBLIC ${yaml_cpp_INCLUDEDIR} ${ARTEMIS_INCLUDE_DIRS}
+        PUBLIC
+            $<INSTALL_INTERFACE:include>
+            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+    )
+    target_include_directories(${lib_name}
+        PRIVATE
+            ${yaml_cpp_INCLUDEDIR} ${ARTEMIS_INCLUDE_DIRS}
     )
     target_link_libraries(${lib_name}
         ${ROOT_LIBRARIES} ${YAML_CPP_LIBRARIES} ${ARTEMIS_LIBRARIES} 
@@ -97,6 +103,7 @@ function(art_lib lib_name objects headers linkdef_name header_destination)
     install(TARGETS ${lib_name}
         EXPORT artemisTargets 
         INCLUDES DESTINATION include
+        ARCHIVE DESTINATION lib
         PUBLIC_HEADER DESTINATION include/${header_destination}
         LIBRARY DESTINATION lib
     )
@@ -113,14 +120,20 @@ add_subdirectory(artemis-share)
 add_subdirectory(cat-src)
 add_subdirectory(share)
 
-include(CMakePackageConfigHelpers)
-configure_package_config_file(
-    "artemis-config.cmake.in"
-    "artemis-config.cmake"
-    INSTALL_DESTINATION cmake
+install(EXPORT artemisTargets
+    FILE artemisTargets.cmake
+    NAMESPACE artemis::
+    DESTINATION lib/cmake/artemis
 )
 
+#include(CMakePackageConfigHelpers)
+#configure_package_config_file(
+#    "artemis-config.cmake.in"
+#    "artemis-config.cmake"
+#    INSTALL_DESTINATION lib/cmake/artemis
+#)
+#
 install(
     FILES "${CMAKE_CURRENT_BINARY_DIR}/artemis-config.cmake"
-    DESTINATION "cmake"
+    DESTINATION lib/cmake/artemis
 )
