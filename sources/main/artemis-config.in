@@ -69,12 +69,13 @@ libs="-lcatcmd \
 -lartshare \
 -lCAT"
 
+dypaths=":@CMAKE_INSTALL_PREFIX@/lib:@yaml_cpp_LIBDIR"
+
 if [ "@BUILD_GET@" == "ON" ]; then 
   libs="${libs} -lGETDecoder"
   cflags="${cflags} -I@GET_INCLUDE_DIR@"
+  dypaths="${dypaths}:@GET_LIB_DIR@"
 fi
-
-
 
 help()
 {
@@ -98,7 +99,7 @@ EOF
 usage()
 {
   cat<<EOF
-Usage: artemis-config [--prefix] [--version] [--libs] [--cflags] [--incdir] [--cxx]
+Usage: artemis-config [--prefix] [--version] [--libs] [--cflags] [--incdir] [--cxx] [--dypaths]
 EOF
   exit 1
 }
@@ -141,6 +142,10 @@ while test $# -gt 0 ; do
 
     --cxx)
       echo ${cxx}
+      ;;
+
+    --dypaths)
+      echo ${dypaths}
       ;;
 
     -?)
