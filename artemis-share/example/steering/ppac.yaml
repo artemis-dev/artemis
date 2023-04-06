@@ -1,0 +1,67 @@
+Processor:
+  - name: proc:ppac:ch2ns
+    type: art::TParameterArrayLoader
+    parameter:
+      Name: prm:ppac:ch2ns
+      Type: art::TAffineConverter
+      FileName: prm/ppac/ch2ns.prm
+  - name: proc:ppac:param
+    type: art::TParameterArrayLoader
+    parameter:
+      Name: prm:ppac
+      Type: art::TPPACParameter
+      FileName: conf/ppac/ppac.prm.yaml
+#      FileName: conf/seg/calibseglist.yaml      
+      FileFormat: yaml
+  - name: proc:ppac
+    type: art::TPPACProcessor
+    parameter:
+      CatID: 3
+      TimingConverterArray: prm:ppac:ch2ns
+      HasEachChConverter: 1
+      DoSeparatePPACs: 1
+      OutputTransparency: 1
+      ListOfPPACNames:
+        - f1ppac
+        - f2ppac
+        - f3ppaca
+        - f3ppacb
+        - f3ppacc
+        - f3ppacd
+        - f3ppace
+        - f4ppaca
+        - f4ppacb
+  - name: prc:ppactrack:f3u
+    type: art::TPPACTrackingProcessor
+    parameter:
+      InputColName:
+        - f3ppaca
+        - f3ppacb
+        - f3ppacc
+      OutputColName:
+        - f3u
+  - name: prc:ppactrack:f3d
+    type: art::TPPACTrackingProcessor
+    parameter:
+      InputColName:
+        - f3ppacd
+        - f3ppace
+      OutputColName:
+        - f3d
+  - name: prc:ppactrack:f3ref
+    type: art::TPPACTrackingProcessor
+    parameter:
+      InputColName:
+        - f3ppaca
+        - f3ppace
+      OutputColName:
+        - f3ref
+      OutputTransparency: 1
+  - name: prc:ppactrack:f4
+    type: art::TPPACTrackingProcessor
+    parameter:
+      InputColName:
+        - f4ppaca
+        - f4ppacb
+      OutputColName:
+        - f4

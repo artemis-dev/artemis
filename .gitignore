@@ -12,8 +12,11 @@
 !README.md
 !m4
 !documentation
-!share
-!cat-src
+!CMakeLists.txt
+!/cat-src
+!/artemis-share
+!/share
+!artemis-config.cmake.in
 
 # additional exception
 *~

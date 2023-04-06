@@ -42,11 +42,11 @@ scriptloc=`dirname $script`
 
 package=@PACKAGE@
 version=@VERSION@
-prefix=@prefix@
-exec_prefix=@exec_prefix@
+prefix=@CMAKE_INSTALL_PREFIX@
+exec_prefix=@CMAKE_INSTALL_PREFIX@/bin
 cxx=@CXX@
-libdir=@libdir@
-includedirs="@includedir@ @YAML_CPP_INCLUDE_DIR@"
+libdir=@CMAKE_INSTALL_PREFIX@/lib
+includedirs="@CMAKE_INSTALL_PREFIX@/include @yaml_cpp_INCLUDEDIR@"
 
 name=${package}
 description="ARTEMIS - A RooT Extension with Modular processors for Instant Swiching"
@@ -65,14 +65,17 @@ libs="-lcatcmd \
 -lartridf \
 -lartrdf \
 -larthist \
--lartparam" 
+-lartparam \
+-lartshare \
+-lCAT"
 
-if [ "@HAVE_GET@" == "1" ]; then 
-  libs="${libs} @GET_DECODER_LIB@"
-  cflags="${cflags} -I@GET_DECODER_INCLUDE_DIR@"
+dypaths=":@CMAKE_INSTALL_PREFIX@/lib:@yaml_cpp_LIBDIR@"
+
+if [ "@BUILD_GET@" == "ON" ]; then 
+  libs="${libs} -lGETDecoder"
+  cflags="${cflags} -I@GET_INCLUDE_DIR@"
+  dypaths="${dypaths}:@GET_LIB_DIR@"
 fi
-
-
 
 help()
 {
@@ -96,7 +99,7 @@ EOF
 usage()
 {
   cat<<EOF
-Usage: artemis-config [--prefix] [--version] [--libs] [--cflags] [--incdir] [--cxx]
+Usage: artemis-config [--prefix] [--version] [--libs] [--cflags] [--incdir] [--cxx] [--dypaths]
 EOF
   exit 1
 }
@@ -139,6 +142,10 @@ while test $# -gt 0 ; do
 
     --cxx)
       echo ${cxx}
+      ;;
+
+    --dypaths)
+      echo ${dypaths}
       ;;
 
     -?)
