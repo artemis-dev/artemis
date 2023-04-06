@@ -10,7 +10,7 @@ set(CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/install/ CACHE PATH "install dir" F
 # Build options
 option(BUILD_GET "Build and install libraries using GET" OFF)
 
-# path definitions
+# Locate GET decoder if the option is on
 if(BUILD_GET)
     set(WITH_GET_DECODER /opt/GETDecoder CACHE STRING "path to get decoder lib")
     set(GET_INCLUDE_DIR ${WITH_GET_DECODER}/include)
@@ -52,9 +52,10 @@ if(BUILD_GET)
 endif()
 link_directories(${ROOTSYS}/lib)
 
+# Internal cache variables
 set(ARTEMIS_INCLUDE_DIRS "" CACHE INTERNAL "")
-
 set(ARTEMIS_LIBRARIES "" CACHE INTERNAL "")
+set(ARTEMIS_HEADER_DESTINATIONS "" CACHE INTERNAL "")
 
 # cmake function for building an artemis library
 # lib_name: Library name
@@ -68,7 +69,7 @@ function(art_lib lib_name objects headers linkdef_name header_destination)
 
     target_include_directories(${lib_name}
         PUBLIC
-            $<INSTALL_INTERFACE:include>
+            $<INSTALL_INTERFACE:include/${header_destination}>
             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
     )
     target_include_directories(${lib_name}
@@ -113,6 +114,7 @@ function(art_lib lib_name objects headers linkdef_name header_destination)
     )
 
     set(ARTEMIS_LIBRARIES ${ARTEMIS_LIBRARIES} ${lib_name} CACHE INTERNAL "")
+    set(ARTEMIS_HEADER_DESTINATIONS ${ARTEMIS_HEADER_DESTINATIONS} ${header_destination} CACHE INTERNAL "")
 endfunction()
 
 add_subdirectory(sources)
@@ -132,7 +134,13 @@ install(EXPORT artemisTargets
 #    "artemis-config.cmake"
 #    INSTALL_DESTINATION lib/cmake/artemis
 #)
-#
+configure_file(
+    "${CMAKE_CURRENT_SOURCE_DIR}/artemis-config.cmake.in"
+    "${CMAKE_CURRENT_SOURCE_DIR}/artemis-config.cmake"
+    @ONLY
+)
+
+# Install artemis-config.cmake so find_package(artemis) works
 install(
     FILES "${CMAKE_CURRENT_BINARY_DIR}/artemis-config.cmake"
     DESTINATION lib/cmake/artemis

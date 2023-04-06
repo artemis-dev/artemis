@@ -1,2 +1,6 @@
-@PACKAGE_INIT@
+#@PACKAGE_INIT@
 include("${CMAKE_CURRENT_LIST_DIR}/artemisTargets.cmake")
+
+# Definition of variables
+set(ARTEMIS_YAML_CPP_PATH @yaml_cpp_DIR@)
+set(ARTEMIS_GET_PATH @WITH_GET_DECODER@)
