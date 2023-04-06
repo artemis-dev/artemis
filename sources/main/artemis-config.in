@@ -69,7 +69,7 @@ libs="-lcatcmd \
 -lartshare \
 -lCAT"
 
-dypaths=":@CMAKE_INSTALL_PREFIX@/lib:@yaml_cpp_LIBDIR"
+dypaths=":@CMAKE_INSTALL_PREFIX@/lib:@yaml_cpp_LIBDIR@"
 
 if [ "@BUILD_GET@" == "ON" ]; then 
   libs="${libs} -lGETDecoder"
