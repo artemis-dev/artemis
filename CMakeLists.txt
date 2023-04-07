@@ -5,7 +5,7 @@ project(artemis)
 list(APPEND CMAKE_PREFIX_PATH $ENV{ROOTSYS})
 
 # Default installation dir
-set(CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/install/ CACHE PATH "install dir" FORCE)
+set(CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/install/ CACHE PATH "install dir")
 
 # Build options
 option(BUILD_GET "Build and install libraries using GET" OFF)
