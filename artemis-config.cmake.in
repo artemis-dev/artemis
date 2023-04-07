@@ -3,6 +3,6 @@ include("${CMAKE_CURRENT_LIST_DIR}/artemisTargets.cmake")
 
 # Definition of variables
 set(ARTEMIS_BUILD_GET "@BUILD_GET@")
-set(ARTEMIS_YAML_CPP_LIB_DIR "@yaml_cpp_LIBDIR@")
+set(ARTEMIS_YAML_CPP_LIB_DIR "@yaml_cpp_INCLUDEDIR@")
 set(ARTEMIS_GET_INCLUDE_DIR "@GET_INCLUDE_DIR@")
 set(ARTEMIS_GET_LIB_DIR "@GET_LIB_DIR@")
