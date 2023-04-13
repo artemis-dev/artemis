@@ -33,7 +33,7 @@ ARTEMIS depends on [YAML-CPP](https://code.google.com/p/yaml-cpp/) 0.7.0 for loa
 (sudo apt install libyaml-cpp-dev works on recent ubuntu)
 
 
-1. Download this cmake version of **ARTEMIS** from [the release page](https://github.com/artemis-dev/artemis) with cmake branch 
+1. Download this cmake version of **ARTEMIS** from [the release page](https://github.com/artemis-dev/artemis/tree/develop) with cmake branch 
 1. configure ARTEMIS with cmake
 ```
 git clone https://github.com/artemis-dev/artemis.git -b develop
