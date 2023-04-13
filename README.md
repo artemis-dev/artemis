@@ -33,10 +33,10 @@ ARTEMIS depends on [YAML-CPP](https://code.google.com/p/yaml-cpp/) 0.7.0 for loa
 (sudo apt install libyaml-cpp-dev works on recent ubuntu)
 
 
-1. Download this cmake version of **ARTEMIS** from [the release page](https://github.com/rin-yokoyama/artemis) with cmake branch 
+1. Download this cmake version of **ARTEMIS** from [the release page](https://github.com/artemis-dev/artemis) with cmake branch 
 1. configure ARTEMIS with cmake
 ```
-git clone https://github.com/rin-yokoyama/artemis.git -b cmake
+git clone https://github.com/artemis-dev/artemis.git -b develop
 cd artemis
 mkdir build
 cd build
@@ -51,7 +51,7 @@ cmake .. (or ccmake ..)
 3. "source thisartemis.sh" in install/bin or add install/share/modulefiles to modulespath if you use environment modules then you can use "module load artemis".
 3. If you want to build a project using artemis you can use find_package(artemis) in your cmake
 
-Check https://github.com/rin-yokoyama/artemis-oedo as an example.
+Check https://github.com/rin-yokoyama/artemis-oedo as an example of working directory.
 
 Licence
 -------
