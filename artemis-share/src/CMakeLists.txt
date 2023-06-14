@@ -217,13 +217,7 @@ set(HEADERS
     command/TCmdMWDCConfig.h
     command/TCmdMWDCCalib.h
     command/TCmdFiga.h
-    #command/TCatCmdMny.h
-    #command/TCatCmdMnx.h
-    #command/TCatCmdMn.h
     command/TCatCmdListg.h
-    #command/TCatCmdAvy.h
-    #command/TCatCmdAvx.h
-    #command/TCatCmdAv.h
     cont/TTrack.h
     cont/TTrackerHit3D.h
     cont/TTimingData.h

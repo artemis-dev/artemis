@@ -14,7 +14,6 @@ set(OBJECTS
 )
 
 set(HEADERS
-    #TRawDataV767.h
     TRawDataFadc.h
     TModuleDecoderV7XX.h
     TModuleDecoderV767.h

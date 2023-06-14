@@ -15,20 +15,12 @@ set(OBJECTS
 )
 
 set(HEADERS
-    #TTrack.h
     TTpcStaticGasProperty.h
-    #TTimingData.h
-    #TTimingChargeData.h
-    #TTimeDifference.h
     TSimpleData.h
     TParameterStrings.h
     TParameterObject.h
     TNArray.h
-    #TGenericData.h
     TDetectorGeometryInfo.h
-    #TCoinRegData.h
-    #TChargeData.h
-    #TCatScalerData.h
     TCatReadoutPad.h
     TCatReadoutPadArray.h
     TCatPulseShape.h

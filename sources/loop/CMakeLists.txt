@@ -116,7 +116,6 @@ set(HEADERS
     TCounterEventStore.h
     TConditionBit.h
     TChargeValidator.h
-    #TCatHistProcessor.h
     TCategorizedData.h
     TAttParameter.h
     TAsynchronousRunEndProcessor.h
