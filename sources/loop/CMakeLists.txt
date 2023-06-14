@@ -125,4 +125,4 @@ set(HEADERS
     IEventStore.h
 )
 
-art_lib(catloop "${OBJECTS}" "${HEADERS}"  "catloop_linkdef.h" "sources/loop")
+art_lib(catloop "${OBJECTS}" "${HEADERS}"  "catloop_linkdef.h" ".")

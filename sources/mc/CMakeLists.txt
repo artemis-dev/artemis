@@ -18,4 +18,4 @@ set(HEADERS
     TArtAtomicMassTable.h
 )
 
-art_lib(catmc "${OBJECTS}" "${HEADERS}"  "catmc_linkdef.h" "mc")
+art_lib(catmc "${OBJECTS}" "${HEADERS}"  "catmc_linkdef.h" ".")

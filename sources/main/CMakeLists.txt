@@ -16,7 +16,7 @@ install(TARGETS artemis
         EXPORT artemisTargets
         RUNTIME DESTINATION bin
         INCLUDES DESTINATION include
-        PUBLIC_HEADER DESTINATION include/main
+        PUBLIC_HEADER DESTINATION include
         LIBRARY DESTINATION lib
 )
 

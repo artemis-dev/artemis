@@ -29,4 +29,4 @@ set(HEADERS
     TModuleDecoderFixed.h
 )
 
-art_lib(artdecoder "${OBJECTS}" "${HEADERS}"  "artdecoder_linkdef.h" "sources/loop/decoder")
+art_lib(artdecoder "${OBJECTS}" "${HEADERS}"  "artdecoder_linkdef.h" ".")
