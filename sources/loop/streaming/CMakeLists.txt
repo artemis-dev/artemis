@@ -26,4 +26,4 @@ set(HEADERS
     #TStreamingDataFileSinkComment.h    
 )
 
-art_lib(artstreaming "${OBJECTS}" "${HEADERS}"  "artstreaming_linkdef.h" "sources/loop/streaming")
+art_lib(artstreaming "${OBJECTS}" "${HEADERS}"  "artstreaming_linkdef.h" ".")

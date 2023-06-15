@@ -14,7 +14,6 @@ set(OBJECTS
 )
 
 set(HEADERS
-    #TRawDataV767.h
     TRawDataFadc.h
     TModuleDecoderV7XX.h
     TModuleDecoderV767.h
@@ -29,4 +28,4 @@ set(HEADERS
     TModuleDecoderFixed.h
 )
 
-art_lib(artdecoder "${OBJECTS}" "${HEADERS}"  "artdecoder_linkdef.h" "sources/loop/decoder")
+art_lib(artdecoder "${OBJECTS}" "${HEADERS}"  "artdecoder_linkdef.h" ".")

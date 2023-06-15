@@ -6,4 +6,4 @@ set(HEADERS
     TRDFEventStore.h
 )
 
-art_lib(artrdf "${OBJECTS}" "${HEADERS}"  "artrdf_linkdef.h" "sources/loop/rdf")
+art_lib(artrdf "${OBJECTS}" "${HEADERS}"  "artrdf_linkdef.h" ".")

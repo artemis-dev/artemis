@@ -116,7 +116,6 @@ set(HEADERS
     TCounterEventStore.h
     TConditionBit.h
     TChargeValidator.h
-    #TCatHistProcessor.h
     TCategorizedData.h
     TAttParameter.h
     TAsynchronousRunEndProcessor.h
@@ -125,4 +124,4 @@ set(HEADERS
     IEventStore.h
 )
 
-art_lib(catloop "${OBJECTS}" "${HEADERS}"  "catloop_linkdef.h" "sources/loop")
+art_lib(catloop "${OBJECTS}" "${HEADERS}"  "catloop_linkdef.h" ".")
