@@ -17,6 +17,7 @@
 !/artemis-share
 !/share
 !artemis-config.cmake.in
+!cmake_uninstall.cmake.in
 
 # additional exception
 *~
