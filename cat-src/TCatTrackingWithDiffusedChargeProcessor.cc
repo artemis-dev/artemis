@@ -16,9 +16,6 @@
 #include <TCatTrackResultPulse.h>
 #include <TClonesArray.h>
 #include <TMath.h>
-#include <Math/GSLSimAnMinimizer.h>
-#include <Math/GSLMinimizer.h>
-#include <Math/GSLNLSMinimizer.h>
 #include <Math/GeneticMinimizer.h>
 #include <Minuit2/Minuit2Minimizer.h>
 #include <Minuit2/MnPrint.h>

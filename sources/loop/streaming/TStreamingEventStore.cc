@@ -31,13 +31,16 @@ art::TStreamingEventStore::TStreamingEventStore()
 {
    auto segdata = fSegmentedData("SegmentedData","The name of output segmented data","segdata");
    dynamic_cast<OutputData<TSegmentedData>*>(segdata)->SetDoAuto(kFALSE);
-
    Register(segdata);
    Register(fRunHeader("RunHeadersName","the name of output array for run headers","runheader"));
    Register(fEventHeader("EventHeaderName","the name of event header","eventheader"));
    Register(fMaxFrames("MaxFrames","maximum number of frames (no limit if 0)",0));
    Register(fStartFrame("StartFrame","start point number of frame",0));
    Register(fFileName("FileName","names of input files",StringVec_t()));
+   Register(fFEMID("FEMID","frontend module id",0));
+   Register(fFEMType("FEMType","frontend module type",2));
+   Register(fIsStandAlone("IsStandAlone","stand alone mode",0));
+   Register(fDefaultLength("DefaultLength","Default length for stand alone (kB) ",256));
 
    fBuffer = new char[1024*1024*1024];
    fHeaderFS = new TStreamingHeaderFS;
@@ -98,6 +101,15 @@ void art::TStreamingEventStore::Init(TEventCollection *col)
       col->Add(fSegmentedData.Value(),fSegmentedData.Data(),fOutputIsTransparent);
       fIsMaster = false;
    }
+
+   // prepare runheader
+   if (void **objref = col->GetInfoRef(fRunHeader.Value())) {
+     *(TList**)fRunHeader.PtrRef() = *(TList**)objref;     
+   } else {
+     *(TList**)fRunHeader.PtrRef() = new TList;
+     col->AddInfo(fRunHeader.Value(),fRunHeader.Data(),fOutputIsTransparent);
+   }
+     
       
 //   // set run header name
 //   fRunHeader->SetName(fRunHeader->GetName());
@@ -223,6 +235,7 @@ Bool_t art::TStreamingEventStore::GetSubTimeFrame()
 	  return kFALSE;
 	}
 	if(!TStreamingHeaderSTF::IsHeaderSTF(*(uint64_t*)fBuffer)) {
+	  if (fIsStandAlone) return kFALSE;
 	  // no time frame nor subtime frame is found, buffer is not ready
 	  Warning("GetSubTimeFrame","Header may not be ready %lx",*(uint64_t*)fBuffer);
 	} else {
@@ -278,7 +291,32 @@ Bool_t art::TStreamingEventStore::GetSubTimeFrame()
 
 Bool_t art::TStreamingEventStore::GetHeartBeatFrame()
 {
-   if (!GetSubTimeFrame()) {
+   if (fIsStandAlone) {
+      if (fVerboseLevel > 2) Info("GetHeartBeatFrame","Standalone mode");
+      if (!fDataSource) return kFALSE;
+      if (!fDataSource->IsPrepared()) return kFALSE;
+      int femid = fFEMID;
+      int femtype = fFEMType;
+      if (fVerboseLevel > 2) Info("GetHeartBeatFrame","Standalone mode femid = %x, femtype = %d",femid,femtype);
+      int segid = 0;
+      TObjArray *seg = fSegmentedData->FindSegmentByID(segid);
+      if (!seg) seg = fSegmentedData->NewSegment(segid);
+      if (fVerboseLevel > 2) Info("GetHeartBeatFrame","Standalone mode start reading");
+      while (1) {
+	int nread = fDataSource->Read(fBuffer,fDefaultLength * 1024 * 8);
+	if (fVerboseLevel > 2) Info("GetHeartBeatFrame","Standalone mode fBuffer = %p, nread = %d",fBuffer, nread);
+	if (nread == 0) {
+	  return kFALSE;
+	} 
+	TStreamingModuleDecoder *decoder = TStreamingModuleDecoderFactory::Find(femtype);
+	int used = decoder->Decode(fBuffer,nread,seg,femid);
+	if (fVerboseLevel > 2) Info("GetHeartBeatFrame","Standalone mode used =  %d, nread = %d" ,used, nread);
+	if (!used) continue;
+	fDataSource->Seek(used - nread ,SEEK_CUR);
+	break;
+      }
+      return kTRUE;
+   } else if (!GetSubTimeFrame()) {
      if (fVerboseLevel > 1) Info("GetHeartBeatFrame","No subtime frame found");
       // no subtime frame is found
       return kFALSE;
@@ -345,6 +383,17 @@ Bool_t art::TStreamingEventStore::Open()
    fDataSource->Read(fBuffer,0x130);
    fHeaderFS->ReadFrom(fBuffer);
    fHeaderFS->Print();
+   {
+     const TString runname("run");
+     int runnum = fHeaderFS->GetRunNumber();
+     TRunInfo *info = new TRunInfo(runname,runname);
+     fPresentRunInfo = info;
+     info->SetRunName(runname);
+     info->SetRunNumber(runnum);
+     fRunHeader->Add(info);
+     fEventHeader->SetRunName(runname);
+     fEventHeader->SetRunNumber(runnum);
+   }
    fIsEOB = false;
 #if 0 // file sink comment is disabled
    // @TODO how long we have to read

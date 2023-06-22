@@ -30,6 +30,8 @@ public:
 
    void ReadFrom(char *buffer);
 
+   std::uint64_t GetRunNumber() const { return fRunNumber; }
+
    virtual void Print(Option_t* opt = "") const;
 
    template <typename T> static void Decode(char*& data, T& out) {

@@ -65,7 +65,7 @@ int art::TStreamingModuleDecoderHRTDC::Decode(char *buf, const int& size, TObjAr
       // printf("%lx\n",data);
       ih = ((data >> kShiftHeader) & kHeaderMask);
 
-//      printf("ih = %x iw %d evtsize %u\n",ih,iw,evtsize);
+      // printf("ih = %x iw %d evtsize %u\n",ih,iw,evtsize);
 
       if (savedHBD && ih != kHeaderHBD) {
          printf("Error in TStreamingModuleDecoderHRTDC : no second kHeaderHBD\n");
@@ -114,6 +114,7 @@ int art::TStreamingModuleDecoderHRTDC::Decode(char *buf, const int& size, TObjAr
          hbd->SetFlag(flag);
          hbd->SetSpillNumber(spill);
          hbd->SetHeartBeatFrameNumber(hb);
+	 // printf("decoding %lx HR-TDC segid = %d, femid = %x, ch = %d,spill = %d, hb = %d\n",data, seg->GetUniqueID(),femid,fgChannelHBD,spill,hb);
          if (savedHBD) {
             savedHBD = NULL;
             return (iw+1) * sizeof(ULong64_t);

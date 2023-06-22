@@ -11,7 +11,7 @@
 
 #include "TProcessor.h"
 #include "IEventStore.h"
-
+#include "TRunInfo.h"
 
 namespace art {
    class TStreamingEventStore;
@@ -35,8 +35,8 @@ public:
    TStreamingEventStore(const TStreamingEventStore& rhs);
    TStreamingEventStore& operator=(const TStreamingEventStore& rhs);
 
-   Int_t GetRunNumber() const {return 0;}
-   const char* GetRunName() const {return "";}
+   Int_t GetRunNumber() const {return fPresentRunInfo->GetRunNumber();}
+   const char* GetRunName() const {return fPresentRunInfo->GetRunName();}
 
    virtual void Init(TEventCollection *col);
    virtual void PreProcess();
@@ -59,12 +59,13 @@ public:
 
 
 protected:
-   virtual TRunInfo* GetRunInfo() { ; }
+   virtual TRunInfo* GetRunInfo() { return fPresentRunInfo; }
    virtual void NotifyEndOfRun();
 
    bool fIsMaster;
 
    TDataSource      *fDataSource; //!
+   TRunInfo         *fPresentRunInfo; //!
    char             *fBuffer; //!
    bool              fIsEOB; //!
    std::map<ULong64_t,char*> fSTFBuffer; //!
@@ -87,6 +88,7 @@ protected:
    Parameter<Int_t> fFEMType; //! for direct sink from sampler (without header)
    Parameter<Int_t> fFEMID; //! for direct sink from sapmler
    Parameter<Int_t> fDefaultLength; // for direct sink from sampler
+   Parameter<Int_t> fIsStandAlone; // for direct sink from sampler
 
    ClassDef(TStreamingEventStore,1) // streaming data event store
 };
