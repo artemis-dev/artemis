@@ -9,6 +9,7 @@ set(OBJECTS
     TStreamingHeaderSTF.cc
     TStreamingHeaderFS.cc
     TStreamingHeaderTF.cc
+    TStreamingHeaderFLTCOIN.cc
 )
 
 set(HEADERS
@@ -22,6 +23,7 @@ set(HEADERS
     TStreamingHeaderTF.h
     TStreamingHeaderSTF.h
     TStreamingHeaderFS.h
+    TStreamingHeaderFLTCOIN.h
     TStreamingEventStore.h
     #TStreamingDataFileSinkComment.h    
 )

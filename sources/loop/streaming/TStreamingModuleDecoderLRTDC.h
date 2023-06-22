@@ -52,7 +52,7 @@ public:
    static const unsigned long long kMaskChannel = 0x7f;
    static const unsigned long long kShiftTOT    = 35;
    static const unsigned long long kMaskTOT     = 0xffff;
-   static const unsigned long long kShiftTime   = 19;
+   static const unsigned long long kShiftTime   = 16;
    static const unsigned long long kMaskTime    = 0x7ffff;
 
    // heartbeat

@@ -22,6 +22,7 @@
 #include "TStreamingHeaderFS.h"
 #include "TStreamingHeaderSTF.h"
 #include "TStreamingHeaderTF.h"
+#include "TStreamingHeaderFLTCOIN.h"
 
 ClassImp(art::TStreamingEventStore)
 
@@ -174,8 +175,16 @@ Bool_t art::TStreamingEventStore::GetTimeFrame()
    fDataSource->Read(fBuffer,sizeof(uint64_t));
    fDataSource->Seek(-sizeof(uint64_t),SEEK_CUR);
    if (fVerboseLevel > 2)  Info("GetTimeFrame","%lx",*(uint64_t*)fBuffer);
+   if (TStreamingHeaderFLTCOIN::IsHeaderFLTCOIN(*(uint64_t*)fBuffer)) {
+     fDataSource->Read(fBuffer,TStreamingHeaderFLTCOIN::kHeaderSize);
+     // fHeaderFLTCOIN->ReadFrom(fBuffer);
+     fDataSource->Read(fBuffer,sizeof(uint64_t));
+     fDataSource->Seek(-sizeof(uint64_t),SEEK_CUR);
+   }
    if(!TStreamingHeaderTF::IsHeaderTF(*(uint64_t*)fBuffer)) {
+     // check if filter coin
       // this is not the header, ignore
+     
       return kFALSE;
    }
 
@@ -275,6 +284,11 @@ Bool_t art::TStreamingEventStore::GetSubTimeFrame()
      }
       char *buffer = fBuffer;
       for (int i = 0; i < fNumSources; ++i) {
+	if (!TStreamingHeaderSTF::IsHeaderSTF(*(uint64_t*)buffer)) {
+          Warning("GetSubtimeFrame","not STF header[%d] : %x",i,*(uint64_t*)buffer);
+	  fNumSources = i;
+	  break;
+	}
          auto& header = fSubTimeFrameHeaders[i];
          header->ReadFrom(buffer);
          fSubTimeFrameBuffers[i] = buffer+TStreamingHeaderSTF::kHeaderSize;

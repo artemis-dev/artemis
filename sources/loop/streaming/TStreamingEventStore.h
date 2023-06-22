@@ -22,6 +22,7 @@ namespace art {
    class TStreamingHeaderFS;
    class TStreamingHeaderSTF;
    class TStreamingHeaderTF;
+   class TStreamingHeaderFLTCOIN;
 }
 
 
@@ -73,6 +74,7 @@ protected:
    TStreamingHeaderFS *fHeaderFS; //!
    TStreamingHeaderSTF *fHeaderSTF; //!
    TStreamingHeaderTF *fHeaderTF; //!
+   TStreamingHeaderFLTCOIN *fHeaderFLTCOIN; //!
    std::vector<char*> fSubTimeFrameBuffers; //!
    std::vector<int>   fSubTimeFrameSize; //!
    std::vector<TStreamingHeaderSTF*> fSubTimeFrameHeaders; //!

@@ -24,6 +24,7 @@
 #pragma link C++ class art::TStreamingHeaderSTF;
 #pragma link C++ class art::TStreamingHeaderFS;
 #pragma link C++ class art::TStreamingHeaderTF;
+#pragma link C++ class art::TStreamingHeaderFLTCOIN;
 
 
 // #pragma link C++ class art::TSTREAMINGEventStore::STREAMINGCommentRunInfo;

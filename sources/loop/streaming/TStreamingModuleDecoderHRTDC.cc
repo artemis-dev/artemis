@@ -178,6 +178,8 @@ int art::TStreamingModuleDecoderHRTDC::Decode(char *buf, const int& size, TObjAr
          }
       }
       break;
+      default:
+	break;
       }
    }
    return 0;
