@@ -6,6 +6,7 @@ set(OBJECTS
     TStreamingModuleDecoderFactory.cc
     TStreamingModuleDecoderLRTDC.cc
     TStreamingModuleDecoderHRTDC.cc
+    TStreamingModuleDecoderLRTDC64.cc
     TStreamingHeaderSTF.cc
     TStreamingHeaderFS.cc
     TStreamingHeaderTF.cc
@@ -17,6 +18,7 @@ set(HEADERS
     TStreamingModuleDecoderLRTDC.h
     TStreamingModuleDecoderImpl.h
     TStreamingModuleDecoderHRTDC.h
+    TStreamingModuleDecoderLRTDC64.h
     TStreamingModuleDecoder.h
     TStreamingModuleDecoderFactory.h
     TStreamingHeartBeatDelimiter.h

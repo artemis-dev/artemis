@@ -3,7 +3,7 @@
  * Last Modified : 2023-02-22 16:42:42 JST
  */
 
-#include "TStreamingModuleDecoderLRTDC.h"
+#include "TStreamingModuleDecoderLRTDC64.h"
 #include "TStreamingHeartBeatDelimiter.h"
 #include "TStreamingSpillDelimiter.h"
 
@@ -11,19 +11,19 @@
 #include "TClonesArray.h"
 #include "TObjArray.h"
 
-const std::string art::TStreamingModuleDecoderLRTDC::fgName = "art::TStreamingModuleDecoderLRTDC";
+const std::string art::TStreamingModuleDecoderLRTDC64::fgName = "art::TStreamingModuleDecoderLRTDC64";
 
-int art::TStreamingModuleDecoderLRTDC::fgID = art::TStreamingModuleDecoderLRTDC::kID;
+int art::TStreamingModuleDecoderLRTDC64::fgID = art::TStreamingModuleDecoderLRTDC64::kID;
 
-art::TStreamingModuleDecoderLRTDC::TStreamingModuleDecoderLRTDC()
-   : art::TStreamingModuleDecoderImpl<art::TStreamingModuleDecoderLRTDC>()
+art::TStreamingModuleDecoderLRTDC64::TStreamingModuleDecoderLRTDC64()
+   : art::TStreamingModuleDecoderImpl<art::TStreamingModuleDecoderLRTDC64>()
 {
    fTDC = new TClonesArray(art::TRawDataTimingCharge::Class());
    fHBD = new TClonesArray(art::TStreamingHeartBeatDelimiter::Class());
    fSD  = new TClonesArray(art::TStreamingSpillDelimiter::Class());
 }
 
-art::TStreamingModuleDecoderLRTDC::~TStreamingModuleDecoderLRTDC()
+art::TStreamingModuleDecoderLRTDC64::~TStreamingModuleDecoderLRTDC64()
 {
    Clear();
    delete fTDC;
@@ -31,7 +31,7 @@ art::TStreamingModuleDecoderLRTDC::~TStreamingModuleDecoderLRTDC()
    delete fSD;
 }
 
-void art::TStreamingModuleDecoderLRTDC::Clear()
+void art::TStreamingModuleDecoderLRTDC64::Clear()
 {
    fTDC->Clear("C");
    fHBD->Clear("C");
@@ -39,7 +39,7 @@ void art::TStreamingModuleDecoderLRTDC::Clear()
 }
 
 
-int art::TStreamingModuleDecoderLRTDC::Decode(char *buf, const int& size, TObjArray *seg, int femid)
+int art::TStreamingModuleDecoderLRTDC64::Decode(char *buf, const int& size, TObjArray *seg, int femid)
 {
   static std::map<int,TStreamingSpillDelimiter*> savedSPNDmap; // spill on 
   static std::map<int,TStreamingSpillDelimiter*> savedSPFDmap; // spill on 
@@ -79,6 +79,82 @@ int art::TStreamingModuleDecoderLRTDC::Decode(char *buf, const int& size, TObjAr
 
       switch (ih) {
       case kHeaderTDC:
+      {
+         UInt_t ch = DecodeBits(data,kShiftChannel,kMaskChannel);
+         UInt_t tot = DecodeBits(data,kShiftTOT,kMaskTOT);
+         UInt_t time = DecodeBits(data,kShiftTime,kMaskTime);
+
+         TRawDataTimingCharge *odatal = static_cast<TRawDataTimingCharge*>(fTDC->ConstructedAt(fTDC->GetEntriesFast()));
+         // printf("decoding %lx LR-TDC segid = %d, femid = %x, ch = %d, tdc = %d, tot = %d\n",data, seg->GetUniqueID(),femid,ch,time,tot);
+
+         odatal->SetSegInfo(seg->GetUniqueID(),femid,ch);
+
+         odatal->SetTiming(time);
+         odatal->SetCharge(tot);
+         seg->Add(odatal);
+      }
+      break;
+      case kHeaderTDCT:
+      {
+         UInt_t ch = DecodeBits(data,kShiftChannel,kMaskChannel);
+         UInt_t tot = DecodeBits(data,kShiftTOT,kMaskTOT);
+         UInt_t time = DecodeBits(data,kShiftTime,kMaskTime);
+
+         TRawDataTimingCharge *odatal = static_cast<TRawDataTimingCharge*>(fTDC->ConstructedAt(fTDC->GetEntriesFast()));
+
+         odatal->SetSegInfo(seg->GetUniqueID(),femid,ch);
+
+         odatal->SetTiming(time);
+         odatal->SetCharge(tot);
+         seg->Add(odatal);
+      }
+      break;
+      case kHeaderTDCT1S:
+      {
+         UInt_t ch = DecodeBits(data,kShiftChannel,kMaskChannel);
+         UInt_t tot = DecodeBits(data,kShiftTOT,kMaskTOT);
+         UInt_t time = DecodeBits(data,kShiftTime,kMaskTime);
+
+         TRawDataTimingCharge *odatal = static_cast<TRawDataTimingCharge*>(fTDC->ConstructedAt(fTDC->GetEntriesFast()));
+
+         odatal->SetSegInfo(seg->GetUniqueID(),femid,ch);
+
+         odatal->SetTiming(time);
+         odatal->SetCharge(tot);
+         seg->Add(odatal);
+      }
+      break;
+      case kHeaderTDCT1E:
+      {
+         UInt_t ch = DecodeBits(data,kShiftChannel,kMaskChannel);
+         UInt_t tot = DecodeBits(data,kShiftTOT,kMaskTOT);
+         UInt_t time = DecodeBits(data,kShiftTime,kMaskTime);
+
+         TRawDataTimingCharge *odatal = static_cast<TRawDataTimingCharge*>(fTDC->ConstructedAt(fTDC->GetEntriesFast()));
+
+         odatal->SetSegInfo(seg->GetUniqueID(),femid,ch);
+
+         odatal->SetTiming(time);
+         odatal->SetCharge(tot);
+         seg->Add(odatal);
+      }
+      break;
+      case kHeaderTDCT2S:
+      {
+         UInt_t ch = DecodeBits(data,kShiftChannel,kMaskChannel);
+         UInt_t tot = DecodeBits(data,kShiftTOT,kMaskTOT);
+         UInt_t time = DecodeBits(data,kShiftTime,kMaskTime);
+
+         TRawDataTimingCharge *odatal = static_cast<TRawDataTimingCharge*>(fTDC->ConstructedAt(fTDC->GetEntriesFast()));
+
+         odatal->SetSegInfo(seg->GetUniqueID(),femid,ch);
+
+         odatal->SetTiming(time);
+         odatal->SetCharge(tot);
+         seg->Add(odatal);
+      }
+      break;
+      case kHeaderTDCT2E:
       {
          UInt_t ch = DecodeBits(data,kShiftChannel,kMaskChannel);
          UInt_t tot = DecodeBits(data,kShiftTOT,kMaskTOT);

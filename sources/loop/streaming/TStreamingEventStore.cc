@@ -339,7 +339,7 @@ Bool_t art::TStreamingEventStore::GetHeartBeatFrame()
          auto headerSTF = fSubTimeFrameHeaders[i];
          auto buffer    = fSubTimeFrameBuffers[i];
          auto size    = fSubTimeFrameSize[i];
-         if (size <= 0) {
+         if (size < 0) {
             Error("GetHeartbeatframe","Unexpected size %d",fSubTimeFrameSize[i]);
             return kFALSE;
          }
@@ -348,7 +348,7 @@ Bool_t art::TStreamingEventStore::GetHeartBeatFrame()
          int segid = 0;
          TObjArray *seg = fSegmentedData->FindSegmentByID(segid);
          if (!seg) seg = fSegmentedData->NewSegment(segid);
-         
+         if (size == 0) continue;
          TStreamingModuleDecoder *decoder = TStreamingModuleDecoderFactory::Find(femtype);
          int used = decoder->Decode(buffer,size,seg,femid);
 	 
