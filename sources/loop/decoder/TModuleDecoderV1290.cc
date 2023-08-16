@@ -1,7 +1,7 @@
 /*
  * @file TModuleDecoderV1290.cc
  * @date  Created : 2008/11/26 21:34:03 JST<BR>
- *  Last Modified : 2017-01-12 14:30:26 JST (ota)
+ *  Last Modified : 2023-08-16 16:18:00 JST (fendo)
  *--------------------------------------------------------
  *    Comment :
  *              copied from anapaw source and renamed
@@ -96,7 +96,7 @@ Int_t TModuleDecoderV1290::Decode(char* buf, const int &size, TObjArray *seg)
          case kTDCError:
             ghf = thf = 0;
             if (kWarning>=fVerboseLevel) {
-               Warning("Decode",Form("V1290 [TDC Error    ] : 0x%08x", evtdata[i]));
+               Warning("Decode","V1290 [TDC Error    ] : 0x%08x", evtdata[i]);
             }
             break;
          }
