@@ -3,7 +3,7 @@
  * @brief  Streaming Data Event Store
  *
  * @date   Created       : 2023-02-11 12:00:00 JST
- *         Last Modified : 2023-02-18 20:12:50 JST
+ *         Last Modified : 2023-08-16 16:24:00 JST (fendo)
  * @author Shinsuke OTA <ota@rcnp.osaka-u.ac.jp>
  *
  *    (C) 2023 Shinsuke OTA
@@ -85,7 +85,7 @@ void art::TStreamingEventStore::Init(TEventCollection *col)
       TString filelist = gSystem->GetFromPipe(Form("ls -tr %s*",(*it).Data()));
       TObjArray *files = (filelist.Tokenize("\n"));
       if (!files) {
-         Error("Init",Form("No such files %s",(*it).Data()));
+         Error("Init","No such files %s",(*it).Data());
          SetStateError("Init");
          return;
       } 

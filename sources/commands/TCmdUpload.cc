@@ -3,7 +3,7 @@
  * @brief  Upload image file to GitLab via API
  *
  * @date   Created       : 2020-04-30 22:13:55 JST
- *         Last Modified : 2020-06-30 10:04:14 JST (ota)
+ *         Last Modified : 2023-08-16 16:16:00 JST (fendo)
  * @author Shoichiro Masuoka <masuoka@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2020 Shoichiro Masuoka
@@ -51,7 +51,7 @@ Long_t TCmdUpload::Run(const char* filename_input)
       return 1;
    }
    if (GetUploadURL() != NULL && GetPrivateTokenFile() != NULL) {
-      Info("Run",TString::Format("upload image file: %s to %s",filename.Data(),GetUploadURL()));
+      Info("Run","upload image file: %s to %s",filename.Data(),GetUploadURL());
       UploadFile(filename);
    } else {
       Error("Run","Upload URL and/or private access token file are not specified");
@@ -83,7 +83,7 @@ void TCmdUpload::PrintMarkdown(const TString &json)
       TObjArray *resultList = TPRegexp("\"markdown\":\"(.*)\"").MatchS(json);
       TObject *resultPtr = (TObjString*)resultList->At(1);
       if (resultPtr == NULL) {
-         Error("PrintMarkdown", TString::Format("failed to upload: JSON parse error\n %s",json.Data()));
+         Error("PrintMarkdown", "failed to upload: JSON parse error\n %s",json.Data());
          printf("suggestion-> 401: invalid access token, 404: invalid URL\n");
          return;
       } else {

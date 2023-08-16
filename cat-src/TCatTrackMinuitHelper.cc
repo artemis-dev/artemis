@@ -3,7 +3,7 @@
  * @brief  helper of minuit for tracking
  *
  * @date   Created       : 2016-07-22 08:53:36 JST
- *         Last Modified : 2016-09-16 15:48:37 JST (ota)
+ *         Last Modified : 2023-08-16 16:28:00 JST (fendo)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2016 Shinsuke OTA
@@ -112,8 +112,8 @@ void TCatTrackMinuitHelper::SetData(TObjArray *input)
    for (Int_t i=0; i<n; ++i) {
       TCatPulseShape *pulse = dynamic_cast<TCatPulseShape*>(input->UncheckedAt(i)) ;
       if ( pulse == NULL) {
-         printf (Form("input pulse should inherites from %s instead of %s\n",
-                             TCatPulseShape::Class_Name(),input->UncheckedAt(i)->IsA()->GetName()));
+         printf ("input pulse should inherites from %s instead of %s\n",
+                             TCatPulseShape::Class_Name(),input->UncheckedAt(i)->IsA()->GetName());
 
          return;
       }

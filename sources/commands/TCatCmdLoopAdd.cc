@@ -2,7 +2,7 @@
 /**
  * @file   TCatCmdLoopAdd.cc
  * @date   Created : May 02, 2012 16:02:35 JST
- *   Last Modified : 2020-11-27 00:20:58 JST (ota)
+ *   Last Modified : 2023-08-16 16:15:00 JST (fendo)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -56,7 +56,7 @@ Long_t TCatCmdLoopAdd::Cmd(vector<TString> args)
       if (args[i].Contains('=')) {
          TObjArray *tokens = args[i].Tokenize('=');
          if (tokens->GetEntriesFast() != 2) {
-            Error("Cmd",Form("replace pair contains more than one '=' : %s",args[i].Data()));
+            Error("Cmd","replace pair contains more than one '=' : %s",args[i].Data());
             return 1;
          }
          std::string key(((TObjString*)tokens->At(0))->String().Data());
@@ -64,7 +64,7 @@ Long_t TCatCmdLoopAdd::Cmd(vector<TString> args)
          replace.insert(std::map<std::string,std::string>::value_type(key,value));
       } else {
          if (!args[i].IsDigit()) {
-            Error("Cmd",Form("NUM replacement is given but contains non-digits : %s",args[i].Data()));
+            Error("Cmd","NUM replacement is given but contains non-digits : %s",args[i].Data());
             return 1;
          }
          std::string key("NUM");

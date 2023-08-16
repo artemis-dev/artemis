@@ -2,7 +2,7 @@
 /**
  * @file   TTreeEventStore.cc
  * @date   Created : Jul 11, 2013 21:11:20 JST
- *   Last Modified : 2018-08-07 14:01:40 JST (ota)
+ *   Last Modified : 2023-08-16 16:25:00 JST (fendo)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -51,7 +51,7 @@ void art::TTreeEventStore::Init(TEventCollection *col)
    TString filelist = gSystem->GetFromPipe(Form("ls -tr %s",fFileName.Data()));
    TObjArray *allfiles = (filelist.Tokenize("\n"));
    if (!allfiles) {
-      Error("Init",Form("No such files %s",fFileName.Data()));
+      Error("Init","No such files %s",fFileName.Data());
       SetStateError("Init");
       return;
    } 
