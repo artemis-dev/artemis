@@ -6,6 +6,7 @@ list(APPEND CMAKE_PREFIX_PATH $ENV{ROOTSYS})
 
 # Default installation dir
 set(CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/install/ CACHE PATH "install dir")
+set(CMAKE_SHARED_LINKER_FLAGS "-Wl,--no-as-needed")
 
 # Build options
 option(BUILD_GET "Build and install libraries using GET" OFF)
@@ -19,7 +20,7 @@ if(BUILD_GET)
 endif()
 
 #---Locate the ROOT package and defines a number of variables (e.g. ROOT_INCLUDE_DIRS)
-find_package(ROOT REQUIRED COMPONENTS RIO Net Physics Geom Minuit2 Gui)
+find_package(ROOT REQUIRED COMPONENTS RIO Net Physics Geom Minuit Minuit2 Gui)
 find_package(MPI)
 if(MPI_CXX_FOUND)
     add_compile_definitions(USE_MPI)
