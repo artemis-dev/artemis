@@ -49,6 +49,7 @@ public:
    static const int kShiftMeasure = 0;
    static const int kShiftEdgeType = 26;
 
+   // bits 1: Skip, 0: Continue
    // Error flags:
    // [0]: Hit lost in group 0 from read-out FIFO overflow.
    // [1]: Hit lost in group 0 from L1 buffer overflow
@@ -78,7 +79,7 @@ protected:
     */
    Bool_t TdcErrorCheck(UInt_t evtdata)
    {
-      if (evtdata && kTDCErrorsSkip)
+      if (evtdata & kTDCErrorsSkip)
          return true;
       else
          return false;
