@@ -2,7 +2,7 @@
 /**
  * @file   TArtAtomicMassTable.cc
  * @date   Created : Aug 04, 2011 19:04:38 JST
- *   Last Modified : 2022-09-26 01:49:53 JST (ota)
+ *   Last Modified : 2023-10-15 13:24:24 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -32,6 +32,7 @@ TArtAtomicMassTable::TArtAtomicMassTable()
 {
    // assumu mass.mas03 from http://www.nndc.bnl.gov/masses/mass.mas03
 //   printf("%s\n",filepath.Data());
+   Build();
 }
 
 TArtAtomicMassTable::~TArtAtomicMassTable()
@@ -45,6 +46,7 @@ void TArtAtomicMassTable::Build()
       for (Int_t ia = 0; ia < kNumA; ++ia) {
          if (TGeoElementRN *element = gGeoManager->GetElementTable()->GetElementRN(ia,iz)) {
             fMass[iz][ia] = kAtomicMassUnit * ia + element->MassEx();
+//            printf("(%d,%d) = %f\n",iz,ia,fMass[iz][ia]);
             fIsEvaluated[iz][ia] = kTRUE;
             if (TString(element->GetName()).Contains('-')) {
                fIsotopeName[iz][ia] = Form("%d%s",ia,((TObjString*)((TObjArray*)TString(element->GetName()).Tokenize("-"))->At(1))->GetString().Data());
