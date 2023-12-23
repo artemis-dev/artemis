@@ -2,7 +2,7 @@
 /**
  * @file   TRCNPEventStore_ts.h
  * @date   Created : Jul 12, 2013 17:12:43 JST
- *   Last Modified : Apr 25, 2014 23:10:23 JST
+ *   Last Modified : 2023-10-20 21:06:17 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -13,6 +13,7 @@
 
 #include <TProcessor.h>
 #include <IEventStore.h>
+#include <arpa/inet.h>
 
 namespace art {
    class TRCNPEventStore_ts;
@@ -28,7 +29,7 @@ namespace art {
 class art::TRCNPEventStore_ts  : public TProcessor, public IEventStore {
    
 public:
-   static const Int_t kMaxBufSize = 1024*1024; // default size is 1 MB
+   static const Int_t kMaxBufSize = 1024*1024*50; // default size is 1 MB
    TRCNPEventStore_ts();
    virtual ~TRCNPEventStore_ts();
    
@@ -152,7 +153,80 @@ protected:
       }
    } fHeader;  //! temporary data to analyze header
 
+   //////////////////////////////////////////////////////////////////////
+   // bld1_header reader
+   //////////////////////////////////////////////////////////////////////
+   class bld1_header {
+   public:
+      int fId;
+      int fSeq_num;
+      int fBsize;
+      int fHsize;
+      int fPrev_pos1;
+      int fPrev_pos2;
+      int fNext_pos1;
+      int fNext_pos2;
+      static int Size() { return 4*8; }
+      static int Magic() { return 0x424c4431; }
+      void ReadFrom(int *buf) {
+         fId = ntohl(buf[0]);
+         fSeq_num = ntohl(buf[1]);
+         fBsize = ntohl(buf[2]);
+         fHsize = ntohl(buf[3]);
+         fPrev_pos1 = ntohl(buf[4]);
+         fPrev_pos2 = ntohl(buf[5]);
+         fNext_pos1 = ntohl(buf[6]);
+         fNext_pos2 = ntohl(buf[7]);
+      }
+      void Print() {
+         printf("id = %x\n",fId);
+         printf("seg_num = %d\n",fSeq_num);
+         printf("bsize = %d\n",fBsize);
+         printf("hsize = %d\n",fHsize);
+         printf("prev1 = %d\n",fPrev_pos1);
+         printf("prev2 = %d\n",fPrev_pos2);
+         printf("next1 = %d\n",fNext_pos1);
+         printf("next2 = %d\n",fNext_pos2);
+      }
+      
+   } fBLD1Header;
 
+
+   //////////////////////////////////////////////////////////////////////
+   // blkheader
+   //////////////////////////////////////////////////////////////////////
+   class blkheader {
+   public:
+      unsigned short fValues[8];
+      static int Size() { return 2*8; }
+      uint16_t HeaderID()    const { return fValues[0]; }
+      uint16_t HeaderSize()  const { return fValues[1]; }
+      uint16_t BlockID()     const { return fValues[2]; }
+      uint16_t BlockSize()   const { return fValues[3]; }
+      uint16_t BlockNumber() const { return fValues[4]; }
+      uint16_t NumEvents()   const { return fValues[5]; }
+      uint16_t BlockSizeL()  const { return fValues[6]; }
+      uint16_t BlockSizeU()  const { return fValues[7]; }
+      
+      void ReadFrom(short* buf) {
+         for (int i = 0; i < 8; ++i) {
+            fValues[i] = ntohs(buf[i]);
+         }
+      }
+
+      void Print() {
+         printf("HeaderID    = %x\n",HeaderID()    );
+         printf("HeaderSize  = %u\n",HeaderSize()  );
+         printf("BlockID     = %u\n",BlockID()     );
+         printf("BlockSize   = %u\n",BlockSize()   );
+         printf("BlockNumber = %u\n",BlockNumber() );
+         printf("NumEvents   = %u\n",NumEvents()   );
+         printf("BlockSizeL  = %u\n",BlockSizeL()  );
+         printf("BlockSizeU  = %u\n",BlockSizeU()  );
+
+      }
+   } fBlkHeader;
+      
 
    /*----------------------------------------
     * Structure for run comment 

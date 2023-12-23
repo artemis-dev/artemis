@@ -1,7 +1,7 @@
 /*
  * @file TModuleDecoderV1190_rcnp.cc
  * @date  Created : 2008/11/26 21:34:03 JST<BR>
- *  Last Modified : 2017-01-12 14:32:26 JST (ota)
+ *  Last Modified : 2023-10-20 17:20:13 JST
  *--------------------------------------------------------
  *    Comment :
  *              copied from anapaw source and renamed
@@ -47,9 +47,15 @@ Int_t TModuleDecoderV1190_rcnp::Decode(char* buf, const int &size, TObjArray *se
    igeo = -1;
    // clear old hits
    fHitData->Clear();
-
+#if 0
+   for (int i = 0; i < size; ++i) {
+      printf("[%02d] %x\n",i,buf[i]);
+   }
+#endif
+//   printf("evtsize = %u",evtsize);
    for (Int_t i=0; i<evtsize; ++i) {
-
+//      printf("i = %d\n",i);
+//      printf("evtdata [%d] = %x\n",i,evtdata[i]);
       evtdata[i] = ((evtdata[i]>>8)&0x000000ff|(evtdata[i]<<8)&0x0000ff00|(evtdata[i]>>8)&0x00ff0000|(evtdata[i]<<8)&0xff000000);
      
       ih = evtdata[i]&kHeaderMask;

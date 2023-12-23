@@ -2,7 +2,7 @@
 /**
  * @file   TRCNPEventStore_ts.cc
  * @date   Created : Jul 12, 2013 17:12:35 JST
- *   Last Modified : Jul 01, 2022 by Y. HIJIKATA
+ *   Last Modified : 2023-10-20 21:10:41 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  * 
  *  
@@ -197,6 +197,7 @@ void art::TRCNPEventStore_ts::ClassDecoder04_2(Char_t *buf, Int_t& offset, struc
 	 Int_t index = offset;
 	 Int_t size = sizee;
 			TModuleDecoderRCNP *decoder = (TModuleDecoderRCNP*)TModuleDecoderFactory::Instance()->Get(module);
+                        // printf("ClassDecoder04_2: decoder %p for module %d\n",decoder, module);
 			//printf("module num = %d\n",module);
 			if(module==24){
 			  //segid.SetSegID((0x8DCE00));//((72&0x3f)<<20)|((55&0x3f)<<14)|((78&0x3f)<<8)
@@ -216,7 +217,10 @@ void art::TRCNPEventStore_ts::ClassDecoder04_2(Char_t *buf, Int_t& offset, struc
 			}else if(module==32){
 			  //segid.SetSegID((0x4CCA00));//((68&0x3f)<<20)|((51&0x3f)<<14)|((74&0x3f)<<8)
 			  segid.SetSegID((32<<8)); 
-			}
+			} else {
+                           printf("Classdecoder04_2 : Unexpected module %d (decoder %p)\n",module,decoder);
+                           segid.SetSegID(module);
+                        }
 //			if(module==72){
 			UInt_t mapsegid=segid.Get();
 			TObjArray *seg = ridfdata->fSegmentedData->FindSegmentByID(mapsegid);
@@ -438,23 +442,21 @@ Bool_t art::TRCNPEventStore_ts::GetNextBlock()
 	 fDataSource->Lock();
 	 fHeader=0LL;
 	 //	 if (!fDataSource->Read((char*)&fHeader,2)){
-	 fDataSource->Read((char*)&fHeader,2);
-	 /*
-			if(nblock>1){
-			printf("nblock>10\n");
-	 // no more data is ready in this data source
-	 fDataSource->Unlock();
-	 delete fDataSource;
-	 fDataSource = NULL;
-	 printf("block faulse4\n");
-	 return kFALSE;
-	 }
-	 */
 
+         // read bld header
+	 fDataSource->Read(fBuffer,bld1_header::Size());
+         fBLD1Header.ReadFrom((int*)fBuffer);
+         // fBLD1Header.Print();
+         fDataSource->Read(fBuffer,blkheader::Size());
+         fBlkHeader.ReadFrom((short*)fBuffer);
+         // fBlkHeader.Print();
+         
+#if 0         
 	 int header = fHeader.hedder();
 
 	 //	 if(header==0x424c){
 	 if(header==0x424c){
+            
 			//block header
 			//	fDataSource->Read((char*)&fHeader,1);	
 			fDataSource->Read((char*)&fHeader,2);//4431	
@@ -488,9 +490,11 @@ Bool_t art::TRCNPEventStore_ts::GetNextBlock()
 			fDataSource=NULL;
 			return kFALSE;
 	 }
-
+#endif
 	 //	 printf("block size=%X,%d\n",blksize-16,blksize-16);
-	 if(fDataSource->Read(fBuffer,blksize-16)){
+         // printf("new block size = %d, %d, %d\n",fBLD1Header.fBsize , fBLD1Header.Size() , fBlkHeader.Size());
+         blksize = fBLD1Header.fBsize - fBlkHeader.Size();
+	 if(fDataSource->Read(fBuffer,fBLD1Header.fBsize -  fBlkHeader.Size())){
 			evtsize=0;
 			// block was read
 			fIsEOB = kFALSE;
@@ -511,111 +515,117 @@ Bool_t art::TRCNPEventStore_ts::GetNextBlock()
 Bool_t art::TRCNPEventStore_ts::GetNextEvent()
 {
 
-	 if (fIsEOB){
-			printf("faulse1\n"); 
-			return kFALSE;
-	 }
-	 evtsize++;
-	 //まずブロックの一番最初の記号をとってくる
-	 memcpy(&fHeader,fBuffer+fOffset,2);	
-	 fOffset = fOffset+2;
-	 int header = fHeader.hedder();
-	 //printf("event header : 0x%x \n",header);
-	 if(header!=0xffdf){
-	   printf("hdear = %X, sofar %d event, goto next block\n",header,evtsize);
-	   fIsEOB = kTRUE;
-	   if(header!=0x400){
-	     while(1){
-	       memcpy(&fHeader,fBuffer+fOffset,2);	
-	       printf("fHeader=%X\n",fHeader.hedder());
-	       fOffset = fOffset+2;
-	       //						getchar();
-	       break;
-	     }
+   if (fIsEOB){
+      printf("faulse1\n"); 
+      return kFALSE;
+   }
+   evtsize++;
+   //まずブロックの一番最初の記号をとってくる
+   memcpy(&fHeader,fBuffer+fOffset,2);	
+   fOffset = fOffset+2;
+   int header = fHeader.hedder();
+   // printf("event header : 0x%x \n",header);
+   if(header!=0xffdf){
+      printf("hdear = %X, sofar %d event, goto next block\n",header,evtsize);
+      fIsEOB = kTRUE;
+      if(header!=0x400){
+         while(1){
+            memcpy(&fHeader,fBuffer+fOffset,2);	
+            printf("fHeader=%X\n",fHeader.hedder());
+            fOffset = fOffset+2;
+            //						getchar();
+            break;
+         }
 	     
-	   }
-	   return kFALSE;
-	 }
-	 if((fRIDFData.fEventHeader)->GetEventNumber()%100000==0)printf("evt:%d\n",(fRIDFData.fEventHeader)->GetEventNumber());
+      }
+      return kFALSE;
+   }
+   if((fRIDFData.fEventHeader)->GetEventNumber()%100000==0)printf("evt:%d\n",(fRIDFData.fEventHeader)->GetEventNumber());
    (fRIDFData.fEventHeader)->IncrementEventNumber();
    (fRIDFData.fEventHeader)->SetBlockNumber(nblock);
 
 
    //         memcpy(&fHeader,fBuffer+fOffset,10);	//event headerは全て読んだ
    //         fOffset = fOffset+10;
-         memcpy(&fHeader,fBuffer+fOffset,8);	//event headerは全て読んだ
-         fOffset = fOffset+8;
-         memcpy(&fHeader,fBuffer+fOffset,2);	//event headerは全て読んだ
-	 int num_field = fHeader.hedder();
-	 fOffset = fOffset+2;
+   for (int i = 0; i < 4; ++i) {
+      memcpy(&fHeader,fBuffer+fOffset,2);	//event headerは全て読んだ
+      fOffset = fOffset+2;
+      // printf("header[%d] = %x\n",i, fHeader.hedder());
+   }
+   memcpy(&fHeader,fBuffer+fOffset,2);	//event headerは全て読んだ
+   int num_field = fHeader.hedder();
+   fOffset = fOffset+2;
+   // printf ("num_field =%d\n",num_field);
+   for(int i_field = 0; i_field < num_field; ++i_field){
 
-	 for(int i_field = 0; i_field < num_field; ++i_field){
-
-	   //	   printf("filed %d start \n",i_field+1);
+      //	   printf("filed %d start \n",i_field+1);
+      
+      memcpy(&fHeader,fBuffer+fOffset,6);	//field headerの最初3つ
+      fOffset = fOffset+6;	
+      memcpy(&fHeader,fBuffer+fOffset,2);	//field headerの最初3つ
+      fOffset = fOffset+2;
+      int field_size = fHeader.getnum();
+      int	 total_data_size=0;
 	   
-	   memcpy(&fHeader,fBuffer+fOffset,6);	//field headerの最初3つ
-	   fOffset = fOffset+6;	
-	   memcpy(&fHeader,fBuffer+fOffset,2);	//field headerの最初3つ
-	   fOffset = fOffset+2;
-	   int field_size = fHeader.getnum();
-	   int	 total_data_size=0;
-	   
-	   //printf("filed size : %d \n",field_size);
+      //printf("filed size : %d \n",field_size);
 
-	   while(1){
+      while(1){
 
-	     //printf("region start\n");
+         //printf("region start\n");
 	     
-	     //regionヘッダを読み込み->サイズを増やし、データをとる
-	     memcpy(&fHeader,fBuffer+fOffset,2);	// region header
-	     fOffset = fOffset+2;
-	     int module = fHeader.get_module_header();
-	     int  module_size = fHeader.get_module_size();
-	     //printf("module : %d, module_size : %d \n", module, module_size);
-	     total_data_size+=1+module_size*1;
-	     int decoder_num=0;
-	     if(module==0x01){ // V1190
-	       decoder_num=24;
-	       //				 printf("7\n")
-	     }else if(module==0x07){ 	
-	       decoder_num=42;
-	     }else if(module==0xe){ //feret, 下に同じ
-	       decoder_num=2;
-	//			 printf("feret\n");
+         //regionヘッダを読み込み->サイズを増やし、データをとる
+         memcpy(&fHeader,fBuffer+fOffset,2);	// region header
+         fOffset = fOffset+2;
+         int module = fHeader.get_module_header();
+         int  module_size = fHeader.get_module_size();
+         // printf("module : %d, module_size : %d \n", module, module_size);
+         total_data_size+=1+module_size*1;
+         int decoder_num=0;
+         if(module==0x01){ // V1190
+            decoder_num=24;
+            //				 printf("7\n")
+         }else if(module==0x07){ 	
+            decoder_num=42;
+         }else if(module==0xe){ //feret, 下に同じ
+            decoder_num=2;
+            //			 printf("feret\n");
 //				printf("1, size =%d\n",module_size);
-	     }else if(module==0xd){ //fera// //feret, tamii analyzerを見るとferaになっているが、実際は逆
-	       decoder_num=1;
-	//			 printf("fera\n");
-	     }else if(module==0x08){ 
-	       decoder_num=3;
-	       //				printf("time stamp, size =%d\n",module_size);
-	     }else if(module==0x03){ // MQDC 
-	       decoder_num=32;
-	     }
-	     if(decoder_num==24||decoder_num==1||decoder_num==2||decoder_num==42||decoder_num==3||decoder_num==32){
-	       if(decoder_num==24 || decoder_num==32){
-		 ClassDecoder04_2(fBuffer,fOffset,&fRIDFData,module_size*2,decoder_num);//V1190は1eventが32bit
-	       }else{
-		 ClassDecoder04_2(fBuffer,fOffset,&fRIDFData,module_size,decoder_num);//CAMACは1event16bit
-	       }
-	     }
-	     fOffset+=module_size*2;
+         }else if(module==0xd){ //fera// //feret, tamii analyzerを見るとferaになっているが、実際は逆
+            decoder_num=1;
+            //			 printf("fera\n");
+         }else if(module==0x08){ 
+            decoder_num=3;
+            //				printf("time stamp, size =%d\n",module_size);
+         }else if(module==0x03){ // MQDC 
+            decoder_num=32;
+         } else {
+            // printf("unknown module %d\n",module);
+            // do nothing
+         }
+         if(decoder_num==24||decoder_num==1||decoder_num==2||decoder_num==42||decoder_num==3||decoder_num==32){
+            if(decoder_num==24 || decoder_num==32){
+               ClassDecoder04_2(fBuffer,fOffset,&fRIDFData,module_size*2,decoder_num);//V1190は1eventが32bit
+            }else{
+               ClassDecoder04_2(fBuffer,fOffset,&fRIDFData,module_size,decoder_num);//CAMACは1event16bit
+            }
+         }
+         fOffset+=module_size*2;
 
-	     //printf("region_end \n");
+         //printf("region_end \n");
 	     
-	     if(total_data_size+1>field_size){
-	       break;
-	     }
-	   }
-	   //printf("field_size : %d, total_size : %d, field end\n", field_size, total_data_size);
-	 }
+         if(total_data_size+1>field_size){
+            break;
+         }
+      }
+      //printf("field_size : %d, total_size : %d, field end\n", field_size, total_data_size);
+   }
 
-	 if(fOffset+1>=blksize-20){ //20を引いているのはblock header とender分
-			fIsEOB= kTRUE;
-	 }
-	 if(fIsEOB){
-			return		kFALSE;
-	 }else{
-			return kTRUE;
-	 }
+   if(fOffset+1>=blksize-20){ //20を引いているのはblock header とender分
+      fIsEOB= kTRUE;
+   }
+   if(fIsEOB){
+      return		kFALSE;
+   }else{
+      return kTRUE;
+   }
 }
