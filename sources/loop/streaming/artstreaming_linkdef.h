@@ -2,7 +2,7 @@
 /**
  * @file   artstreaming_linkdef.h
  * @date   Created : Feb 07, 2023 22:53:00 JST
- *   Last Modified : 2023-02-17 18:21:46 JST
+ *   Last Modified : 2023-12-23 14:41:45 JST
  * @author Shinsuke OTA <ota@rcnp.osaka-u.ac.jp>
  *  
  *  
@@ -25,6 +25,7 @@
 #pragma link C++ class art::TStreamingHeaderFS;
 #pragma link C++ class art::TStreamingHeaderTF;
 #pragma link C++ class art::TStreamingHeaderFLTCOIN;
+#pragma link C++ class art::TStreamingModuleDecoderFactory;
 
 
 // #pragma link C++ class art::TSTREAMINGEventStore::STREAMINGCommentRunInfo;

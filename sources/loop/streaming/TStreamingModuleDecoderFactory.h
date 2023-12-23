@@ -25,6 +25,8 @@ public:
 
    static void Clear();
 
+   static bool ResetID(int orgID, int newID);
+
 protected:
    static std::map<std::string, factoryMethod> fgRegisteredNames;
    static std::map<int, TStreamingModuleDecoder*> fgDecoders;

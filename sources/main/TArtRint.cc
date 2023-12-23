@@ -2,7 +2,7 @@
 /**
  * @file   TArtRint.cc
  * @date   Created : Feb 06, 2012 00:06:18 JST
- *   Last Modified : 2023-02-11 08:05:05 JST
+ *   Last Modified : 2023-12-23 14:43:18 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -38,9 +38,6 @@ using art::TArtRint;
 TArtRint::TArtRint(int* argc, char** argv, void* options, int numOptions, Bool_t noLogo)
    : TRint(gAppName, argc, argv, options, numOptions, noLogo)
 {
-   // load macros
-   // @TODO documantation: all the processors should be loaded in artemislogon.C
-   TRint::ProcessLine(".x artemislogon.C");
 
    TProcessor::ListProcessors();
 
@@ -68,6 +65,9 @@ TArtRint::TArtRint(int* argc, char** argv, void* options, int numOptions, Bool_t
    // prepare the decoder for streaming daq
    art::TStreamingModuleDecoderFactory::CreateAll();
 
+   // load macros
+   // @TODO documantation: all the processors should be loaded in artemislogon.C
+   TRint::ProcessLine(".x artemislogon.C");
    
 #if USE_MPI
     int myrank, npe;

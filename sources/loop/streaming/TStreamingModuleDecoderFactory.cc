@@ -58,3 +58,25 @@ void art::TStreamingModuleDecoderFactory::Clear()
 }
 
 
+bool art::TStreamingModuleDecoderFactory::ResetID(int orgID, int newID) {
+   decltype(TStreamingModuleDecoderFactory::fgDecoders)& m = TStreamingModuleDecoderFactory::fgDecoders;
+   decltype(TStreamingModuleDecoderFactory::fgDecoders)::iterator it = TStreamingModuleDecoderFactory::fgDecoders.find(orgID);
+   decltype(TStreamingModuleDecoderFactory::fgDecoders)::iterator itnew = TStreamingModuleDecoderFactory::fgDecoders.find(newID);
+   if (it == m.end()) {
+      printf("%s cannot find original id %d\n",__FUNCTION__, orgID);
+      return false;
+   }
+
+   if (itnew != m.end()) {
+      // key exists
+      printf("%s cannot swap : id %d exists\n",__FUNCTION__, newID);
+      return false;
+   }
+
+   it->second->SetID(newID);
+   std::swap(m[newID],it->second);
+   m.erase(it);
+   
+   printf("%s OK new id %d for %s\n",__FUNCTION__, m[newID]->GetID(), m[newID]->GetName().c_str());
+   return true;
+}
