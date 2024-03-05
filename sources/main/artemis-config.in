@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 #-----------------------------------------------------------------------
 # sh config query script for artemis @ARTEMIS_VERSION@ on UNIX platforms
