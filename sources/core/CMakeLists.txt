@@ -34,4 +34,4 @@ set(HEADERS
     TDataObject.h
 )
 
-art_lib(catcore "${OBJECTS}" "${HEADERS}"  "catcore_linkdef.h" ".")
+art_lib(catcore "${OBJECTS}" "${HEADERS}"  "catcore_linkdef.h" "${HEADERS}")

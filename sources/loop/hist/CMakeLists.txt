@@ -22,4 +22,4 @@ set(HEADERS
     TAttCut.h
 )
 
-art_lib(arthist "${OBJECTS}" "${HEADERS}"  "arthist_linkdef.h" ".")
+art_lib(arthist "${OBJECTS}" "${HEADERS}"  "arthist_linkdef.h" "${HEADERS}")

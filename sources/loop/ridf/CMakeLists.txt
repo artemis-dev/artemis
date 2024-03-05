@@ -6,4 +6,4 @@ set(HEADERS
     TRIDFEventStore.h
 )
 
-art_lib(artridf "${OBJECTS}" "${HEADERS}"  "artridf_linkdef.h" ".")
+art_lib(artridf "${OBJECTS}" "${HEADERS}"  "artridf_linkdef.h" "${HEADERS}")

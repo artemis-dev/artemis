@@ -165,6 +165,158 @@ set(OBJECTS
 
 )
 
+set(CAT_HEADERS
+    TSampleCalibratorProcessor.h
+    TPulseUnfoldLowPassProcessor.h
+    TPulseUnfoldHighPassProcessor.h
+    TPulseMovingAverageProcessor.h
+    TPulseFinder.h
+    THitFinder.h
+    #cat/TCatV1740AdcCorrectionProcessor.h
+    TCatSumSampleProcessor.h
+    TCatSiPedestalSubtractionProcessor.h
+    TCatSimplestData.h
+    #cat/TCatSimpleCutProcessor.h
+    TCatSiHitFindProcessor.h
+    TCatSiCommonNoiseSubtractionProcessor.h
+    TCatRecoilFinder.h
+    TCatReadoutPadConditionProcessor.h
+    TCatPulseBitCorrectionProcessor.h
+    TCatHitSelection.h
+    TCatGausSampleProcessor.h
+    TCatFadcRawData.h
+    TCatDiffSampleProcessor.h
+    #cat/TCatChargeCutProcessor.h
+    TCatAtSpillCounter.h
+    TCatAtSiHitPatternProcessor.h
+    TCatAtPedestalSubtractionProcessor.h
+    TCatAtPedestalProcessor.h
+    TCatAtPedestalCalculator.h
+    TCatAtMappingProcessor.h
+    TCatAtHitPatternProcessor.h
+    #cat/TCatAtHitFindProcessor.h
+    #cat/TCatAtHitCandidateProcessor.h
+    #cat/TCatAtChargeRatioProcessor.h
+    #cat/TCatAtBaseLineSubractionProsessor.h
+)
+set(COIN_HEADERS
+    TCoinRegMappingProcessor.h
+    TCoinRegGateProcessor.h
+)
+set(COMMAND_HEADERS
+    TCmdMWDCConfig.h
+    TCmdMWDCCalib.h
+    TCmdFiga.h
+    TCatCmdListg.h
+)
+set(CONT_HEADERS
+    TTrack.h
+    TTrackerHit3D.h
+    TTimingData.h
+    TTimingChargePositionData.h
+    TTimingChargeData.h
+    TTimeDifference.h
+    TGenericData.h
+    TCoinRegData.h
+    TChargeData.h
+    TCatScalerData.h
+)
+set(CONVERTER_HEADERS
+    TWalkConverter.h
+    TSplineConverter.h
+    TPolynomialConverter.h
+    TPolynomialConverterGenerator.h
+    TPolynomialConverterArrayGenerator.h
+    TMonotoneTableConverter.h
+    TMonotoneTableConverterGenerator.h
+    TFixedNumberParameter.h
+    TConverterUtil.h
+    TConverterBase.h
+    TAffineConverter.h
+    TAffineConverterCombinator.h
+    TAffineConverterArrayGenerator.h
+    T1DGatingConverter.h
+)
+set(GATE_HEADERS
+    TTreeFormulaGateProcessor.h
+    TTrackXYGateProcessor.h
+    TPIDGateProcessor.h
+    TGateStopProcessor.h
+    TGateObject.h
+    TGateInfo.h
+    TGateArrayInitializer.h
+    TGateArray.h
+)
+set(MWDC_HEADERS
+    TMWDCTrackingResult.h
+    TMWDCTrackingProcessor.h
+    TMWDCPlaneProcessor.h
+    TMWDCPlaneInfo.h
+    TMWDCPlaneDLCorrectionProcessor.h
+    TMWDCPlaneCalibrationTask.h
+    TMWDCParameter.h
+    TMWDCHitData.h
+    TMWDCDriftLengthCorrectionProcessor.h
+    TMWDCCalibrationProcessor.h
+    TGMWDCConfig.h
+    TGMWDCCalibration.h
+)
+set(PLASTIC_HEADERS
+    TTwoSidedPlasticData.h
+    TTwoSidedPlasticCalibrationProcessor.h
+)
+set(PPAC_HEADERS
+    TPPACTrackingProcessor.h
+    TPPACProcessor.h
+    TPPACParameter.h
+    TPPACData.h
+)
+set(RCNP_HEADERS
+    TVDCTrackingResult.h
+    TVDCTrackingProcessor_las.h
+    TVDCTrackingProcessor.h
+    TVDCTrackingProcessor_gr.h
+    TVDCPlaneProcessor.h
+    TVDCClusterizationProcessor.h
+    TVDCCluster.h
+    TRCNPRunInfo.h
+    TRCNPEventStore_ts.h
+    TRCNPEventHeader.h
+)
+set(RCNPDECODER_HEADERS
+    TModuleDecoderV830.h
+    TModuleDecoderV1190_rcnp.h
+    TModuleDecoderTS.h
+    TModuleDecoderRCNP.h
+    TModuleDecoderMXDC32_rcnp.h
+    TModuleDecoderFERET.h
+    TModuleDecoderFERA.h
+    TModuleDecoder3377.h
+)
+set(SCALER_HEADERS
+    TCatScalerMappingProcessor.h
+)
+set(SH04_HEADERS
+    TTrackProjectionProcessor.h
+    TSMWDCTrackingProcessor.h
+    TSMWDCDriftLengthCalibrator.h
+    TSlewCorrectionProcessor.h
+    TS1PIDProcessor.h
+    TResidualPIDProcessor.h
+    TRecoilTOFProcessor.h
+    TRecoilProcessor.h
+    TReactionVertexProcessor.h
+    TParticleIdentifier.h
+    TP2PKinematicsProcessor.h
+    TP2PKinematicsData.h
+    TNyokiTimingProcessor.h
+    TNyokiGateProcessor.h
+    TNyokiChargeCorrectionProcessor.h
+    TDetectorGeometry.h
+    TBeamZProcessor.h
+    TBeamZ.h
+    TBeamParameter.h
+)
 set(HEADERS
     TWalkCorrectionProcessor.h
     TTimingSubtractionProcessor.h
@@ -182,132 +334,27 @@ set(HEADERS
     TMergeTrackProcessor.h
     #TCatPosition.h
     constant.h
-    cat/TSampleCalibratorProcessor.h
-    cat/TPulseUnfoldLowPassProcessor.h
-    cat/TPulseUnfoldHighPassProcessor.h
-    cat/TPulseMovingAverageProcessor.h
-    cat/TPulseFinder.h
-    cat/THitFinder.h
-    #cat/TCatV1740AdcCorrectionProcessor.h
-    cat/TCatSumSampleProcessor.h
-    cat/TCatSiPedestalSubtractionProcessor.h
-    cat/TCatSimplestData.h
-    #cat/TCatSimpleCutProcessor.h
-    cat/TCatSiHitFindProcessor.h
-    cat/TCatSiCommonNoiseSubtractionProcessor.h
-    cat/TCatRecoilFinder.h
-    cat/TCatReadoutPadConditionProcessor.h
-    cat/TCatPulseBitCorrectionProcessor.h
-    cat/TCatHitSelection.h
-    cat/TCatGausSampleProcessor.h
-    cat/TCatFadcRawData.h
-    cat/TCatDiffSampleProcessor.h
-    #cat/TCatChargeCutProcessor.h
-    cat/TCatAtSpillCounter.h
-    cat/TCatAtSiHitPatternProcessor.h
-    cat/TCatAtPedestalSubtractionProcessor.h
-    cat/TCatAtPedestalProcessor.h
-    cat/TCatAtPedestalCalculator.h
-    cat/TCatAtMappingProcessor.h
-    cat/TCatAtHitPatternProcessor.h
-    #cat/TCatAtHitFindProcessor.h
-    #cat/TCatAtHitCandidateProcessor.h
-    #cat/TCatAtChargeRatioProcessor.h
-    #cat/TCatAtBaseLineSubractionProsessor.h
-    coin/TCoinRegMappingProcessor.h
-    coin/TCoinRegGateProcessor.h
-    command/TCmdMWDCConfig.h
-    command/TCmdMWDCCalib.h
-    command/TCmdFiga.h
-    command/TCatCmdListg.h
-    cont/TTrack.h
-    cont/TTrackerHit3D.h
-    cont/TTimingData.h
-    cont/TTimingChargePositionData.h
-    cont/TTimingChargeData.h
-    cont/TTimeDifference.h
-    cont/TGenericData.h
-    cont/TCoinRegData.h
-    cont/TChargeData.h
-    cont/TCatScalerData.h
-    converter/TWalkConverter.h
-    converter/TSplineConverter.h
-    converter/TPolynomialConverter.h
-    converter/TPolynomialConverterGenerator.h
-    converter/TPolynomialConverterArrayGenerator.h
-    converter/TMonotoneTableConverter.h
-    converter/TMonotoneTableConverterGenerator.h
-    converter/TFixedNumberParameter.h
-    converter/TConverterUtil.h
-    converter/TConverterBase.h
-    converter/TAffineConverter.h
-    converter/TAffineConverterCombinator.h
-    converter/TAffineConverterArrayGenerator.h
-    converter/T1DGatingConverter.h
-    gate/TTreeFormulaGateProcessor.h
-    gate/TTrackXYGateProcessor.h
-    gate/TPIDGateProcessor.h
-    gate/TGateStopProcessor.h
-    gate/TGateObject.h
-    gate/TGateInfo.h
-    gate/TGateArrayInitializer.h
-    gate/TGateArray.h
-    mwdc/TMWDCTrackingResult.h
-    mwdc/TMWDCTrackingProcessor.h
-    mwdc/TMWDCPlaneProcessor.h
-    mwdc/TMWDCPlaneInfo.h
-    mwdc/TMWDCPlaneDLCorrectionProcessor.h
-    mwdc/TMWDCPlaneCalibrationTask.h
-    mwdc/TMWDCParameter.h
-    mwdc/TMWDCHitData.h
-    mwdc/TMWDCDriftLengthCorrectionProcessor.h
-    mwdc/TMWDCCalibrationProcessor.h
-    mwdc/TGMWDCConfig.h
-    mwdc/TGMWDCCalibration.h
-    plastic/TTwoSidedPlasticData.h
-    plastic/TTwoSidedPlasticCalibrationProcessor.h
-    ppac/TPPACTrackingProcessor.h
-    ppac/TPPACProcessor.h
-    ppac/TPPACParameter.h
-    ppac/TPPACData.h
-    rcnp/TVDCTrackingResult.h
-    rcnp/TVDCTrackingProcessor_las.h
-    rcnp/TVDCTrackingProcessor.h
-    rcnp/TVDCTrackingProcessor_gr.h
-    rcnp/TVDCPlaneProcessor.h
-    rcnp/TVDCClusterizationProcessor.h
-    rcnp/TVDCCluster.h
-    rcnp/TRCNPRunInfo.h
-    rcnp/TRCNPEventStore_ts.h
-    rcnp/TRCNPEventHeader.h
-    rcnp_decoder/TModuleDecoderV830.h
-    rcnp_decoder/TModuleDecoderV1190_rcnp.h
-    rcnp_decoder/TModuleDecoderTS.h
-    rcnp_decoder/TModuleDecoderRCNP.h
-    rcnp_decoder/TModuleDecoderMXDC32_rcnp.h
-    rcnp_decoder/TModuleDecoderFERET.h
-    rcnp_decoder/TModuleDecoderFERA.h
-    rcnp_decoder/TModuleDecoder3377.h
-    scaler/TCatScalerMappingProcessor.h
-    sh04/TTrackProjectionProcessor.h
-    sh04/TSMWDCTrackingProcessor.h
-    sh04/TSMWDCDriftLengthCalibrator.h
-    sh04/TSlewCorrectionProcessor.h
-    sh04/TS1PIDProcessor.h
-    sh04/TResidualPIDProcessor.h
-    sh04/TRecoilTOFProcessor.h
-    sh04/TRecoilProcessor.h
-    sh04/TReactionVertexProcessor.h
-    sh04/TParticleIdentifier.h
-    sh04/TP2PKinematicsProcessor.h
-    sh04/TP2PKinematicsData.h
-    sh04/TNyokiTimingProcessor.h
-    sh04/TNyokiGateProcessor.h
-    sh04/TNyokiChargeCorrectionProcessor.h
-    sh04/TDetectorGeometry.h
-    sh04/TBeamZProcessor.h
-    sh04/TBeamZ.h
-    sh04/TBeamParameter.h
 )
+set(DIC_HEADERS ${HEADERS} ${CAT_HEADERS} ${COIN_HEADERS} ${COMMAND_HEADERS} ${CONT_HEADERS} ${CONVERTER_HEADERS}
+    ${GATE_HEADERS} ${PLASTIC_HEADERS} ${MWDC_HEADERS} ${PPAC_HEADERS} ${SCALER_HEADERS}
+    ${RCNP_HEADERS} ${RCNPDECODER_HEADERS} ${SH04_HEADERS})
 
-art_lib(artshare "${OBJECTS}" "${HEADERS}" "linkdef_user.h" ".")
+list(TRANSFORM CAT_HEADERS PREPEND "cat/")
+list(TRANSFORM COIN_HEADERS PREPEND "coin/")
+list(TRANSFORM COMMAND_HEADERS PREPEND "command/")
+list(TRANSFORM CONT_HEADERS PREPEND "cont/")
+list(TRANSFORM CONVERTER_HEADERS PREPEND "converter/")
+list(TRANSFORM GATE_HEADERS PREPEND "gate/")
+list(TRANSFORM PLASTIC_HEADERS PREPEND "plastic/")
+list(TRANSFORM PPAC_HEADERS PREPEND "ppac/")
+list(TRANSFORM MWDC_HEADERS PREPEND "mwdc/")
+list(TRANSFORM SCALER_HEADERS PREPEND "scaler/")
+list(TRANSFORM RCNP_HEADERS PREPEND "rcnp/")
+list(TRANSFORM RCNPDECODER_HEADERS PREPEND "rcnp_decoder/")
+list(TRANSFORM SH04_HEADERS PREPEND "sh04/")
+
+set(PUB_HEADERS ${HEADERS} ${CAT_HEADERS} ${COIN_HEADERS} ${COMMAND_HEADERS} ${CONT_HEADERS} ${CONVERTER_HEADERS}
+    ${GATE_HEADERS} ${PLASTIC_HEADERS} ${MWDC_HEADERS} ${PPAC_HEADERS} ${SCALER_HEADERS}
+    ${RCNP_HEADERS} ${RCNPDECODER_HEADERS} ${SH04_HEADERS})
+
+art_lib(artshare "${OBJECTS}" "${DIC_HEADERS}" "linkdef_user.h" "${PUB_HEADERS}")

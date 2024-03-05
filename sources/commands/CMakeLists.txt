@@ -120,4 +120,4 @@ set(HEADERS
     TCatCmdAv.h
 )
 
-art_lib(catcmd "${OBJECTS}" "${HEADERS}"  "catcmd_linkdef.h" ".")
+art_lib(catcmd "${OBJECTS}" "${HEADERS}"  "catcmd_linkdef.h" "${HEADERS}")
