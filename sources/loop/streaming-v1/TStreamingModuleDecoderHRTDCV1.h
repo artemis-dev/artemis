@@ -1,6 +1,6 @@
 /*
  * Created       : 2023-02-11 11:54:42 JST
- * Last Modified : 2024/04/13 02:47:06
+ * Last Modified : 2024/04/13 02:50:51
  */
 
 #ifndef TSTREAMINGMODULEDECODERHRTDC_H
@@ -31,7 +31,7 @@ class art::streaming::v1::TStreamingModuleDecoderHRTDC
       return ((data >> shift) & mask);
    }
 
-   inline static std::string fgName{"art::TStreamingModuleDecoderHRTDC"};
+   inline static std::string fgName{"art::streaming::v1::TStreamingModuleDecoderHRTDC"};
    static int fgID;
    static const int kID = {5};
    static const int fgChannelHBD = {128};

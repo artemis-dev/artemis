@@ -1,6 +1,6 @@
 /*
  * Created       : 2023-02-11 11:54:42 JST
- * Last Modified : 2024/04/13 02:19:56
+ * Last Modified : 2024/04/13 02:50:58
  */
 
 #ifndef TSTREAMINGMODULEDECODERLRTDC64_H
@@ -36,7 +36,7 @@ class art::streaming::v1::TStreamingModuleDecoderLRTDC64
       return ((data >> shift) & mask);
    }
 
-   inline static std::string fgName{ "art::TStreamingModuleDecoderLRTDC64" };
+   inline static std::string fgName{ "art::streaming::v1::TStreamingModuleDecoderLRTDC64" };
    static int fgID;
    static const int kID = { 6 };
    static const int fgChannelHBD = { 128 };
