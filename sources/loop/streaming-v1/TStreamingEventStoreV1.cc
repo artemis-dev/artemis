@@ -3,7 +3,7 @@
  * @brief  Streaming Data Event Store
  *
  * @date   Created       : 2023-02-11 12:00:00 JST
- *         Last Modified : 2024/04/12 23:54:50
+ *         Last Modified : 2024/04/13 01:57:00
  * @author Shinsuke OTA <ota@rcnp.osaka-u.ac.jp>
  *
  *    (C) 2023 Shinsuke OTA
@@ -329,6 +329,9 @@ Bool_t TStreamingEventStore::GetHeartBeatFrame() {
          }
          TStreamingModuleDecoder *decoder =
              TStreamingModuleDecoderFactory::Find(femtype);
+         if (!decoder) {
+            return kFALSE;
+         }
          int used = decoder->Decode(fBuffer, nread, seg, femid);
          if (fVerboseLevel > 2)
             Info("GetHeartBeatFrame", "Standalone mode used =  %d, nread = %d",
@@ -361,6 +364,9 @@ Bool_t TStreamingEventStore::GetHeartBeatFrame() {
          if (size == 0) continue;
          TStreamingModuleDecoder *decoder =
              TStreamingModuleDecoderFactory::Find(femtype);
+         if (!decoder) {
+            return kFALSE;
+         }
          int used = decoder->Decode(buffer, size, seg, femid);
 
          if (used > 0) {
