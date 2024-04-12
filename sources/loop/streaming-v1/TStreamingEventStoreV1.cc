@@ -295,7 +295,9 @@ Bool_t TStreamingEventStore::GetSubTimeFrame() {
          }
          auto &header = fSubTimeFrameHeaders[i];
          header->ReadFrom(buffer);
+	 header->Print();
          fSubTimeFrameBuffers[i] = buffer + header->GetHeaderLength();
+	 Info("GetSubTimeFrame","buffer head %016llx",*(uint64_t*)fSubTimeFrameBuffers[i]);
          fSubTimeFrameSize[i] =
              header->GetLength() - header->GetHeaderLength();
          buffer += header->GetLength();
@@ -368,11 +370,13 @@ Bool_t TStreamingEventStore::GetHeartBeatFrame() {
          TStreamingModuleDecoder *decoder =
              TStreamingModuleDecoderFactory::Find(femtype);
          if (!decoder) {
+	   Error("GetHeartbeatframe","No such decoder %d",femtype);
             return kFALSE;
          }
          fHeaderHB->ReadFrom(buffer);
          buffer += fHeaderHB->GetHeaderLength();
-         int used = decoder->Decode(buffer, size, seg, femid);
+	 fHeaderHB->Print();
+         int used = decoder->Decode(buffer, fHeaderHB->GetLength() - fHeaderHB->GetHeaderLength(), seg, femid);
          fSubTimeFrameSize[i] -= fHeaderHB->GetLength();
          fSubTimeFrameBuffers[i] += fHeaderHB->GetLength();
 #if 0
@@ -443,7 +447,7 @@ Bool_t TStreamingEventStore::Open() {
    }
    fIsEOB = false;
 #if 0  // file sink comment is disabled
-   // @TODO how long we have to read
+p   // @TODO how long we have to read
    constexpr int length = 100;
    constexpr TString runname("data");
    fDataSource->Read(fBuffer,length); 

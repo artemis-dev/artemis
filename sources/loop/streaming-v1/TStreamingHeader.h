@@ -25,10 +25,10 @@ public:
 
    static bool Magic() { return magic; }
    static bool IsThis(uint64_t data) { return (data == magic); }
-   uint64_t GetMagic() const { return fMagic; }
-   uint32_t GetLength() const { return fLength; }
-   uint16_t GetHeaderLength() const { return fHeaderLength; }
-   uint16_t GetType() const { return fType; }
+   virtual uint64_t GetMagic() const { return fMagic; }
+   virtual uint32_t GetLength() const { return fLength; }
+   virtual uint16_t GetHeaderLength() const { return fHeaderLength; }
+   virtual uint16_t GetType() const { return fType; }
 
    bool ReadFrom(char *buffer)
    {

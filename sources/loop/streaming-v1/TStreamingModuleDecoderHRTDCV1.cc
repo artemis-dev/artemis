@@ -37,11 +37,6 @@ int TStreamingModuleDecoderHRTDC::Decode(char *buf, const int &size,
    ULong64_t *evtdata = reinterpret_cast<ULong64_t *>(buf);
    UInt_t evtsize = size / sizeof(ULong64_t);
 
-   // 何れにせよ HBD か SPFD
-   // まで読むことになるので、そこまで読めたかどうかを返すようにすれば良さそう
-   // 読めた場合は使った分の長さを返して、RearchAtEndDelimiter
-   // とかで状態を教えるようにすればよいか？ EventStore
-   // は使わなかった分もどってしまえばよい。
 
    Int_t ih = 0;
 

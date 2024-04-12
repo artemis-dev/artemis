@@ -65,7 +65,7 @@ class art::v1::TStreamingHeaderSTF
    uint32_t GetNumMessages() const { return fNumMessages; }
    uint64_t GetTimeSec() const { return fTimeSec; }
    uint64_t GetTimeUsec() const { return fTimeUsec; }
-
+   virtual uint16_t GetHeaderLength() const { return 48; }
   protected:
    template <typename T>
    static void Decode(char *&data, T &out) {
@@ -92,6 +92,7 @@ void art::v1::TStreamingHeaderSTF::Print() const {
    printf("Reserved    = %d\n", fReserved);
    printf("FEMType     = %d\n", fFEMType);
    printf("FEMId       = %x\n", fFEMId);
+   printf("HeaderLength= %d\n", fHeaderLength);
    printf("Length      = %d\n", fLength);
    printf("NumMessages = %d\n", fNumMessages);
    printf("TimeSec     = %llu\n", fTimeSec);
