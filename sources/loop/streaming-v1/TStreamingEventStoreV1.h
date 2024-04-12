@@ -1,6 +1,6 @@
 /**
  *   Created       : 2023-02-09 08:41:43 JST
- *   Last Modified : 2024/04/13 02:22:17
+ *   Last Modified : 2024/04/13 03:08:30
  * @author Shinsuke OTA <ota@rcnp.osaka-u.ac.jp>
  */
 
@@ -19,6 +19,7 @@ namespace art {
       class TStreamingHeaderFS;
       class TStreamingHeaderSTF;
       class TStreamingHeaderTF;
+      class TStreamingHeaderHB;
       // class TStreamingHeaderFLTCOIN;
    }
    class TRunInfo;
@@ -76,6 +77,7 @@ protected:
    TStreamingHeaderFS *fHeaderFS; //!
    TStreamingHeaderSTF *fHeaderSTF; //!
    TStreamingHeaderTF *fHeaderTF; //!
+   TStreamingHeaderHB *fHeaderHB; //!
    // TStreamingHeaderFLTCOIN *fHeaderFLTCOIN; //!
    std::vector<char*> fSubTimeFrameBuffers; //!
    std::vector<int>   fSubTimeFrameSize; //!

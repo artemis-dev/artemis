@@ -3,7 +3,7 @@
  * @brief  Streaming Data Event Store
  *
  * @date   Created       : 2023-02-11 12:00:00 JST
- *         Last Modified : 2024/04/13 01:57:00
+ *         Last Modified : 2024/04/13 03:08:21
  * @author Shinsuke OTA <ota@rcnp.osaka-u.ac.jp>
  *
  *    (C) 2023 Shinsuke OTA
@@ -19,6 +19,7 @@
 #include "TStreamingHeaderFSV1.h"
 #include "TStreamingHeaderSTFV1.h"
 #include "TStreamingHeaderTFV1.h"
+#include "TStreamingHeaderHBV1.h"
 #include "TStreamingModuleDecoderFactory.h"
 #include "TSystem.h"
 // #include "TStreamingHeaderFLTCOINV1.h"
@@ -52,6 +53,7 @@ TStreamingEventStore::TStreamingEventStore()
    fHeaderFS = new TStreamingHeaderFS;
    fHeaderTF = new TStreamingHeaderTF;
    fHeaderSTF = new TStreamingHeaderSTF;
+   fHeaderHB = new TStreamingHeaderHB;
 }
 
 TStreamingEventStore::~TStreamingEventStore() {
@@ -59,6 +61,7 @@ TStreamingEventStore::~TStreamingEventStore() {
    delete fHeaderFS;
    delete fHeaderTF;
    delete fHeaderSTF;
+   delete fHeaderHB;
 }
 
 TStreamingEventStore::TStreamingEventStore(const TStreamingEventStore &rhs) {}
@@ -367,8 +370,12 @@ Bool_t TStreamingEventStore::GetHeartBeatFrame() {
          if (!decoder) {
             return kFALSE;
          }
+         fHeaderHB->ReadFrom(buffer);
+         buffer += fHeaderHB->GetHeaderLength();
          int used = decoder->Decode(buffer, size, seg, femid);
-
+         fSubTimeFrameSize[i] -= fHeaderHB->GetLength();
+         fSubTimeFrameBuffers[i] += fHeaderHB->GetLength();
+#if 0
          if (used > 0) {
             fSubTimeFrameSize[i] -= used;
             fSubTimeFrameBuffers[i] += used;
@@ -379,6 +386,7 @@ Bool_t TStreamingEventStore::GetHeartBeatFrame() {
             fSubTimeFrameSize[i] = 0;
             // Info("GetHeartBeatFrame","used all");
          }
+#endif         
       }
    }
    return kTRUE;
