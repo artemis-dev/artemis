@@ -25,6 +25,7 @@ public:
 
    static bool Magic() { return magic; }
    static bool IsThis(uint64_t data) { return (data == magic); }
+   uint64_t GetMagic() const { return fMagic; }
    uint32_t GetLength() const { return fLength; }
    uint16_t GetHeaderLength() const { return fHeaderLength; }
    uint16_t GetType() const { return fType; }
@@ -34,7 +35,7 @@ public:
       if (!IsThis(*(uint64_t *)buffer))
          return false;
       ReadBaseFrom(buffer);
-      return ReadRestFrom(buffer);
+      return ReadRestFrom(buffer+art::streaming::v1::HDR_BASE_LENGTH);
    }
 
    bool ReadBaseFrom(char *buffer)
@@ -50,7 +51,7 @@ public:
    template <typename T>
    static void Decode(char *&data, T &out)
    {
-      out = *(T *)data;
+      out = *(T*)data;
       data += sizeof(T);
    }
 

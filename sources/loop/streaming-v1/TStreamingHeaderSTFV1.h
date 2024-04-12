@@ -78,7 +78,6 @@ class art::v1::TStreamingHeaderSTF
    uint32_t fReserved;
    uint32_t fFEMType;
    uint32_t fFEMId;
-   uint32_t fLength;
    uint32_t fNumMessages;
    uint64_t fTimeSec;
    uint64_t fTimeUsec;

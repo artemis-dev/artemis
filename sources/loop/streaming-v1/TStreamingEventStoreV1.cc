@@ -182,6 +182,7 @@ Bool_t TStreamingEventStore::GetTimeFrame() {
       return kFALSE;
    }
    fHeaderTF->ReadFrom(fBuffer);
+   fHeaderTF->Print();
    fNumSources = fHeaderTF->GetNumSources();
    if (fSubTimeFrameSize.size() != fNumSources) {
       fSubTimeFrameSize.resize(fNumSources);
@@ -402,9 +403,19 @@ Bool_t TStreamingEventStore::Open() {
    Info("Open", "DataSource with %s is preapred\n", filename.Data());
 
    // read file sink header block
-   fDataSource->Read(fBuffer, 0x130);
-   fHeaderFS->ReadFrom(fBuffer);
-   fHeaderFS->Print();
+   fDataSource->Read(fBuffer, art::streaming::v1::HDR_BASE_LENGTH);
+   Info("Open","buffer1         = %016llx",*(uint64_t*)fBuffer);
+   Info("Open","buffer2         = %016llx",*(((uint64_t*)fBuffer)+1));
+   Info("Open","buffer3         = %016llx",*(((uint64_t*)fBuffer)+2));
+   fDataSource->Seek(-art::streaming::v1::HDR_BASE_LENGTH,SEEK_CUR);
+   fHeaderFS->ReadBaseFrom(fBuffer);
+   Info("Open","magic          = %016llx",*(uint64_t*)fBuffer);
+   Info("Open","header length = %d",fHeaderFS->GetHeaderLength());
+   //   fDataSource->Read(fBuffer, fHeaderFS->GetHeaderLength());
+   fDataSource->Read(fBuffer, 304);
+   if (fHeaderFS->ReadFrom(fBuffer)) {
+     fHeaderFS->Print();
+   }
    {
       const TString runname("run");
       int runnum = fHeaderFS->GetRunNumber();

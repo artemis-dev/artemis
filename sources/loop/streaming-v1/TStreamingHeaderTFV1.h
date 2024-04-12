@@ -51,6 +51,8 @@ public:
       return true;
    }
 
+
+   inline virtual void Print() const;
    // virtual void Print(Option_t *opt = "") const;
 
 
@@ -61,5 +63,18 @@ protected:
 
    // ClassDef(TStreamingHeaderTF, 1) // Streaming Data Header for TimeFrame
 };
+
+
+void art::v1::TStreamingHeaderTF::Print() const {
+   printf("==============================\n");
+   printf("MAGIC        = %016llx\n", fMagic);
+   printf("Length       = %d\n", fLength);
+   printf("HeaderLength = %d\n", fHeaderLength);
+   printf("Type         = %d\n", fType);
+   printf("TimeFrameID  = %llu\n", fTimeFrameID);
+   printf("NumSources   = %ld\n", fNumSources);
+   printf("==============================\n");
+}
+
 
 #endif // TSTREAMINGHEADERTF_H

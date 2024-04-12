@@ -68,12 +68,6 @@ class art::v1::TStreamingHeaderFS
 
    inline virtual void Print() const;
 
-   template <typename T>
-   static void Decode(char *&data, T &out) {
-      out = *(T *)data;
-      data += sizeof(T);
-   }
-
   private:
    std::uint64_t fFairMQDeviceType; /* 64 bits */
    std::uint64_t fRunNumber;        /* 64 bits */
@@ -86,7 +80,10 @@ class art::v1::TStreamingHeaderFS
 
 void art::v1::TStreamingHeaderFS::Print() const {
    printf("==============================\n");
+   printf("MAGIC        = %016llx\n", fMagic);
+   printf("Length       = %d\n", fLength);
    printf("HeaderLength = %d\n", fHeaderLength);
+   printf("Type         = %d\n", fType);
    printf("RunNumber    = %llu\n", fRunNumber);
    printf("Start        = %ld\n", fStartUnixTime);
    printf("Stop         = %ld\n", fStopUnixTime);
