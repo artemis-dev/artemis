@@ -64,11 +64,11 @@ class art::streaming::v1::TStreamingModuleDecoderLRTDC64
    static const unsigned int kHeaderSPND = 0x18; // spill on delimiter
    static const unsigned int kHeaderSPFD = 0x14; // spill off delimiter
 
-   static const unsigned long long kShiftChannel = 51;
-   static const unsigned long long kMaskChannel = 0x7f;
-   static const unsigned long long kShiftTOT = 35;
+   static const unsigned long long kShiftChannel = 50;
+   static const unsigned long long kMaskChannel = 0xff;
+   static const unsigned long long kShiftTOT = 34;
    static const unsigned long long kMaskTOT = 0xffff;
-   static const unsigned long long kShiftTime = 16;
+   static const unsigned long long kShiftTime = 15;
    static const unsigned long long kMaskTime = 0x7ffff;
 
    // heartbeat

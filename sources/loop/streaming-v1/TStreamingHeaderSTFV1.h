@@ -95,8 +95,8 @@ void art::v1::TStreamingHeaderSTF::Print() const {
    printf("HeaderLength= %d\n", fHeaderLength);
    printf("Length      = %d\n", fLength);
    printf("NumMessages = %d\n", fNumMessages);
-   printf("TimeSec     = %llu\n", fTimeSec);
-   printf("TimeUsec    = %llu\n", fTimeUsec);
+   printf("TimeSec     = %lu\n", fTimeSec);
+   printf("TimeUsec    = %lu\n", fTimeUsec);
    printf("==============================\n");
 }
 

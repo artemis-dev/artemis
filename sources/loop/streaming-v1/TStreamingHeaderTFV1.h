@@ -67,12 +67,12 @@ protected:
 
 void art::v1::TStreamingHeaderTF::Print() const {
    printf("==============================\n");
-   printf("MAGIC        = %016llx\n", fMagic);
+   printf("MAGIC        = %016lx\n", fMagic);
    printf("Length       = %d\n", fLength);
    printf("HeaderLength = %d\n", fHeaderLength);
    printf("Type         = %d\n", fType);
-   printf("TimeFrameID  = %llu\n", fTimeFrameID);
-   printf("NumSources   = %ld\n", fNumSources);
+   printf("TimeFrameID  = %u\n", fTimeFrameID);
+   printf("NumSources   = %u\n", fNumSources);
    printf("==============================\n");
 }
 

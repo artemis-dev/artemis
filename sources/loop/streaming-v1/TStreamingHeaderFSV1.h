@@ -60,7 +60,7 @@ class art::v1::TStreamingHeaderFS
       Decode(buffer, fRunNumber);
       Decode(buffer, fStartUnixTime);
       Decode(buffer, fStopUnixTime);
-      memcpy(buffer, fComments, sizeof(fComments));
+      memcpy(fComments, buffer, sizeof(fComments));
       return true;
    }
 
@@ -80,11 +80,11 @@ class art::v1::TStreamingHeaderFS
 
 void art::v1::TStreamingHeaderFS::Print() const {
    printf("==============================\n");
-   printf("MAGIC        = %016llx\n", fMagic);
+   printf("MAGIC        = %016lx\n", fMagic);
    printf("Length       = %d\n", fLength);
    printf("HeaderLength = %d\n", fHeaderLength);
    printf("Type         = %d\n", fType);
-   printf("RunNumber    = %llu\n", fRunNumber);
+   printf("RunNumber    = %lu\n", fRunNumber);
    printf("Start        = %ld\n", fStartUnixTime);
    printf("Stop         = %ld\n", fStopUnixTime);
    printf("Comments:\n");

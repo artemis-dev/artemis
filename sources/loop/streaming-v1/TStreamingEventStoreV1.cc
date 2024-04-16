@@ -156,7 +156,7 @@ void TStreamingEventStore::Process() {
          NotifyEndOfRun();
          return;
       } else {
-         // SetStopEvent();
+	 SetStopEvent();
          break;
       }
    }
@@ -185,7 +185,7 @@ Bool_t TStreamingEventStore::GetTimeFrame() {
       return kFALSE;
    }
    fHeaderTF->ReadFrom(fBuffer);
-   fHeaderTF->Print();
+   if (fVerboseLevel>2) fHeaderTF->Print();
    fNumSources = fHeaderTF->GetNumSources();
    if (fSubTimeFrameSize.size() != fNumSources) {
       fSubTimeFrameSize.resize(fNumSources);
@@ -195,8 +195,6 @@ Bool_t TStreamingEventStore::GetTimeFrame() {
          fSubTimeFrameHeaders[i] = new TStreamingHeaderSTF;
       }
    }
-
-   // if (fVerboseLevel > 2)  fHeaderTF->Print();
 
    int payloadLength = fHeaderTF->GetLength() - fHeaderTF->GetHeaderLength();
    int read = fDataSource->Read(fBuffer, payloadLength);
@@ -271,7 +269,6 @@ Bool_t TStreamingEventStore::GetSubTimeFrame() {
       header->ReadBaseFrom(fBuffer);
       nread = fDataSource->Read(fBuffer, header->GetHeaderLength());
 
-      // header->Print();
       int payloadSize = header->GetLength() - header->GetHeaderLength();
       nread = fDataSource->Read(fBuffer, payloadSize);
       if (nread != payloadSize) {
@@ -295,9 +292,10 @@ Bool_t TStreamingEventStore::GetSubTimeFrame() {
          }
          auto &header = fSubTimeFrameHeaders[i];
          header->ReadFrom(buffer);
-	 header->Print();
          fSubTimeFrameBuffers[i] = buffer + header->GetHeaderLength();
-	 Info("GetSubTimeFrame","buffer head %016llx",*(uint64_t*)fSubTimeFrameBuffers[i]);
+	 if (fVerboseLevel > 2) {
+	   Info("GetSubTimeFrame","buffer head %016llx",*(uint64_t*)fSubTimeFrameBuffers[i]);
+	 }
          fSubTimeFrameSize[i] =
              header->GetLength() - header->GetHeaderLength();
          buffer += header->GetLength();
@@ -375,7 +373,9 @@ Bool_t TStreamingEventStore::GetHeartBeatFrame() {
          }
          fHeaderHB->ReadFrom(buffer);
          buffer += fHeaderHB->GetHeaderLength();
-	 fHeaderHB->Print();
+	 if (fVerboseLevel > 2) {
+	   fHeaderHB->Print();
+	 }
          int used = decoder->Decode(buffer, fHeaderHB->GetLength() - fHeaderHB->GetHeaderLength(), seg, femid);
          fSubTimeFrameSize[i] -= fHeaderHB->GetLength();
          fSubTimeFrameBuffers[i] += fHeaderHB->GetLength();
@@ -422,17 +422,24 @@ Bool_t TStreamingEventStore::Open() {
 
    // read file sink header block
    fDataSource->Read(fBuffer, art::streaming::v1::HDR_BASE_LENGTH);
-   Info("Open","buffer1         = %016llx",*(uint64_t*)fBuffer);
-   Info("Open","buffer2         = %016llx",*(((uint64_t*)fBuffer)+1));
-   Info("Open","buffer3         = %016llx",*(((uint64_t*)fBuffer)+2));
    fDataSource->Seek(-art::streaming::v1::HDR_BASE_LENGTH,SEEK_CUR);
    fHeaderFS->ReadBaseFrom(fBuffer);
-   Info("Open","magic          = %016llx",*(uint64_t*)fBuffer);
-   Info("Open","header length = %d",fHeaderFS->GetHeaderLength());
-   //   fDataSource->Read(fBuffer, fHeaderFS->GetHeaderLength());
-   fDataSource->Read(fBuffer, 304);
+   if (fVerboseLevel > 2) {
+     Info("Open","magic          = %016llx",*(uint64_t*)fBuffer);
+     Info("Open","header length = %d",fHeaderFS->GetHeaderLength());
+   }
+   // fDataSource->Read(fBuffer, 304);
+   fDataSource->Read(fBuffer, fHeaderFS->GetLength());
    if (fHeaderFS->ReadFrom(fBuffer)) {
+     // print header 
      fHeaderFS->Print();
+   } else {
+     Warning("Open","Header is not file header");
+     Info("Open","buffer1         = %016llx",*(uint64_t*)fBuffer);
+     Info("Open","buffer2         = %016llx",*(((uint64_t*)fBuffer)+1));
+     Info("Open","buffer3         = %016llx",*(((uint64_t*)fBuffer)+2));
+     NotifyEndOfRun();
+     return false;
    }
    {
       const TString runname("run");
