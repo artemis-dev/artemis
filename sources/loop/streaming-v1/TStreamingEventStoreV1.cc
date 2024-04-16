@@ -418,7 +418,13 @@ Bool_t TStreamingEventStore::Open() {
       return kFALSE;
    }
    fDataSource = new TFileDataSource(filename);
-   Info("Open", "DataSource with %s is preapred\n", filename.Data());
+   if (fDataSource->IsPrepared()) {
+      Info("Open", "DataSource with %s is preapred\n", filename.Data());
+   } else {
+      Error("Open", "No such file %s (see also the Error above)",filename.Data());
+      return kFALSE;
+   }
+      
 
    // read file sink header block
    fDataSource->Read(fBuffer, art::streaming::v1::HDR_BASE_LENGTH);
