@@ -3,7 +3,7 @@
  * @brief  Tree projection definitions
  *
  * @date   Created       : 2014-03-05 10:15:05 JST
- *         Last Modified : 2023-02-09 14:11:14 JST
+ *         Last Modified : 2023-08-16 16:19:00 JST (fendo)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -308,8 +308,8 @@ Bool_t TTreeProjection::LoadYAMLNode(const YAML::Node &node)
             for (Int_t i = 0; i < 3; ++i) {
                if (axisnode[i] && axisnode[i].size() < 4) {
                   // insufficient number of input for axis
-                  Error("LoadYAMLNode",TString::Format("\n    histgram '%s': insufficient number of axis input for '%c' (size = %d)\n",
-                                                       hname.Data(),'x'+i,axisnode[i].size()));
+                  Error("LoadYAMLNode","\n    histgram '%s': insufficient number of axis input for '%c' (size = %d)\n",
+                                                       hname.Data(),'x'+i,axisnode[i].size());
                   saved->cd();
                   return kFALSE;
                }

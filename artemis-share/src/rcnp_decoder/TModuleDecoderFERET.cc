@@ -3,7 +3,7 @@
  * @brief  Decorder Class for V7XX
  *
  * @date   Created:       2013-07-24 14:41:31
- *         Last Modified: 2013-10-28 13:00:01
+ *         Last Modified: 2024-03-23 20:10:00 JST
  * @author KAWASE Shoichiro <kawase@cns.s.u-tokyo.ac.jp>
  *
  *    Copyright (C) 2013 KAWASE Shoichiro All rights reserved.
@@ -22,7 +22,8 @@ typedef TRawTiming V7XXRaw_t;
 
 TModuleDecoderFERET::TModuleDecoderFERET()
    : TModuleDecoder(kID, V7XXRaw_t::Class()){
-   fHitData = new TObjArray;
+   // fHitData = new TObjArray;
+   fHitData = nullptr;
 }
 
 TModuleDecoderFERET::~TModuleDecoderFERET() {
@@ -69,8 +70,8 @@ Int_t TModuleDecoderFERET::Decode(char* buffer, const Int_t &size, TObjArray *se
 	       // check if the data object exists
 	     //  if (fHitData->GetEntriesFast() <= idx || !fHitData->At(idx)) {
 		  // if no data available, create one
-//		  V7XXRaw_t *obj = static_cast<V7XXRaw_t*>(this->New());
-		  V7XXRaw_t *obj = new V7XXRaw_t();
+		  V7XXRaw_t *obj = static_cast<V7XXRaw_t*>(this->New());
+//		  V7XXRaw_t *obj = new V7XXRaw_t();
 		  obj->SetSegInfo(seg->GetUniqueID(),geoID,idx);
 //		  obj->SetSegInfo(seg->GetUniqueID(),geoID,channel);
 //		  fHitData->AddAtAndExpand(obj,idx);

@@ -18,7 +18,7 @@ set(ARTEMIS_INCLUDE_DIRS
 
 add_subdirectory(core)
 add_subdirectory(cont)
+add_subdirectory(loop)
 add_subdirectory(commands)
 add_subdirectory(mc)
-add_subdirectory(loop)
 add_subdirectory(main)

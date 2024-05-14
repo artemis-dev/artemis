@@ -31,6 +31,13 @@ public:
    
    void SetTiming(Double_t timing) { fTiming = timing; }
    void SetCharge(Double_t charge) { fCharge = charge; }
+
+   virtual Double_t GetValue(Int_t idx = 0) const { 
+     if (idx == 0) return fTiming;
+     if (idx == 1) return fCharge;
+   }
+   virtual Int_t GetNumValues() const { return 2; }
+
      
       
 protected:

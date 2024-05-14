@@ -2,7 +2,7 @@
  * @brief evaluation of charge resolution of tpc
  *
  * @date Create        : 2020-07-22 06:47:10 JST
- *       Last Modified : 2020-07-28 12:56:43 JST (ota)
+ *       Last Modified : 2023-08-16 16:29:00 JST (fendo)
  * @author: Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  */
 
@@ -153,7 +153,7 @@ void TCatEvalTpcChargeResolution::EndOfRun()
 #endif
    file = TFile::Open(TString(fOutputFilename).Data(),"update");
    if (!file) {
-      Error("No such file %s",TString(fOutputFilename).Data());
+      Error("","No such file %s",TString(fOutputFilename).Data());
       return;
    }
    Info("EndOfRun","output file is ready");

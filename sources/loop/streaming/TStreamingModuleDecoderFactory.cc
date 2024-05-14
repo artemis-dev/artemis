@@ -7,7 +7,7 @@
 std::map<std::string, factoryMethod> art::TStreamingModuleDecoderFactory::fgRegisteredNames = { };
 std::map<int,art::TStreamingModuleDecoder*> art::TStreamingModuleDecoderFactory::fgDecoders = { };
 
-bool art::TStreamingModuleDecoderFactory::Register(std::string name, factoryMethod method)
+bool art::TStreamingModuleDecoderFactory::Register(const std::string& name, factoryMethod method)
 {
    printf("Registering %s\n",name.c_str());
 

@@ -11,7 +11,7 @@
 #include "TClonesArray.h"
 #include "TObjArray.h"
 
-const std::string art::TStreamingModuleDecoderLRTDC64::fgName = "art::TStreamingModuleDecoderLRTDC64";
+// const std::string art::TStreamingModuleDecoderLRTDC64::fgName = "art::TStreamingModuleDecoderLRTDC64";
 
 int art::TStreamingModuleDecoderLRTDC64::fgID = art::TStreamingModuleDecoderLRTDC64::kID;
 

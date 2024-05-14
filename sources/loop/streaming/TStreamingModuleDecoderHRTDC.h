@@ -25,8 +25,8 @@ public:
    unsigned int DecodeBits(unsigned long long data, unsigned long long shift, unsigned long long mask) {
       return ((data >> shift) & mask);
    }
-   
-   static const std::string fgName;
+
+   inline static std::string fgName {"art::TStreamingModuleDecoderHRTDC"};
    static int fgID;
    static const int kID = {2};
    static const int fgChannelHBD = {128};

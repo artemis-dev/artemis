@@ -25,7 +25,7 @@ public:
       return ((data >> shift) & mask);
    }
    
-   static const std::string fgName;
+   inline static std::string fgName {"art::TStreamingModuleDecoderLRTDC64"};
    static int fgID;
    static const int kID = {3}; 
    static const int fgChannelHBD = {128};

@@ -1,12 +1,3 @@
-add_subdirectory(decoder)
-if(BUILD_GET)
-    add_subdirectory(get)
-endif()
-add_subdirectory(hist)
-add_subdirectory(param)
-add_subdirectory(rdf)
-add_subdirectory(ridf)
-add_subdirectory(streaming)
 
 set(OBJECTS
     TCategorizedData.cc 
@@ -125,3 +116,15 @@ set(HEADERS
 )
 
 art_lib(catloop "${OBJECTS}" "${HEADERS}"  "catloop_linkdef.h" "${HEADERS}")
+target_link_libraries(catloop z)
+
+add_subdirectory(decoder)
+if(BUILD_GET)
+    add_subdirectory(get)
+endif()
+add_subdirectory(param)
+add_subdirectory(hist)
+add_subdirectory(rdf)
+add_subdirectory(ridf)
+add_subdirectory(streaming)
+add_subdirectory(streaming-v1)

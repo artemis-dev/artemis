@@ -2,7 +2,7 @@
 /**
  * @file   TRCNPEventStore_ts.cc
  * @date   Created : Jul 12, 2013 17:12:35 JST
- *   Last Modified : 2023-10-20 21:10:41 JST
+ *   Last Modified : 2024-03-23 20:13:15 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  * 
  *  
@@ -16,7 +16,7 @@
 #include <TRawDataObject.h>
 #include <TLoop.h>
 #include <TModuleDecoderFactory.h>
-#include <TModuleDecoderRCNP.h>
+#include <TModuleDecoder.h>
 #include <TRCNPRunInfo.h>
 #include <TTimeStamp.h>
 #include <TRCNPEventHeader.h>
@@ -45,7 +45,7 @@ art::TRCNPEventStore_ts::TRCNPEventStore_ts()
    fRIDFData.fRunHeaders = new TList;
    fRIDFData.fEventHeader = new TRCNPEventHeader;
    fRIDFData.fVerboseLevel = &fVerboseLevel;
-   fRIDFData.fDecoderFactory = TModuleDecoderFactory::Instance()->CloneInstance();
+   fRIDFData.fDecoderFactory = TModuleDecoderFactory::Instance();
    fIsOnline = kFALSE;
    fIsEOB = kTRUE;
    fBuffer = new Char_t[fMaxBufSize];
@@ -114,7 +114,7 @@ void art::TRCNPEventStore_ts::Process()
 //  printf("evtnum=%d, analysis start\n",(fRIDFData.fEventHeader)->GetEventNumber());
    // try to prepare data source
    fRIDFData.fSegmentedData->Clear("C");
-	fRIDFData.fSegmentedData->Clear();
+   fRIDFData.fSegmentedData->Clear();
    fRIDFData.fEventHeader->Clear("C");
    fRIDFData.fRunHeaders->Clear("C");
    // try to get next event
@@ -196,7 +196,7 @@ void art::TRCNPEventStore_ts::ClassDecoder04_2(Char_t *buf, Int_t& offset, struc
 	 SegID segid;
 	 Int_t index = offset;
 	 Int_t size = sizee;
-			TModuleDecoderRCNP *decoder = (TModuleDecoderRCNP*)TModuleDecoderFactory::Instance()->Get(module);
+         TModuleDecoder *decoder = (TModuleDecoder*)TModuleDecoderFactory::Instance()->Get(module);
                         // printf("ClassDecoder04_2: decoder %p for module %d\n",decoder, module);
 			//printf("module num = %d\n",module);
 			if(module==24){
@@ -233,10 +233,7 @@ void art::TRCNPEventStore_ts::ClassDecoder04_2(Char_t *buf, Int_t& offset, struc
 //			if(decoder&&(module==72||module==2)){
 //			if(decoder&&(module==72)){
 			if(decoder){
-			//if(decoder){
-				 decoder->Decode(&buf[index],size,seg);
-//			delete decoder
-;
+                           decoder->Decode(&buf[index],size,seg);
 			}else{
 //				 printf("no ddecoder = %d\n",module);
 			}
@@ -305,37 +302,37 @@ void art::TRCNPEventStore_ts::ClassDecoder05(Char_t *buf, Int_t& offset, struct 
 	 month.insert(std::map<TString,Int_t>::value_type(TString("Nov"),11));
 	 month.insert(std::map<TString,Int_t>::value_type(TString("Dec"),12));
 	 if ((*(int*)(buf+local)) == 1) {
-			RIDFCommentRunInfo info;
-			local+=sizeof(int);
-			memcpy(&info,buf+local,sizeof(RIDFCommentRunInfo));
-			if (*(ridfdata->fVerboseLevel) > 0) {
-				 info.Print();
-			}
-			TString runName = info.fRunName;
-			TString runNumber = info.fRunNumber;
-			TString startTime = info.fStartTime;
-			TString stopTime = info.fStopTime;
-			TString date = info.fDate;
-			TString fHeader = info.fHeader;
-			TString fEnder = info.fEnder;
-			TRCNPRunInfo *runinfo = new TRCNPRunInfo(runName+runNumber,runName+runNumber);
-			TTimeStamp start(2000+TString(date(7,2)).Atoi(),month[TString(date(3,3))],TString(date(0,2)).Atoi(),
-						TString(startTime(9,2)).Atoi(),TString(startTime(12,2)).Atoi(),TString(startTime(15,2)).Atoi(),
-						0,kFALSE);
-			TTimeStamp stop(2000+TString(date(7,2)).Atoi(),month[TString(date(3,3))],TString(date(0,2)).Atoi(),
-						TString(stopTime(8,2)).Atoi(),TString(stopTime(11,2)).Atoi(),TString(stopTime(14,2)).Atoi(),
-						0,kFALSE);
-			if (start.GetSec() > stop.GetSec()) {
-				 stop.SetSec(stop.GetSec()+86400);
-			}
-			runinfo->SetRunName(runName.Data());
-			runinfo->SetRunNumber(runNumber.Atoll());
-			runinfo->SetStartTime(start.GetSec());
-			runinfo->SetStopTime(stop.GetSec());
-			runinfo->SetHeader(fHeader);
-			runinfo->SetEnder(fEnder);
-			ridfdata->fRunHeaders->Add(runinfo);
-			ridfdata->fEventHeader->SetRunName(runName.Data());
+            RIDFCommentRunInfo info;
+            local+=sizeof(int);
+            memcpy(&info,buf+local,sizeof(RIDFCommentRunInfo));
+            if (*(ridfdata->fVerboseLevel) > 0) {
+               info.Print();
+            }
+            TString runName = info.fRunName;
+            TString runNumber = info.fRunNumber;
+            TString startTime = info.fStartTime;
+            TString stopTime = info.fStopTime;
+            TString date = info.fDate;
+            TString fHeader = info.fHeader;
+            TString fEnder = info.fEnder;
+            TRCNPRunInfo *runinfo = new TRCNPRunInfo(runName+runNumber,runName+runNumber);
+            TTimeStamp start(2000+TString(date(7,2)).Atoi(),month[TString(date(3,3))],TString(date(0,2)).Atoi(),
+                             TString(startTime(9,2)).Atoi(),TString(startTime(12,2)).Atoi(),TString(startTime(15,2)).Atoi(),
+                             0,kFALSE);
+            TTimeStamp stop(2000+TString(date(7,2)).Atoi(),month[TString(date(3,3))],TString(date(0,2)).Atoi(),
+                            TString(stopTime(8,2)).Atoi(),TString(stopTime(11,2)).Atoi(),TString(stopTime(14,2)).Atoi(),
+                            0,kFALSE);
+            if (start.GetSec() > stop.GetSec()) {
+               stop.SetSec(stop.GetSec()+86400);
+            }
+            runinfo->SetRunName(runName.Data());
+            runinfo->SetRunNumber(runNumber.Atoll());
+            runinfo->SetStartTime(start.GetSec());
+            runinfo->SetStopTime(stop.GetSec());
+            runinfo->SetHeader(fHeader);
+            runinfo->SetEnder(fEnder);
+            ridfdata->fRunHeaders->Add(runinfo);
+            ridfdata->fEventHeader->SetRunName(runName.Data());
 			ridfdata->fEventHeader->SetRunNumber(runNumber.Atoll());
 	 }
 }
@@ -519,6 +516,7 @@ Bool_t art::TRCNPEventStore_ts::GetNextEvent()
       printf("faulse1\n"); 
       return kFALSE;
    }
+   fRIDFData.fDecoderFactory->Clear();
    evtsize++;
    //まずブロックの一番最初の記号をとってくる
    memcpy(&fHeader,fBuffer+fOffset,2);	

@@ -1,15 +1,20 @@
-source @ROOT_DIR@/../bin/thisroot.sh
-
 export LD_LIBRARY_PATH=@yaml_cpp_LIBDIR@:$LD_LIBRARY_PATH
 export TARTSYS=@CMAKE_INSTALL_PREFIX@
 export PATH=$TARTSYS/bin:$PATH
 export LD_LIBRARY_PATH=$TARTSYS/lib:$LD_LIBRARY_PATH
 
-if [ "@BUILD_GET@" == "ON" ]; then 
+if [ `uname -s` = "Darwin" ]; then
+    export DYLD_LIBRARY_PATH=$TARTSYS/lib:$DYLD_LIBRARY_PATH
+fi    
+
+if [ "@BUILD_GET@" = "ON" ]; then 
     export LD_LIBRARY_PATH=@GET_LIB_DIR@:$LD_LIBRARY_PATH
+    if [ `uname -s` = "Darwin" ]; then
+        export DYLD_LIBRARY_PATH=@GET_LIB_DIR@:$DYLD_LIBRARY_PATH
+    fi    
 fi
 
-if [ "@MPI_CXX_FOUND@" == "TRUE" ]; then 
+if [ "@MPI_CXX_FOUND@" = "TRUE" ]; then 
     dir=@MPI_CXX_LIBRARIES@
     libdir="$(dirname $dir)"
     export LD_LIBRARY_PATH=$libdir:$LD_LIBRARY_PATH
