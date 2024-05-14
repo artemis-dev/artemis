@@ -35,7 +35,9 @@ public:
 
    Bool_t IsProcessed() const { return kProcessed; }
    void SetProcessed(Bool_t val) { kProcessed = val; }
-
+ 
+   void Clear(Option_t *opt);
+   
 protected:
    Double_t fPosition;
    Bool_t kProcessed;
