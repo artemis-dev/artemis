@@ -115,7 +115,7 @@ set(HEADERS
     IEventStore.h
 )
 
-art_lib(catloop "${OBJECTS}" "${HEADERS}"  "catloop_linkdef.h" ".")
+art_lib(catloop "${OBJECTS}" "${HEADERS}"  "catloop_linkdef.h" "${HEADERS}")
 target_link_libraries(catloop z)
 
 add_subdirectory(decoder)

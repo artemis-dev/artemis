@@ -8,4 +8,4 @@ set(HEADERS
     TParameterLoader.h
 )
 
-art_lib(artparam "${OBJECTS}" "${HEADERS}"  "artparam_linkdef.h" ".")
+art_lib(artparam "${OBJECTS}" "${HEADERS}"  "artparam_linkdef.h" "${HEADERS}")

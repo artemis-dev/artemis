@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.12 FATAL_ERROR)
 project(artemis)
 
 # ROOT 6 installation
@@ -64,7 +64,7 @@ set(ARTEMIS_HEADER_DESTINATIONS "" CACHE INTERNAL "")
 # headers: list of .h files
 # linkdef_name: name of linkdef.h for ROOT dictionary generation
 # header_destination: name of the directory containing the header files
-function(art_lib lib_name objects headers linkdef_name header_destination)
+function(art_lib lib_name objects dic_headers linkdef_name pub_headers)
 
     add_library(${lib_name} SHARED ${objects})
 
@@ -74,7 +74,7 @@ function(art_lib lib_name objects headers linkdef_name header_destination)
             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
     )
     target_include_directories(${lib_name}
-        PRIVATE
+	    PRIVATE
             ${yaml_cpp_INCLUDEDIR} ${ARTEMIS_INCLUDE_DIRS}
     )
     target_link_libraries(${lib_name}
@@ -86,12 +86,12 @@ function(art_lib lib_name objects headers linkdef_name header_destination)
     endif()
 
     if(BUILD_GET)
-        target_include_directories(${lib_name} PRIVATE ${GET_INCLUDE_DIR})
+	    target_include_directories(${lib_name} PRIVATE ${GET_INCLUDE_DIR} ${yaml_cpp_INCLUDEDIR} ${ARTEMIS_INCLUDE_DIRS})
         target_link_libraries(${lib_name} ${GET_LIBRARIES})
     endif()
 
     ROOT_GENERATE_DICTIONARY(G__${lib_name}
-        ${headers}
+        ${dic_headers}
         LINKDEF ${linkdef_name}
         MODULE ${lib_name}
     )
@@ -99,7 +99,7 @@ function(art_lib lib_name objects headers linkdef_name header_destination)
     set_target_properties(
         ${lib_name}
         PROPERTIES
-            PUBLIC_HEADER "${headers}"    
+            PUBLIC_HEADER "${pub_headers}"    
     )
 
     install(TARGETS ${lib_name}

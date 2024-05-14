@@ -30,4 +30,4 @@ set(HEADERS
     ICharge.h
 )
 
-art_lib(artcont "${OBJECTS}" "${HEADERS}"  "artcont_linkdef.h" ".")
+art_lib(artcont "${OBJECTS}" "${HEADERS}"  "artcont_linkdef.h" "${HEADERS}")

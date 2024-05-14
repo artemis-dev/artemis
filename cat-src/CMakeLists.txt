@@ -210,4 +210,4 @@ set(HEADERS
     TAffineConverterConditionProcessor.h
 )
 
-art_lib(CAT "${OBJECTS}" "${HEADERS}"  "linkdef_user.h" ".")
+art_lib(CAT "${OBJECTS}" "${HEADERS}"  "linkdef_user.h" "${HEADERS}")
