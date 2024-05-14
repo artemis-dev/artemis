@@ -118,6 +118,7 @@ set(OBJECTS
     TMultiHitCombinator.cc
     TRIDFEventShifter.cc
     TDataCalibrationProcessor.cc
+    TMergeTrackProcessor.cc
 # sh04
     sh04/TDetectorGeometry.cc
     sh04/TRecoilProcessor.cc
@@ -141,7 +142,7 @@ set(OBJECTS
     command/TCmdMWDCCalib.cc
     command/TCmdMWDCConfig.cc
     command/TCmdFiga.cc
-# rcnp by Y.HIJIKATA
+# rcnp
     rcnp/TRCNPEventHeader.cc
     rcnp/TRCNPEventStore_ts.cc
     rcnp/TRCNPRunInfo.cc
@@ -152,7 +153,7 @@ set(OBJECTS
     rcnp/TVDCTrackingProcessor_gr.cc
     rcnp/TVDCTrackingProcessor_las.cc
     rcnp/TVDCTrackingResult.cc
-# rcnp_decoder by Y.HIJIKATA
+# rcnp_decoder
     rcnp_decoder/TModuleDecoderRCNP.cc
     rcnp_decoder/TModuleDecoder3377.cc
     rcnp_decoder/TModuleDecoderFERA.cc
@@ -178,6 +179,7 @@ set(HEADERS
     TMultiFileParameterArrayLoader.h
     TExtractOutputProcessor.h
     TDataCalibrationProcessor.h
+    TMergeTrackProcessor.h
     #TCatPosition.h
     constant.h
     cat/TSampleCalibratorProcessor.h

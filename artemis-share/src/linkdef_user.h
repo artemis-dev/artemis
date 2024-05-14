@@ -3,7 +3,7 @@
  * @brief
  *
  * @date   Created:       2013-08-12 14:48:07
- *         Last Modified: 2023-03-03 15:07:43 JST
+ *         Last Modified: 2023-10-17 11:03:33 JST
  * @author KAWASE Shoichiro <kawase@cns.s.u-tokyo.ac.jp>
  *
  *    Copyright (C) 2013 KAWASE Shoichiro, OTA Shinsuke All rights reserved
@@ -134,6 +134,7 @@
 #pragma link C++ class art::TMultiFileParameterArrayLoader;
 #pragma link C++ class art::TMWDCDriftLengthCorrectionProcessor;
 #pragma link C++ class art::TMWDCPlaneDLCorrectionProcessor;
+#pragma link C++ class art::TMergeTrackProcessor;
 
 //RCNP
 #pragma link C++ class art::TRCNPEventHeader;

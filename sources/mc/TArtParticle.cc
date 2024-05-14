@@ -2,7 +2,7 @@
 /**
  * @file   TArtParticle.cc
  * @date   Created : Jan 25, 2011 21:25:33 JST
- *   Last Modified : Aug 18, 2011 09:19:17 JST
+ *   Last Modified : 2023-10-15 21:45:54 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -28,6 +28,19 @@ TArtParticle::~TArtParticle()
       if (fDaughter[i]) delete fDaughter[i];
       if (fDaughterAtRest[i]) delete fDaughterAtRest[i];
    }
+}
+
+
+void TArtParticle::Copy(TObject& obj) const
+{
+   TArtParticle &part = (TArtParticle&)obj;
+   part.fM  = fM;
+   part.fBoost = fBoost;
+   part.fIsRandom = fIsRandom;
+   part.fMassNumber = fMassNumber;
+   part.fAtomicNumber = fAtomicNumber;
+   part.fCharge = fCharge;
+   part = *this;
 }
 
 TArtParticle* TArtParticle::GetDaughter(const Int_t &i)

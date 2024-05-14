@@ -15,7 +15,7 @@ typedef art::TStreamingModuleDecoder* (*factoryMethod)();
 class art::TStreamingModuleDecoderFactory 
 {
 public:
-   static bool Register(std::string name, factoryMethod method);
+   static bool Register(const std::string& name, factoryMethod method);
 
    static TStreamingModuleDecoder* Create(std::string name);
 
@@ -24,6 +24,8 @@ public:
    static TStreamingModuleDecoder* Find(int femtype);
 
    static void Clear();
+
+   static bool ResetID(int orgID, int newID);
 
 protected:
    static std::map<std::string, factoryMethod> fgRegisteredNames;

@@ -11,7 +11,7 @@
 #include "TClonesArray.h"
 #include "TObjArray.h"
 
-const std::string art::TStreamingModuleDecoderHRTDC::fgName = "art::TStreamingModuleDecoderHRTDC";
+//const std::string art::TStreamingModuleDecoderHRTDC::fgName = "art::TStreamingModuleDecoderHRTDC";
 //const int art::TStreamingModuleDecoderHRTDC::fgChannelHBD = 128;
 //const int art::TStreamingModuleDecoderHRTDC::fgChannelSD = 129;
 

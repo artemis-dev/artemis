@@ -2,7 +2,7 @@
 /**
  * @file   TCategorizedData.h
  * @date   Created : Jul 16, 2013 17:16:43 JST
- *   Last Modified : Nov 21, 2013 10:51:20 JST
+ *   Last Modified : 2023-10-20 16:00:44 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *
@@ -58,7 +58,7 @@ public:
    
 
 protected:
-   TObjArray *fCats; //-> array with all categories
+   TObjArray *fCats; //!-> array with all categories
 //   TObjArray *fDets; //-> array with all detectors
 //   TObjArray *fTypes; //-> array with all datatypes
 
@@ -69,6 +69,6 @@ protected:
    TClonesArray *fgTypes; //!
 
    
-   ClassDef(TCategorizedData,1);
+   ClassDef(TCategorizedData,1) // categorized data
 };
 #endif // end of #ifdef TCATEGORIZEDDATA_H

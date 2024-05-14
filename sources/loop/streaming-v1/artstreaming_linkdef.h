@@ -2,7 +2,7 @@
 /**
  * @file   artstreaming_linkdef.h
  * @date   Created : Feb 07, 2023 22:53:00 JST
- *   Last Modified : 2023-12-23 14:41:45 JST
+ *   Last Modified : 2024/04/13 02:23:49
  * @author Shinsuke OTA <ota@rcnp.osaka-u.ac.jp>
  *  
  *  
@@ -18,14 +18,13 @@
 
 
 //#pragma link C++ class art::TModuleDecoderHRTDC;
-#pragma link C++ class art::TStreamingHeartBeatDelimiter;
-#pragma link C++ class art::TStreamingSpillDelimiter;
-#pragma link C++ class art::TStreamingEventStore;
-#pragma link C++ class art::TStreamingHeaderSTF;
-#pragma link C++ class art::TStreamingHeaderFS;
-#pragma link C++ class art::TStreamingHeaderTF;
-#pragma link C++ class art::TStreamingHeaderFLTCOIN;
-#pragma link C++ class art::TStreamingModuleDecoderFactory;
+#pragma link C++ class art::streaming::v1::TStreamingHeartBeatDelimiter;
+#pragma link C++ class art::v1::TStreamingEventStore;
+//#pragma link C++ class art::v1::TStreamingHeaderSTF;
+//#pragma link C++ class art::v1::TStreamingHeaderFS;
+//#pragma link C++ class art::v1::TStreamingHeaderTF;
+// #pragma link C++ class art::TStreamingHeaderFLTCOIN;
+#pragma link C++ class art::v2::TStreamingModuleDecoderFactory;
 
 
 // #pragma link C++ class art::TSTREAMINGEventStore::STREAMINGCommentRunInfo;
