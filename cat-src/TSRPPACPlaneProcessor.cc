@@ -77,6 +77,7 @@ void TSRPPACPlaneProcessor::Init(TEventCollection *col)
 
 void TSRPPACPlaneProcessor::Process()
 {
+   fOutput->Clear("C");	
    TTimingChargeData::SetSortType(TTimingChargeData::kCharge);
    TTimingChargeData::SetSortOrder(TTimingChargeData::kDESC);
    (*fInput)->Sort();
@@ -133,14 +134,31 @@ void TSRPPACPlaneProcessor::Process()
    }
    
    TSRPPACPlaneData *outData = NULL;
+   if(nData==0){
+	   return;
+//   outData = static_cast<TSRPPACPlaneData*>(fOutput->ConstructedAt(0));
+//   outData->SetID(-1);
+//   outData->SetCharge(-1e10);
+//   outData->SetTiming(-1e10);
+//   outData->SetPosition(-1e10);
+//   outData->SetProcessed(-1e10);      
+   }else{
    for (Int_t iData = 0; iData != nData; ++iData) {
       outData = static_cast<TSRPPACPlaneData*>(fOutput->ConstructedAt(iData));
       outData->SetID(id[iData]);
       outData->SetCharge(charge[iData]);
       outData->SetTiming(timing[iData]);
-      outData->SetPosition(position);
+ //     if(iData == 0){
+	  outData->SetPosition(position);
       outData->SetProcessed(kProcessed);      
+//   	  }else{
+//	  outData->SetPosition(-2e10);
+  //    outData->SetProcessed(-2e10);      
+//	  }
+   }
    }
 
    return;
+
+
 }

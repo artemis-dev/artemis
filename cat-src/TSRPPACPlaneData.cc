@@ -35,3 +35,8 @@ TSRPPACPlaneData& TSRPPACPlaneData::operator=(const TSRPPACPlaneData& rhs)
    }
    return *this;
 }
+
+void TSRPPACPlaneData::Clear(Option_t *opt){
+     fPosition = kInvalidD;
+}
+
