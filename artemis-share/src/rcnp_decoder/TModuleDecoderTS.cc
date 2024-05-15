@@ -3,7 +3,7 @@
  * @brief  Decorder Class for V7XX
  *
  * @date   Created:       2013-07-24 14:41:31
- *         Last Modified: 2013-10-28 13:00:01
+ *         Last Modified: 2024-03-23 18:47:34 JST
  * @author KAWASE Shoichiro <kawase@cns.s.u-tokyo.ac.jp>
  *
  *    Copyright (C) 2013 KAWASE Shoichiro All rights reserved.
@@ -32,22 +32,20 @@ TModuleDecoderTS::~TModuleDecoderTS() {
 
 Int_t TModuleDecoderTS::Decode(char* buffer, const Int_t &size, TObjArray *seg){
    short *evtData = reinterpret_cast<short*>(buffer);
-
-
-			 short measure1 = evtData[0];
-			 short measure2 = evtData[1];
+   short measure1 = evtData[0];
+   short measure2 = evtData[1];
 //time stampは8bitで abcdefghのとき、cdabghefの順にくっつければ正しい値になる
-			int timestamp = ((((measure1<<8)&0xff00)|((measure1>>8)&0x00ff))<<16)|((((measure2<<8&0xff00))|((measure2>>8)&0x00ff)));
+   int timestamp = ((((measure1<<8)&0xff00)|((measure1>>8)&0x00ff))<<16)|((((measure2<<8&0xff00))|((measure2>>8)&0x00ff)));
 //			printf("timestamp = %08x\n",timestamp);
 //			printf("%04x,%04x\n",measure1,measure2);
-			V7XXRaw_t *obj = new V7XXRaw_t();
-		  obj->SetSegInfo(seg->GetUniqueID(),72,1);
-				obj->SetCatID(-100000000);
+   V7XXRaw_t *obj = new V7XXRaw_t();
+   obj->SetSegInfo(seg->GetUniqueID(),72,1);
+   obj->SetCatID(-100000000);
 //				obj->SetTiming(measure&0x03ff);
-				obj->SetTiming(timestamp);
-				obj->SetReference(0);
-seg->Add(obj);
-			 /*
+   obj->SetTiming(timestamp);
+   obj->SetReference(0);
+   seg->Add(obj);
+   /*
    short *evtData = reinterpret_cast<short*>(buffer);
 	 //TSは2byte単位のイベントなので、short単位で読み込む
    UInt_t  evtSize = size;//sizeに書かれているのは単にイベントの数

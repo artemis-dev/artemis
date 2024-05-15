@@ -57,6 +57,7 @@ link_directories(${ROOTSYS}/lib)
 set(ARTEMIS_INCLUDE_DIRS "" CACHE INTERNAL "")
 set(ARTEMIS_LIBRARIES "" CACHE INTERNAL "")
 set(ARTEMIS_HEADER_DESTINATIONS "" CACHE INTERNAL "")
+set(CMAKE_CXX_FLAGS "-Wall -g")
 
 # cmake function for building an artemis library
 # lib_name: Library name
