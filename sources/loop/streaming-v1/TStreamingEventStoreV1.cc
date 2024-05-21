@@ -3,7 +3,7 @@
  * @brief  Streaming Data Event Store
  *
  * @date   Created       : 2023-02-11 12:00:00 JST
- *         Last Modified : 2024/04/13 03:08:21
+ *         Last Modified : 2024-05-16 07:34:52 JST
  * @author Shinsuke OTA <ota@rcnp.osaka-u.ac.jp>
  *
  *    (C) 2023 Shinsuke OTA
@@ -167,24 +167,30 @@ Bool_t TStreamingEventStore::GetTimeFrame() {
    if (!fDataSource->IsPrepared()) return kFALSE;
 
    // read header and check if it is time frame header
-   fDataSource->Read(fBuffer, art::streaming::v1::HDR_BASE_LENGTH);
-   fDataSource->Seek(-art::streaming::v1::HDR_BASE_LENGTH, SEEK_CUR);
-   if (fVerboseLevel > 2) Info("GetTimeFrame", "%llx", *(uint64_t *)fBuffer);
-#if 0
-   if (TStreamingHeaderFLTCOIN::IsHeaderFLTCOIN(*(uint64_t*)fBuffer)) {
-     fDataSource->Read(fBuffer,TStreamingHeaderFLTCOIN::kHeaderSize);
-     // fHeaderFLTCOIN->ReadFrom(fBuffer);
-     fDataSource->Read(fBuffer,sizeof(uint64_t));
-     fDataSource->Seek(-sizeof(uint64_t),SEEK_CUR);
+   bool found = false;
+   while (!found) {
+      fDataSource->Read(fBuffer, art::streaming::v1::HDR_BASE_LENGTH);
+      fDataSource->Seek(-art::streaming::v1::HDR_BASE_LENGTH, SEEK_CUR);
+      if (fVerboseLevel > 2) Info("GetTimeFrame", "%016llx", *(uint64_t *)fBuffer);
+      fHeaderTF->ReadBaseFrom(fBuffer);
+      fDataSource->Read(fBuffer, fHeaderTF->GetHeaderLength());
+      if (!fHeaderTF->IsHeaderTF(*(uint64_t *)fBuffer)) {
+         if (fVerboseLevel > 2) Info("GetTimeFrame", "Maybe not TF ? %016llx != %016llx", *(uint64_t *)fBuffer,fHeaderTF->Magic());
+         // this is not the header, ignore
+         return kFALSE;
+      }
+      fHeaderTF->ReadFrom(fBuffer);
+      if (fHeaderTF->IsType(fHeaderTF->META)) {
+         if (fVerboseLevel > 2) Info("GetTimeFrame","Type is meta? %d",fHeaderTF->GetType());
+         if (fVerboseLevel > 2) fHeaderTF->Print();
+         // if the timeframe contains only meta information skip
+         int payloadLength = fHeaderTF->GetLength() - fHeaderTF->GetHeaderLength();
+         int read = fDataSource->Read(fBuffer, payloadLength);
+      } else {
+         found = true;
+         break;
+      }
    }
-#endif
-   fHeaderTF->ReadBaseFrom(fBuffer);
-   fDataSource->Read(fBuffer, fHeaderTF->GetHeaderLength());
-   if (!fHeaderTF->IsHeaderTF(*(uint64_t *)fBuffer)) {
-      // this is not the header, ignore
-      return kFALSE;
-   }
-   fHeaderTF->ReadFrom(fBuffer);
    if (fVerboseLevel>2) fHeaderTF->Print();
    fNumSources = fHeaderTF->GetNumSources();
    if (fSubTimeFrameSize.size() != fNumSources) {

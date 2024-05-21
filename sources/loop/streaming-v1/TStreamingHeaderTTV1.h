@@ -1,16 +1,16 @@
 /**
- * @file   TStreamingHeaderTFV1.h
+ * @file   TStreamingHeaderTTV1.h
  * @brief  Streaming Header for Time Frame
  *
  * @date   Created       : 2023-02-16 14:34:16 JST
- *         Last Modified : 2024-05-16 06:56:38 JST
+ *         Last Modified : 2024-05-16 06:45:56 JST
  * @author Shinsuke OTA <ota@rcnp.osaka-u.ac.jp>
  *
  *    (C) 2023 Shinsuke OTA
  */
 
-#ifndef TSTREAMINGHEADERTF_H
-#define TSTREAMINGHEADERTF_H
+#ifndef TSTREAMINGHEADERTTV1_H
+#define TSTREAMINGHEADERTTV1_H
 
 #include <cstdint>
 
@@ -32,50 +32,38 @@ namespace art
 {
    namespace v1
    {
-      constexpr uint64_t MAGIC_TF{0x004d5246454d4954};
-      class TStreamingHeaderTF;
+      constexpr uint64_t TTFMagic = 0x00454d4954475254;
+      class TStreamingHeaderTT;
    }
 }
 
-class art::v1::TStreamingHeaderTF : public art::TStreamingHeader<art::v1::MAGIC_TF>
+class art::v1::TStreamingHeaderTT : public art::TStreamingHeader<art::v1::TTFMagic>
 {
 public:
-   static bool IsHeaderTF(uint64_t magic) { return IsThis(magic); }
-   static constexpr uint16_t FULL {0};
-   static constexpr uint16_t META {1};
-   static constexpr uint16_t SLICE {1};
+   static bool IsHeaderTT(uint64_t magic) { return IsThis(magic); }
 
-   uint32_t GetTimeFrameID() { return fTimeFrameID; }
-   uint32_t GetNumSources() { return fNumSources; }
+   //uint32_t GetTimeFrameID() { return fTimeFrameID; }
+   //uint32_t GetNumSources() { return fNumSources; }
 
    inline bool ReadRestFrom(char *buffer) {
-      Decode(buffer,fTimeFrameID);
-      Decode(buffer,fNumSources);
       return true;
    }
-
-
    inline virtual void Print() const;
    // virtual void Print(Option_t *opt = "") const;
 
 
 protected:
-   uint32_t fTimeFrameID{0};
-   uint32_t fNumSources{0};
-
 
    // ClassDef(TStreamingHeaderTF, 1) // Streaming Data Header for TimeFrame
 };
 
 
-void art::v1::TStreamingHeaderTF::Print() const {
+void art::v1::TStreamingHeaderTT::Print() const {
    printf("==============================\n");
-   printf("MAGIC        = %016lx\n", fMagic);
+   printf("MAGIC        = %016llx\n", fMagic);
    printf("Length       = %d\n", fLength);
    printf("HeaderLength = %d\n", fHeaderLength);
    printf("Type         = %d\n", fType);
-   printf("TimeFrameID  = %u\n", fTimeFrameID);
-   printf("NumSources   = %u\n", fNumSources);
    printf("==============================\n");
 }
 

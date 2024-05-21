@@ -55,6 +55,8 @@ public:
       data += sizeof(T);
    }
 
+   bool IsType(uint16_t type) const { return (fType == type); }
+
 protected:
    uint64_t fMagic;
    uint32_t fLength;
