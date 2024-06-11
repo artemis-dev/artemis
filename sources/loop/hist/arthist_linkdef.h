@@ -3,7 +3,7 @@
  * @brief  linkdef file for hist package
  *
  * @date   Created       : 2014-05-15 12:40:20 JST
- *         Last Modified : May 15, 2014 14:03:23 JST
+ *         Last Modified : 2024-06-11 17:39:33 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -26,6 +26,8 @@
 #pragma link C++ class art::TH3FTreeProj+;
 #pragma link C++ class art::TTreeProjection+;
 #pragma link C++ class art::TTreeProjectionProcessor;
+#pragma link C++ class art::TTreeProjHist;
+#pragma link C++ class art::TTreeProjComponent;
 
 #endif
 

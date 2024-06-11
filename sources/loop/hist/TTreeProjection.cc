@@ -3,7 +3,7 @@
  * @brief  Tree projection definitions
  *
  * @date   Created       : 2014-03-05 10:15:05 JST
- *         Last Modified : 2023-08-16 16:19:00 JST (fendo)
+ *         Last Modified : 2024-06-11 19:48:27 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -18,6 +18,7 @@
 #include <TH1FTreeProj.h>
 #include <TH2FTreeProj.h>
 #include <TH3FTreeProj.h>
+#include "TTreeProjHist.h"
 #include <TAxisTreeProj.h>
 #include <TTree.h>
 #include <fstream>
@@ -245,6 +246,7 @@ Bool_t TTreeProjection::LoadYAMLNode(const YAML::Node &node)
       // group should be created here
       Info(kMethodName,"new group '%s'",name.Data());
       fProjGroups->Add(group);
+#if 0         
       if (!contents) {
          // changing name of histogram will destroy the structure of link
          TList *savedlist = new TList;
@@ -263,11 +265,12 @@ Bool_t TTreeProjection::LoadYAMLNode(const YAML::Node &node)
          saved->cd();
          continue;
       }
-      group->cd();
+#endif      
+      group->GetDirectory()->cd();
 
       for (YAML::const_iterator itcont = contents.begin(); itcont != contents.end(); itcont++) {
          TString hname, htitle, hcut, hasync;
-         TAttTreeProj *hproj = NULL;
+         TTreeProjHist *hproj = NULL;
          Int_t nDim = 0;
          const YAML::Node axisnode[3] =
             {(*itcont)[kNodeKeyX],
@@ -295,9 +298,10 @@ Bool_t TTreeProjection::LoadYAMLNode(const YAML::Node &node)
          if (const YAML::Node clone = (*itcont)[kNodeKeyClone]) {
             if (TObject *obj = group->FindObject(clone.as<std::string>().c_str())) {
                // cloning the existing group;
-               hproj = dynamic_cast<TAttTreeProj*>(obj->Clone(hname));
+               hproj = dynamic_cast<TTreeProjHist*>(obj->Clone(hname));
                hproj->SetProjTitle(htitle);
-               hproj->GetCut() += hcut;
+//               hproj->TCut::GetCut() += hcut;
+               hproj->AppendCut(hcut);
                hproj->SetAxisAsync(hasync.Atoi());
             } else {
                Warning(kMethodName,"projection skipped since the group '%s' does not exist",name.Data());
@@ -322,23 +326,32 @@ Bool_t TTreeProjection::LoadYAMLNode(const YAML::Node &node)
                           hname.Data(),name.Data());
                   continue;
                }
-               hproj = new TH3FTreeProj(hname,htitle,hcut);
+               //hproj = new TH3FTreeProj(hname,htitle,hcut);
+               hproj = new TTreeProjHistImpl<TH3F>(hname,htitle,hcut);
+               group->Add(hproj);
                hproj->SetAxisAsync(hasync.Atoi());
                nDim = 3;
+               Info("Proj","TH1F %s registered",hname.Data());
             } else if (axisnode[1]) {
                if (!axisnode[0]) {
                   Warning(kMethodName,"projection '%s' in group '%s' skipped since x axis is not defined",
                           hname.Data(),name.Data());
                   continue;
                }
-               hproj = new TH2FTreeProj(hname,htitle,hcut);
+               // hproj = new TH2FTreePrpoj(hname,htitle,hcut);
+               hproj = new TTreeProjHistImpl<TH2F>(hname,htitle,hcut);
+               group->Add(hproj);
                hproj->SetAxisAsync(hasync.Atoi());
                nDim = 2;
+               Info("Proj","TH1F %s registered",hname.Data());
             } else if (axisnode[0]) {
                // 1D histogram
-               hproj = new TH1FTreeProj(hname,htitle,hcut);
+               //hproj = new TH1FTreeProj(hname,htitle,hcut);
+               hproj = new TTreeProjHistImpl<TH1F>(hname,htitle,hcut);
+               group->Add(hproj);
                hproj->SetAxisAsync(hasync.Atoi());
                nDim = 1;
+               Info("Proj","TH1F %s registered to group %s",hname.Data(),group->GetName());
             } else {
                Warning(kMethodName,"projection '%s' in group '%s' skipped since no axis is defined",
                        hname.Data(),name.Data());
@@ -397,7 +410,9 @@ Bool_t TTreeProjection::Sync(TTree *tree)
    Int_t nGroup = fProjGroups->GetEntriesFast();
    for (Int_t i = 0; i != nGroup; i++) {
       TTreeProjGroup *group = (TTreeProjGroup*)fProjGroups->At(i);
-      Sync(group,tree,group->GetCut());
+      Info("Sync","group %s",group->GetName());
+      group->Sync(tree,fProjections);
+      // Sync(group,tree,group->GetCut());
    }
    return kFALSE;
 }
@@ -405,8 +420,15 @@ Bool_t TTreeProjection::Sync(TTree *tree)
 
 Bool_t TTreeProjection::Sync(TTreeProjGroup *group, TTree *tree, TCut cut)
 {
+
+#if 0   
+   Info("sync","%p %d",group->GetList(),group->GetList()->GetEntries());
    TIter next(group->GetList());
-   while (TObject *obj = next()) {
+   Info("sync","here");
+   while (TObject *obj = reinterpret_cast<TObject*>(next())) {
+      Info("syn","%p",obj);
+      Info("syn","%d",obj->InheritsFrom(TTreeProjComponent::Class()));
+      Info("Sync","%s\n",obj->GetName());
       if (obj->InheritsFrom(TTreeProjGroup::Class())) {
          TTreeProjGroup *group = (TTreeProjGroup*)obj;
          Sync((TTreeProjGroup*)obj,tree,cut + group->GetCut());
@@ -414,6 +436,7 @@ Bool_t TTreeProjection::Sync(TTreeProjGroup *group, TTree *tree, TCut cut)
          Int_t nDim = ((TH1*)obj)->GetDimension();
          TAttTreeProj *proj = dynamic_cast<TAttTreeProj*>(obj);
          for (Int_t i=0; i!=nDim; i++) {
+            printf("%s %p %d\n",obj->GetName(),proj, nDim);
             TAxisTreeProj* axis = proj->GetAxisDef(i);
             TCut totalcut = axis->GetCut() + proj->GetCut() + cut;
             TTreeFormula *axisFormula =new TTreeFormula(TString::Format("V%c",'x'+i),axis->GetTitle(),tree);
@@ -440,6 +463,8 @@ Bool_t TTreeProjection::Sync(TTreeProjGroup *group, TTree *tree, TCut cut)
          }
       }
    }
+#endif   
    return kTRUE;
+   
 }
 

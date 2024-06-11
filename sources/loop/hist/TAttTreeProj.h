@@ -3,7 +3,7 @@
  * @brief  Attribute to fill the tree projection histogram
  *
  * @date   Created       : 2014-03-03 23:29:51 JST
- *         Last Modified : 2023-01-28 20:28:39 JST (ota)
+ *         Last Modified : 2024-06-11 19:57:11 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -20,6 +20,7 @@ namespace art {
    class TAxisTreeProj;
 }
 
+class TTree;
 class TH2;
 class TH3;
 class TTreeFormulaManager;
@@ -55,7 +56,7 @@ public:
    virtual void SetProjName(const char *name) { fH->SetName(name); }
 
    // prepare managers and synchronize variables, this should be called before fill
-   virtual void Sync();
+   virtual bool Sync(TTree* tree, const char*cut);
 
 
 protected:

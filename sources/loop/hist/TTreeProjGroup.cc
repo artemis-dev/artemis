@@ -3,7 +3,7 @@
  * @brief  Collection of the projections of TTree
  *
  * @date   Created       : 2014-03-03 17:01:02 JST
- *         Last Modified : 2019-11-25 17:42:21 JST (ota)
+ *         Last Modified : 2024-06-11 19:57:47 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -13,12 +13,94 @@
 #include <TROOT.h>
 #include <TH1.h>
 #include "TClass.h"
+#include "TTree.h"
+#include "TTreeProjHist.h"
 
 using art::TTreeProjGroup;
 
 ClassImp(TTreeProjGroup)
 
 
+TTreeProjGroup::TTreeProjGroup()
+{
+}
+
+TTreeProjGroup::TTreeProjGroup(const char *name, const char *title, const char *cut, TTreeProjComponent *parent)
+   : TTreeProjComponent(name,title), TAttCut(cut)
+{
+//   if (parent->IsGroup()) {
+   fDirectory = new TDirectoryFile(name,title, TTreeProjGroup::Class_Name(),parent?((TTreeProjGroup*)parent)->GetDirectory():gROOT);
+//      SetParent(parent);
+//   } else {
+//      Warning("TTreeProjGroup","Parent '%s is not group",parent->GetName());
+//   }
+}
+
+TTreeProjGroup::~TTreeProjGroup()
+{
+}
+
+void TTreeProjGroup::Sync(TTree *tree, std::vector<TAttTreeProj*>& projs) {
+   Info("Sync","num childs = %d",fChildren.size());
+   for (int i = 0, n = fChildren.size(); i < n; ++i) {
+      if (!fChildren[i]->Sync(tree,GetCut())) continue;
+      projs.push_back(fChildren[i]);
+      TObject *obj = fChildren.at(i);
+      printf("obj name = %s\n",obj->GetName());
+      obj->Print();
+   }
+}
+
+void TTreeProjGroup::Add(TTreeProjHist *hist) {
+   fChildren.push_back(hist);
+   Info("Add","%s",hist->GetName());
+}
+   
+
+
+TObject *TTreeProjGroup::Clone(const char *newname) const
+{
+#if 0   
+   TDirectory *saved = gDirectory;
+
+   printf("this (%s) mother = %p %s\n",GetName(),GetMotherDir()->GetName());
+   TString name(newname);
+   if (name.IsNull()) name = GetName();
+   TTreeProjGroup *newgroup = new TTreeProjGroup(name,GetTitle(),GetCut(),fParent);
+   TList *list = GetList();
+   TIter next(list);
+   TObject *obj = NULL;
+   while ((obj = next())) {
+      if (obj->InheritsFrom(TTreeProjComponent::Class())) {
+         auto comp = dynamic_cast<TTreeProjComponent*>(obj->Clone());
+
+#if 0
+      if (obj->InheritsFrom(TH1::Class())) {
+         // cloning histogram in usual way
+//         TObject* newobj = (TObject*)obj->Class()->New();
+//         obj->Copy(*newobj);
+         TObject *newobj = obj->Clone();
+         obj->Copy(*newobj);
+         ((TH1*)newobj)->SetDirectory(newgroup);
+      } else if (obj->InheritsFrom(TTreeProjGroup::Class())) {
+         // cloning TTreeProjGroup. (not directory since TDirectory does not support Clone())
+         TTreeProjGroup *oldgroup =  (TTreeProjGroup*)obj;
+         oldgroup->SetMother(newgroup);
+         TNamed *obj = (TNamed*)oldgroup->Clone();
+         oldgroup->SetMother(mother);
+#endif         
+      } else {
+         // I don't care about the other object for now :D
+//         newgroup->Add(obj->Clone());
+      }
+   }
+   saved->cd();
+   return newgroup;
+#endif
+   return nullptr;
+}
+
+#if 0
 TTreeProjGroup::TTreeProjGroup()
 : TDirectoryFile(), TAttCut()
 {
@@ -80,3 +162,4 @@ TObject *TTreeProjGroup::Clone(const char *newname) const
    saved->cd();
    return newgroup;
 }
+#endif 

@@ -8,6 +8,8 @@ set(OBJECTS
     TTreeProjection.cc
     TTreeProjectionProcessor.cc
     TTreeProjGroup.cc
+    TTreeProjComponent.cc
+    TTreeProjHist.cc
 )
 
 set(HEADERS
@@ -20,6 +22,8 @@ set(HEADERS
     TAxisTreeProj.h
     TAttTreeProj.h
     TAttCut.h
+    TTreeProjComponent.h
+    TTreeProjHist.h
 )
 
 art_lib(arthist "${OBJECTS}" "${HEADERS}"  "arthist_linkdef.h" "${HEADERS}")
