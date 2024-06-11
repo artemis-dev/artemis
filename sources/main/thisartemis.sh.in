@@ -24,7 +24,8 @@ if [ "@ZeroMQ_FOUND@" = "1" ]; then
 fi
 
 if [ "@REDIS_FOUND@" = "1" ]; then
-    STR=(@REDIS_LIBRARY_DIRS@)
+    ORG="@REDIS_LIBRARY_DIRS@"
+    STR=(${ORG//;/ })
     dirs=()
     for S in "${STR[@]}"; do
         dirs+=$S
@@ -36,7 +37,8 @@ fi
 
 
 if [ "@MPI_CXX_FOUND@" = "TRUE" ]; then
-    STR=(@MPI_CXX_LIBRARIES@)
+    ORG="@MPI_CXX_LIBRARIES@"
+    STR=(${ORG//;/ })
     dirs=()
     for S in "${STR[@]}"; do
         dirs+=(`dirname $S`)
