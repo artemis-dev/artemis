@@ -10,6 +10,7 @@ set(CMAKE_SHARED_LINKER_FLAGS "-Wl,--no-as-needed")
 enable_language(CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+find_package(PkgConfig REQUIRED)
 
 
 # Build options
@@ -56,7 +57,6 @@ if(yaml-cpp_FOUND)
     set(yaml_cpp_LIBRARIES ${YAML_CPP_LIBRARIES})
     set(yaml_cpp_LIBDIR ${YAML_CPP_LIBRARY_DIR})
 else()
-    find_package(PkgConfig REQUIRED)
     pkg_check_modules(yaml_cpp REQUIRED yaml-cpp)
 endif()
 
