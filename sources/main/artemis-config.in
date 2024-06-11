@@ -46,7 +46,26 @@ prefix=@CMAKE_INSTALL_PREFIX@
 exec_prefix=@CMAKE_INSTALL_PREFIX@/bin
 cxx=@CXX@
 libdir=@CMAKE_INSTALL_PREFIX@/lib
-includedirs="@CMAKE_INSTALL_PREFIX@/include @yaml_cpp_INCLUDEDIR@"
+redisdirall="@redis_libdir@"
+redisdir=${redisdirall//;/ }
+includedirs="@CMAKE_INSTALL_PREFIX@/include @yaml_cpp_INCLUDEDIR@ @ZeroMQ_INCLUDE_DIR@ $redisdir"
+
+# zmq
+if [ "@ZeroMQ_FOUND@" = "ON" ]; then
+zmqlib="-L`dirname @ZeroMQ_LIBRARY@` -lzmq"
+else
+zmqlib=""
+fi
+
+redislib=""
+if [ "@REDIS_FOUND@" = "ON" ]; then
+    for xxx in ${redisdir}; do
+	redislib="$redislib -L${xxx}"
+    done
+    redislib="$redislib -lredis++ -lhiredis"
+fi
+# 
+
 
 name=${package}
 description="ARTEMIS - A RooT Extension with Modular processors for Instant Swiching"
@@ -129,7 +148,7 @@ while test $# -gt 0 ; do
       ;;
 
     --libs)
-      echo "-L${libdir}" ${libs} @YAML_CPP_LIB@
+      echo "-L${libdir}" ${libs} @YAML_CPP_LIB@ ${zmqlib} ${redislib}
       ;;
 
     --cflags)

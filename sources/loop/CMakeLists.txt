@@ -115,9 +115,14 @@ set(HEADERS
     IEventStore.h
     )
 
-if (ZeroMQ_FOUND)
+    if(ZeroMQ_FOUND)
+      message(STATUS "TZmqDataSource")
+     
   list(APPEND OBJECTS TZmqDataSource.cc)
   list(APPEND HEADERS TZmqDataSource.h)
+else()
+      message(STATUS "Zmq not found")
+  
 endif()
   
 

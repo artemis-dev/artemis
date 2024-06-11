@@ -564,7 +564,7 @@ bool TStreamingEventStore::GetZmqUri(const std::string& uri,
                                     const std::string& subChannel,
                                     std::string& zmqUri)
 {
-   Info("GetZmqUri",uri.c_str());
+  // Info("GetZmqUri",uri.c_str());
    try {
       auto redis = sw::redis::Redis(uri);
       std::string keyexpr= "*";
@@ -572,17 +572,17 @@ bool TStreamingEventStore::GetZmqUri(const std::string& uri,
       
       std::string key;
       redis.keys(keyexpr,&key);
-      Info("GetZmqUri","keyexpr = %s", keyexpr.c_str());
+      // Info("GetZmqUri","keyexpr = %s", keyexpr.c_str());
       if (key.empty()) {
          // database is accessible but the key is empty means data acquisition maybe stop now
          Warning("GetZmqUri","Data acquisition may be stop");
          return false;
       }
       
-      Info("GetZmqUri","key = %s", key.c_str());
+      // Info("GetZmqUri","key = %s", key.c_str());
       auto ret = redis.hget(key,"address");
       zmqUri = ret.value();
-      Info("GetZmqUri","zmq uri = %s", zmqUri.c_str());
+      // Info("GetZmqUri","zmq uri = %s", zmqUri.c_str());
       return true;
    } catch (const sw::redis::Error& err) {
       Warning("GetZmqUri",err.what());
