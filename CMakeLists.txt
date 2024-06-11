@@ -7,25 +7,45 @@ list(APPEND CMAKE_PREFIX_PATH $ENV{ROOTSYS})
 # Default installation dir
 set(CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/install/ CACHE PATH "install dir")
 set(CMAKE_SHARED_LINKER_FLAGS "-Wl,--no-as-needed")
+enable_language(CXX)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 
 # Build options
 option(BUILD_GET "Build and install libraries using GET" OFF)
 
 # Locate GET decoder if the option is on
 if(BUILD_GET)
-    set(WITH_GET_DECODER /opt/GETDecoder CACHE STRING "path to get decoder lib")
-    set(GET_INCLUDE_DIR ${WITH_GET_DECODER}/include)
-    set(GET_LIB_DIR ${WITH_GET_DECODER}/lib)
-    set(GET_LIBRARIES GETDecoder)
+  set(WITH_GET_DECODER /opt/GETDecoder CACHE STRING "path to get decoder lib")
+  set(GET_INCLUDE_DIR ${WITH_GET_DECODER}/include)
+  set(GET_LIB_DIR ${WITH_GET_DECODER}/lib)
+  set(GET_LIBRARIES GETDecoder)
 endif()
 
 #---Locate the ROOT package and defines a number of variables (e.g. ROOT_INCLUDE_DIRS)
 find_package(ROOT REQUIRED COMPONENTS RIO Net Physics Geom Minuit Minuit2 Gui)
 find_package(MPI)
 if(MPI_CXX_FOUND)
-    add_compile_definitions(USE_MPI)
-    add_compile_definitions(HAVE_MPI_H)
-    include_directories(SYSTEM ${MPI_CXX_INCLUDE_PATH})
+  add_compile_definitions(USE_MPI)
+  add_compile_definitions(HAVE_MPI_H)
+  include_directories(SYSTEM ${MPI_CXX_INCLUDE_PATH})
+endif()
+
+find_package(ZeroMQ)
+if(ZeroMQ_FOUND)
+  add_compile_definitions(HAVE_ZMQ_H)
+  include_directories(${ZeroMQ_INCLUDE_DIR})
+endif()
+
+pkg_check_modules(REDIS redis++)
+pkg_check_modules(HIREDIS hiredis)
+if (REDIS_FOUND AND HIREDIS_FOUND)
+  add_compile_definitions(HAVE_REDIS_H)
+  include_directories(${REDIS_INCLUDE_DIR})
+  message(STATUS "redis++ and hiredis is found")
+  message(STATUS ${REDIS_LIBRARY_DIRS})
+  message(STATUS ${HIREDIS_LIBRARY_DIRS})
 endif()
 
 # Locate the yaml-cpp package
@@ -87,10 +107,23 @@ function(art_lib lib_name objects dic_headers linkdef_name pub_headers)
     endif()
 
     if(BUILD_GET)
-	    target_include_directories(${lib_name} PRIVATE ${GET_INCLUDE_DIR} ${yaml_cpp_INCLUDEDIR} ${ARTEMIS_INCLUDE_DIRS})
-        target_link_libraries(${lib_name} ${GET_LIBRARIES})
+      target_include_directories(${lib_name} PRIVATE ${GET_INCLUDE_DIR} ${yaml_cpp_INCLUDEDIR} ${ARTEMIS_INCLUDE_DIRS})
+      target_link_libraries(${lib_name} ${GET_LIBRARIES})
+    endif()
+    
+    if (ZeroMQ_FOUND)
+      target_include_directories(${lib_name} PRIVATE ${ZeroMQ_INCLUDE_DIR})
+      target_link_libraries(${lib_name} ${ZeroMQ_LIBRARY})
     endif()
 
+    if (REDIS_FOUND)
+      target_include_directories(${lib_name} PRIVATE ${REDIS_INCLUDE_DIR})
+      target_link_directories(${lib_name} PRIVATE ${REDIS_LIBRARY_DIRS})
+      target_link_directories(${lib_name} PRIVATE ${HIREDIS_LIBRARY_DIRS})
+      target_link_libraries(${lib_name} ${REDIS_LIBRARIES})
+    endif()
+      
+        
     ROOT_GENERATE_DICTIONARY(G__${lib_name}
         ${dic_headers}
         LINKDEF ${linkdef_name}

@@ -1,6 +1,6 @@
 /**
  *   Created       : 2023-02-09 08:41:43 JST
- *   Last Modified : 2024/04/13 03:08:30
+ *   Last Modified : 2024-06-09 16:57:24 JST
  * @author Shinsuke OTA <ota@rcnp.osaka-u.ac.jp>
  */
 
@@ -39,8 +39,8 @@ public:
    TStreamingEventStore(const TStreamingEventStore& rhs);
    TStreamingEventStore& operator=(const TStreamingEventStore& rhs);
 
-   Int_t GetRunNumber() const {return fPresentRunInfo->GetRunNumber();}
-   const char* GetRunName() const {return fPresentRunInfo->GetRunName();}
+   Int_t GetRunNumber() const {return fPresentRunInfo ? fPresentRunInfo->GetRunNumber() : 0;}
+   const char* GetRunName() const {return fPresentRunInfo ?  fPresentRunInfo->GetRunName() : "online";}
 
    virtual void Init(TEventCollection *col);
    virtual void PreProcess();
@@ -60,6 +60,23 @@ public:
    virtual Bool_t Open();
 //   virtual Bool_t ReadData(int length, int femid, int femtype);
 
+#if HAVE_ZMQ_H
+public:
+   virtual bool OpenZmq();
+   virtual bool GetZmqUri(const std::string& uri,const std::string& devid,
+                                 const std::string& channel,const std::string& subChannel,
+                                 std::string& zmqUri);
+
+   Parameter<TString> fZmqURI;
+   Parameter<int>     fIsOnline; // flag for online analysis (0 : offline)
+#if HAVE_REDIS_H   
+   Parameter<TString> fRedisURI;
+   Parameter<TString> fDeviceID;
+   Parameter<TString> fChannelName;
+   Parameter<TString> fSubChannel;
+#endif
+#endif
+
 
 
 protected:
@@ -73,7 +90,7 @@ protected:
    char             *fBuffer; //!
    bool              fIsEOB; //!
    std::map<ULong64_t,char*> fSTFBuffer; //!
-   int               fNumSources; //!
+   uint64_t           fNumSources; //!
    TStreamingHeaderFS *fHeaderFS; //!
    TStreamingHeaderSTF *fHeaderSTF; //!
    TStreamingHeaderTF *fHeaderTF; //!

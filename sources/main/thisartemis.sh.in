@@ -6,7 +6,6 @@ export LD_LIBRARY_PATH=$TARTSYS/lib:$LD_LIBRARY_PATH
 if [ `uname -s` = "Darwin" ]; then
     export DYLD_LIBRARY_PATH=$TARTSYS/lib:$DYLD_LIBRARY_PATH
 fi    
-
 if [ "@BUILD_GET@" = "ON" ]; then 
     export LD_LIBRARY_PATH=@GET_LIB_DIR@:$LD_LIBRARY_PATH
     if [ `uname -s` = "Darwin" ]; then
@@ -14,8 +13,34 @@ if [ "@BUILD_GET@" = "ON" ]; then
     fi    
 fi
 
-if [ "@MPI_CXX_FOUND@" = "TRUE" ]; then 
-    dir=@MPI_CXX_LIBRARIES@
-    libdir="$(dirname $dir)"
-    export LD_LIBRARY_PATH=$libdir:$LD_LIBRARY_PATH
+if [ "@ZeroMQ_FOUND@" = "1" ]; then
+    STR=(@ZeroMQ_LIBRARY@)
+    dirs=()
+    for S in "${STR[@]}"; do
+        dirs+=(`dirname $S`)
+    done
+    libpaths=`printf '%s\n' "${dirs[@]}" | sort -u | paste -s -d ':' -`
+    export LD_LIBRARY_PATH=$libpaths:$LD_LIBRARY_PATH
+fi
+
+if [ "@REDIS_FOUND@" = "1" ]; then
+    STR=(@REDIS_LIBRARY_DIRS@)
+    dirs=()
+    for S in "${STR[@]}"; do
+        dirs+=$S
+    done
+    libpaths=`printf '%s\n' "${dirs[@]}" | sort -u | paste -s -d ':' -`
+    export LD_LIBRARY_PATH=$libpaths:$LD_LIBRARY_PATH
+fi
+
+
+
+if [ "@MPI_CXX_FOUND@" = "TRUE" ]; then
+    STR=(@MPI_CXX_LIBRARIES@)
+    dirs=()
+    for S in "${STR[@]}"; do
+        dirs+=(`dirname $S`)
+    done
+    libpaths=`printf '%s\n' "${dirs[@]}" | sort -u | paste -s -d ':' -`
+    export LD_LIBRARY_PATH=$libpaths:$LD_LIBRARY_PATH
 fi

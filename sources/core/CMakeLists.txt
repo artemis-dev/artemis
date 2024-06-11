@@ -34,4 +34,8 @@ set(HEADERS
     TDataObject.h
 )
 
+if (ZeroMQ_FOUND)
+  list(APPEND OBJECTS TZmqSubscriber.cc)
+  list(APPEND HEADERS TZmqSubscriber.h)
+endif()
 art_lib(catcore "${OBJECTS}" "${HEADERS}"  "catcore_linkdef.h" "${HEADERS}")

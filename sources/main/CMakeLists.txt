@@ -2,9 +2,21 @@ add_executable(artemis main.cc TArtRint.cc)
 target_include_directories(artemis PRIVATE ${ARTEMIS_INCLUDE_DIRS})
 target_link_libraries(artemis ${ROOT_LIBRARIES} ${yaml_cpp_LIBRARIES} ${ARTEMIS_LIBRARIES})
 if(MPI_CXX_FOUND)
-        target_include_directories(artemis PRIVATE ${MPI_CXX_INCLUDE_PATH})
-        target_link_libraries(artemis ${MPI_CXX_LIBRARIES})
+  target_include_directories(artemis PRIVATE ${MPI_CXX_INCLUDE_PATH})
+  target_link_libraries(artemis ${MPI_CXX_LIBRARIES})
 endif()
+
+if (ZeroMQ_FOUND)
+  target_include_directories(artemis PRIVATE ${ZeroMQ_INCLUDE_DIR})
+  target_link_libraries(artemis ${ZeroMQ_LIBRARY})
+endif()
+
+if (REDIS_FOUND)
+  target_include_directories(artemis PRIVATE ${REDIS_INCLUDE_DIR})
+  target_link_directories(artemis PRIVATE ${REDIS_LIBRARY_DIRS})
+  target_link_libraries(artemis ${REDIS_LIBRARIES})
+endif()
+      
 
 set_target_properties(
         artemis

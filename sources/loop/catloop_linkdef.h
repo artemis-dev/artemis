@@ -2,7 +2,7 @@
 /**
  * @file   catloop_linkdef.h
  * @date   Created : Feb 19, 2012 11:19:06 JST
- *   Last Modified : 2023-02-13 15:34:22 JST
+ *   Last Modified : 2024-06-09 16:12:15 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -78,6 +78,11 @@
 #pragma link C++ class art::TEventNumberConditionProcessor;
 #pragma link C++ class art::TArtTree+;
 #pragma link C++ class art::TRawDataMappingProcessor;
+
+#if HAVE_ZMQ_H
+#pragma link C++ class art::TZmqDataSource;
+#endif
+
    
 // #pragma link C++ class art::TAttParameter; 
 #endif /* __CINT__ */

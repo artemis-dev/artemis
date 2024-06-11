@@ -23,7 +23,7 @@ public:
    TStreamingHeader() {}
    virtual ~TStreamingHeader() {}
 
-   static bool Magic() { return magic; }
+   static uint64_t Magic() { return magic; }
    static bool IsThis(uint64_t data) { return (data == magic); }
    virtual uint64_t GetMagic() const { return fMagic; }
    virtual uint32_t GetLength() const { return fLength; }

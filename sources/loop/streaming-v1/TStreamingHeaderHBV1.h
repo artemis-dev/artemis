@@ -3,7 +3,7 @@
  * @brief  Streaming Header for Time Frame
  *
  * @date   Created       : 2023-02-16 14:34:16 JST
- *         Last Modified : 2024/04/13 03:08:51
+ *         Last Modified : 2024-06-09 15:16:33 JST
  * @author Shinsuke OTA <ota@rcnp.osaka-u.ac.jp>
  *
  *    (C) 2023 Shinsuke OTA
@@ -62,7 +62,7 @@ protected:
 
 void art::v1::TStreamingHeaderHB::Print() const {
    printf("==============================\n");
-   printf("MAGIC        = %016llx\n", fMagic);
+   printf("MAGIC        = %016lx\n", fMagic);
    printf("Length       = %d\n", fLength);
    printf("HeaderLength = %d\n", fHeaderLength);
    printf("Type         = %d\n", fType);

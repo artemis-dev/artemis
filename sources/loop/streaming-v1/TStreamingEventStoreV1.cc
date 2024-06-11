@@ -3,7 +3,7 @@
  * @brief  Streaming Data Event Store
  *
  * @date   Created       : 2023-02-11 12:00:00 JST
- *         Last Modified : 2024-05-16 07:34:52 JST
+ *         Last Modified : 2024-06-09 22:05:17 JST
  * @author Shinsuke OTA <ota@rcnp.osaka-u.ac.jp>
  *
  *    (C) 2023 Shinsuke OTA
@@ -24,12 +24,22 @@
 #include "TSystem.h"
 // #include "TStreamingHeaderFLTCOINV1.h"
 
+#if HAVE_ZMQ_H
+#include "zmq.h"
+#include "TZmqDataSource.h"
+#endif
+
+#if HAVE_REDIS_H
+#include "sw/redis++/redis++.h"
+#endif
+
+
 ClassImp(art::v1::TStreamingEventStore)
 
     using art::v1::TStreamingEventStore;
 
 TStreamingEventStore::TStreamingEventStore()
-    : fDataSource(NULL), fBuffer(NULL) {
+   : fDataSource(NULL), fBuffer(NULL), fPresentRunInfo(nullptr) {
    auto segdata = fSegmentedData(
        "SegmentedData", "The name of output segmented data", "segdata");
    dynamic_cast<OutputData<TSegmentedData> *>(segdata)->SetDoAuto(kFALSE);
@@ -48,6 +58,18 @@ TStreamingEventStore::TStreamingEventStore()
    Register(fIsStandAlone("IsStandAlone", "stand alone mode", 0));
    Register(fDefaultLength("DefaultLength",
                            "Default length for stand alone (kB) ", 256));
+
+#if HAVE_ZMQ_H
+   Register(fZmqURI("ZmqURI","specify URI directory (use RedisURI etc if available)",""));
+   Register(fIsOnline("IsOnline","0:offline (default), 1:online",0));
+#if HAVE_REDIS_H
+   Register(fRedisURI("RedisURI","redis server uri","tcp://127.0.0.1:6379/0"));
+   Register(fDeviceID("DeviceID","nestdaq process name","TimeFrameSlicerByLogicTiming"));
+   Register(fChannelName("ChannelName","channel name of nestdaq process","dqm"));
+   Register(fSubChannel("SubChannel","SubChannel of channel","0"));
+#endif
+#endif
+            
 
    fBuffer = new char[1024 * 1024 * 1024];
    fHeaderFS = new TStreamingHeaderFS;
@@ -137,19 +159,32 @@ void TStreamingEventStore::Process() {
 
    // stop after exceeding maximum number of event
    if (fMaxFrames > 0 && fEventHeader->GetEventNumberTotal() > fMaxFrames) {
+      Info("Process","event number %d reach at maxframe %d",fEventHeader->GetEventNumberTotal(),fMaxFrames);
       SetStopEvent();
       SetStopLoop();
       SetEndOfRun();
       return;
    }
 
-   if (GetHeartBeatFrame()) {
-      fEventHeader->IncrementEventNumber();
-      return;
-   }
+   if (fDataSource && fDataSource->IsPrepared()) {
+      if (GetHeartBeatFrame()) {
+         fEventHeader->IncrementEventNumber();
+         return;
+      } else {
+         SetStopEvent();
+         return;
+      }
+   } 
 
    while (1) {
-      delete fDataSource;
+#if HAVE_ZMQ_H         
+      if (fIsOnline) {
+         OpenZmq();
+         SetStopEvent();
+         break;
+      } 
+#endif    
+      if (fDataSource) delete fDataSource;
       fDataSource = NULL;
       if (!Open()) {
          Info("Process", "No more file is available");
@@ -171,11 +206,11 @@ Bool_t TStreamingEventStore::GetTimeFrame() {
    while (!found) {
       fDataSource->Read(fBuffer, art::streaming::v1::HDR_BASE_LENGTH);
       fDataSource->Seek(-art::streaming::v1::HDR_BASE_LENGTH, SEEK_CUR);
-      if (fVerboseLevel > 2) Info("GetTimeFrame", "%016llx", *(uint64_t *)fBuffer);
+      if (fVerboseLevel > 2) Info("GetTimeFrame", "%016lx", *(uint64_t *)fBuffer);
       fHeaderTF->ReadBaseFrom(fBuffer);
       fDataSource->Read(fBuffer, fHeaderTF->GetHeaderLength());
       if (!fHeaderTF->IsHeaderTF(*(uint64_t *)fBuffer)) {
-         if (fVerboseLevel > 2) Info("GetTimeFrame", "Maybe not TF ? %016llx != %016llx", *(uint64_t *)fBuffer,fHeaderTF->Magic());
+         if (fVerboseLevel > 2) Info("GetTimeFrame", "Maybe not TF ? %016lx != %016lx", *(uint64_t *)fBuffer,fHeaderTF->Magic());
          // this is not the header, ignore
          return kFALSE;
       }
@@ -185,7 +220,7 @@ Bool_t TStreamingEventStore::GetTimeFrame() {
          if (fVerboseLevel > 2) fHeaderTF->Print();
          // if the timeframe contains only meta information skip
          int payloadLength = fHeaderTF->GetLength() - fHeaderTF->GetHeaderLength();
-         int read = fDataSource->Read(fBuffer, payloadLength);
+         fDataSource->Read(fBuffer, payloadLength);
       } else {
          found = true;
          break;
@@ -197,7 +232,7 @@ Bool_t TStreamingEventStore::GetTimeFrame() {
       fSubTimeFrameSize.resize(fNumSources);
       fSubTimeFrameBuffers.resize(fNumSources);
       fSubTimeFrameHeaders.resize(fNumSources);
-      for (int i = 0; i < fNumSources; ++i) {
+      for (auto i = 0u; i < fNumSources; ++i) {
          fSubTimeFrameHeaders[i] = new TStreamingHeaderSTF;
       }
    }
@@ -207,7 +242,9 @@ Bool_t TStreamingEventStore::GetTimeFrame() {
 
    if (read != payloadLength) {
       // enough data is not available
-      NotifyEndOfRun();
+      if (!fIsOnline) {
+         NotifyEndOfRun();
+      }
       return false;
    }
    return true;
@@ -248,7 +285,7 @@ Bool_t TStreamingEventStore::GetSubTimeFrame() {
          if (!TStreamingHeaderSTF::IsHeaderSTF(*(uint64_t *)fBuffer)) {
             if (fIsStandAlone) return kFALSE;
             // no time frame nor subtime frame is found, buffer is not ready
-            Warning("GetSubTimeFrame", "Header may not be ready %llx",
+            Warning("GetSubTimeFrame", "Header may not be ready %lx",
                     *(uint64_t *)fBuffer);
          } else {
             break;
@@ -268,7 +305,9 @@ Bool_t TStreamingEventStore::GetSubTimeFrame() {
       int nread = fDataSource->Read(fBuffer, art::streaming::v1::HDR_BASE_LENGTH);
       fDataSource->Seek(-art::streaming::v1::HDR_BASE_LENGTH, SEEK_CUR);
       if (nread != art::streaming::v1::HDR_BASE_LENGTH) {
-         NotifyEndOfRun();
+         if (!fIsOnline) {
+            NotifyEndOfRun();
+         }
          return kFALSE;
       }
       auto &header = fSubTimeFrameHeaders[0];
@@ -285,13 +324,13 @@ Bool_t TStreamingEventStore::GetSubTimeFrame() {
       fSubTimeFrameSize[0] = payloadSize;
    } else {
       if (fVerboseLevel > 2) {
-         Info("GetSubtimeFrame", "Read from time frame with %d sources",
+         Info("GetSubtimeFrame", "Read from time frame with %lu sources",
               fNumSources);
       }
       char *buffer = fBuffer;
-      for (int i = 0; i < fNumSources; ++i) {
+      for (uint64_t i = 0; i < fNumSources; ++i) {
          if (!TStreamingHeaderSTF::IsHeaderSTF(*(uint64_t *)buffer)) {
-            Warning("GetSubtimeFrame", "not STF header[%d] : %x", i,
+            Warning("GetSubtimeFrame", "not STF header[%lu] : %lx", i,
                     *(uint64_t *)buffer);
             fNumSources = i;
             break;
@@ -300,7 +339,7 @@ Bool_t TStreamingEventStore::GetSubTimeFrame() {
          header->ReadFrom(buffer);
          fSubTimeFrameBuffers[i] = buffer + header->GetHeaderLength();
 	 if (fVerboseLevel > 2) {
-	   Info("GetSubTimeFrame","buffer head %016llx",*(uint64_t*)fSubTimeFrameBuffers[i]);
+	   Info("GetSubTimeFrame","buffer head %016lx",*(uint64_t*)fSubTimeFrameBuffers[i]);
 	 }
          fSubTimeFrameSize[i] =
              header->GetLength() - header->GetHeaderLength();
@@ -356,7 +395,7 @@ Bool_t TStreamingEventStore::GetHeartBeatFrame() {
       // no subtime frame is found
       return kFALSE;
    } else {
-      for (int i = 0; i < fNumSources; ++i) {
+      for (uint64_t i = 0; i < fNumSources; ++i) {
          auto headerSTF = fSubTimeFrameHeaders[i];
          auto buffer = fSubTimeFrameBuffers[i];
          auto size = fSubTimeFrameSize[i];
@@ -382,7 +421,7 @@ Bool_t TStreamingEventStore::GetHeartBeatFrame() {
 	 if (fVerboseLevel > 2) {
 	   fHeaderHB->Print();
 	 }
-         int used = decoder->Decode(buffer, fHeaderHB->GetLength() - fHeaderHB->GetHeaderLength(), seg, femid);
+         decoder->Decode(buffer, fHeaderHB->GetLength() - fHeaderHB->GetHeaderLength(), seg, femid);
          fSubTimeFrameSize[i] -= fHeaderHB->GetLength();
          fSubTimeFrameBuffers[i] += fHeaderHB->GetLength();
 #if 0
@@ -437,7 +476,7 @@ Bool_t TStreamingEventStore::Open() {
    fDataSource->Seek(-art::streaming::v1::HDR_BASE_LENGTH,SEEK_CUR);
    fHeaderFS->ReadBaseFrom(fBuffer);
    if (fVerboseLevel > 2) {
-     Info("Open","magic          = %016llx",*(uint64_t*)fBuffer);
+     Info("Open","magic          = %016lx",*(uint64_t*)fBuffer);
      Info("Open","header length = %d",fHeaderFS->GetHeaderLength());
    }
    // fDataSource->Read(fBuffer, 304);
@@ -447,9 +486,9 @@ Bool_t TStreamingEventStore::Open() {
      fHeaderFS->Print();
    } else {
      Warning("Open","Header is not file header");
-     Info("Open","buffer1         = %016llx",*(uint64_t*)fBuffer);
-     Info("Open","buffer2         = %016llx",*(((uint64_t*)fBuffer)+1));
-     Info("Open","buffer3         = %016llx",*(((uint64_t*)fBuffer)+2));
+     Info("Open","buffer1         = %016lx",*(uint64_t*)fBuffer);
+     Info("Open","buffer2         = %016lx",*(((uint64_t*)fBuffer)+1));
+     Info("Open","buffer3         = %016lx",*(((uint64_t*)fBuffer)+2));
      NotifyEndOfRun();
      return false;
    }
@@ -482,3 +521,76 @@ p   // @TODO how long we have to read
 
    return kTRUE;
 }
+
+#if HAVE_ZMQ_H
+bool TStreamingEventStore::OpenZmq()
+{
+
+   if (!fDataSource) fDataSource = new TZmqDataSource;
+
+   // this is not suitable, if the multiple timeframe exists in one message
+   // prepare shoudl be merged in open zqm
+   if (((TZmqDataSource*)fDataSource)->Prepare()) {
+      return true;
+   }
+
+   
+#if HAVE_REDIS_H
+   std::string uri;
+   if (!GetZmqUri(fRedisURI.Value().Data(),
+                  fDeviceID.Value().Data(),
+                  fChannelName.Value().Data(),
+                  fSubChannel.Value().Data(),uri)) {
+      auto ds = dynamic_cast<TZmqDataSource*>(fDataSource);
+      ds->SetURI("");
+      ds->SetReadoutTimeout(10);
+      return false;
+   }
+   fZmqURI = uri;
+#endif
+   auto ds = dynamic_cast<TZmqDataSource*>(fDataSource);
+   ds->SetURI(fZmqURI.Value().Data());
+   ds->SetReadoutTimeout(10);
+   return true;
+}
+#endif
+
+
+
+#if HAVE_REDIS_H
+bool TStreamingEventStore::GetZmqUri(const std::string& uri,
+                                    const std::string& devid,
+                                    const std::string& channel,
+                                    const std::string& subChannel,
+                                    std::string& zmqUri)
+{
+   Info("GetZmqUri",uri.c_str());
+   try {
+      auto redis = sw::redis::Redis(uri);
+      std::string keyexpr= "*";
+      keyexpr += devid + "*" + channel + "*" + subChannel;
+      
+      std::string key;
+      redis.keys(keyexpr,&key);
+      Info("GetZmqUri","keyexpr = %s", keyexpr.c_str());
+      if (key.empty()) {
+         // database is accessible but the key is empty means data acquisition maybe stop now
+         Warning("GetZmqUri","Data acquisition may be stop");
+         return false;
+      }
+      
+      Info("GetZmqUri","key = %s", key.c_str());
+      auto ret = redis.hget(key,"address");
+      zmqUri = ret.value();
+      Info("GetZmqUri","zmq uri = %s", zmqUri.c_str());
+      return true;
+   } catch (const sw::redis::Error& err) {
+      Warning("GetZmqUri",err.what());
+      return false;
+   } catch (...) {
+      return false;
+   }
+
+   return true;
+}
+#endif

@@ -113,7 +113,13 @@ set(HEADERS
     TArtTree.h
     IProcessorHelper.h
     IEventStore.h
-)
+    )
+
+if (ZeroMQ_FOUND)
+  list(APPEND OBJECTS TZmqDataSource.cc)
+  list(APPEND HEADERS TZmqDataSource.h)
+endif()
+  
 
 art_lib(catloop "${OBJECTS}" "${HEADERS}"  "catloop_linkdef.h" "${HEADERS}")
 target_link_libraries(catloop z)
