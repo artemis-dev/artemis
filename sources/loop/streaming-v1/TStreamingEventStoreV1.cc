@@ -3,7 +3,7 @@
  * @brief  Streaming Data Event Store
  *
  * @date   Created       : 2023-02-11 12:00:00 JST
- *         Last Modified : 2024-06-09 22:05:17 JST
+ *         Last Modified : 2024-07-01 13:28:52 JST
  * @author Shinsuke OTA <ota@rcnp.osaka-u.ac.jp>
  *
  *    (C) 2023 Shinsuke OTA
@@ -337,6 +337,7 @@ Bool_t TStreamingEventStore::GetSubTimeFrame() {
          }
          auto &header = fSubTimeFrameHeaders[i];
          header->ReadFrom(buffer);
+         fEventHeader->SetTimestamp(header->GetTimeFrameID());
          fSubTimeFrameBuffers[i] = buffer + header->GetHeaderLength();
 	 if (fVerboseLevel > 2) {
 	   Info("GetSubTimeFrame","buffer head %016lx",*(uint64_t*)fSubTimeFrameBuffers[i]);
@@ -505,7 +506,7 @@ Bool_t TStreamingEventStore::Open() {
    }
    fIsEOB = false;
 #if 0  // file sink comment is disabled
-p   // @TODO how long we have to read
+   // @TODO how long we have to read
    constexpr int length = 100;
    constexpr TString runname("data");
    fDataSource->Read(fBuffer,length); 
