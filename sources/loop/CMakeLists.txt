@@ -54,6 +54,7 @@ set(OBJECTS
     TArtTree.cc
     TRawDataMappingProcessor.cc
     TAttParameter.cc
+    TUpdateAsyncStatusProcessor.cc
 )
 
 set(HEADERS
@@ -113,6 +114,7 @@ set(HEADERS
     TArtTree.h
     IProcessorHelper.h
     IEventStore.h
+    TUpdateAsyncStatusProcessor.h
     )
 
     if(ZeroMQ_FOUND)

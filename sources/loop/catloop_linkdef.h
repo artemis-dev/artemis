@@ -78,6 +78,7 @@
 #pragma link C++ class art::TEventNumberConditionProcessor;
 #pragma link C++ class art::TArtTree+;
 #pragma link C++ class art::TRawDataMappingProcessor;
+#pragma link C++ class art::TUpdateAsyncStatusProcessor;
 
 #if HAVE_ZMQ_H
 #pragma link C++ class art::TZmqDataSource;

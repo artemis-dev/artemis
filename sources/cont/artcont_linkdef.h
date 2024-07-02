@@ -37,6 +37,7 @@
 #pragma link C++ class art::TDetectorGeometryInfo+;
 #pragma link C++ class art::TTpcStaticGasProperty+;   
 #pragma link C++ class art::TParameterStrings;
+#pragma link C++ class art::TAsyncStatus;
 
 #endif /* __CINT__ */
 

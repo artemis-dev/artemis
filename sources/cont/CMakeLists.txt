@@ -11,7 +11,8 @@ set(OBJECTS
     TDetectorGeometryInfo.cc
     TNArray.cc
     TTpcStaticGasProperty.cc
-    TParameterStrings.cc   
+    TParameterStrings.cc
+    TAsyncStatus.cc
 )
 
 set(HEADERS
@@ -28,6 +29,7 @@ set(HEADERS
     ITiming.h
     IPosition.h
     ICharge.h
+    TAsyncStatus.h
 )
 
 art_lib(artcont "${OBJECTS}" "${HEADERS}"  "artcont_linkdef.h" "${HEADERS}")
