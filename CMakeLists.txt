@@ -15,6 +15,7 @@ find_package(PkgConfig REQUIRED)
 
 # Build options
 option(BUILD_GET "Build and install libraries using GET" OFF)
+option(BUILD_WITH_ZMQ "Build online monitoring option with ZMQ", OFF)
 
 # Locate GET decoder if the option is on
 if(BUILD_GET)
@@ -33,23 +34,24 @@ if(MPI_CXX_FOUND)
   include_directories(SYSTEM ${MPI_CXX_INCLUDE_PATH})
 endif()
 
-find_package(ZeroMQ)
-if(ZeroMQ_FOUND)
-  add_compile_definitions(HAVE_ZMQ_H)
-  set(zeromq_INCLUDE_DIR ${ZeroMQ_INCLUDE_DIR})
-  set(zeromq_LIBRARY ${ZeroMQ_LIBRARY})
-else()
-  pkg_check_modules(zeromq REQUIRED libzmq)
-  add_compile_definitions(HAVE_ZMQ_H)
-  set(ZeroMQ_FOUND ON)
-  message(STATUS ${ZeroMQ_INCLUDE_DIR})
-  message(STATUS ${ZeroMQ_LIBRARY})
+if (BUILD_WITH_ZMQ)
+  find_package(ZeroMQ)
+  if(ZeroMQ_FOUND)
+    add_compile_definitions(HAVE_ZMQ_H)
+    set(zeromq_INCLUDE_DIR ${ZeroMQ_INCLUDE_DIR})
+    set(zeromq_LIBRARY ${ZeroMQ_LIBRARY})
+  else()
+    pkg_check_modules(zeromq REQUIRED libzmq)
+    add_compile_definitions(HAVE_ZMQ_H)
+    set(ZeroMQ_FOUND ON)
+    message(STATUS ${ZeroMQ_INCLUDE_DIR})
+    message(STATUS ${ZeroMQ_LIBRARY})
+  endif()
+  
+  if(ZeroMQ_FOUND)
+    message(STATUS ${ZeroMQ_LIBRARY_DIRS})
+  endif()
 endif()
-
-if(ZeroMQ_FOUND)
-  message(STATUS ${ZeroMQ_LIBRARY_DIRS})
-endif()
-
 
 pkg_check_modules(REDIS redis++)
 pkg_check_modules(HIREDIS hiredis)
