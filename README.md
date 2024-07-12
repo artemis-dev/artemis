@@ -47,6 +47,8 @@ cmake .. (or ccmake ..)
   * -DBUILD_GET=[ON/OFF (default=OFF)]
   * -DWITH_GET_DECODER=[path to GET decoder (required when BUILD_GET=ON)]
   * -DCMAKE_PREFIX_PATH=[path to yaml-cpp/openMPI if not found automatically] (yaml-cpp is required. You can also try setting yaml-cpp/lib64/pkgconfig to PKG_CONFIG_PATH in your environment. If openMPI is not found, it disables USE_MPI.)
+  * -DBUILD_WITH_REDIS=[ON/OFF (default=OFF)]
+  * -DBUILD_WITH_ZMQ=[ON/OFF (default=OFF)]
 3. make and make install
 3. "source thisartemis.sh" in install/bin or add install/share/modulefiles to modulespath if you use environment modules then you can use "module load artemis".
 3. If you want to build a project using artemis you can use find_package(artemis) in your cmake

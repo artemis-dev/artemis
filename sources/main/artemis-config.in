@@ -51,8 +51,8 @@ redisdir=${redisdirall//;/ }
 includedirs="@CMAKE_INSTALL_PREFIX@/include @yaml_cpp_INCLUDEDIR@ @ZeroMQ_INCLUDE_DIR@ $redisdir"
 
 # zmq
-if [ "@ZeroMQ_FOUND@" = "ON" ]; then
-zmqlib="-L`dirname @ZeroMQ_LIBRARY@` -lzmq"
+if [ "@ZeroMQ_FOUND@" = "ON" -o "@ZeroMQ_FOUND@" = "1" ]; then
+    zmqlib="-L`dirname @ZeroMQ_LIBRARY@` -lzmq"
 else
 zmqlib=""
 fi
@@ -71,6 +71,7 @@ name=${package}
 description="ARTEMIS - A RooT Extension with Modular processors for Instant Swiching"
 
 cflags=""
+
 for artemis_incdir in ${includedirs} ; do
   cflags="${cflags} -I${artemis_incdir}"
 done
