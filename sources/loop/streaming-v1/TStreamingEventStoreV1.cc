@@ -3,7 +3,7 @@
  * @brief  Streaming Data Event Store
  *
  * @date   Created       : 2023-02-11 12:00:00 JST
- *         Last Modified : 2024-07-01 13:28:52 JST
+ *         Last Modified : 2024-07-13 07:29:44 JST
  * @author Shinsuke OTA <ota@rcnp.osaka-u.ac.jp>
  *
  *    (C) 2023 Shinsuke OTA
@@ -242,9 +242,13 @@ Bool_t TStreamingEventStore::GetTimeFrame() {
 
    if (read != payloadLength) {
       // enough data is not available
+#if HAVE_ZMQ_H         
       if (!fIsOnline) {
          NotifyEndOfRun();
       }
+#else
+      NotifyEndOfRun();
+#endif      
       return false;
    }
    return true;
@@ -305,9 +309,13 @@ Bool_t TStreamingEventStore::GetSubTimeFrame() {
       int nread = fDataSource->Read(fBuffer, art::streaming::v1::HDR_BASE_LENGTH);
       fDataSource->Seek(-art::streaming::v1::HDR_BASE_LENGTH, SEEK_CUR);
       if (nread != art::streaming::v1::HDR_BASE_LENGTH) {
+#if HAVE_ZMQ_H         
          if (!fIsOnline) {
             NotifyEndOfRun();
          }
+#else         
+         NotifyEndOfRun();
+#endif         
          return kFALSE;
       }
       auto &header = fSubTimeFrameHeaders[0];
