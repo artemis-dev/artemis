@@ -16,6 +16,7 @@ find_package(PkgConfig REQUIRED)
 # Build options
 option(BUILD_GET "Build and install libraries using GET" OFF)
 option(BUILD_WITH_ZMQ "Build online monitoring option with ZMQ" OFF)
+option(BUILD_WITH_REDIS "Build redis access" OFF)
 
 # Locate GET decoder if the option is on
 if(BUILD_GET)
@@ -77,7 +78,9 @@ find_package(yaml-cpp)
 if(yaml-cpp_FOUND)
     set(yaml_cpp_INCLUDEDIR ${YAML_CPP_INCLUDE_DIR})
     set(yaml_cpp_LIBRARIES ${YAML_CPP_LIBRARIES})
-    set(yaml_cpp_LIBDIR ${YAML_CPP_LIBRARY_DIR})
+    set(yaml_cpp_LIBDIR ${YAML_CPP_CMAKE_DIR}/../../)
+#    message(STATUS "aaa")
+#    message(STATUS ${YAML_CPP_CMAKE_DIR})
 else()
     pkg_check_modules(yaml_cpp REQUIRED yaml-cpp)
 endif()

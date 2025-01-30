@@ -2,7 +2,7 @@
 /**
  * @file   TRCNPEventStore_ts.cc
  * @date   Created : Jul 12, 2013 17:12:35 JST
- *   Last Modified : 2024-03-23 20:13:15 JST
+ *   Last Modified : 2024-10-02 16:14:27 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  * 
  *  
@@ -12,6 +12,7 @@
 #include <TSegmentedData.h>
 #include <TDataSource.h>
 #include <TFileDataSource.h>
+#include <TFileDataSourceGZ.h>
 #include <TSharedMemoryDataSource.h>
 #include <TRawDataObject.h>
 #include <TLoop.h>
@@ -367,58 +368,62 @@ void art::TRCNPEventStore_ts::ClassDecoder06(Char_t *buf, Int_t& offset, struct 
 // Open
 Bool_t art::TRCNPEventStore_ts::Open()
 {
-	 if (fDataSource) {
-			if (fIsOnline) {
-				 return kTRUE;
-			}
-			Error("Open","Data source is already prepared");
-			return kFALSE;
-	 }
+   if (fDataSource) {
+      if (fIsOnline) {
+         return kTRUE;
+      }
+      Error("Open","Data source is already prepared");
+      return kFALSE;
+   }
 
-	 if (fIsOnline) {
-			Info("Open","Online mode");
-			Int_t shmid = kSHMID_BASE + 2 * fSHMID;
-			Int_t semkey = kSEMKEY_BASE + 2 * fSHMID;
-			Int_t size = kSHM_BUFF_SIZE + 4;
-			fDataSource = new TSharedMemoryDataSource(shmid,semkey,size);
-
-			if (!fDataSource->IsPrepared()) {
-				 Error("Open","Catnnot prepare shared memory data source with shmid = %d",fSHMID);
-				 return kFALSE;
-			}
-			TRCNPRunInfo *runinfo = new TRCNPRunInfo("Online","Online");
-			runinfo->SetRunName("Online");
-			runinfo->SetRunNumber(0);
-			runinfo->SetStartTime(0);
-			runinfo->SetStopTime(0);
-			runinfo->SetHeader("");
-			runinfo->SetEnder("");
-			fRIDFData.fRunHeaders->Add(runinfo);
-			fRIDFData.fEventHeader->SetRunName("Online");
-			fRIDFData.fEventHeader->SetRunNumber(0);
-			return kTRUE;
-	 } else {
-			TString filename;
-			while (fFileName.size()) {
-				 filename = fFileName.front();
-				 fSourceName = fFileName.front();
-				 fFileName.erase(fFileName.begin());
-				 if (gSystem->FindFile(fSearchPath,fSourceName)) {
-						break;
-				 }
-				 Error("Open","no such file '%s' in search path '%s'",filename.Data(),fSearchPath.Data());
-			}
-			if (filename == "") {
-				 // no file is available
-				 printf("nofile\n");
-				 return kFALSE;
-			}
-			fDataSource = new TFileDataSource(filename);
-			return kTRUE;
-	 }
-
-	 // unexpected to reach here
-	 Error("Open","Unexpected error at %d",__LINE__);
+   if (fIsOnline) {
+      Info("Open","Online mode");
+      Int_t shmid = kSHMID_BASE + 2 * fSHMID;
+      Int_t semkey = kSEMKEY_BASE + 2 * fSHMID;
+      Int_t size = kSHM_BUFF_SIZE + 4;
+      fDataSource = new TSharedMemoryDataSource(shmid,semkey,size);
+      
+      if (!fDataSource->IsPrepared()) {
+         Error("Open","Catnnot prepare shared memory data source with shmid = %d",fSHMID);
+         return kFALSE;
+      }
+      TRCNPRunInfo *runinfo = new TRCNPRunInfo("Online","Online");
+      runinfo->SetRunName("Online");
+      runinfo->SetRunNumber(0);
+      runinfo->SetStartTime(0);
+      runinfo->SetStopTime(0);
+      runinfo->SetHeader("");
+      runinfo->SetEnder("");
+      fRIDFData.fRunHeaders->Add(runinfo);
+      fRIDFData.fEventHeader->SetRunName("Online");
+      fRIDFData.fEventHeader->SetRunNumber(0);
+      return kTRUE;
+   } else {
+      TString filename;
+      while (fFileName.size()) {
+         filename = fFileName.front();
+         fSourceName = fFileName.front();
+         fFileName.erase(fFileName.begin());
+         if (gSystem->FindFile(fSearchPath,fSourceName)) {
+            break;
+         }
+         Error("Open","no such file '%s' in search path '%s'",filename.Data(),fSearchPath.Data());
+      }
+      if (filename == "") {
+         // no file is available
+         printf("nofile\n");
+         return kFALSE;
+      }
+      if (filename.EndsWith("gz")) {
+         fDataSource = new TFileDataSourceGZ(filename);
+      } else {
+         fDataSource = new TFileDataSource(filename);
+      }
+      return kTRUE;
+   }
+   
+   // unexpected to reach here
+   Error("Open","Unexpected error at %d",__LINE__);
 	 return kFALSE;
 }
 

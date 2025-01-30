@@ -3,7 +3,7 @@
  * @brief
  *
  * @date   Created:       2013-10-18 13:01:05
- *         Last Modified: 2014-06-29 06:47:17 JST (kawase)
+ *         Last Modified: 2024-09-21 12:48:14 JST
  * @author KAWASE Shoichiro <kawase@cns.s.u-tokyo.ac.jp>
  *
  *    Copyright (C) 2013 KAWASE Shoichiro All rights reserved.
@@ -176,7 +176,7 @@ void TVDCPlaneProcessor::Process()
 
   /* get input */
 //  	 printf("(*fMWDCIn)->GetEntriesFast()=%d\n",(*fMWDCIn)->GetEntriesFast());
-	 if((*fMWDCIn)->GetEntriesFast()>400)return ;
+//	 if((*fMWDCIn)->GetEntriesFast()>400)return ;
   int old_id =-1000;
   for(Int_t iHit=0, nHit = (*fMWDCIn)->GetEntriesFast(); iHit!=nHit; ++iHit) {
 	 const TTimingChargeData *const inData =

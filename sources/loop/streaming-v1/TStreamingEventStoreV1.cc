@@ -3,7 +3,7 @@
  * @brief  Streaming Data Event Store
  *
  * @date   Created       : 2023-02-11 12:00:00 JST
- *         Last Modified : 2024-07-13 07:29:44 JST
+ *         Last Modified : 2025-01-27 09:33:35 JST
  * @author Shinsuke OTA <ota@rcnp.osaka-u.ac.jp>
  *
  *    (C) 2023 Shinsuke OTA
@@ -31,6 +31,7 @@
 
 #if HAVE_REDIS_H
 #include "sw/redis++/redis++.h"
+#include "sw/redis++/utils.h"
 #endif
 
 
@@ -122,8 +123,7 @@ void TStreamingEventStore::Init(TEventCollection *col) {
    } else {
       Info("Init", "Createing output segmented data\n");
       *(TSegmentedData **)fSegmentedData.PtrRef() = new TSegmentedData;
-      col->Add(fSegmentedData.Value(), fSegmentedData.Data(),
-               fOutputIsTransparent);
+      col->Add(fSegmentedData.Value(), fSegmentedData.Data(),1);
       fIsMaster = false;
    }
 
@@ -222,6 +222,10 @@ Bool_t TStreamingEventStore::GetTimeFrame() {
          int payloadLength = fHeaderTF->GetLength() - fHeaderTF->GetHeaderLength();
          fDataSource->Read(fBuffer, payloadLength);
       } else {
+         fEventHeader->ResetBit(0x1<<15);
+         if (fHeaderTF->IsType(fHeaderTF->SLICE | (0x1<<15))) {
+            fEventHeader->SetBit(0x1<<15);
+         }
          found = true;
          break;
       }
@@ -552,7 +556,7 @@ bool TStreamingEventStore::OpenZmq()
                   fSubChannel.Value().Data(),uri)) {
       auto ds = dynamic_cast<TZmqDataSource*>(fDataSource);
       ds->SetURI("");
-      ds->SetReadoutTimeout(10);
+      ds->SetReadoutTimeout(100);
       return false;
    }
    fZmqURI = uri;
@@ -579,17 +583,22 @@ bool TStreamingEventStore::GetZmqUri(const std::string& uri,
       std::string keyexpr= "*";
       keyexpr += devid + "*" + channel + "*" + subChannel;
       
-      std::string key;
-      redis.keys(keyexpr,&key);
+      long long cursor = 0;
+      std::unordered_set<std::string> res;
+
+      while (true) {
+         cursor = redis.scan(cursor,keyexpr,1,std::inserter(res,res.end()));
+         if (cursor == 0) break;
+      }
       // Info("GetZmqUri","keyexpr = %s", keyexpr.c_str());
-      if (key.empty()) {
+      if (res.empty()) {
          // database is accessible but the key is empty means data acquisition maybe stop now
-         Warning("GetZmqUri","Data acquisition may be stop");
+         //Warning("GetZmqUri","Data acquisition may be stop");
          return false;
       }
       
       // Info("GetZmqUri","key = %s", key.c_str());
-      auto ret = redis.hget(key,"address");
+      auto ret = redis.hget(*res.begin(),"address");
       zmqUri = ret.value();
       // Info("GetZmqUri","zmq uri = %s", zmqUri.c_str());
       return true;

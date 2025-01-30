@@ -3,7 +3,7 @@
  * @brief  Streaming Header for Time Frame
  *
  * @date   Created       : 2023-02-16 14:34:16 JST
- *         Last Modified : 2024-05-16 06:56:38 JST
+ *         Last Modified : 2025-01-27 09:22:27 JST
  * @author Shinsuke OTA <ota@rcnp.osaka-u.ac.jp>
  *
  *    (C) 2023 Shinsuke OTA
@@ -43,7 +43,7 @@ public:
    static bool IsHeaderTF(uint64_t magic) { return IsThis(magic); }
    static constexpr uint16_t FULL {0};
    static constexpr uint16_t META {1};
-   static constexpr uint16_t SLICE {1};
+   static constexpr uint16_t SLICE {2};
 
    uint32_t GetTimeFrameID() { return fTimeFrameID; }
    uint32_t GetNumSources() { return fNumSources; }

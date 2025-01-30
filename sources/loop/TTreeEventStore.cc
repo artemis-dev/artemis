@@ -2,7 +2,7 @@
 /**
  * @file   TTreeEventStore.cc
  * @date   Created : Jul 11, 2013 21:11:20 JST
- *   Last Modified : 2023-08-16 16:25:00 JST (fendo)
+ *   Last Modified : 2024-10-11 19:48:26 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -49,6 +49,7 @@ void art::TTreeEventStore::Init(TEventCollection *col)
    // extract files to be analyzed by this process 
    std::vector<TString> files;
    TString filelist = gSystem->GetFromPipe(Form("ls -tr %s",fFileName.Data()));
+   Info("Init","Search for %s",filelist.Data());
    TObjArray *allfiles = (filelist.Tokenize("\n"));
    if (!allfiles) {
       Error("Init","No such files %s",fFileName.Data());

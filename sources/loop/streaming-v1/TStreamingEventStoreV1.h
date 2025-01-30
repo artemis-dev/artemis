@@ -1,6 +1,6 @@
 /**
  *   Created       : 2023-02-09 08:41:43 JST
- *   Last Modified : 2024-06-09 16:57:24 JST
+ *   Last Modified : 2024-08-16 11:01:04 JST
  * @author Shinsuke OTA <ota@rcnp.osaka-u.ac.jp>
  */
 
@@ -102,8 +102,8 @@ protected:
    // TClonesArray *fSTFClones; //!
    
    OutputData<TSegmentedData> fSegmentedData; //!
-   OutputInfo<TList> fRunHeader; //!
    OutputData<TEventHeader> fEventHeader; //!
+   OutputInfo<TList> fRunHeader; //!
    OutputInfo<TList> fFileHeader; //! 
    Parameter<Int_t> fMaxFrames; //!
    Parameter<Int_t> fStartFrame; //!
