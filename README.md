@@ -59,6 +59,10 @@ Requirement for coupling with [NestDAQ](https://github.com/spadi-alliance/nestda
 - [redis-plus-plus](https://github.com/sewenew/redis-plus-plus.git)
 - [hiredis](https://github.com/redis/hiredis.git)
 
+Then you need cmake with two options enabled.
+- BUILD_WITH_ZMQ=ON
+- BUILD_WITH_REDIS=ON
+
 Licence
 -------
 Copyright 2013-2014 Shinsuke Ota <<ota@cns.s.u-tokyo.ac.jp>> and ARTEMIS develop team
