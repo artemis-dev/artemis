@@ -21,7 +21,6 @@ Following features are not implemented, but we will make them in the future rele
 * Graphical User Interfaces for Loop operation
 * Editor for steering file and histgrum definition file
 
-
 Installation
 ------------
 
@@ -54,6 +53,11 @@ cmake .. (or ccmake ..)
 3. If you want to build a project using artemis you can use find_package(artemis) in your cmake
 
 Check https://github.com/rin-yokoyama/artemis-oedo as an example of working directory.
+
+Requirement for coupling with [NestDAQ](https://github.com/spadi-alliance/nestdaq) and its [user implementation](https://github.com/spadi-alliance/nestdaq-user-impl) 
+-------
+- [redis-plus-plus](https://github.com/sewenew/redis-plus-plus.git)
+- [hiredis](https://github.com/redis/hiredis.git)
 
 Licence
 -------
