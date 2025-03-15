@@ -3,12 +3,14 @@ set(OBJECTS
   TStreamingHeartBeatDelimiterV1.cc
   TStreamingModuleDecoderLRTDC64V1.cc
   TStreamingModuleDecoderHRTDCV1.cc
+  TStreamingModuleDecoderHRTDC_Unpaired.cc
 )
 
 set(HEADERS
   TStreamingHeartBeatDelimiterV1.h
   TStreamingModuleDecoderLRTDC64V1.h
   TStreamingModuleDecoderHRTDCV1.h
+  TStreamingModuleDecoderHRTDC_Unpaired.h
   TStreamingHeaderTFV1.h
   TStreamingHeaderSTFV1.h
   TStreamingHeaderFSV1.h

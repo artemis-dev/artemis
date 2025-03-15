@@ -104,6 +104,9 @@ set(OBJECTS
     TCatEvalGainShiftProcessor.cc
     TArtLocalUtil.cc
     TUnsharpMask.cc
+    TSRPPACPlaneDataV2.cc
+    TSRPPACPlaneDqdxProcessorV2.cc
+    TSRPPACPlaneProcessorV2.cc
 )
 
 set(HEADERS 
@@ -208,6 +211,9 @@ set(HEADERS
     TArtLocalUtil.h
     TArtemisCanvas.h
     TAffineConverterConditionProcessor.h
+    TSRPPACPlaneDataV2.h
+    TSRPPACPlaneDqdxProcessorV2.h
+    TSRPPACPlaneProcessorV2.h
 )
 
 art_lib(CAT "${OBJECTS}" "${HEADERS}"  "linkdef_user.h" "${HEADERS}")

@@ -3,7 +3,7 @@
  * @brief
  *
  * @date   Created:       2013-08-12 14:48:07
- *         Last Modified: 2019-11-07 20:00:41 JST (ota)
+ *         Last Modified: 2025-02-25 15:01:59 JST
  * @author KAWASE Shoichiro <kawase@cns.s.u-tokyo.ac.jp>
  *
  *    Copyright (C) 2013 KAWASE Shoichiro, OTA Shinsuke All rights reserved
@@ -126,6 +126,11 @@
 // cat
 #pragma link C++ class art::TCatEvalTpcChargeResolution;
 #pragma link C++ class art::TCatEvalGainShiftProcessor;
+
+#pragma link C++ class art::TSRPPACPlaneDataV2+;
+#pragma link C++ class art::TSRPPACPlaneDqdxProcessorV2;
+#pragma link C++ class art::TSRPPACPlaneProcessorV2;
+
 
 #endif // __CINT__
 
