@@ -2,7 +2,7 @@
 /**
  * @file   TZmqSubscriber.cc
  * @date   Created : Nov 29, 2013 21:29:50 JST
- *   Last Modified : 2024-06-09 21:36:07 JST
+ *   Last Modified : 2025-02-08 12:47:47 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -55,7 +55,9 @@ bool TZmqSubscriber::Connect() {
       return false;
    }
    // set timeout to read out
+   int hwm = 10;
    rc = zmq_setsockopt(fSocket, ZMQ_RCVTIMEO, &fReadoutTimeout, sizeof(fReadoutTimeout));
+   rc = zmq_setsockopt(fSocket, ZMQ_RCVHWM, &hwm, sizeof(hwm));
    // subscribe all
    rc = zmq_setsockopt(fSocket, ZMQ_SUBSCRIBE, "",0);
    fIsValid = true;

@@ -3,7 +3,7 @@
  * @brief  Streaming Data Event Store
  *
  * @date   Created       : 2023-02-11 12:00:00 JST
- *         Last Modified : 2025-01-27 09:33:35 JST
+ *         Last Modified : 2025-08-03 22:34:20 JST
  * @author Shinsuke OTA <ota@rcnp.osaka-u.ac.jp>
  *
  *    (C) 2023 Shinsuke OTA
@@ -21,6 +21,7 @@
 #include "TStreamingHeaderTFV1.h"
 #include "TStreamingHeaderLFV1.h"
 #include "TStreamingHeaderHBV1.h"
+#include "TStreamingHeartBeatDelimiterV1.h"
 #include "TStreamingModuleDecoderFactory.h"
 #include "TSystem.h"
 // #include "TStreamingHeaderFLTCOINV1.h"
@@ -78,6 +79,7 @@ TStreamingEventStore::TStreamingEventStore()
    fHeaderTF = new TStreamingHeaderTF;
    fHeaderSTF = new TStreamingHeaderSTF;
    fHeaderHB = new TStreamingHeaderHB;
+   fHBD = new streaming::v1::TStreamingHeartBeatDelimiter;
 }
 
 TStreamingEventStore::~TStreamingEventStore() {
@@ -450,6 +452,10 @@ Bool_t TStreamingEventStore::GetHeartBeatFrame() {
          decoder->Decode(buffer, fHeaderHB->GetLength() - fHeaderHB->GetHeaderLength(), seg, femid);
          fSubTimeFrameSize[i] -= fHeaderHB->GetLength();
          fSubTimeFrameBuffers[i] += fHeaderHB->GetLength();
+         fHBD->Decode(*(buffer-16));
+         if (fHBD->IsDelim1()) {
+            fEventHeader->SetTimestamp(fHBD->GetHeartBeatFrameNumber());
+         }
 #if 0
          if (used > 0) {
             fSubTimeFrameSize[i] -= used;

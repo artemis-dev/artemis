@@ -1,6 +1,6 @@
 /**
  *   Created       : 2023-02-09 08:41:43 JST
- *   Last Modified : 2024-08-16 11:01:04 JST
+ *   Last Modified : 2025-08-03 22:33:47 JST
  * @author Shinsuke OTA <ota@rcnp.osaka-u.ac.jp>
  */
 
@@ -21,6 +21,11 @@ namespace art {
       class TStreamingHeaderTF;
       class TStreamingHeaderHB;
       // class TStreamingHeaderFLTCOIN;
+   }
+   namespace streaming {
+      namespace v1 {
+         class TStreamingHeartBeatDelimiter;
+      }
    }
    class TRunInfo;
    class TDataSource;
@@ -95,6 +100,7 @@ protected:
    TStreamingHeaderSTF *fHeaderSTF; //!
    TStreamingHeaderTF *fHeaderTF; //!
    TStreamingHeaderHB *fHeaderHB; //!
+   streaming::v1::TStreamingHeartBeatDelimiter *fHBD; //!
    // TStreamingHeaderFLTCOIN *fHeaderFLTCOIN; //!
    std::vector<char*> fSubTimeFrameBuffers; //!
    std::vector<int>   fSubTimeFrameSize; //!

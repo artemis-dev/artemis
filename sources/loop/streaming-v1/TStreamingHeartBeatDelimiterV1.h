@@ -1,6 +1,6 @@
 /*
  * Created       : 2023-02-11 11:54:42 JST
- * Last Modified : 2024/04/13 02:22:52
+ * Last Modified : 2025-08-03 22:32:29 JST
  */
 
 #ifndef TSTREAMINGHEARTBEATDELIMITER_H
