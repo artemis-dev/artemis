@@ -19,6 +19,7 @@
 #include "TStreamingHeaderFSV1.h"
 #include "TStreamingHeaderSTFV1.h"
 #include "TStreamingHeaderTFV1.h"
+#include "TStreamingHeaderLFV1.h"
 #include "TStreamingHeaderHBV1.h"
 #include "TStreamingModuleDecoderFactory.h"
 #include "TSystem.h"
@@ -340,6 +341,18 @@ Bool_t TStreamingEventStore::GetSubTimeFrame() {
               fNumSources);
       }
       char *buffer = fBuffer;
+      // check if logic filter data exists
+      if (TStreamingHeaderLF::IsHeaderLF(*(uint64_t *)buffer)) {
+         auto headerLF = art::v1::TStreamingHeaderLF();
+         headerLF.ReadFrom(buffer);
+         if (fVerboseLevel > 2) {
+            Info("GetSubtimeFrame", "Logic Filter data found, skip");
+            headerLF.Print();
+         }
+         buffer += headerLF.GetLength();
+      }
+
+
       for (uint64_t i = 0; i < fNumSources; ++i) {
          if (!TStreamingHeaderSTF::IsHeaderSTF(*(uint64_t *)buffer)) {
             Warning("GetSubtimeFrame", "not STF header[%lu] : %lx", i,
