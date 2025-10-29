@@ -3,7 +3,7 @@
  * @brief  Streaming Data Event Store
  *
  * @date   Created       : 2023-02-11 12:00:00 JST
- *         Last Modified : 2025-08-03 22:34:20 JST
+ *         Last Modified : 2025-10-29 20:39:03 JST
  * @author Shinsuke OTA <ota@rcnp.osaka-u.ac.jp>
  *
  *    (C) 2023 Shinsuke OTA
@@ -453,7 +453,7 @@ Bool_t TStreamingEventStore::GetHeartBeatFrame() {
          fSubTimeFrameSize[i] -= fHeaderHB->GetLength();
          fSubTimeFrameBuffers[i] += fHeaderHB->GetLength();
          fHBD->Decode(*(buffer-16));
-         if (fHBD->IsDelim1()) {
+         if (fHBD->IsDelim1(*(buffer-16))) {
             fEventHeader->SetTimestamp(fHBD->GetHeartBeatFrameNumber());
          }
 #if 0
