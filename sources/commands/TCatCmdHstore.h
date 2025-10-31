@@ -24,9 +24,10 @@ public:
 
    virtual Long_t Cmd(vector<TString> args);
    virtual Long_t Run(const char *filename, const Option_t* = "");
+   virtual void Help();
 
 protected:
-   virtual void WriteRecursive(TDirectory *parent, TList *list);
+   // virtual void WriteRecursive(TDirectory *parent, TList *list);
    
    ClassDef(TCatCmdHstore,1);
 };

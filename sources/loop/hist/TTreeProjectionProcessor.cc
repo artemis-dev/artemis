@@ -171,8 +171,8 @@ void TTreeProjectionProcessor::PostLoop()
    
    TDirectory *saved = gDirectory;
    fDirectory->cd();
-   TCatCmdHstore hstore;
-   hstore.Run(filename,"recreate");
+   art::Util::PrepareDirectoryFor(filename);
+   art::Util::WriteObjectsToFile(filename,"recreate");
 #ifdef USE_MPI
    if (useMPI && npe > 1) {
       Info("PostLoop","Waiting for all the process to be finished (myrank = %d)",myrank);
