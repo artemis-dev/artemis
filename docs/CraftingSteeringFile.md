@@ -22,9 +22,7 @@ The example above configures a generator, followed by additional processors (tim
 | --- | --- | --- |
 | `name` | Yes | Unique instance name. Displayed in logs and used when writing metadata to `TAnalysisInfo`. |
 | `type` | Yes | Fully qualified processor class registered with ROOT. Must inherit from `art::TProcessor`. |
-| `title` | No | Optional human-readable description; maps to the `TNamed` title. |
 | `parameter` | No | Supplies configuration values. See below for supported formats. |
-| `input`, `output`, `info` | No | Some processors expose helper arrays/collections via named parameters; declaring them in YAML connects collections registered with `RegisterInputCollection`, `RegisterOutputCollection`, or `RegisterProcessorParameter`.
 
 ## Declaring Parameters
 
