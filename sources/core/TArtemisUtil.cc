@@ -22,6 +22,10 @@
 #include <TClass.h>
 #include <TKey.h>
 #include "TMath.h"
+#include "TH1FTreeProj.h"
+#include "TH2FTreeProj.h"
+#include "TH3FTreeProj.h"
+
 using namespace art;
 
 
@@ -83,6 +87,48 @@ void Util::GetPolygonFromSide(Int_t n, Double_t side, Double_t angle, Double_t *
       vx[i] = r * cost + xoffset;
       vy[i] = r * sint + yoffset;
    }
+}
+
+Bool_t Util::WriteObjectsToFile(const char* fileName, const Option_t *opt)
+{
+   TDirectory *saved = gDirectory;
+   TFile *file = TFile::Open(fileName,opt);
+   if (!file || !file->IsOpen()) {
+      std::cerr << "Util::WriteObjectsToFile : cannot open file " << fileName << std::endl;
+      return kFALSE;
+   }
+   WriteObjectsRecursively(file,saved->GetList());
+   file->Close();
+   saved->cd();
+   return kTRUE;
+}
+
+void Util::WriteObjectsRecursively(TDirectory* parent, TList* list)
+{
+   if (!parent || !list) return;
+   Int_t nObj = list->GetEntries();
+   for (Int_t i=0; i != nObj; i++) {
+      TObject *obj = list->At(i);
+      parent->cd();
+      if (obj->InheritsFrom("TH1")) {
+         if (obj->InheritsFrom("art::TH1FTreeProj")) {
+            TH1F(*(art::TH1FTreeProj*)obj).Write();
+         } else if (obj->InheritsFrom("art::TH2FTreeProj")) {
+            TH2F(*(art::TH2FTreeProj*)obj).Write();
+         } else if (obj->InheritsFrom("art::TH2FTreeProj")) {
+            TH3F(*(art::TH3FTreeProj*)obj).Write();
+         } else {
+            obj->Write();
+         }
+      } else if (obj->InheritsFrom("TDirectory")) {
+         TDirectory *dir    = (TDirectory*)obj;
+         TDirectory *newdir = parent->mkdir(dir->GetName());
+         newdir->SetTitle(dir->GetTitle());
+         WriteObjectsRecursively(newdir,dir->GetList());
+      } else {
+         obj->Write();
+      }
+   }   
 }
 
 

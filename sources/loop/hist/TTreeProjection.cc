@@ -3,7 +3,7 @@
  * @brief  Tree projection definitions
  *
  * @date   Created       : 2014-03-05 10:15:05 JST
- *         Last Modified : 2019-05-15 11:18:26 JST (ota)
+ *         Last Modified : 2024-06-11 19:48:27 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -18,6 +18,7 @@
 #include <TH1FTreeProj.h>
 #include <TH2FTreeProj.h>
 #include <TH3FTreeProj.h>
+#include "TTreeProjHist.h"
 #include <TAxisTreeProj.h>
 #include <TTree.h>
 #include <fstream>
@@ -86,20 +87,25 @@ Bool_t TTreeProjection::LoadYAMLNode(const YAML::Node &node)
    // local variables
    const char *kMethodName = "LoadYAMLNode";
    // node shoud have at least group and may have 'include' and 'cut'
-   const YAML::Node *groupNode   = node.FindValue(kNodeKeyGroup);
-   const YAML::Node *aliasNode   = node.FindValue(kNodeKeyAlias);
-   const YAML::Node *includeNode = node.FindValue(kNodeKeyInclude);
+   const YAML::Node groupNode   = node[kNodeKeyGroup];
+   const YAML::Node aliasNode   = node[kNodeKeyAlias];
+   const YAML::Node includeNode = node[kNodeKeyInclude];
 
    Info(kMethodName,"loading tree projection");
    if (fBaseDir.IsNull()) {
       fBaseDir = gSystem->DirName(fCurrentFile);
    }
 
+#if 0
+   // node itself exists since the Node::operator[] ensure its existense
    if (!groupNode && !includeNode) {
+   }
+#endif
+   if (!groupNode && !includeNode) {
+      
       Error(kMethodName,"At least one group or include node should be contained");
       return kFALSE;
    }
-   
    //======================================================================
    // include node
    //======================================================================
@@ -108,23 +114,20 @@ Bool_t TTreeProjection::LoadYAMLNode(const YAML::Node &node)
       // prepare includes before continue
       TString filename;
       try {
-         for (YAML::Iterator it = includeNode->begin(); it != includeNode->end(); ++it) {
+         for (YAML::const_iterator it = includeNode.begin(); it != includeNode.end(); ++it) {
             std::string name;
-
             // load template
-            if ((*it).Type() == YAML::NodeType::Map) {
-               const YAML::Node *replaceNode = (*it).FindValue(kNodeKeyReplace);
-               const YAML::Node *nameNode = (*it).FindValue(kNodeKeyName);
-               if (!nameNode) {
+            if (it->Type() == YAML::NodeType::Map) {
+               const YAML::Node replaceNode = (*it)[kNodeKeyReplace];
+               const YAML::Node nameNode = (*it)[kNodeKeyName];
+               if (nameNode.IsNull()) {
                   Error("LoadFile","no 'name' node is found");
                   return kFALSE;
                }
-               (*nameNode) >> name;
-
-               if (!replaceNode) {
+               name = nameNode.as<std::string>();
+               if (replaceNode.IsNull()) {
                   Warning("LoadFile","no 'replace' node is found while it is expected in '%s'",name.c_str());
                }
-               
                filename = gSystem->ConcatFileName(fBaseDir,name.c_str());
                std::ifstream fin(filename.Data());
                if (!fin.is_open()) {
@@ -135,24 +138,21 @@ Bool_t TTreeProjection::LoadYAMLNode(const YAML::Node &node)
                TString lines;
                lines.ReadFile(fin);
                if (replaceNode) {
-                  for (YAML::Iterator it = replaceNode->begin(), itend = replaceNode->end();
+                  for (YAML::const_iterator it = replaceNode.begin(), itend = replaceNode.end();
                        it != itend; ++it) {
                      std::string key, value;
-                     it.first() >> key;
-                     it.second() >> value;
+                     key = it->first.as<std::string>();
+                     value = it->second.as<std::string>();
                      lines.ReplaceAll(TString::Format("@%s@",key.c_str()),value);
                   }
                }
-               std::istringstream iss(lines.Data());
-               YAML::Parser parser(iss);
-               parser.GetNextDocument(doc);
-               if (!LoadYAMLNode(doc)) {
+               if (!LoadYAMLNode(YAML::Load(lines.Data()))) {
                   return kFALSE;
                }
             } else {
                // load file simply 
                printf("loading file\n");
-               (*it) >> name;
+               name = it->as<std::string>();
                filename = gSystem->ConcatFileName(fBaseDir,name.c_str());
                TString dirsaved = fBaseDir;
                
@@ -180,10 +180,10 @@ Bool_t TTreeProjection::LoadYAMLNode(const YAML::Node &node)
    // alias node
    //======================================================================
    if (aliasNode) {
-      for (YAML::Iterator it = aliasNode->begin(); it != aliasNode->end(); it++) {
+      for (YAML::const_iterator it = aliasNode.begin(); it != aliasNode.end(); it++) {
          try {
-            TString name = it.first().to<std::string>().c_str();
-            TString title = it.second().to<std::string>().c_str();
+            TString name = it->first.as<std::string>().c_str();
+            TString title = it->second.as<std::string>().c_str();
             fAliases->Add(new TNamed(name,title));
          } catch (YAML::Exception &e) {
             Error(kMethodName,"%s",e.what());
@@ -196,29 +196,29 @@ Bool_t TTreeProjection::LoadYAMLNode(const YAML::Node &node)
    // group node
    //======================================================================
    TDirectory *saved = gDirectory;
-   for (YAML::Iterator it = groupNode->begin(); it != groupNode->end(); it++) {
+   for (YAML::const_iterator it = groupNode.begin(); it != groupNode.end(); it++) {
       saved->cd();
       TString name, title, cut, suffix;
       TTreeProjGroup *group = NULL;
       try {
-         name = (*it)[kNodeKeyName].to<std::string>().c_str();
-         title = (*it)[kNodeKeyTitle].to<std::string>().c_str();
+         name = (*it)[kNodeKeyName].as<std::string>().c_str();
+         title = (*it)[kNodeKeyTitle].as<std::string>().c_str();
       } catch (YAML::Exception &e) {
          Warning(kMethodName,"group skipped since name or title is not defined (%s)",e.what());
          continue;
       }
-      if (const YAML::Node *c = it->FindValue(kNodeKeyCut)) {
-         cut = c->to<std::string>().c_str();
+      if (const YAML::Node c = (*it)[kNodeKeyCut]) {
+         cut = c.as<std::string>().c_str();
       }
       // check if the cloning the object or not
-      const YAML::Node *contents = it->FindValue(kNodeKeyContents);
-      const YAML::Node *clone = it->FindValue(kNodeKeyClone);
-      const YAML::Node *nodeSuffix = it->FindValue(kNodeKeySuffix);
+      const YAML::Node contents = (*it)[kNodeKeyContents];
+      const YAML::Node clone = (*it)[kNodeKeyClone];
+      const YAML::Node nodeSuffix = (*it)[kNodeKeySuffix];
       if (nodeSuffix) {
-         suffix = nodeSuffix->to<std::string>().c_str();
+         suffix = nodeSuffix.as<std::string>().c_str();
       }
       if (clone) {
-         if (TObject *obj = fProjGroups->FindObject(clone->to<std::string>().c_str())) {
+         if (TObject *obj = fProjGroups->FindObject(clone.as<std::string>().c_str())) {
             // cloning the existing group;
             group = dynamic_cast<TTreeProjGroup*>(obj->Clone(name));
             group->SetTitle(title);
@@ -246,6 +246,7 @@ Bool_t TTreeProjection::LoadYAMLNode(const YAML::Node &node)
       // group should be created here
       Info(kMethodName,"new group '%s'",name.Data());
       fProjGroups->Add(group);
+#if 0         
       if (!contents) {
          // changing name of histogram will destroy the structure of link
          TList *savedlist = new TList;
@@ -264,41 +265,43 @@ Bool_t TTreeProjection::LoadYAMLNode(const YAML::Node &node)
          saved->cd();
          continue;
       }
-      group->cd();
+#endif      
+      group->GetDirectory()->cd();
 
-      for (YAML::Iterator itcont = contents->begin(); itcont != contents->end(); itcont++) {
+      for (YAML::const_iterator itcont = contents.begin(); itcont != contents.end(); itcont++) {
          TString hname, htitle, hcut, hasync;
-         TAttTreeProj *hproj = NULL;
+         TTreeProjHist *hproj = NULL;
          Int_t nDim = 0;
-         const YAML::Node *axisnode[3] = {(*itcont).FindValue(kNodeKeyX),
-                                          (*itcont).FindValue(kNodeKeyY),
-                                          (*itcont).FindValue(kNodeKeyZ)};
+         const YAML::Node axisnode[3] =
+            {(*itcont)[kNodeKeyX],
+            (*itcont)[kNodeKeyY],
+            (*itcont)[kNodeKeyZ]};
          try {
-            hname = (*itcont)["name"].to<std::string>().c_str();
-            htitle = (*itcont)["title"].to<std::string>().c_str();
+            hname = (*itcont)["name"].as<std::string>().c_str();
+            htitle = (*itcont)["title"].as<std::string>().c_str();
          }  catch (YAML::Exception &e) {
             Warning(kMethodName,"projection skipped since name or title is not defined (%s)",e.what());
             continue;
          }
-         if (const YAML::Node *c = itcont->FindValue(kNodeKeyCut)) {
-            hcut = c->to<std::string>().c_str();
+         if (const YAML::Node c = (*itcont)[kNodeKeyCut]) {
+            hcut = c.as<std::string>().c_str();
          }
-         if (const YAML::Node *n = itcont->FindValue(kNodeKeyAsync)) {
-            hasync = n->to<std::string>().c_str();
+         if (const YAML::Node n = (*itcont)[kNodeKeyAsync]) {
+            hasync = n.as<std::string>().c_str();
          }
-         if (const YAML::Node *n = itcont->FindValue(kNodeKeySuffix)) {
-            hname.Append(n->to<std::string>().c_str());
+         if (const YAML::Node n = (*itcont)[kNodeKeySuffix]) {
+            hname.Append(n.as<std::string>().c_str());
          }
          // apped group suffix
          hname.Append(suffix);
          // check if the cloning the object or not
-         if (const YAML::Node *clone = itcont->FindValue(kNodeKeyClone)) {
-            const char *newname = clone->to<std::string>().c_str();
-            if (TObject *obj = group->FindObject(newname)) {
+         if (const YAML::Node clone = (*itcont)[kNodeKeyClone]) {
+            if (TObject *obj = group->FindObject(clone.as<std::string>().c_str())) {
                // cloning the existing group;
-               hproj = dynamic_cast<TAttTreeProj*>(obj->Clone(hname));
+               hproj = dynamic_cast<TTreeProjHist*>(obj->Clone(hname));
                hproj->SetProjTitle(htitle);
-               hproj->GetCut() += hcut;
+//               hproj->TCut::GetCut() += hcut;
+               hproj->AppendCut(hcut);
                hproj->SetAxisAsync(hasync.Atoi());
             } else {
                Warning(kMethodName,"projection skipped since the group '%s' does not exist",name.Data());
@@ -307,10 +310,10 @@ Bool_t TTreeProjection::LoadYAMLNode(const YAML::Node &node)
          } else {
             // check if axisnode has enough number of inputs
             for (Int_t i = 0; i < 3; ++i) {
-               if (axisnode[i] && axisnode[i]->size() < 4) {
+               if (axisnode[i] && axisnode[i].size() < 4) {
                   // insufficient number of input for axis
-                  Error("LoadYAMLNode",TString::Format("\n    histgram '%s': insufficient number of axis input for '%c' (size = %d)\n",
-                                                       hname.Data(),'x'+i,axisnode[i]->size()));
+                  Error("LoadYAMLNode","\n    histgram '%s': insufficient number of axis input for '%c' (size = %d)\n",
+                                                       hname.Data(),'x'+i,axisnode[i].size());
                   saved->cd();
                   return kFALSE;
                }
@@ -323,23 +326,32 @@ Bool_t TTreeProjection::LoadYAMLNode(const YAML::Node &node)
                           hname.Data(),name.Data());
                   continue;
                }
-               hproj = new TH3FTreeProj(hname,htitle,hcut);
+               //hproj = new TH3FTreeProj(hname,htitle,hcut);
+               hproj = new TTreeProjHistImpl<TH3F>(hname,htitle,hcut);
+               group->Add(hproj);
                hproj->SetAxisAsync(hasync.Atoi());
                nDim = 3;
+               Info("Proj","TH1F %s registered",hname.Data());
             } else if (axisnode[1]) {
                if (!axisnode[0]) {
                   Warning(kMethodName,"projection '%s' in group '%s' skipped since x axis is not defined",
                           hname.Data(),name.Data());
                   continue;
                }
-               hproj = new TH2FTreeProj(hname,htitle,hcut);
+               // hproj = new TH2FTreePrpoj(hname,htitle,hcut);
+               hproj = new TTreeProjHistImpl<TH2F>(hname,htitle,hcut);
+               group->Add(hproj);
                hproj->SetAxisAsync(hasync.Atoi());
                nDim = 2;
+               Info("Proj","TH1F %s registered",hname.Data());
             } else if (axisnode[0]) {
                // 1D histogram
-               hproj = new TH1FTreeProj(hname,htitle,hcut);
+               //hproj = new TH1FTreeProj(hname,htitle,hcut);
+               hproj = new TTreeProjHistImpl<TH1F>(hname,htitle,hcut);
+               group->Add(hproj);
                hproj->SetAxisAsync(hasync.Atoi());
                nDim = 1;
+               Info("Proj","TH1F %s registered to group %s",hname.Data(),group->GetName());
             } else {
                Warning(kMethodName,"projection '%s' in group '%s' skipped since no axis is defined",
                        hname.Data(),name.Data());
@@ -347,16 +359,16 @@ Bool_t TTreeProjection::LoadYAMLNode(const YAML::Node &node)
             }
          }
          for (Int_t i=0; i!=nDim; i++) {
-            const YAML::Node &a = *axisnode[i];
+            const YAML::Node &a = axisnode[i];
             try {
                TCut axiscut;
                TString axistitle;
-               if (a.size()>5) axiscut = a[5].to<std::string>().c_str();
-               if (a.size()>4) axistitle = a[4].to<std::string>().c_str();
-               TAxisTreeProj *axis = new TAxisTreeProj(a[0].to<std::string>().c_str(),
-                                                       a[1].to<int>(),
-                                                       a[2].to<double>(),
-                                                       a[3].to<double>(),
+               if (a.size()>5) axiscut = a[5].as<std::string>().c_str();
+               if (a.size()>4) axistitle = a[4].as<std::string>().c_str();
+               TAxisTreeProj *axis = new TAxisTreeProj(a[0].as<std::string>().c_str(),
+                                                       a[1].as<int>(),
+                                                       a[2].as<double>(),
+                                                       a[3].as<double>(),
                                                        axiscut);
                hproj->SetAxisDef(i,axis);
 //               if (!axistitle.IsNull()) {
@@ -398,7 +410,9 @@ Bool_t TTreeProjection::Sync(TTree *tree)
    Int_t nGroup = fProjGroups->GetEntriesFast();
    for (Int_t i = 0; i != nGroup; i++) {
       TTreeProjGroup *group = (TTreeProjGroup*)fProjGroups->At(i);
-      Sync(group,tree,group->GetCut());
+      Info("Sync","group %s",group->GetName());
+      group->Sync(tree,fProjections);
+      // Sync(group,tree,group->GetCut());
    }
    return kFALSE;
 }
@@ -406,8 +420,15 @@ Bool_t TTreeProjection::Sync(TTree *tree)
 
 Bool_t TTreeProjection::Sync(TTreeProjGroup *group, TTree *tree, TCut cut)
 {
+
+#if 0   
+   Info("sync","%p %d",group->GetList(),group->GetList()->GetEntries());
    TIter next(group->GetList());
-   while (TObject *obj = next()) {
+   Info("sync","here");
+   while (TObject *obj = reinterpret_cast<TObject*>(next())) {
+      Info("syn","%p",obj);
+      Info("syn","%d",obj->InheritsFrom(TTreeProjComponent::Class()));
+      Info("Sync","%s\n",obj->GetName());
       if (obj->InheritsFrom(TTreeProjGroup::Class())) {
          TTreeProjGroup *group = (TTreeProjGroup*)obj;
          Sync((TTreeProjGroup*)obj,tree,cut + group->GetCut());
@@ -415,6 +436,7 @@ Bool_t TTreeProjection::Sync(TTreeProjGroup *group, TTree *tree, TCut cut)
          Int_t nDim = ((TH1*)obj)->GetDimension();
          TAttTreeProj *proj = dynamic_cast<TAttTreeProj*>(obj);
          for (Int_t i=0; i!=nDim; i++) {
+            printf("%s %p %d\n",obj->GetName(),proj, nDim);
             TAxisTreeProj* axis = proj->GetAxisDef(i);
             TCut totalcut = axis->GetCut() + proj->GetCut() + cut;
             TTreeFormula *axisFormula =new TTreeFormula(TString::Format("V%c",'x'+i),axis->GetTitle(),tree);
@@ -441,6 +463,8 @@ Bool_t TTreeProjection::Sync(TTreeProjGroup *group, TTree *tree, TCut cut)
          }
       }
    }
+#endif   
    return kTRUE;
+   
 }
 

@@ -2,7 +2,7 @@
  * @brief attribute of parameter
  *
  * @date Create        : 2019-06-04 09:47:23 JST
- *       Last Modified : 2020-12-08 20:56:51 JST (ota)
+ *       Last Modified : 2023-02-13 16:40:19 JST
  * @author: Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  */
 
@@ -93,7 +93,8 @@ public:
    public:
       InputObject() : fData(NULL) {
          fDoAuto = kTRUE;
-         if (typeid(T) == typeid(TClonesArray)) {
+         if (typeid(T) == typeid(TClonesArray)
+             && typeid(dataClass) != typeid(TObject)) {
             fDataClassName = dataClass::Class_Name();
          }
       }
@@ -115,7 +116,8 @@ public:
    public:
       OutputObject() : fData(NULL) {
          fDoAuto = kTRUE;
-         if (typeid(T) == typeid(TClonesArray)) {
+         if (typeid(T) == typeid(TClonesArray)
+             && typeid(dataClass) != typeid(TObject)) {
             fDataClassName = dataClass::Class_Name();
          }
       }

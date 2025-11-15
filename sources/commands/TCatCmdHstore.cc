@@ -38,47 +38,12 @@ Long_t TCatCmdHstore::Cmd(vector<TString> args)
 
 Long_t TCatCmdHstore::Run(const char* filename, const Option_t *opt)
 {
-   TList *objects = gDirectory->GetList();
-   TDirectory *wkdir = gDirectory;
-   // open file
-   art::Util::PrepareDirectoryFor(filename);   
-   TFile *file = TFile::Open(filename,opt);
-   // if file is not opened or writable return normal
-   if (file && file->IsWritable()) {
-      WriteRecursive(file,objects);
-      file->Close();
-   } else {
-      printf(" File %s does not exist or is not writable\n",filename);
-      printf(" Please check your option : %s\n",opt);
-   }
-   wkdir->cd();     
+   art::Util::PrepareDirectoryFor(filename);
+   art::Util::WriteObjectsToFile(filename,opt);
    return 1;
 }
-
-void TCatCmdHstore::WriteRecursive(TDirectory *parent, TList *list)
+void TCatCmdHstore::Help()
 {
-   if (!parent || !list) return;
-   Int_t nObj = list->GetEntries();
-   for (Int_t i=0; i != nObj; i++) {
-      TObject *obj = list->At(i);
-      parent->cd();
-      if (obj->InheritsFrom("TH1")) {
-         if (obj->InheritsFrom("art::TH1FTreeProj")) {
-            TH1F(*(art::TH1FTreeProj*)obj).Write();
-         } else if (obj->InheritsFrom("art::TH2FTreeProj")) {
-            TH2F(*(art::TH2FTreeProj*)obj).Write();
-         } else if (obj->InheritsFrom("art::TH2FTreeProj")) {
-            TH3F(*(art::TH3FTreeProj*)obj).Write();
-         } else {
-            obj->Write();
-         }
-      } else if (obj->InheritsFrom("TDirectory")) {
-         TDirectory *dir    = (TDirectory*)obj;
-         TDirectory *newdir = parent->mkdir(dir->GetName());
-         newdir->SetTitle(dir->GetTitle());
-         WriteRecursive(newdir,dir->GetList());
-      } else {
-         obj->Write();
-      }
-   }
+   printf(" hstore <filename> [option] : store histograms in the current directory to the file\n");
+   printf("   option : same as TFile option (default is create)\n");
 }

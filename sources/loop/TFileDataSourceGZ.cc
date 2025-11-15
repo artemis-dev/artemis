@@ -3,7 +3,7 @@
  * @brief  file data source with gzip compression
  *
  * @date   Created       : 2015-04-29 18:37:56 JST
- *         Last Modified : Oct 26, 2015 06:38:02 EDT
+ *         Last Modified : 2024-06-09 14:26:51 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2015 Shinsuke OTA
@@ -52,4 +52,18 @@ int TFileDataSourceGZ::Read(char *buf, const int&size)
 {
    if (!fFile) return 0;
    return gzread(fFile,buf,sizeof(char)*size);
+}
+
+Int_t TFileDataSourceGZ::IsPrepared()
+{
+   int err;
+   if (!fFile || gzerror(fFile, &err)) {
+      fStatus = kERROR;
+      return kFALSE;
+   }
+   if (gzeof(fFile)) {
+      fStatus = kEOF;
+      return kFALSE;
+   }
+   return kTRUE;
 }

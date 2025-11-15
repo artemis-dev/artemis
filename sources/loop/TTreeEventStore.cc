@@ -2,7 +2,7 @@
 /**
  * @file   TTreeEventStore.cc
  * @date   Created : Jul 11, 2013 21:11:20 JST
- *   Last Modified : 2018-08-07 14:01:40 JST (ota)
+ *   Last Modified : 2024-10-11 19:48:26 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -21,6 +21,7 @@
 #include <TEventHeader.h>
 #include "TSystem.h"
 #include "TChain.h"
+#include "TObjString.h"
 ClassImp(art::TTreeEventStore);
 
 
@@ -48,9 +49,10 @@ void art::TTreeEventStore::Init(TEventCollection *col)
    // extract files to be analyzed by this process 
    std::vector<TString> files;
    TString filelist = gSystem->GetFromPipe(Form("ls -tr %s",fFileName.Data()));
+   Info("Init","Search for %s",filelist.Data());
    TObjArray *allfiles = (filelist.Tokenize("\n"));
    if (!allfiles) {
-      Error("Init",Form("No such files %s",fFileName.Data()));
+      Error("Init","No such files %s",fFileName.Data());
       SetStateError("Init");
       return;
    } 

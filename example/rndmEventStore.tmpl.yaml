@@ -1,0 +1,24 @@
+Processor:
+  - name: random
+    type: art::TRandomNumberEventStore
+    parameter:
+      MaxLoop: 10000000000
+  - name: random
+    type: art::TRandomNumberEventStore
+    parameter:
+      MaxLoop: 10000000000
+      OutputCollection: rndm2
+  - name: timer
+    type: art::TTimerProcessor
+  - name: outputtree
+    type: art::TOutputTreeProcessor
+    parameter:
+      SplitLevel: 99
+      FileName: tree@NUM@.root
+  - name: proj
+    type: art::TTreeProjectionProcessor
+    parameter:
+      FileName: histdef.yaml
+      Name: proj
+      Type: art::TTreeProjection
+      

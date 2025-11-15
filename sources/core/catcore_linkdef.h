@@ -17,4 +17,7 @@
 #pragma link C++ class art::TMacroReplacer-;
 #pragma link C++ namespace art::Util;
 #pragma link C++ namespace TArtSystemOfUnit;
+#if HAVE_ZMQ_H
+#pragma link C++ class art::TZmqSubscriber;
+#endif
 #endif /* __CINT__ */

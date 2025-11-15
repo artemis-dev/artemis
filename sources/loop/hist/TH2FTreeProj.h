@@ -3,7 +3,7 @@
  * @brief  Tree projection 2-D historgram
  *
  * @date   Created       : 2014-03-07 08:35:46 JST
- *         Last Modified : 2019-11-25 17:23:32 JST (ota)
+ *         Last Modified : 2023-01-28 23:41:47 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -35,6 +35,7 @@ protected:
 
 private:
 
+   
    ClassDef(TH2FTreeProj,1) // Tree projection 2-D historgram
 };
 

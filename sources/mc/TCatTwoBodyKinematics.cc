@@ -2,7 +2,7 @@
 /**
  * @file   TCatTwoBodyKinematics.cc
  * @date   Created : Oct 07, 2012 13:07:55 JST
- *   Last Modified : 2019-03-12 10:06:44 JST (ota)
+ *   Last Modified : 2023-10-15 12:23:18 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -86,6 +86,15 @@ void TCatTwoBodyKinematics::Build()
    fPCM[2] = fCM->GetDaughterAtRest(0);
    fPCM[3] = fCM->GetDaughterAtRest(1);
    fCM->Decay(fThetaCM);
+
+   for (int i = 0; i < 4; ++i) {
+      fPLab[i]->SetAtomicNumber(fZ[i]);
+      fPLab[i]->SetMassNumber(fA[i]);
+      fPCM[i]->SetAtomicNumber(fZ[i]);
+      fPCM[i]->SetMassNumber(fA[i]);
+   }
+
+   
 }
 
 void TCatTwoBodyKinematics::SetTheta(Double_t thetaCM)

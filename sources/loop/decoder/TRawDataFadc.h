@@ -2,7 +2,7 @@
 /**
  * @file   TRawDataFadc.h
  * @date   Created : Jul 20, 2013 23:20:58 JST
- *   Last Modified : Feb 04, 2014 14:11:06 JST
+ *   Last Modified : 2022-01-30 15:15:28 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -47,16 +47,16 @@ public:
    virtual Int_t GetOffset() { return fOffset; }
    virtual UInt_t GetPattern() { return fPattern; }
 
-   UShort_t& operator[] (int idx) { return fADC[idx]; }
+   Short_t& operator[] (int idx) { return fADC[idx]; }
 
-   UShort_t* GetSample() { return fADC; }
+   Short_t* GetSample() { return fADC; }
    UShort_t* GetClock() { return fClock; }
          
 
 protected:
    static const Int_t kMaxSample = 10000;
    Int_t fNumSample;
-   UShort_t fADC[kMaxSample]; //[fNumSample]
+   Short_t fADC[kMaxSample]; //[fNumSample]
    UShort_t  fClock[kMaxSample]; //[fNumSample]
    UInt_t fTimestamp;
    Int_t          fOffset;

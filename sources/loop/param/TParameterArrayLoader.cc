@@ -3,7 +3,7 @@
  * @brief  parameter array loader
  *
  * @date   Created       : 2014-03-03 11:11:54 JST
- *         Last Modified : 2018-02-04 11:00:11 JST (ota)
+ *         Last Modified : 2023-01-28 20:20:04 JST (ota)
  * @author KAWASE Shoichiro <kawase@cns.s.u-tokyo.ac.jp>, Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 KAWASE Shoichiro
@@ -116,26 +116,17 @@ Bool_t TParameterArrayLoader::LoadText()
 
 Bool_t TParameterArrayLoader::LoadYAML()
 {
-   std::ifstream fin(fFileName.Data());
-   if (!fin.is_open()){
-      SetStateError(TString::Format("Cannot open file: %s",fFileName.Data()));
-      return kFALSE;
-   }
    YAML::Node doc;
    try {
-      YAML::Parser parser(fin);
-      parser.GetNextDocument(doc);
+      doc = YAML::LoadFile(fFileName.Data());
       std::string name;
-      const YAML::Node *contents = doc.FindValue("Contents");
-      if (!contents) {
-         contents = &doc;
-      }
+      YAML::Node contents = doc["Contents"] ? doc["Contents"] : doc;
       // parse first document
-      for (YAML::Iterator it = contents->begin(); it != contents->end(); it++) {
-         it.first() >> name;
+      for (YAML::const_iterator it = contents.begin(); it != contents.end(); it++) {
+         name = it->first.as<std::string>();
          TParameterObject *prm = static_cast<TParameterObject*>(fParameterArray->ConstructedAt(fParameterArray->GetEntriesFast()));
          prm->SetName(name.c_str());
-         if (!prm->LoadYAMLNode(it.second())) {
+         if (!prm->LoadYAMLNode(it->second)) {
             fParameterArray->Delete();
             SetStateError(TString::Format("Error while parsing YAML for %s\n",name.c_str()));
             return kFALSE;

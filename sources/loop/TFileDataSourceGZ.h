@@ -3,7 +3,7 @@
  * @brief  file data source with gzip compression
  *
  * @date   Created       : 2015-04-29 18:32:57 JST
- *         Last Modified : 2017-06-06 22:13:47 JST (ota)
+ *         Last Modified : 2024-06-09 14:14:58 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2015 Shinsuke OTA
@@ -31,9 +31,10 @@ public:
    TFileDataSourceGZ(const TFileDataSourceGZ& rhs);
    TFileDataSourceGZ& operator=(const TFileDataSourceGZ& rhs);
 
-   virtual Int_t Read(Char_t *buf, const Int_t &size);
-   virtual Int_t Seek(Long_t offset, Int_t origin);
-   
+   virtual Int_t Read(Char_t *buf, const Int_t &size) override;
+   virtual Int_t Seek(Long_t offset, Int_t origin) override;
+
+   virtual Int_t IsPrepared() override;
 
 protected:
    gzFile fFile; // pointer to gzip file

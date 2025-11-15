@@ -100,18 +100,10 @@ Bool_t TParameterObject::LoadYAMLFile(const TString &filename)
    // Load YAML file.
    // The root node is used as argument of LoadYAML(const YAML::Node& node).
 
-   std::ifstream fin(filename.Data());
-   if (!fin.is_open()) {
-      Error("LoadFile", "Cannot open file: %s",filename.Data());
-      fCurrentFile = "";
-      return kFALSE;
-   }
    fCurrentFile = filename;
 
-   YAML::Node doc;
    try {
-      YAML::Parser parser(fin);
-      parser.GetNextDocument(doc);
+      YAML::Node doc = YAML::LoadFile(filename.Data());
       return LoadYAMLNode(doc);
    } catch (YAML::Exception& e) {
       Error("LoadYAML","Error occurred while parsing YAML file: %s",filename.Data());

@@ -2,7 +2,7 @@
 /**
  * @file   catloop_linkdef.h
  * @date   Created : Feb 19, 2012 11:19:06 JST
- *   Last Modified :2019-03-04 23:11:52 JST (ota)
+ *   Last Modified : 2024-06-09 16:12:15 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -48,6 +48,7 @@
 #pragma link C++ class art::TRawDataSimple<UInt_t>;
 #pragma link C++ class art::TRawDataSimple<ULong64_t>;
 #pragma link C++ class art::TRawTiming;
+#pragma link C++ class art::TRawDataTimingCharge;
 #pragma link C++ class art::TRawTimingWithEdge;
 #pragma link C++ class art::TEventHeader;
 #pragma link C++ class art::TMappingProcessor;
@@ -75,6 +76,15 @@
 #pragma link C++ class art::TFormulaData;
 #pragma link C++ class art::TFormulaDataGenerator;
 #pragma link C++ class art::TEventNumberConditionProcessor;
+#pragma link C++ class art::TArtTree+;
+#pragma link C++ class art::TRawDataMappingProcessor;
+#pragma link C++ class art::TUpdateAsyncStatusProcessor;
+
+#if HAVE_ZMQ_H
+#pragma link C++ class art::TZmqDataSource;
+#endif
+
+   
 // #pragma link C++ class art::TAttParameter; 
 #endif /* __CINT__ */
 

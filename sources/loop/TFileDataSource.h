@@ -2,7 +2,7 @@
 /**
  * @file   TFileDataSource.h
  * @date   Created : Jul 13, 2013 15:13:46 JST
- *   Last Modified : 2020-11-27 00:13:18 JST (ota)
+ *   Last Modified : 2024-06-09 14:14:23 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -27,8 +27,10 @@ public:
    TFileDataSource(const char* name);
    virtual ~TFileDataSource();
 
-   virtual Int_t Read(Char_t *buf, const Int_t &size);
-   virtual Int_t Seek(Long_t offset, Int_t origin);
+   virtual Int_t Read(Char_t *buf, const Int_t &size) override;
+   virtual Int_t Seek(Long_t offset, Int_t origin) override;
+
+   virtual Int_t IsPrepared() override;
 
 protected:
    FILE *fFile;

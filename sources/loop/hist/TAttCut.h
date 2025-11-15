@@ -3,7 +3,7 @@
  * @brief  Attribute to deal with the collection of TCut
  *
  * @date   Created       : 2014-03-03 16:32:41 JST
- *         Last Modified : Mar 05, 2014 16:52:13 JST
+ *         Last Modified : 2024-06-11 19:22:18 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -29,6 +29,7 @@ public:
    const TCut& GetCut() const { return fCut; } 
    TCut& GetCut() { return fCut; } 
    void  SetCut(const char* cut = "") { fCut = cut; }
+   void AppendCut(const char* cut) { fCut += cut; }
 
    virtual void Copy(TAttCut &att) const;
    

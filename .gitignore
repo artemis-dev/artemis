@@ -12,7 +12,12 @@
 !README.md
 !m4
 !documentation
-!docs
+!CMakeLists.txt
+!/cat-src
+!/artemis-share
+!/share
+!artemis-config.cmake.in
+!cmake_uninstall.cmake.in
 
 # additional exception
 *~
@@ -21,3 +26,4 @@
 /example/temp.root
 *.d
 *.so
+*.root

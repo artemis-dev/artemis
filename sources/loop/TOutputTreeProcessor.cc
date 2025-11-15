@@ -2,7 +2,7 @@
 /**
  * @file   TOutputTreeProcessor.cc
  * @date   Created : Jul 11, 2013 17:11:41 JST
- *   Last Modified : 2021-02-09 23:27:08 JST (ota)
+ *   Last Modified : 2021-07-17 20:25:19 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -14,6 +14,7 @@
 #include <TROOT.h>
 #include <TArtemisUtil.h>
 #include <TAnalysisInfo.h>
+#include "TArtTree.h"
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -62,7 +63,7 @@ void art::TOutputTreeProcessor::Init(TEventCollection *col)
       return;
    }
    TAnalysisInfo::AddTo(fFile);
-   fTree = new TTree(fTreeName,fTreeName);
+   fTree = new TArtTree(fTreeName,fTreeName);
    // assume all of the objects inherit from TObject
    TIter *iter = col->GetIter();
    TEventObject *obj;

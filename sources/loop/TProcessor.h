@@ -2,7 +2,7 @@
 /**
  * @file   TProcessor.h
  * @date   Created : Jul 10, 2013 17:10:49 JST
- *   Last Modified : 2019-04-26 10:38:24 JST (ota)
+ *   Last Modified : 2023-02-18 20:03:16 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -59,7 +59,9 @@ public:
    // user defined member functions to process data
    virtual void BeginOfRun() {;}
    virtual void EndOfRun() {;}
+   virtual void PreProcess() {;}
    virtual void Process() {;}
+   virtual void PostProcess() {;}
    virtual void PreLoop() {;}
    virtual void PostLoop() {;}
    virtual void Terminate() {;}

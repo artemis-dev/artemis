@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.59])
-AC_INIT(artemis, 1.0.0, [artemis-dev@cns.s.u-tokyo.ac.jp])
+AC_INIT(artemis, 1.1.0, [artemis-dev@cns.s.u-tokyo.ac.jp])
 AM_INIT_AUTOMAKE([foreign])
 AC_CONFIG_SRCDIR([sources/main/main.cc])
 AC_CONFIG_HEADERS([config.h])
@@ -54,7 +54,7 @@ else
 AC_DEFINE([HAVE_YAML_CPP],[1],[Define to 1 if you have the yaml-cpp library])
 AC_SUBST([YAML_CPP_INCLUDE_DIR],["$WITH_YAML_CPP/include"])
 AC_SUBST([YAML_CPP_INCLUDE],["-I$WITH_YAML_CPP/include"])
-AC_SUBST([YAML_CPP_LIB],["-L$WITH_YAML_CPP/lib -lyaml-cpp"])
+AC_SUBST([YAML_CPP_LIB],["-L$WITH_YAML_CPP/lib -L$WITH_YAML_CPP/lib64 -lyaml-cpp"])
 fi
 
 ROOTLIBS="`$ROOTSYS/bin/root-config --glibs`"
@@ -75,14 +75,14 @@ if test "$WITH_GET_DECODER" = "no"; then
 # do nothing
 echo HAVE_GET = 0
 AC_SUBST([HAVE_GET],["0"])
-AC_SUBST([LOOP_SUB_DIR],["param decoder ridf rdf hist"])
+AC_SUBST([LOOP_SUB_DIR],["param decoder ridf rdf hist streaming"])
 AC_SUBST([GET_DECODER_LIB],[""])
 AC_SUBST([ARTGET_LIB],[""])
 else
 echo HAVE_GET = 1
 AC_DEFINE([HAVE_GET_DECODER],[1],[Define to 1 if you have the get decoder])
 AC_SUBST([HAVE_GET],["1"])
-AC_SUBST([LOOP_SUB_DIR],["param decoder ridf rdf get hist"])
+AC_SUBST([LOOP_SUB_DIR],["param decoder ridf rdf get hist streaming"])
 AC_SUBST([GET_DECODER_INCLUDE_DIR],["$WITH_GET_DECODER/include"])
 AC_SUBST([GET_DECODER_INCLUDE],["-I$WITH_GET_DECODER/include"])
 AC_SUBST([GET_DECODER_LIB],["-L$WITH_GET_DECODER/lib -lGETDecoder"])
@@ -125,6 +125,7 @@ AC_CONFIG_FILES([Makefile
                  sources/loop/get/Makefile
                  sources/loop/hist/Makefile
                  sources/loop/param/Makefile
+                 sources/loop/streaming/Makefile
                  sources/main/Makefile
                  sources/main/artemis-config
                  sources/mc/Makefile])

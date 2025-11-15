@@ -3,7 +3,7 @@
  * @brief  segment infomation
  *
  * @date   Created       : 2014-05-17 18:53:47 JST
- *         Last Modified : May 29, 2014 22:35:13 JST
+ *         Last Modified : 2023-01-28 22:58:30 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -43,23 +43,23 @@ TSegmentInfo& TSegmentInfo::operator=(const TSegmentInfo& rhs)
 Bool_t TSegmentInfo::LoadYAMLNode(const YAML::Node& node)
 {
    try {
-      fModuleType = node["type"].to<std::string>().c_str();
+      fModuleType = node["type"].as<std::string>().c_str();
       switch (fgFormatType) {
       case RIDF:
-         for (YAML::Iterator it = node["segid"].begin(); it != node["segid"].end(); it++) {
-            fID.push_back((*it).to<int>());
+         for (YAML::const_iterator it = node["segid"].begin(); it != node["segid"].end(); it++) {
+            fID.push_back((*it).as<int>());
          }
          if (fID.size() != 3) return kFALSE;
          // @TODO fID should be initialized here
          SetTitle(TString::Format("Dev = %d, FP = %d, DataType = %d",fID[0],fID[1],fID[2]));
          break;
       case RDF:
-         fID.push_back(node["segid"].to<int>());
+         fID.push_back(node["segid"].as<int>());
          SetTitle(TString::Format("SegID = %d",fID[0]));
          break;
          
       }
-      for (YAML::Iterator it = node["modules"].begin(); it != node["modules"].end(); it++) {
+      for (YAML::const_iterator it = node["modules"].begin(); it != node["modules"].end(); it++) {
          TModuleInfo *info = new TModuleInfo;
          if (!info->LoadYAMLNode(*it)) {
             delete info;

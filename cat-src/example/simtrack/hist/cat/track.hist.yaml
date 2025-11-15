@@ -1,0 +1,106 @@
+group:
+  - name: cat_result
+    title: RESULTs
+    contents:
+      - name: chi2
+        title: chi2
+        x: ["track3[0].fChi2/track3.fHits@.size()",100,0.,10]
+        y: ["track4[0].fChi2/track3.fHits@.size()",100,0.,10]
+      - name: chi2ratio
+        title: chi2 ratio
+        x: ["track3[0].fChi2/track3[0].fHits@.size()",100,0.,10]
+        y: ["track4[0].fChi2/track3[0].fChi2",100,0.,10]
+      - name: R_ID
+        title: ratio vs id
+        x: ["track3.fHits.fID",416,-0.5,415.5]
+        y: ["track3.fHits.fCharge/track3.fHits.fEnergyDeposit",100,0.,2.]
+      - name: R_dE
+        title: ratio vs energy deposit
+        x: ["track3.fHits.fEnergyDeposit",100,0.,0.1]
+        y: ["track3.fHits.fCharge/track3.fHits.fEnergyDeposit",100,0.,2.]
+      - name: dedx_d
+        title: dEdX curve
+        cut: "track3.fHits.fCharge > 0"
+        x: ["track3.fHits.fRange",100,0.,200]
+        y: ["track3.fHits.fCharge/track3.fHits.fTrackLength",100,0.,0.02]
+      - name: dedx_p
+        title: dEdX curve
+        cut: "track4.fHits.fCharge > 0"
+        x: ["track4.fHits.fRange",100,0.,200]
+        y: ["track4.fHits.fCharge/track4.fHits.fTrackLength",100,0.,0.02]
+      - name: Ex
+        title: Ex
+        x: ["Ex3",2000,-50.,50.]
+      - name: recoil_lab
+        title: TKE vs Theta
+        x: ["recoilMom.Theta()/TMath::Pi()*180.",180,0.,180.]
+        y: ["recoilMom.TKE()",20,0.,2]
+      - name: ExTheta
+        title: Ex Theta
+        x: ["Ex3",500,-50.,50.]
+        y: ["recoilMom.Theta()/TMath::Pi()*180.",180,0.,180.]
+      - name: ExPhi
+        title: Ex Phi
+        x: ["Ex3",500,-50.,50.]
+        y: ["recoilMom.Phi()/TMath::Pi()*180.",180,-180.,180.]
+      - name: ExTKE
+        title: Ex TKE
+        x: ["Ex3",500,-50.,50.]
+        y: ["recoilMom.TKE()",20,0.,2]
+      - name: Ex_Ratio
+        title: Ex Ratio
+        x: ["Ex3",500,-50.,50.]
+        y: ["track4[0].fChi2/track3[0].fChi2",100,0.,10]
+      - name: Ex_startY
+        title: Ex startY
+        x: ["Ex3",500,-50.,50.]
+        y: ["track3.fStartPoint.Y()",100,-200.,200.]
+      - name: Ex_startZ
+        title: Ex startZ
+        x: ["Ex3",500,-50.,50.]
+        y: ["track3.fStartPoint.Z()",100,-200.,200.]
+      - name: Ex_Charge
+        title: Ex charge
+        x: ["Ex3",500,-50.,50.]
+        y: ["track3.fCharge",100,0.,0.5]
+      - name: ChargeTKE
+        title: charge tke
+        x: ["recoilMom.TKE()",100,0.,2.]
+        y: ["track3.fCharge",100,0.,0.5]
+      - name: ChargeDiff_TKE
+        title: charge diff vs tke
+        x: ["recoilMom.TKE()",100,0.,2.]
+        y: ["track3.fCharge-recoilMom.TKE()",100,-0.5,0.]
+      - name: ChargeDiff_Theta
+        title: charge diff vs theta
+        x: ["recoilMom.Theta()/TMath::Pi()*180",360,0.,180.]
+        y: ["track3.fCharge-recoilMom.TKE()",100,-0.5,0.]
+      - name: ChargeDiff_Phi
+        title: charge diff vs phi
+        x: ["recoilMom.Phi()/TMath::Pi()*180",360,-180.,180.]
+        y: ["track3.fCharge-recoilMom.TKE()",100,-0.5,0.]
+      - name: ChargeDiff_Ex
+        title: charge diff vs ex
+        x: ["Ex3",500,-50.,50.]
+        y: ["track3.fCharge-recoilMom.TKE()",100,-0.5,0.]
+      - name: status
+        title: status
+        x: ["track3.fStatus",6,-0.5,5.5]
+  - name: cat_result_short
+    title: results short track
+    clone: cat_result
+    cut: "TMath::Abs(track3.fRange*cos(track3.fDirection.Phi()))<60. && abs(track3.fEndPoint.X()) < 50"
+  - name: cat_result_d
+    title: results deuterium
+    clone: cat_result_short
+    cut: "track4[0].fChi2 / track3[0].fChi2 > 1.5 && track3[0].fChi2/track3[0].fHits@.size() < 10."
+  - name: cat_result_d2
+    title: results deuterium
+    clone: cat_result_short
+    cut: "track4[0].fChi2 / track3[0].fChi2 > 2. && track3[0].fChi2/track3[0].fHits@.size() < 10."
+  - name: cat_result_d2_cdiff
+    title: results deuterium
+    clone: cat_result_d2
+    cut: "track3.fCharge - recoilMom.TKE() > -0.23"
+    
+        

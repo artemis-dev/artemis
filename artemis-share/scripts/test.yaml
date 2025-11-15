@@ -1,0 +1,16 @@
+Anchor:
+  - &ridf1 ridf/@NAME@/CAT1_@NAME@@NUM@.ridf.gz
+  - &ridf2 ridf/@NAME@/CAT2_@NAME@@NUM@.ridf.gz
+#  hoge:
+#    - [fuga1,fuga2]
+#    - [fuga3, fuga4]
+#  fuga: &fuga1 hoge
+#  test: &test1
+#    - *fuga1
+#    - test
+#Processor:
+#  - name: hoge
+#    type: hoge
+#    parameters:
+#      test2: *test1
+#      test3: *test1

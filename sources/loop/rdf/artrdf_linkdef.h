@@ -3,7 +3,7 @@
  * @brief  linkdef file for RDF event store
  *
  * @date   Created       : 2014-03-30 09:23:43 JST
- *         Last Modified : Mar 30, 2014 09:25:45 JST
+ *         Last Modified : 2023-01-28 23:47:46 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -18,7 +18,7 @@
 #pragma link off all functions;
 
 
-#pragma link C++ class art::TRDFEventStore;
+#pragma link C++ class art::TRDFEventStore+;
 
 #endif /* __CINT__ */
 

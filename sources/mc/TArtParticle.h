@@ -2,7 +2,7 @@
 /**
  * @file   TArtParticle.h
  * @date   Created : Jan 25, 2011 21:25:48 JST
- *   Last Modified : Oct 28, 2014 14:46:19 JST
+ *   Last Modified : 2023-10-15 19:50:24 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -36,7 +36,7 @@ public:
    }
 
    ~TArtParticle();
-   
+   virtual void Copy(TObject& right) const;
    void Decay(Double_t theta = 0., Double_t phi = 0.);
    void SetAngle(const Double_t &theta, const Double_t &phi);
    void SetKineticEnergy(const Double_t &kin, const Double_t &mass = 0.);

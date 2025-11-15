@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 #-----------------------------------------------------------------------
 # sh config query script for artemis @ARTEMIS_VERSION@ on UNIX platforms
@@ -42,16 +42,36 @@ scriptloc=`dirname $script`
 
 package=@PACKAGE@
 version=@VERSION@
-prefix=@prefix@
-exec_prefix=@exec_prefix@
+prefix=@CMAKE_INSTALL_PREFIX@
+exec_prefix=@CMAKE_INSTALL_PREFIX@/bin
 cxx=@CXX@
-libdir=@libdir@
-includedirs="@includedir@ @YAML_CPP_INCLUDE_DIR@"
+libdir=@CMAKE_INSTALL_PREFIX@/lib
+redisdirall="@redis_libdir@"
+redisdir=${redisdirall//;/ }
+includedirs="@CMAKE_INSTALL_PREFIX@/include @yaml_cpp_INCLUDEDIR@ @ZeroMQ_INCLUDE_DIR@ $redisdir"
+
+# zmq
+if [ "@ZeroMQ_FOUND@" = "ON" -o "@ZeroMQ_FOUND@" = "1" ]; then
+    zmqlib="-L`dirname @ZeroMQ_LIBRARY@` -lzmq"
+else
+zmqlib=""
+fi
+
+redislib=""
+if [ "@REDIS_FOUND@" = "ON" ]; then
+    for xxx in ${redisdir}; do
+	redislib="$redislib -L${xxx}"
+    done
+    redislib="$redislib -lredis++ -lhiredis"
+fi
+# 
+
 
 name=${package}
 description="ARTEMIS - A RooT Extension with Modular processors for Instant Swiching"
 
 cflags=""
+
 for artemis_incdir in ${includedirs} ; do
   cflags="${cflags} -I${artemis_incdir}"
 done
@@ -65,14 +85,17 @@ libs="-lcatcmd \
 -lartridf \
 -lartrdf \
 -larthist \
--lartparam" 
+-lartparam \
+-lartshare \
+-lCAT"
 
-if [ "@HAVE_GET@" == "1" ]; then 
-  libs="${libs} @GET_DECODER_LIB@"
-  cflags="${cflags} -I@GET_DECODER_INCLUDE_DIR@"
+dypaths=":@CMAKE_INSTALL_PREFIX@/lib:@yaml_cpp_LIBDIR@"
+
+if [ "@BUILD_GET@" == "ON" ]; then 
+  libs="${libs} -lGETDecoder"
+  cflags="${cflags} -I@GET_INCLUDE_DIR@"
+  dypaths="${dypaths}:@GET_LIB_DIR@"
 fi
-
-
 
 help()
 {
@@ -96,7 +119,7 @@ EOF
 usage()
 {
   cat<<EOF
-Usage: artemis-config [--prefix] [--version] [--libs] [--cflags] [--incdir] [--cxx]
+Usage: artemis-config [--prefix] [--version] [--libs] [--cflags] [--incdir] [--cxx] [--dypaths]
 EOF
   exit 1
 }
@@ -126,7 +149,7 @@ while test $# -gt 0 ; do
       ;;
 
     --libs)
-      echo "-L${libdir}" ${libs} @YAML_CPP_LIB@
+      echo "-L${libdir}" ${libs} @YAML_CPP_LIB@ ${zmqlib} ${redislib}
       ;;
 
     --cflags)
@@ -139,6 +162,10 @@ while test $# -gt 0 ; do
 
     --cxx)
       echo ${cxx}
+      ;;
+
+    --dypaths)
+      echo ${dypaths}
       ;;
 
     -?)

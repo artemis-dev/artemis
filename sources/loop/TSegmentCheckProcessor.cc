@@ -3,7 +3,7 @@
  * @brief  segment check
  *
  * @date   Created       : 2014-05-18 14:16:52 JST
- *         Last Modified : 2016-10-02 19:52:10 JST (ota)
+ *         Last Modified : 2024-05-27 11:54:29 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -96,6 +96,10 @@ void TSegmentCheckProcessor::Init(TEventCollection *col)
          if (modules.size() < (unsigned int) id+1) modules.resize(id+1);
          modules.at(id) = mod;
          TModuleType *type = (TModuleType*)(*fModuleList)->FindObject(seg->GetModuleType());
+         if (!type) {
+            SetStateError(Form("No such module %s",seg->GetModuleType().Data()));
+            return;
+         }
          Int_t nCh = type->GetNch();
          Int_t nVal = type->GetNumValues();
          for (Int_t iVal = 0; iVal != nVal; iVal++) {

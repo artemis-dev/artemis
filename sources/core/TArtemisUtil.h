@@ -22,6 +22,9 @@
 #include <mpi.h>
 #endif
 
+class TList;
+class TDirectory;
+
 
 namespace art {
    namespace Util {
@@ -45,7 +48,12 @@ namespace art {
       /// @param[in] xoffset offset of x coordinate
       /// @param[in] yoffset offset of y coordinate
       void GetPolygonFromSide(Int_t n, Double_t side, Double_t angle, Double_t *vx, Double_t *vy, Double_t xoffset = 0., Double_t yoffset = 0);
-      
+
+      // write object in the current directory to the file
+      Bool_t WriteObjectsToFile(const char* fileName, const Option_t *opt = "RECREATE");
+
+      // write object recursively
+      void WriteObjectsRecursively(TDirectory* dir, TList* target);
 
 #ifdef USE_MPI
       // file merger in mpi

@@ -1,5 +1,5 @@
 {
-   {
+   if (0) {
       TString path = gSystem->GetDynamicPath();
       path.Append(":./processors:.");
       gSystem->SetDynamicPath(path);

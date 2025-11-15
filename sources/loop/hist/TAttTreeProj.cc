@@ -3,7 +3,7 @@
  * @brief  Attribute to fill the tree projection
  *
  * @date   Created       : 2014-03-03 23:30:16 JST
- *         Last Modified : 2020-04-30 11:26:26 JST (ota)
+ *         Last Modified : 2024-06-11 19:55:57 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -17,6 +17,7 @@
 #include <TFormLeafInfo.h>
 #include <TAxisTreeProj.h>
 #include <algorithm>
+#include "TTree.h"
 
 using art::TAttTreeProj;
 
@@ -58,8 +59,10 @@ TAttTreeProj& TAttTreeProj::operator=(const TAttTreeProj& rhs)
    return *this;
 }
 
-void TAttTreeProj::Copy(TAttTreeProj &newatt) const
+void TAttTreeProj::Copy(TAttCut &newattin) const
 {
+   TAttTreeProj &newatt = (TAttTreeProj&)newattin;
+   
    newatt.fAxisAsync = fAxisAsync;
    newatt.fNeedSync  = kTRUE;
    TAttCut::Copy(newatt);
@@ -183,11 +186,32 @@ void TAttTreeProj::SetAxisDef(UInt_t i, TAxisTreeProj* a) {
 }
 
 
-void TAttTreeProj::Sync()
+bool TAttTreeProj::Sync(TTree* tree, const char* cut)
 {
-   if (!fNeedSync) return;
+   if (!fNeedSync) return true;
+
+   int nDim = fH->GetDimension();
+   for (int iDim = 0; iDim < nDim; ++iDim) {
+      auto axis = fAxes[iDim];
+      auto totalcut = axis->GetCut() + GetCut() + cut;
+      auto axisFormula = new TTreeFormula(TString::Format("V%c",'x'+iDim),axis->GetTitle(),tree);
+      if (axisFormula->GetNdim() == 0) {
+         axisFormula->Delete();
+         return false;
+      }
+      axis->SetVariableFormula(axisFormula);
+      if (totalcut != "") {
+         TTreeFormula *cutFormula = new TTreeFormula(TString::Format("S%c",'x'+iDim),
+                                                     totalcut,tree);
+         if (cutFormula->GetNdim() == 0) {
+            cutFormula->Delete();
+            return false;
+         }
+         axis->SetSelectionFormula(cutFormula);
+      }
+   }
+   
    fH->Rebuild();
-   Int_t nDim = fH->GetDimension();
    TTreeFormulaManager *man;
    if (!fAxisAsync) man = new TTreeFormulaManager;
    
@@ -196,7 +220,7 @@ void TAttTreeProj::Sync()
       TAxisTreeProj *axis = fAxes[i];
       if (!axis->GetVariableFormula()) {
          printf("TAisTreeProj (%s) is not initialized correctly\n",axis->GetTitle());
-         return;
+         return false;
       }
       man->Add(axis->GetVariableFormula());
       
@@ -225,4 +249,5 @@ void TAttTreeProj::Sync()
       
    }
    fNeedSync = kFALSE;
+   return true;
 }

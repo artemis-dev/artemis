@@ -3,7 +3,7 @@
  * @brief  module information
  *
  * @date   Created       : 2014-05-17 16:42:49 JST
- *         Last Modified : Jun 01, 2014 12:50:30 JST
+ *         Last Modified : 2023-01-28 22:52:47 JST (ota)
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -48,16 +48,16 @@ Bool_t TModuleInfo::LoadYAMLNode(const YAML::Node& node)
    const char *const kKeyRanges = "ranges";
 
    try {
-      if (node.FindValue(kKeyType)) {
-         fType =  node[kKeyType].to<std::string>().c_str();
+      if (node[kKeyType]) {
+         fType =  node[kKeyType].as<std::string>().c_str();
       }
-      fID =  (node)[kKeyID].to<Int_t>();
-      if (const YAML::Node *ranges = node.FindValue(kKeyRanges)) {
-         for (YAML::Iterator itRanges = ranges->begin(); itRanges != ranges->end(); itRanges++) {
-            TString rangeName = itRanges.first().to<std::string>().c_str();
-            Int_t nbins = itRanges.second()[0].to<Int_t>();
-            Double_t xmin = itRanges.second()[1].to<Double_t>();
-            Double_t xmax = itRanges.second()[2].to<Double_t>();;
+      fID =  (node)[kKeyID].as<Int_t>();
+      if (const YAML::Node ranges = node[kKeyRanges]) {
+         for (YAML::const_iterator itRanges = ranges.begin(); itRanges != ranges.end(); itRanges++) {
+            TString rangeName = itRanges->first.as<std::string>().c_str();
+            Int_t nbins = itRanges->second[0].as<Int_t>();
+            Double_t xmin = itRanges->second[1].as<Double_t>();
+            Double_t xmax = itRanges->second[2].as<Double_t>();;
             TAxis *axis = new TAxis(nbins,xmin,xmax);
             axis->SetName(rangeName);
             fRanges.push_back(axis);

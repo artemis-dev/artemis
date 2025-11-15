@@ -20,4 +20,5 @@ Processor:
       FileName: histdef.yaml
       Name: proj
       Type: art::TTreeProjection
+      OutputFilename: test.hist.root
       

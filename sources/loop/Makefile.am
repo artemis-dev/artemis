@@ -27,6 +27,7 @@ SUBSRC+=TRandomNumberEventStore.cc
 SUBSRC+=TRandomNumberProcessor.cc 
 SUBSRC+=TRawDataObject.cc 
 SUBSRC+=TRawDataSimple.cc 
+SUBSRC+=TRawDataTimingCharge.cc 
 SUBSRC+=TRawTiming.cc 
 SUBSRC+=TRawTimingWithEdge.cc 
 SUBSRC+=TSegmentCheckProcessor.cc
@@ -54,6 +55,10 @@ SUBSRC+=IEventStore.cc
 SUBSRC+=TFormulaData.cc
 SUBSRC+=TFormulaDataGenerator.cc
 SUBSRC+=TEventNumberConditionProcessor.cc
+SUBSRC+=TArtTree.cc
+SUBSRC+=TRawDataMappingProcessor.cc
+
+
 
 OPTSRC = 
 OPTSRC+=TAttParameter.cc

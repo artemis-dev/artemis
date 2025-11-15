@@ -2,7 +2,7 @@
 /**
  * @file   TArtRint.cc
  * @date   Created : Feb 06, 2012 00:06:18 JST
- *   Last Modified : 2020-11-27 00:22:27 JST (ota)
+ *   Last Modified : 2023-12-23 14:43:18 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *  
  *  
@@ -20,6 +20,7 @@
 #include <TClassTable.h>
 #include "TProcessor.h"
 #include "TObjString.h"
+#include "TStreamingModuleDecoderFactory.h"
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -37,9 +38,6 @@ using art::TArtRint;
 TArtRint::TArtRint(int* argc, char** argv, void* options, int numOptions, Bool_t noLogo)
    : TRint(gAppName, argc, argv, options, numOptions, noLogo)
 {
-   // load macros
-   // @TODO documantation: all the processors should be loaded in artemislogon.C
-   TRint::ProcessLine(".x artemislogon.C");
 
    TProcessor::ListProcessors();
 
@@ -63,6 +61,14 @@ TArtRint::TArtRint(int* argc, char** argv, void* options, int numOptions, Bool_t
    } else {
       gAtomicMassTable->SetMassTable(filepath,40);
    }
+
+   // prepare the decoder for streaming daq
+   art::TStreamingModuleDecoderFactory::CreateAll();
+
+   // load macros
+   // @TODO documantation: all the processors should be loaded in artemislogon.C
+   TRint::ProcessLine(".x artemislogon.C");
+   
 #if USE_MPI
     int myrank, npe;
     int usempi;

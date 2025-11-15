@@ -13,6 +13,7 @@
 !*.cc
 !*.h
 !Makefile.am
+!CMakeLists.txt
 
 # additional exception
 *_dict.*
