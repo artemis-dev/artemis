@@ -3,7 +3,7 @@
  * @brief  update canvas and its child once or automatically
  *
  * @date   Created       : 2014-06-26 13:54:04 JST
- *         Last Modified : 2020-11-27 00:21:23 JST (ota)
+ *         Last Modified : 2026-07-11 22:52:00 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -15,6 +15,7 @@
 #include <TPad.h>
 #include <TThread.h>
 #include "TSystem.h"
+#include "TMath.h"
 
 using art::TCmdUpdateCanvas;
 
