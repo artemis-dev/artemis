@@ -65,11 +65,32 @@ bool TZmqSubscriber::Connect() {
 }
 
 int TZmqSubscriber::Recv() {
+   fSize = 0;
+   do {
+      // receive multipart messages
+      size_t read_size;
+      if ((read_size = zmq_recv(fSocket,fBuffer+fSize,kMaxBufSize-fSize,0)) < 0) {
+         printf("recv failed %d\n",read_size);
+         fIsValid = false;
+         return read_size;
+      }
+      fSize += read_size;
+      // check if more messages are available
+      int more;
+      size_t more_size = sizeof(more);
+      zmq_getsockopt(fSocket, ZMQ_RCVMORE, &more, &more_size);
+      if (!more) break;
+   } while (1);
+
+#if 0
    if ((fSize = zmq_recv(fSocket,fBuffer,kMaxBufSize,0)) < 0) {
       fIsValid = false;
       return fSize;
    }
+#endif   
+   
    fIsValid = true;
+
    return fSize;
 }
 
