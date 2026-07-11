@@ -3,7 +3,7 @@
  * @brief  raw data with timing and charge
  *
  * @date   Created       : 2015-10-04 17:57:15 JST
- *         Last Modified : 2015-10-04 18:26:02 JST (ota)
+ *         Last Modified : 2026-07-11 22:49:58 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2015 Shinsuke OTA
@@ -35,6 +35,7 @@ public:
    virtual Double_t GetValue(Int_t idx = 0) const { 
      if (idx == 0) return fTiming;
      if (idx == 1) return fCharge;
+     return 0;
    }
    virtual Int_t GetNumValues() const { return 2; }
 

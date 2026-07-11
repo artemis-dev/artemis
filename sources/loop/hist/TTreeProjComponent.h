@@ -3,7 +3,7 @@
  * @brief  Collection of the projections of TTree
  *
  * @date   Created       : 2023-06-26 23:53:58 JST
- *         Last Modified : 2024-06-11 19:30:46 JST
+ *         Last Modified : 2026-07-11 22:49:10 JST
  * @author Shinsuke OTA <ota@rcnp.osaka-u.ac.jp>
  *
  *    (C) 2023 Shinsuke OTA
@@ -27,7 +27,7 @@ public:
    virtual ~TTreeProjComponent();
    
    
-   virtual TObject* Clone(const char* opt = "") const {;} // clone method
+   virtual TObject* Clone(const char* opt = "") const { return NULL;} // clone method
    virtual void Copy(TObject &obj) const;
    virtual bool IsGroup() { return false; }
 

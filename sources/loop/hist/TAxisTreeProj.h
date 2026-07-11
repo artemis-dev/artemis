@@ -3,7 +3,7 @@
  * @brief  Axis for tree projection
  *
  * @date   Created       : 2014-03-03 23:23:30 JST
- *         Last Modified : Mar 17, 2014 17:52:36 JST
+ *         Last Modified : 2026-07-11 22:49:34 JST
  * @author Shinsuke OTA <ota@cns.s.u-tokyo.ac.jp>
  *
  *    (C) 2014 Shinsuke OTA
@@ -16,6 +16,7 @@
 #include "TAttCut.h"
 
 #include <TTreeFormula.h>
+#include "TMath.h"
 
 namespace art {
    class TAxisTreeProj;
