@@ -206,7 +206,7 @@ void TTwoSidedPlasticCalibrationProcessor::ProcessByIndex()
 
 void TTwoSidedPlasticCalibrationProcessor::ProcessByTimeDiff()
 {
-//   printf("ProcessByTimeDiff\n");
+  //   printf("ProcessByTimeDiff\n");
    // loop for all the detectors in array1
    for(Int_t iDet=0, nDets = fHits1->GetEntriesFast(); iDet!=nDets; ++iDet) {
       const TObjArray *const hitArray1 = fHits1->At(iDet);
@@ -219,6 +219,54 @@ void TTwoSidedPlasticCalibrationProcessor::ProcessByTimeDiff()
       if (!hitArray2) continue;
       const Int_t size2 = hitArray2->GetEntriesFast();
       if (!size2) continue;
+      Int_t iHit = 0;
+
+      for (Int_t iHit1 = 0; iHit1 != size1; ++iHit1) {
+	for (Int_t iHit2 = 0; iHit2 != size2; ++iHit2) {
+	  TTimingChargeData *hit1 = static_cast<TTimingChargeData*>(hitArray1->At(iHit1));
+	  TTimingChargeData *hit2 = static_cast<TTimingChargeData*>(hitArray2->At(iHit2));
+
+	  double tdiff = hit1->GetTiming() - hit2->GetTiming();
+
+	  if (tdiff < fValidTimeMin || fValidTimeMax < tdiff) continue;
+
+            TTwoSidedPlasticData *const output =
+               static_cast<TTwoSidedPlasticData*>(fPlasticOut->ConstructedAt(fPlasticOut->GetEntriesFast()));
+            output->SetDetID(detID);
+            output->SetHitID(iHit+ HITID_ORIGIN);
+            ++iHit;
+            output->SetSide1(hit1);
+	    output->SetSide2(hit2);
+            output->ValidateHit(TTwoSidedPlasticData::kT1);
+            output->ValidateHit(TTwoSidedPlasticData::kT2);
+	    const Double_t t1 = output->GetUncheckedT1();
+	    const Double_t t2 = output->GetUncheckedT2();
+	    const Double_t timing = (t1 + t2) * 0.5;
+	    output->SetTiming(timing);
+	    output->SetTDiff(tdiff);
+            output->SetCharge(TMath::Sqrt(output->GetUncheckedQ1()*output->GetUncheckedQ2()));
+            output->SetSide1(hit1);
+            output->SetSide2(hit2);
+            output->SetQ1(output->GetUncheckedQ1());
+            output->SetQ2(output->GetUncheckedQ2());
+            output->SetT1(output->GetUncheckedT1());
+            output->SetT2(output->GetUncheckedT2());
+            if (dynamic_cast<TTwoSidedPlasticData*>(hit1) &&
+                dynamic_cast<TTwoSidedPlasticData*>(hit2)) {
+               output->SetTDiff1(static_cast<TTwoSidedPlasticData*>(hit1)->GetTDiff());
+               output->SetTDiff2(static_cast<TTwoSidedPlasticData*>(hit2)->GetTDiff());
+            }
+
+            if (IsValid(hit1->GetCharge()))
+               output->ValidateHit(TTwoSidedPlasticData::kQ1);
+            if (IsValid(hit2->GetCharge()))
+               output->ValidateHit(TTwoSidedPlasticData::kQ2);
+            // initialize hits to indicate the correct hits are created
+	}
+      }
+
+#if 0
+      
 
       std::list<TTimingChargeData*> list1;
       std::list<TTimingChargeData*> list2;
@@ -228,35 +276,41 @@ void TTwoSidedPlasticCalibrationProcessor::ProcessByTimeDiff()
       for(Int_t iHit2=0, nHit = size2; iHit2 != nHit; ++iHit2) {
          list2.push_back(static_cast<TTimingChargeData*>(hitArray2->At(iHit2)));
       }
-      
+      // printf("hoge1\n");
       TTimingChargeData *hit1 = NULL;
       TTimingChargeData *hit2 = NULL;
+//      if (list1.empty()) {
+//	Info("ProcessByTimeDiff","size = %d",size1);
+//	continue;
+//      }
+
       TTimingChargeData *last1 = list1.back();
+      //printf("hoge2\n");
       Int_t iHit = 0;
       // loop for all the hits for 1st side
 //      printf("loop1\n");
-      while (list1.size()!=0) {
+      while (!list1.empty()) {
          hit1 = list1.front();
          list1.pop_front();
          // check the validity of the timing
-//         printf("loop1 aaa\n");
+         //printf("loop1 aaa\n");
          if (!IsValid(hit1->GetTiming())) {
             continue;
          }
-//         printf("loop1 bbb\n");
+         //printf("loop1 bbb\n");
          // loop for all the his for 2nd side
-         TTimingChargeData *last2 = list2.back();
-//         printf("loop2\n");
-         while (list2.size() != 0) {
+         // printf("loop2\n");
+         while (!list2.empty()) {
+	   TTimingChargeData *last2 = list2.back();
             hit2 = list2.front();
-//            printf("list2 %p\n",hit2);
+            // printf("list2 %p\n",hit2);
             list2.pop_front();
             // check the validity of the timing
             if (!IsValid(hit2->GetTiming())) {
                // skip this hit
                continue;
             }
-//            printf("list2 %p aaa\n",hit2);
+	    //            printf("list2 %p aaa\n",hit2);
             // check the validity of time difference
 //            printf("%f %f %f\n",hit1->GetTiming(),hit2->GetTiming(),fValidTimeDiff);
             Double_t tdiff = hit1->GetTiming() - hit2->GetTiming();
@@ -320,5 +374,6 @@ void TTwoSidedPlasticCalibrationProcessor::ProcessByTimeDiff()
       list1.clear();
       list2.clear();
       // @todo fill unpaired hits or not
+#endif   
    }
 }

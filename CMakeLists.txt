@@ -124,28 +124,29 @@ function(art_lib lib_name objects dic_headers linkdef_name pub_headers)
             ${yaml_cpp_INCLUDEDIR} ${ARTEMIS_INCLUDE_DIRS}
     )
     target_link_libraries(${lib_name}
+      PRIVATE
         ${ROOT_LIBRARIES} ${YAML_CPP_LIBRARIES} ${ARTEMIS_LIBRARIES} 
     )
     if(MPI_CXX_FOUND)
             target_include_directories(${lib_name} PRIVATE ${MPI_CXX_INCLUDE_PATH})
-            target_link_libraries(${lib_name} ${MPI_CXX_LIBRARIES})
+            target_link_libraries(${lib_name} PRIVATE ${MPI_CXX_LIBRARIES})
     endif()
 
     if(BUILD_GET)
       target_include_directories(${lib_name} PRIVATE ${GET_INCLUDE_DIR} ${yaml_cpp_INCLUDEDIR} ${ARTEMIS_INCLUDE_DIRS})
-      target_link_libraries(${lib_name} ${GET_LIBRARIES})
+      target_link_libraries(${lib_name} PRIVATE ${GET_LIBRARIES})
     endif()
     
     if (ZeroMQ_FOUND)
       target_include_directories(${lib_name} PRIVATE ${zeromq_INCLUDE_DIR})
-      target_link_libraries(${lib_name} ${zeromq_LIBRARY})
+      target_link_libraries(${lib_name} PRIVATE ${zeromq_LIBRARY})
     endif()
 
     if (REDIS_FOUND)
       target_include_directories(${lib_name} PRIVATE ${REDIS_INCLUDE_DIRS})
       target_link_directories(${lib_name} PRIVATE ${REDIS_LIBRARY_DIRS})
       target_link_directories(${lib_name} PRIVATE ${HIREDIS_LIBRARY_DIRS})
-      target_link_libraries(${lib_name} ${REDIS_LIBRARIES})
+      target_link_libraries(${lib_name} PRIVATE ${REDIS_LIBRARIES})
     endif()
       
         
