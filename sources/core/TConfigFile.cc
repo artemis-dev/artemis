@@ -19,11 +19,13 @@ art::TConfigFile::TConfigFile(const char *filename,
                               const char *comment,
                               const char *delim,
                               const char *eol)
-   : fComment(comment),fDelim(delim),fEOL(eol),fTokens(NULL)
+   : fComment(comment),fDelim(delim),fEOL(eol),fTokens(NULL), fIsPrepared(false)
 {
    fFile.open(filename);
-   if (!fFile) {
+   if (!static_cast<bool>(fFile)) {
       perror("file not exist");
+   } else {
+      fIsPrepared = true;
    }
    fEOL.Resize(1);
 }

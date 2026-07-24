@@ -31,7 +31,7 @@ public:
                const char *eol = ";");
    ~TConfigFile();
    
-
+   Bool_t IsPrepared() const { return fIsPrepared; }
    TString GetNextToken();
 private:
    std::ifstream  fFile;
@@ -40,6 +40,7 @@ private:
    TString   fEOL;
    TObjArray *fTokens; //->
    Int_t     fIdx;
+   Bool_t    fIsPrepared;
 
    ClassDef(TConfigFile,1);
 };

@@ -76,11 +76,23 @@ void TMappingProcessor::Init(TEventCollection *col)
    while (1) {
       const TString& mapfilename = file.GetNextToken();
       const Int_t&   ndata       = strtol(file.GetNextToken(),NULL,0);//.Atoi();
-      if (!mapfilename.Length() || !ndata) {
-         // no more map file is available 
+      if (fVerboseLevel > 2) {
+         Info("Init","mapfile %s is loaded with %d data\n",mapfilename.Data(),ndata);
+      }
+      if (!mapfilename.Length()) {
+         // no more map file is available
          break;
+      } else if (!ndata) {
+         // something is went wrong
+         SetStateError(Form("No data is defined in mapfile %s",mapfilename.Data()));
+         return ;
+               
       }
       TConfigFile mapfile(mapfilename,"#",", \t","#");
+      if (!mapfile.IsPrepared()) {
+         SetStateError(Form("No such mapfile %s",mapfilename.Data()));
+         return;
+      }
       while (1) {
          const TString& cidstr = mapfile.GetNextToken();
          const TString& didstr = mapfile.GetNextToken();

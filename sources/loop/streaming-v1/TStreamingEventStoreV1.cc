@@ -446,14 +446,16 @@ Bool_t TStreamingEventStore::GetHeartBeatFrame() {
          }
          fHeaderHB->ReadFrom(buffer);
          buffer += fHeaderHB->GetHeaderLength();
-	 if (fVerboseLevel > 2) {
-	   fHeaderHB->Print();
-	 }
+	      if (fVerboseLevel > 2) {
+            printf("+++ HBF +++\n");
+	         fHeaderHB->Print();
+	      }
          decoder->Decode(buffer, fHeaderHB->GetLength() - fHeaderHB->GetHeaderLength(), seg, femid);
          fSubTimeFrameSize[i] -= fHeaderHB->GetLength();
          fSubTimeFrameBuffers[i] += fHeaderHB->GetLength();
-         fHBD->Decode(*(buffer-16));
-         if (fHBD->IsDelim1(*(buffer-16))) {
+         uint64_t hbd = *(uint64_t *)(buffer + fHeaderHB->GetLength() - fHeaderHB->GetHeaderLength() - 16);
+         fHBD->Decode(hbd);
+         if (fHBD->IsDelim1(hbd)) {
             fEventHeader->SetTimestamp(fHBD->GetHeartBeatFrameNumber());
          }
 #if 0
