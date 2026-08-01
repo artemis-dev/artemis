@@ -13,7 +13,8 @@ endif()
 
 if (REDIS_FOUND)
   target_include_directories(artemis PRIVATE ${REDIS_INCLUDE_DIR})
-  target_link_directories(artemis PRIVATE ${REDIS_LIBRARY_DIRS})
+target_link_directories(artemis PRIVATE ${REDIS_LINK_DIRS})
+
   target_link_libraries(artemis ${REDIS_LIBRARIES})
 endif()
       

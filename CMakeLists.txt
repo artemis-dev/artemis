@@ -55,19 +55,40 @@ if (BUILD_WITH_ZMQ)
 endif()
 
 if (BUILD_WITH_REDIS)
+  # Help pkg-config find redis++/hiredis in environments where lib and lib64 are split.
+  foreach(_pc_dir
+      /opt/nestdaq/lib/pkgconfig
+      /opt/nestdaq/lib64/pkgconfig
+      /opt/local/nestdaq/lib/pkgconfig
+      /opt/local/nestdaq/lib64/pkgconfig)
+    if(EXISTS ${_pc_dir})
+      set(ENV{PKG_CONFIG_PATH} "${_pc_dir}:$ENV{PKG_CONFIG_PATH}")
+    endif()
+  endforeach()
+
   pkg_check_modules(REDIS redis++)
+  message(STATUS ${REDIS_LIBRARY_DIRS})  
   pkg_check_modules(HIREDIS hiredis)
+
   if (REDIS_FOUND AND HIREDIS_FOUND)
     add_compile_definitions(HAVE_REDIS_H)
     include_directories(${REDIS_INCLUDE_DIR})
     message(STATUS "redis++ and hiredis is found")
-    message(STATUS ${REDIS_LIBRARY_DIRS})
+
     message(STATUS ${HIREDIS_LIBRARY_DIRS})
     message(STATUS ${REDIS_INCLUDE_DIRS})
     message(STATUS ${HIREDIS_INCLUDE_DIRS})
     set(redis_libdir ${REDIS_LIBRARY_DIRS})
+    set(REDIS_LINK_DIRS ${REDIS_LIBRARY_DIRS} ${HIREDIS_LIBRARY_DIRS})
+    foreach(_redis_hint /opt/nestdaq/lib /opt/nestdaq/lib64 /opt/local/nestdaq/lib /opt/local/nestdaq/lib64)
+      if(EXISTS ${_redis_hint})
+        list(APPEND REDIS_LINK_DIRS ${_redis_hint})
+      endif()
+    endforeach()
+    list(REMOVE_DUPLICATES REDIS_LINK_DIRS)
     #  message(STATUS "hoge")
     #  message(STATUS $redis_libdir)
+    message(STATUS "REDIS_LINK_DIRS: ${REDIS_LINK_DIRS}")
     set(REDIS_FOUND ON)
   endif()
 endif()
@@ -81,6 +102,8 @@ if(yaml-cpp_FOUND)
     set(yaml_cpp_LIBDIR ${YAML_CPP_CMAKE_DIR}/../../)
 #    message(STATUS "aaa")
 #    message(STATUS ${YAML_CPP_CMAKE_DIR})
+    message(STATUS yaml_cpp_LIBRARIES: ${yaml_cpp_LIBDIR})
+    message(STATUS yaml_cpp_INCLUDEDIR: ${yaml_cpp_INCLUDEDIR})
 else()
     pkg_check_modules(yaml_cpp REQUIRED yaml-cpp)
 endif()
@@ -123,31 +146,31 @@ function(art_lib lib_name objects dic_headers linkdef_name pub_headers)
 	    PRIVATE
             ${yaml_cpp_INCLUDEDIR} ${ARTEMIS_INCLUDE_DIRS}
     )
-    target_link_libraries(${lib_name}
-        ${ROOT_LIBRARIES} ${YAML_CPP_LIBRARIES} ${ARTEMIS_LIBRARIES} 
-    )
     if(MPI_CXX_FOUND)
-            target_include_directories(${lib_name} PRIVATE ${MPI_CXX_INCLUDE_PATH})
-            target_link_libraries(${lib_name} ${MPI_CXX_LIBRARIES})
+            target_include_directories(${lib_name} PRIVATE MPI_CXX_INCLUDE_PATH})
+            target_link_libraries(${lib_name} PRIVATE ${MPI_CXX_LIBRARIES})
     endif()
 
     if(BUILD_GET)
       target_include_directories(${lib_name} PRIVATE ${GET_INCLUDE_DIR} ${yaml_cpp_INCLUDEDIR} ${ARTEMIS_INCLUDE_DIRS})
-      target_link_libraries(${lib_name} ${GET_LIBRARIES})
+      target_link_libraries(${lib_name} PRIVATE ${GET_LIBRARIES})
     endif()
     
     if (ZeroMQ_FOUND)
       target_include_directories(${lib_name} PRIVATE ${zeromq_INCLUDE_DIR})
-      target_link_libraries(${lib_name} ${zeromq_LIBRARY})
+      target_link_libraries(${lib_name} PRIVATE ${zeromq_LIBRARY})
     endif()
 
     if (REDIS_FOUND)
       target_include_directories(${lib_name} PRIVATE ${REDIS_INCLUDE_DIRS})
-      target_link_directories(${lib_name} PRIVATE ${REDIS_LIBRARY_DIRS})
-      target_link_directories(${lib_name} PRIVATE ${HIREDIS_LIBRARY_DIRS})
-      target_link_libraries(${lib_name} ${REDIS_LIBRARIES})
+      target_link_directories(${lib_name} PRIVATE ${REDIS_LINK_DIRS})
+      target_link_libraries(${lib_name} PRIVATE ${REDIS_LIBRARIES} ${HIREDIS_LIBRARIES})
     endif()
       
+    target_link_libraries(${lib_name}
+        PRIVATE
+        ${ROOT_LIBRARIES} ${YAML_CPP_LIBRARIES} ${ARTEMIS_LIBRARIES} 
+    )
         
     ROOT_GENERATE_DICTIONARY(G__${lib_name}
         ${dic_headers}

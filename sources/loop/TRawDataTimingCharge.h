@@ -35,6 +35,7 @@ public:
    virtual Double_t GetValue(Int_t idx = 0) const { 
      if (idx == 0) return fTiming;
      if (idx == 1) return fCharge;
+     return 0;
    }
    virtual Int_t GetNumValues() const { return 2; }
 

@@ -129,7 +129,7 @@ endif()
   
 
 art_lib(catloop "${OBJECTS}" "${HEADERS}"  "catloop_linkdef.h" "${HEADERS}")
-target_link_libraries(catloop z)
+target_link_libraries(catloop PRIVATE z)
 
 add_subdirectory(decoder)
 if(BUILD_GET)

@@ -15,6 +15,7 @@
 #include <TPad.h>
 #include <TThread.h>
 #include "TSystem.h"
+#include "TMath.h"
 
 using art::TCmdUpdateCanvas;
 

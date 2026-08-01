@@ -27,7 +27,7 @@ public:
    virtual ~TTreeProjComponent();
    
    
-   virtual TObject* Clone(const char* opt = "") const {;} // clone method
+   virtual TObject* Clone(const char* opt = "") const { return nullptr; } // clone method
    virtual void Copy(TObject &obj) const;
    virtual bool IsGroup() { return false; }
 
