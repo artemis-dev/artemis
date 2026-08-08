@@ -162,7 +162,7 @@ void TStreamingEventStore::Process() {
 
    // stop after exceeding maximum number of event
    if (fMaxFrames > 0 && fEventHeader->GetEventNumberTotal() > fMaxFrames) {
-      Info("Process","event number %d reach at maxframe %d",fEventHeader->GetEventNumberTotal(),fMaxFrames);
+      Info("Process","event number %d reach at maxframe %d",fEventHeader->GetEventNumberTotal(),fMaxFrames.Value());
       SetStopEvent();
       SetStopLoop();
       SetEndOfRun();

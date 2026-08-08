@@ -6,7 +6,12 @@ list(APPEND CMAKE_PREFIX_PATH $ENV{ROOTSYS})
 
 # Default installation dir
 set(CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/install/ CACHE PATH "install dir")
-set(CMAKE_SHARED_LINKER_FLAGS "-Wl,--no-as-needed")
+if(APPLE)
+    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,-undefined,error")
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--no-as-needed")
+endif()
+# set(CMAKE_SHARED_LINKER_FLAGS "-Wl,--no-as-needed")
 enable_language(CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
