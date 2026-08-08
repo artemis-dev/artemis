@@ -120,6 +120,8 @@ public:
 
    class IOCollection {
    public:
+      IOCollection(void* p, TString* name)
+         : fP(p), fName(name),fClassName("std::vector<double>"),fDataClassName(""),fPrmName(""),fCapacity(1),fIsObject(kFALSE) {;}
       IOCollection(void* p,TString* name, TString className, TString dataClassName,TString prmname = "")
          : fP(p), fName(name),fClassName(className),fDataClassName(dataClassName),fPrmName(prmname),fCapacity(1),fIsObject(kTRUE) {;}
       IOCollection(void* p,TString* name, TString type, Int_t capacity, TString *length) 
@@ -331,22 +333,47 @@ public:
       RegisterOutputInfo(output->fName, output->fTitle, output->fValue, output->fDefaultValue);
    }
 
+   void RegisterInputCollection(VecIO* input) {
+      RegisterProcessorParameter(input->fName, input->fTitle, input->fValue, input->fDefaultValue);
+      if (input->fDoAuto) {
+        fInputs.push_back(IOCollection(input->PtrRef(), &input->fValue));
+      }
+   }
+   void RegisterOutputCollection(VecIO* output) {
+      RegisterProcessorParameter(output->fName, output->fTitle, output->fValue, output->fDefaultValue);
+      if (output->fDoAuto) {
+        fOutputs.push_back(IOCollection(output->PtrRef(), &output->fValue));
+      }
+    }
+
 template <class T> 
    void Register(Parameter<T>* prm) {
-      if (prm->IsInputData()) {
-         Info("Register","InputData");
-         RegisterInputCollection(dynamic_cast<ObjectIO*>(prm));
-      } else if (prm->IsInputInfo()) {
-         Info("Register","InputInfo");
-         RegisterInputInfo(dynamic_cast<ObjectIO*>(prm));
-      } else if (prm->IsOutputData()) {
-         Info("Register","OutputData");
-         RegisterOutputCollection(dynamic_cast<ObjectIO*>(prm));
-      } else if (prm->IsOutputInfo()) {
-         Info("Register","OutputInfo");
-         RegisterOutputInfo(dynamic_cast<ObjectIO*>(prm));
+      printf("Registering parameter %s (isobject : %d, isinputdata : %d, isinputinfo : %d, isoutputdata : %d, isoutputinfo : %d)\n",prm->GetName(), prm->IsObject(),prm->IsInputData(),prm->IsInputInfo(),prm->IsOutputData(),prm->IsOutputInfo());
+
+      if (prm->IsObject()) {
+        if (prm->IsInputData()) {
+          Info("Register","InputData");
+          RegisterInputCollection(dynamic_cast<ObjectIO*>(prm));
+        } else if (prm->IsInputInfo()) {
+          Info("Register","InputInfo");
+          RegisterInputInfo(dynamic_cast<ObjectIO*>(prm));
+        } else if (prm->IsOutputData()) {
+          Info("Regisqter","OutputData");
+          RegisterOutputCollection(dynamic_cast<ObjectIO*>(prm));
+        } else if (prm->IsOutputInfo()) {
+          Info("Register","OutputInfo");
+          RegisterOutputInfo(dynamic_cast<ObjectIO*>(prm));
+        } else {
+          RegisterProcessorParameter(prm);
+        }
       } else {
-         RegisterProcessorParameter(prm);
+        if (prm->IsInputData()) {
+          RegisterInputCollection(dynamic_cast<VecIO*>(prm));
+        } else if (prm->IsOutputData()) {
+          RegisterOutputCollection(dynamic_cast<VecIO*>(prm));
+        } else {
+          RegisterProcessorParameter(prm);
+        }
       }
    }
 

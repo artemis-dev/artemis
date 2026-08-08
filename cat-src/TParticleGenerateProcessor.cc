@@ -1,6 +1,6 @@
 /**
  * @file   TParticleGenerateProcessor.cc
- * @brief  particle at rest will be created
+ * @brief  particle at rest will be created"2025-12-07T21:16:26+09:00"
  *
  * @date   Created       : 2017-09-26 18:35:38 JST
  *         Last Modified : 2018-02-15 16:36:01 JST (ota)
@@ -81,10 +81,14 @@ void TParticleGenerateProcessor::Process()
        TMath::Abs(fThetaRange[0] - fThetaRange[1]) > TMath::Limits<Float_t>::Epsilon()) {
       theta = TMath::ACos(gRandom->Uniform(TMath::Cos(fThetaRange[0]*deg),
                                            TMath::Cos(fThetaRange[1]*deg)));
+   } else {
+      theta = fThetaRange[0] * deg;
    }
    if (fPhiRange.size() > 1 &&
        TMath::Abs(fPhiRange[0] - fPhiRange[1]) > TMath::Limits<Float_t>::Epsilon()) {
       phi = gRandom->Uniform(fPhiRange[0]*deg,fPhiRange[1]*deg);
+   } else {
+      phi = fPhiRange[0] * deg;
    }
    particle->SetTheta(theta);
    particle->SetPhi(phi);

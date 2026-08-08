@@ -114,7 +114,13 @@ void art::TOutputTreeProcessor::PreLoop()
          continue;
       }
       if (!obj->IsObject()) {
-         ((TBranch*)br)->SetAddress(*(void**)obj->GetObjectRef());
+         // STL vector branches are created with an address-to-pointer,
+         // so SetAddress must receive the same pointer indirection.
+         if (TString(obj->GetType()) == "std::vector<double>") {
+            ((TBranch*)br)->SetAddress(obj->GetObjectRef());
+         } else {
+            ((TBranch*)br)->SetAddress(*(void**)obj->GetObjectRef());
+         }
       } else {
          ((TBranch*)br)->SetAddress(obj->GetObjectRef());
       }
