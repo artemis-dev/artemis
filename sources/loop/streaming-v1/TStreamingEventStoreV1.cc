@@ -61,6 +61,8 @@ TStreamingEventStore::TStreamingEventStore()
    Register(fIsStandAlone("IsStandAlone", "stand alone mode", 0));
    Register(fDefaultLength("DefaultLength",
                            "Default length for stand alone (kB) ", 256));
+   Register(fTimeStamp("TimeStamp","Time stamp of the event","timestamp"));
+   fTimeStamp.SetDoAuto(kTRUE);
 
 #if HAVE_ZMQ_H
    Register(fZmqURI("ZmqURI","specify URI directory (use RedisURI etc if available)",""));
@@ -427,6 +429,7 @@ Bool_t TStreamingEventStore::GetHeartBeatFrame() {
          auto headerSTF = fSubTimeFrameHeaders[i];
          auto buffer = fSubTimeFrameBuffers[i];
          auto size = fSubTimeFrameSize[i];
+         fTimeStamp->SetValue(headerSTF->GetTimeSec() + headerSTF->GetTimeUsec() * 1e-6);
          if (size < 0) {
             Error("GetHeartbeatframe", "Unexpected size %d",
                   fSubTimeFrameSize[i]);

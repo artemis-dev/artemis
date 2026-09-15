@@ -12,6 +12,7 @@
 #include "TProcessor.h"
 #include "IEventStore.h"
 #include "TRunInfo.h"
+#include "TSimpleData.h"
 
 namespace art {
    namespace v1 {
@@ -109,6 +110,7 @@ protected:
    
    OutputData<TSegmentedData> fSegmentedData; //!
    OutputData<TEventHeader> fEventHeader; //!
+   OutputData<TSimpleData> fTimeStamp; //!
    OutputInfo<TList> fRunHeader; //!
    OutputInfo<TList> fFileHeader; //! 
    Parameter<Int_t> fMaxFrames; //!

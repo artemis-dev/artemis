@@ -60,6 +60,7 @@ void TMappingProcessor::Init(TEventCollection *col)
    // check if map config exists
    if (!gSystem->FindFile(".",fMapConfigName)) {
       Error("Init","No such file : %s\n",fMapConfigName.Data());
+      SetStateError(Form("No map file found with '%s'", fMapConfigName.Data()));
       return;
    }
    
