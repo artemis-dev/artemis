@@ -111,12 +111,14 @@ void TStreamingEventStore::Init(TEventCollection *col) {
    for (StringVec_t::iterator it = filenames.begin(), itend = filenames.end();
         it < itend; ++it) {
       TString filelist = gSystem->GetFromPipe(Form("ls -tr %s*", (*it).Data()));
+      printf("filelist = %s\n", filelist.Data());
       TObjArray *files = (filelist.Tokenize("\n"));
-      if (!files) {
+      if (filelist.Length() == 0 || !files) {
          Error("Init", "%s", Form("No such files %s", (*it).Data()));
          SetStateError("Init");
          return;
       }
+      files->Print();
    }
 
    // initialize segmented data
@@ -191,6 +193,7 @@ void TStreamingEventStore::Process() {
 #endif    
       if (fDataSource) delete fDataSource;
       fDataSource = NULL;
+      Info("Process", "Open next file");
       if (!Open()) {
          Info("Process", "No more file is available");
          NotifyEndOfRun();
@@ -494,6 +497,9 @@ Bool_t TStreamingEventStore::Open() {
       files.erase(files.begin());
       if (gSystem->FindFile("./", filename)) {
          break;
+      } else {
+         Warning("Open", "No such file %s, try next", filename.Data());
+         filename = "";
       }
    }
    if (filename == "") {
