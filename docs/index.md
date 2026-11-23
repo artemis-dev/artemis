@@ -18,6 +18,6 @@ hero:
 features:
   - title: 事始め
     details: インストールができたら、さあ解析だ
-    link: 
+    link: /notes/getting-started/
 ---
 
