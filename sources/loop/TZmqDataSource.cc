@@ -13,6 +13,13 @@
 #include <thread>
 #include <chrono>
 
+#define DEBUG_ZMQDATASOURCE 0
+
+#if DEBUG_ZMQDATASOURCE
+#define DBPRINT(...) printf(__VA_ARGS__)
+#else
+#define DBPRINT(...) 
+#endif
 
 art::TZmqDataSource::TZmqDataSource()
    : fMemoryPos(0), fConnectionTimeout(1000)
@@ -62,27 +69,27 @@ int art::TZmqDataSource::Read(char *buf, const int&size)
 
 bool art::TZmqDataSource::Prepare()
 {
-//   printf("Preparing %p\n",fSubscriber);
+   DBPRINT("Preparing %p\n",fSubscriber); 
    if (!fSubscriber) fSubscriber = new TZmqSubscriber;
-//   printf("URI %s with valid %d\n",fSubscriber->GetUri().c_str(), fSubscriber->IsValid());
+   DBPRINT("URI %s with valid %d\n",fSubscriber->GetUri().c_str(), fSubscriber->IsValid());
    if (!fSubscriber->GetUri().length() || 
        !fSubscriber->IsValid()) {
       fSubscriber->Terminate();
       if (!fSubscriber->Connect()) {
-//         printf("Subscriber is NOT connected\n");
+         DBPRINT("Subscriber is NOT connected\n");
          std::this_thread::sleep_for(std::chrono::milliseconds(fConnectionTimeout));
          return false;
       }
-//      printf("Subscriber is connected\n");
+      DBPRINT("Subscriber is connected\n");
       std::this_thread::sleep_for(std::chrono::milliseconds(10));
    }
    if (fSubscriber->Recv() < 0) {
-//      printf("Subscriber is terminated \n");
+      DBPRINT("Subscriber is terminated \n");
       fSubscriber->Terminate();
-//      printf("Subscriber is valid ? %d \n",fSubscriber->IsValid());
+      DBPRINT("Subscriber is valid ? %d \n",fSubscriber->IsValid());
       return false;
    }
-//   printf("Prepare : Received %d\n",fSubscriber->GetSize());
+   DBPRINT("Prepare : Received %d\n",fSubscriber->GetSize());
    fStatus = kReady;
    fMemoryPos = 0;
    return true;

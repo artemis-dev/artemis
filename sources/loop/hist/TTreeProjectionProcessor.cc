@@ -124,7 +124,11 @@ void TTreeProjectionProcessor::Init(TEventCollection *col)
    while ((obj = (TEventObject*)iter->Next())) {
       if (obj->IsObject()) {
          fTree->Branch(obj->GetName(),obj->GetClass()->GetName(),obj->GetObjectRef(),3200000,0);
+      } else if (TString(obj->GetType()) == "std::vector<double>") {
+         fTree->Branch(obj->GetName(),*(std::vector<double>**)obj->GetObjectRef());
       } else {
+         printf("obj->GetName() = %s\n",obj->GetName());
+         printf("obj->GetType() = %s\n",obj->GetType());
          TString leaflist = obj->GetName();
          if (obj->GetLength() != "") {
             leaflist.Append(TString::Format("[%s]",obj->GetLength().Data()));
@@ -134,6 +138,7 @@ void TTreeProjectionProcessor::Init(TEventCollection *col)
       }
    }
    fTree->SetCircular(1);
+   fTree->Print();
 
    // sync with tree
    fTreeProj->Sync(fTree);

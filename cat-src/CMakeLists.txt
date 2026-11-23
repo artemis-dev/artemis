@@ -107,6 +107,7 @@ set(OBJECTS
     TSRPPACPlaneDataV2.cc
     TSRPPACPlaneDqdxProcessorV2.cc
     TSRPPACPlaneProcessorV2.cc
+    TBacktraceByForwardMatrixProcessor.cc
 )
 
 set(HEADERS 
@@ -214,6 +215,7 @@ set(HEADERS
     TSRPPACPlaneDataV2.h
     TSRPPACPlaneDqdxProcessorV2.h
     TSRPPACPlaneProcessorV2.h
+    TBacktraceByForwardMatrixProcessor.h
 )
 
 art_lib(CAT "${OBJECTS}" "${HEADERS}"  "linkdef_user.h" "${HEADERS}")

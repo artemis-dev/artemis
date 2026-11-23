@@ -6,7 +6,12 @@ list(APPEND CMAKE_PREFIX_PATH $ENV{ROOTSYS})
 
 # Default installation dir
 set(CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/install/ CACHE PATH "install dir")
-set(CMAKE_SHARED_LINKER_FLAGS "-Wl,--no-as-needed")
+if(APPLE)
+    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,-undefined,error")
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--no-as-needed")
+endif()
+# set(CMAKE_SHARED_LINKER_FLAGS "-Wl,--no-as-needed")
 enable_language(CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -146,8 +151,12 @@ function(art_lib lib_name objects dic_headers linkdef_name pub_headers)
 	    PRIVATE
             ${yaml_cpp_INCLUDEDIR} ${ARTEMIS_INCLUDE_DIRS}
     )
+    target_link_libraries(${lib_name}
+      PRIVATE
+        ${ROOT_LIBRARIES} ${YAML_CPP_LIBRARIES} ${ARTEMIS_LIBRARIES} 
+    )
     if(MPI_CXX_FOUND)
-            target_include_directories(${lib_name} PRIVATE MPI_CXX_INCLUDE_PATH})
+            target_include_directories(${lib_name} PRIVATE ${MPI_CXX_INCLUDE_PATH})
             target_link_libraries(${lib_name} PRIVATE ${MPI_CXX_LIBRARIES})
     endif()
 
@@ -163,8 +172,9 @@ function(art_lib lib_name objects dic_headers linkdef_name pub_headers)
 
     if (REDIS_FOUND)
       target_include_directories(${lib_name} PRIVATE ${REDIS_INCLUDE_DIRS})
-      target_link_directories(${lib_name} PRIVATE ${REDIS_LINK_DIRS})
-      target_link_libraries(${lib_name} PRIVATE ${REDIS_LIBRARIES} ${HIREDIS_LIBRARIES})
+      target_link_directories(${lib_name} PRIVATE ${REDIS_LIBRARY_DIRS})
+      target_link_directories(${lib_name} PRIVATE ${HIREDIS_LIBRARY_DIRS})
+      target_link_libraries(${lib_name} PRIVATE ${REDIS_LIBRARIES})
     endif()
       
     target_link_libraries(${lib_name}

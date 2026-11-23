@@ -55,10 +55,10 @@ public:
       virtual bool IsObject() const { return false; }
       virtual bool IsData() const { return false; }
       virtual bool IsInput() const { return true;}
-      virtual bool IsInputData() const  { return IsObject() && IsData() && IsInput(); }
-      virtual bool IsInputInfo() const  { return IsObject() && !IsData() && IsInput(); }
-      virtual bool IsOutputData() const { return IsObject() && IsData() && !IsInput(); }
-      virtual bool IsOutputInfo() const { return IsObject() && !IsData() && !IsInput(); }
+      virtual bool IsInputData() const  { return IsData() && IsInput(); }
+      virtual bool IsInputInfo() const  { return !IsData() && IsInput(); }
+      virtual bool IsOutputData() const { return IsData() && !IsInput(); }
+      virtual bool IsOutputInfo() const { return !IsData() && !IsInput(); }
 
       virtual T& Value() { return fValue; }
       virtual const T& Value() const { return fValue; }
@@ -73,7 +73,56 @@ public:
    };
 
 
+   class VecIO: public Parameter<TString> {
+     public:
+     virtual void SetDoAuto(bool flag) { fDoAuto = flag; }
+     virtual bool IsObject() const { return false; }
+     virtual bool IsData() const = 0;
+     virtual bool IsInput() const = 0;
+     virtual void* Ptr() { return NULL; }
+     virtual void* PtrRef() { return NULL; }
+     virtual const char* ClassName() const { return ""; }
 
+     Bool_t fDoAuto;
+   };
+
+   template <class T>
+   class InputVec : public VecIO {
+     public:
+     using datatype = std::vector<T>;
+      InputVec() : fData(NULL) {
+         fDoAuto = kTRUE;
+      }
+      virtual bool IsInput() const { return true; }
+      virtual bool IsData() const { return true; }
+      virtual void SetData(datatype** data) { fData = data; }
+      virtual const datatype* Data() const { return  (fData ? *fData : NULL) ; }
+      virtual datatype* Data() { return  (fData ? *fData : NULL) ; }
+      virtual void* Ptr() { return fData; }
+      virtual void* PtrRef() { return &fData; }
+      virtual inline const datatype* operator->() const { return Data(); }
+      virtual inline datatype* operator->() { return Data(); }
+      datatype** fData;
+   };
+
+   template <class T>
+   class OutputVec : public VecIO {
+     public:
+     using datatype = std::vector<T>;
+      OutputVec() : fData(NULL) {
+         fDoAuto = kTRUE;
+      }
+      virtual bool IsInput() const { return false; }
+      virtual bool IsData() const { return true; }
+      virtual void SetData(datatype* data) { fData = data; }
+      virtual const datatype* Data() const { return  fData; }
+      virtual datatype* Data() { return  fData; }
+      virtual void* Ptr() { return fData; }
+      virtual void* PtrRef() { return &fData; }
+      virtual inline const datatype* operator->() const {return fData; }
+      virtual inline datatype* operator->() {return fData; }
+      datatype* fData;
+   };
    
    class ObjectIO : public Parameter<TString> {
    public:
@@ -134,6 +183,7 @@ public:
       
       T* fData;
    };
+
 
    template <class T, class dataClass>
    class InputData : public InputObject<T,dataClass> {

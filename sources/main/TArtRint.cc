@@ -39,7 +39,7 @@ TArtRint::TArtRint(int* argc, char** argv, void* options, int numOptions, Bool_t
    : TRint(gAppName, argc, argv, options, numOptions, noLogo)
 {
 
-   TProcessor::ListProcessors();
+   // TProcessor::ListProcessors();
 
    // Preparation of folder for artemis
    TFolder *top = gROOT->GetRootFolder()->AddFolder("artemis","artemis top level folders");

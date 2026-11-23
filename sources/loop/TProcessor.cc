@@ -143,10 +143,12 @@ void art::TProcessor::InitProc(TEventCollection *col)
 
    Int_t nOutputs = fOutputs.size();
    Int_t iOutput = 0;
+   Info("InitProc","initializing %d outputs",nOutputs);
    for (iOutput = 0; iOutput != nOutputs; iOutput++) {
       IOCollection &output = fOutputs[iOutput];
       TClass *cls = TClass::GetClass(output.fClassName);
       if (!output.fIsObject) {
+         Info("InitProc","not a object %s",(*output.fName).Data());
          // primitive class
          if (output.fClassName == "D") {
             // double
@@ -157,6 +159,8 @@ void art::TProcessor::InitProc(TEventCollection *col)
          } else if (output.fClassName == "I") {
             // int
             *(Int_t**)output.fP = new Int_t[output.fCapacity];
+         } else {
+            *(std::vector<double>**)output.fP = new std::vector<double>(1,0);
          }
          col->Add(new TEventObject(*output.fName,*(void**)output.fP,output.fClassName,output.fLength,fOutputIsTransparent));
          continue;

@@ -3,7 +3,7 @@
  * @brief
  *
  * @date   Created:       2013-08-12 14:48:07
- *         Last Modified: 2025-02-25 15:01:59 JST
+ *         Last Modified: "2026-08-06T00:53:28+09:00"
  * @author KAWASE Shoichiro <kawase@cns.s.u-tokyo.ac.jp>
  *
  *    Copyright (C) 2013 KAWASE Shoichiro, OTA Shinsuke All rights reserved
@@ -131,6 +131,7 @@
 #pragma link C++ class art::TSRPPACPlaneDqdxProcessorV2;
 #pragma link C++ class art::TSRPPACPlaneProcessorV2;
 
+#pragma link C++ class art::TBacktraceByForwardMatrixProcessor;
 
 #endif // __CINT__
 

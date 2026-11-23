@@ -36,6 +36,11 @@ art::TEventObject::TEventObject(const char* name, void *obj, TString type, TStri
 Bool_t art::TEventObject::SetBranch(TTree *tree,Int_t splitLevel)
 {
    if (!this->IsObject()) {
+      if (fType == "std::vector<double>") {
+         printf("SetBranch for std::vector<double> %s\n",this->GetName());
+         tree->Branch(this->GetName(),(std::vector<double>**)this->GetObjectRef());
+         return kTRUE;
+      }
       // primitivee class
       TString brNme = this->GetName();
       TString leaflist;

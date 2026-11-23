@@ -61,6 +61,8 @@ TStreamingEventStore::TStreamingEventStore()
    Register(fIsStandAlone("IsStandAlone", "stand alone mode", 0));
    Register(fDefaultLength("DefaultLength",
                            "Default length for stand alone (kB) ", 256));
+   Register(fTimeStamp("TimeStamp","Time stamp of the event","timestamp"));
+   fTimeStamp.SetDoAuto(kTRUE);
 
 #if HAVE_ZMQ_H
    Register(fZmqURI("ZmqURI","specify URI directory (use RedisURI etc if available)",""));
@@ -109,12 +111,14 @@ void TStreamingEventStore::Init(TEventCollection *col) {
    for (StringVec_t::iterator it = filenames.begin(), itend = filenames.end();
         it < itend; ++it) {
       TString filelist = gSystem->GetFromPipe(Form("ls -tr %s*", (*it).Data()));
+      printf("filelist = %s\n", filelist.Data());
       TObjArray *files = (filelist.Tokenize("\n"));
-      if (!files) {
+      if (filelist.Length() == 0 || !files) {
          Error("Init", "%s", Form("No such files %s", (*it).Data()));
          SetStateError("Init");
          return;
       }
+      files->Print();
    }
 
    // initialize segmented data
@@ -162,7 +166,7 @@ void TStreamingEventStore::Process() {
 
    // stop after exceeding maximum number of event
    if (fMaxFrames > 0 && fEventHeader->GetEventNumberTotal() > fMaxFrames) {
-      Info("Process","event number %d reach at maxframe %d",fEventHeader->GetEventNumberTotal(),fMaxFrames);
+      Info("Process","event number %d reach at maxframe %d",fEventHeader->GetEventNumberTotal(),fMaxFrames.Value());
       SetStopEvent();
       SetStopLoop();
       SetEndOfRun();
@@ -189,6 +193,7 @@ void TStreamingEventStore::Process() {
 #endif    
       if (fDataSource) delete fDataSource;
       fDataSource = NULL;
+      Info("Process", "Open next file");
       if (!Open()) {
          Info("Process", "No more file is available");
          NotifyEndOfRun();
@@ -427,6 +432,7 @@ Bool_t TStreamingEventStore::GetHeartBeatFrame() {
          auto headerSTF = fSubTimeFrameHeaders[i];
          auto buffer = fSubTimeFrameBuffers[i];
          auto size = fSubTimeFrameSize[i];
+         fTimeStamp->SetValue(headerSTF->GetTimeSec() + headerSTF->GetTimeUsec() * 1e-6);
          if (size < 0) {
             Error("GetHeartbeatframe", "Unexpected size %d",
                   fSubTimeFrameSize[i]);
@@ -446,14 +452,16 @@ Bool_t TStreamingEventStore::GetHeartBeatFrame() {
          }
          fHeaderHB->ReadFrom(buffer);
          buffer += fHeaderHB->GetHeaderLength();
-	 if (fVerboseLevel > 2) {
-	   fHeaderHB->Print();
-	 }
+	      if (fVerboseLevel > 2) {
+            printf("+++ HBF +++\n");
+	         fHeaderHB->Print();
+	      }
          decoder->Decode(buffer, fHeaderHB->GetLength() - fHeaderHB->GetHeaderLength(), seg, femid);
          fSubTimeFrameSize[i] -= fHeaderHB->GetLength();
          fSubTimeFrameBuffers[i] += fHeaderHB->GetLength();
-         fHBD->Decode(*(buffer-16));
-         if (fHBD->IsDelim1(*(buffer-16))) {
+         uint64_t hbd = *(uint64_t *)(buffer + fHeaderHB->GetLength() - fHeaderHB->GetHeaderLength() - 16);
+         fHBD->Decode(hbd);
+         if (fHBD->IsDelim1(hbd)) {
             fEventHeader->SetTimestamp(fHBD->GetHeartBeatFrameNumber());
          }
 #if 0
@@ -489,6 +497,9 @@ Bool_t TStreamingEventStore::Open() {
       files.erase(files.begin());
       if (gSystem->FindFile("./", filename)) {
          break;
+      } else {
+         Warning("Open", "No such file %s, try next", filename.Data());
+         filename = "";
       }
    }
    if (filename == "") {
