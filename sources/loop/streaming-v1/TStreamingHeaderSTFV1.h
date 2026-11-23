@@ -75,7 +75,6 @@ class art::v1::TStreamingHeaderSTF
 
   private:
    uint32_t fTimeFrameID;
-   uint32_t fReserved;
    uint32_t fFEMType;
    uint32_t fFEMId;
    uint32_t fNumMessages;
