@@ -58,7 +58,6 @@ class art::v1::TStreamingHeaderSTF
    inline virtual void Print() const;
 
    uint32_t GetTimeFrameID() const { return fTimeFrameID; }
-   uint32_t GetReserved() const { return fReserved; }
    uint32_t GetFEMType() const { return fFEMType; }
    uint32_t GetFEMId() const { return fFEMId; }
    uint32_t GetLength() const { return fLength; }
@@ -88,7 +87,6 @@ class art::v1::TStreamingHeaderSTF
 void art::v1::TStreamingHeaderSTF::Print() const {
    printf("==============================\n");
    printf("TimeFrameID = %d\n", fTimeFrameID);
-   printf("Reserved    = %d\n", fReserved);
    printf("FEMType     = %d\n", fFEMType);
    printf("FEMId       = %x\n", fFEMId);
    printf("HeaderLength= %d\n", fHeaderLength);
